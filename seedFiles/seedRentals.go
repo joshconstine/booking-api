@@ -8,6 +8,8 @@ import (
 	"github.com/joho/godotenv"
      _ "github.com/go-sql-driver/mysql"
 	 "fmt"
+	 "strconv"
+	 ""
 )
 
 
@@ -46,7 +48,6 @@ func main() {
 		{3, "The Gables", 1, 7, 4},
 		{4, "The Clbuhouse", 1, 4, 2},
 		{6, "The Musky Inn", 2, 13, 7},
-
 		{7, "The Musky Inn North", 2, 6, 4},
 		{8, "The Musky Inn North + middle", 2, 9, 4},
 		{9, "The Musky Inn South", 2, 4, 3},
