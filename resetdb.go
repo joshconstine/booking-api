@@ -17,7 +17,7 @@ func main() {
 
 	//SQL CREATE TABLES
 	
-	dropTables := "DROP TABLE IF EXISTS rentals, rental_timeblock, locations"
+	dropTables := "DROP TABLE IF EXISTS rentals, rental_timeblock, locations, rental_unit_default_settings, rental_unit_variable_settings, rental_photos, photos"
 
     // Load connection string from .env file
     err := godotenv.Load()
