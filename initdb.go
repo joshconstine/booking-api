@@ -26,10 +26,19 @@ func main() {
 	//Photos
 	photosCreate := "CREATE TABLE IF NOT EXISTS photos (id INT NOT NULL AUTO_INCREMENT, url VARCHAR(255) NOT NULL, PRIMARY KEY (id))"
 
-	
+	//Users
+	usersCreate := "CREATE TABLE IF NOT EXISTS users (id INT NOT NULL AUTO_INCREMENT, email VARCHAR(255) NOT NULL, firstName VARCHAR(255) NOT NULL, lastName VARCHAR(255) NOT NULL, phoneNumber VARCHAR(15) NOT NULL, PRIMARY KEY (id))"
+
+
 
 	//Locations
 	locationsCreate := "CREATE TABLE IF NOT EXISTS locations (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
+
+	//Bookings
+	bookingStatusesCreate := "CREATE TABLE IF NOT EXISTS booking_statuses (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
+	bookingsCreate := "CREATE TABLE IF NOT EXISTS bookings (id INT NOT NULL AUTO_INCREMENT, user_id INT NOT NULL, booking_status_id INT NOT NULL, booking_details_id INT NOT NULL, PRIMARY KEY (id), KEY user_id (user_id), KEY booking_status_id (booking_status_id), KEY booking_details_id (booking_details_id))"
+	bookingDetailsCreate := "CREATE TABLE IF NOT EXISTS booking_details (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL UNIQUE, payment_complete BOOLEAN NOT NULL, payment_due_date DATE NOT NULL, documents_signed BOOLEAN NOT NULL, PRIMARY KEY (id))"
+
 
     // Load connection string from .env file
     err := godotenv.Load()
@@ -96,6 +105,29 @@ func main() {
 		log.Fatalf("failed to create locations table: %v", err)
 	}
 	
+	// Users
+	_, err = db.Exec(usersCreate)
+	if err != nil {
+		log.Fatalf("failed to create users table: %v", err)
+	}
+
+	//Booking Statuses
+	_, err = db.Exec(bookingStatusesCreate)
+	if err != nil {
+		log.Fatalf("failed to create booking_statuses table: %v", err)
+	}
+
+	//Bookings
+	_, err = db.Exec(bookingsCreate)
+	if err != nil {
+		log.Fatalf("failed to create bookings table: %v", err)
+	}
+
+	//Booking Details
+	_, err = db.Exec(bookingDetailsCreate)
+	if err != nil {
+		log.Fatalf("failed to create booking_details table: %v", err)
+	}
 
 
 
