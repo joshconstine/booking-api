@@ -47,7 +47,10 @@ func main() {
 	bookingCostTypesCreate := "CREATE TABLE IF NOT EXISTS booking_cost_types (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 	bookingCostItemsCreate := "CREATE TABLE IF NOT EXISTS booking_cost_items (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, booking_cost_type_id INT NOT NULL, ammount DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY booking_cost_type_id (booking_cost_type_id))"
 
+	//refunds
 
+	refundStatusesCreate := "CREATE TABLE IF NOT EXISTS refund_statuses (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
+	refundRequestsCreate := "CREATE TABLE IF NOT EXISTS refund_requests (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, refund_status_id INT NOT NULL, refund_amount DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY refund_status_id (refund_status_id))"
 
 
 
@@ -169,6 +172,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create booking_payment table: %v", err)
 	}
+
+	//Refund Statuses
+	_, err = db.Exec(refundStatusesCreate)
+	if err != nil {
+		log.Fatalf("failed to create refund_statuses table: %v", err)
+	}
+
+	//Refund Requests
+	_, err = db.Exec(refundRequestsCreate)
+	if err != nil {
+		log.Fatalf("failed to create refund_requests table: %v", err)
+	}
+
 
 
 
