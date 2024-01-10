@@ -1,15 +1,30 @@
 package main
 
 import (
+    "booking-api/api"
     "database/sql"
     "log"
     "os"
-
+    "fmt"
+    "strconv"
+    "net/http"
+    "github.com/gorilla/mux"
     "github.com/joho/godotenv"
      _ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
+
+    port := 8080
+	// Convert the integer port to a string.
+	portStr := strconv.Itoa(port)
+	
+	
+
+	r := mux.NewRouter()
+	
+    // Use the functions from the 'api' package to define routes.
+    
     // Load connection string from .env file
     err := godotenv.Load()
     if err != nil {
@@ -27,20 +42,12 @@ func main() {
     if err != nil {
         log.Fatalf("failed to ping: %v", err)
     }
+    
+    api.InitRoutes(r, db)
 
-    rows, err := db.Query("SHOW TABLES")
-    if err != nil {
-        log.Fatalf("failed to query: %v", err)
-    }
-    defer rows.Close()
+    fmt.Printf("Server is listening on port %d...\n", port)
 
-    var tableName string
-    for rows.Next() {
-        if err := rows.Scan(&tableName); err != nil {
-            log.Fatalf("failed to scan row: %v", err)
-        }
-        log.Println(tableName)
-    }
+    http.ListenAndServe(":"+portStr, r)
 
-    defer db.Close()
+
 }
