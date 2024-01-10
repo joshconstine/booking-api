@@ -21,6 +21,12 @@ func main() {
 	rentalTimeblockCreate := "CREATE TABLE IF NOT EXISTS rental_timeblock (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id))"
 	rentalUnitDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS rental_unit_default_settings (id INT NOT NULL AUTO_INCREMENT, rental_unit_id INT NOT NULL, nightly_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, allows_pets BOOLEAN NOT NULL, cleaning_fee DECIMAL(10, 2) NOT NULL, check_in_time TIME NOT NULL, check_out_time TIME NOT NULL, PRIMARY KEY (id), KEY rental_unit_id (rental_unit_id))"
 	rentalUnitVariableSettingsCreate := "CREATE TABLE IF NOT EXISTS rental_unit_variable_settings (id INT NOT NULL AUTO_INCREMENT, rental_unit_id INT NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, minimum_booking_duration INT NOT NULL, nightly_cost DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY rental_unit_id (rental_unit_id))"
+	rentalPhotosCreate := "CREATE TABLE IF NOT EXISTS rental_photos (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, photo_id INT NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY photo_id (photo_id))"
+
+	//Photos
+	photosCreate := "CREATE TABLE IF NOT EXISTS photos (id INT NOT NULL AUTO_INCREMENT, url VARCHAR(255) NOT NULL, PRIMARY KEY (id))"
+
+	
 
 	//Locations
 	locationsCreate := "CREATE TABLE IF NOT EXISTS locations (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, PRIMARY KEY (id))"
@@ -45,6 +51,12 @@ func main() {
     }
 
 
+	//Photos
+	_, err = db.Exec(photosCreate)
+	if err != nil {
+		log.Fatalf("failed to create photos table: %v", err)
+	}
+	
 
 	// Rentals
 
@@ -71,6 +83,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create rental_unit_variable_settings table: %v", err)
 	}
+
+	// Rental Photos
+	_, err = db.Exec(rentalPhotosCreate)
+	if err != nil {
+		log.Fatalf("failed to create rental_photos table: %v", err)
+	}
+	
 
 
 	// Locations
