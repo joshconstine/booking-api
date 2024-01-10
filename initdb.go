@@ -38,6 +38,17 @@ func main() {
 	bookingStatusesCreate := "CREATE TABLE IF NOT EXISTS booking_statuses (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 	bookingsCreate := "CREATE TABLE IF NOT EXISTS bookings (id INT NOT NULL AUTO_INCREMENT, user_id INT NOT NULL, booking_status_id INT NOT NULL, booking_details_id INT NOT NULL, PRIMARY KEY (id), KEY user_id (user_id), KEY booking_status_id (booking_status_id), KEY booking_details_id (booking_details_id))"
 	bookingDetailsCreate := "CREATE TABLE IF NOT EXISTS booking_details (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL UNIQUE, payment_complete BOOLEAN NOT NULL, payment_due_date DATE NOT NULL, documents_signed BOOLEAN NOT NULL, PRIMARY KEY (id))"
+	rentalBookingCreate := "CREATE TABLE IF NOT EXISTS rental_booking (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, booking_id INT NOT NULL, rental_time_block_id INT NOT NULL, booking_status_id INT NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY booking_id (booking_id), KEY rental_time_block_id (rental_time_block_id), KEY booking_status_id (booking_status_id))"
+	rentalBookingCostsCreate := "CREATE TABLE IF NOT EXISTS rental_booking_costs (id INT NOT NULL AUTO_INCREMENT, rental_booking_id INT NOT NULL, booking_cost_items_id INT NOT NULL, PRIMARY KEY (id), KEY rental_booking_id (rental_booking_id), KEY booking_cost_items_id (booking_cost_items_id))"
+	bookingPaymentCreate := "CREATE TABLE IF NOT EXISTS booking_payment (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, payment_amount DECIMAL(10, 2) NOT NULL, paypal_order_id INT,cash_payment BOOLEAN NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id))"
+	
+
+
+	bookingCostTypesCreate := "CREATE TABLE IF NOT EXISTS booking_cost_types (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
+	bookingCostItemsCreate := "CREATE TABLE IF NOT EXISTS booking_cost_items (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, booking_cost_type_id INT NOT NULL, ammount DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY booking_cost_type_id (booking_cost_type_id))"
+
+
+
 
 
     // Load connection string from .env file
@@ -129,6 +140,35 @@ func main() {
 		log.Fatalf("failed to create booking_details table: %v", err)
 	}
 
+	//Rental Booking
+	_, err = db.Exec(rentalBookingCreate)
+	if err != nil {
+		log.Fatalf("failed to create rental_booking table: %v", err)
+	}
+
+	//Rental Booking Costs
+	_, err = db.Exec(rentalBookingCostsCreate)
+	if err != nil {
+		log.Fatalf("failed to create rental_booking_costs table: %v", err)
+	}
+
+	//Booking Cost Types
+	_, err = db.Exec(bookingCostTypesCreate)
+	if err != nil {
+		log.Fatalf("failed to create booking_cost_types table: %v", err)
+	}
+
+	//Booking Cost Items
+	_, err = db.Exec(bookingCostItemsCreate)
+	if err != nil {
+		log.Fatalf("failed to create booking_cost_items table: %v", err)
+	}
+
+	//Booking Payment
+	_, err = db.Exec(bookingPaymentCreate)
+	if err != nil {
+		log.Fatalf("failed to create booking_payment table: %v", err)
+	}
 
 
 
