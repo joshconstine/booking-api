@@ -1,3 +1,5 @@
+
+
 package main
 
 import (
@@ -15,13 +17,7 @@ func main() {
 
 	//SQL CREATE TABLES
 	
-
-	//Rentals
-	rentalsCreate := "CREATE TABLE IF NOT EXISTS rentals (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, location_id INT NOT NULL, PRIMARY KEY (id), KEY location_id (location_id))"
-	rentalTimeblockCreate := "CREATE TABLE IF NOT EXISTS rental_timeblock (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id))"
-
-	//Locations
-	locationsCreate := "CREATE TABLE IF NOT EXISTS locations (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, PRIMARY KEY (id))"
+	dropTables := "DROP TABLE IF EXISTS rentals, rental_timeblock, locations"
 
     // Load connection string from .env file
     err := godotenv.Load()
@@ -43,30 +39,13 @@ func main() {
     }
 
 
-
-	// Rentals
-
-	_, err = db.Exec(rentalsCreate)
+	_, err = db.Exec(dropTables)
 	if err != nil {
-		log.Fatalf("failed to create rentals table: %v", err)
-	}
-
-
-	// Rental Settings
-	_, err = db.Exec(rentalTimeblockCreate)
-	if err != nil {
-		log.Fatalf("failed to create rental_timeblock table: %v", err)
-	}
-
-
-	// Locations
-	_, err = db.Exec(locationsCreate)
-	if err != nil {
-		log.Fatalf("failed to create locations table: %v", err)
+		log.Fatalf("failed to drop tables: %v", err)
 	}
 	
 
-
+	log.Println("dropped tables")
 
 
     rows, err := db.Query("SHOW TABLES")
