@@ -25,7 +25,7 @@ type RentalWithLocation struct {
 
 func GetRentals(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	// Query the database for all rentals.
-	rows, err := db.Query("SELECT * FROM rentals")
+	rows, err := db.Query("SELECT * FROM rental")
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
 	}
@@ -59,7 +59,7 @@ func GetRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	//get rental join location name from lcoation table
 
-	rows, err := db.Query("SELECT rentals.id, rentals.name, location.name, rentals.location_id, rentals.bathrooms, rentals.bedrooms FROM rentals JOIN location ON rentals.location_id = location.id WHERE rentals.id = ?", id)
+	rows, err := db.Query("SELECT rental.id, rental.name, location.name, rental.location_id, rental.bathrooms, rental.bedrooms FROM rental JOIN location ON rental.location_id = location.id WHERE rental.id = ?", id)
 
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)

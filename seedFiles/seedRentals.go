@@ -54,7 +54,7 @@ func main() {
 }		
 // Loop through the data and insert into the rentals table
 for _, rental := range rentals {
-	insertQuery := "INSERT INTO rentals (name, location_id, bedrooms, bathrooms) VALUES (?, ?, ?, ?)"
+	insertQuery := "INSERT INTO rental (name, location_id, bedrooms, bathrooms) VALUES (?, ?, ?, ?)"
 	result, err := db.Exec(insertQuery, rental.Name, rental.LocationID, rental.Bedrooms, rental.Bathrooms)
 	if err != nil {
 		log.Fatal(err)
@@ -70,7 +70,7 @@ fmt.Println("Data inserted into rentals table successfully.")
 	//Read from the rentals table
 
 	//read from rentals table
-	rows, err := db.Query("SELECT * FROM rentals")
+	rows, err := db.Query("SELECT * FROM rental")
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
 	}
