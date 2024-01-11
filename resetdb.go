@@ -16,7 +16,7 @@ import (
 func main() {
 
 	//SQL CREATE TABLES
-	dropTables := "DROP TABLE IF EXISTS rentals, rental_timeblock, locations, rental_unit_default_settings, rental_unit_variable_settings, rental_photos, photos, users, booking_statuses, bookings, booking_details, rental_booking, rental_booking_costs, booking_payment, booking_cost_types, booking_cost_items, boats, boat_timeblock, boat_photos, refund_statuses, refund_requests"
+	dropTables := "DROP TABLE IF EXISTS rentals, rental_timeblock, locations, rental_unit_default_settings, rental_unit_variable_settings, rental_photos, photos, users, booking_statuses,boat_booking,boat_booking_costs, bookings, booking_details, rental_booking, rental_booking_costs, booking_payment, booking_cost_types, booking_cost_items, boats, boat_timeblock, boat_photos, refund_statuses, refund_requests, rental_status"
 
     // Load connection string from .env file
     err := godotenv.Load()
