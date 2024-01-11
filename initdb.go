@@ -18,10 +18,17 @@ func main() {
 
 	//Rentals
 	rentalsCreate := "CREATE TABLE IF NOT EXISTS rentals (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, location_id INT NOT NULL, bedrooms INT NOT NULL, bathrooms INT NOT NULL, PRIMARY KEY (id), KEY location_id (location_id))"
-	rentalTimeblockCreate := "CREATE TABLE IF NOT EXISTS rental_timeblock (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id))"
+	rentalTimeblockCreate := "CREATE TABLE IF NOT EXISTS rental_timeblock (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, rental_booking_id INT, PRIMARY KEY (id), KEY rental_id (rental_id), KEY rental_booking_id (rental_booking_id))"
 	rentalUnitDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS rental_unit_default_settings (id INT NOT NULL AUTO_INCREMENT, rental_unit_id INT NOT NULL UNIQUE, nightly_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, allows_pets BOOLEAN NOT NULL, cleaning_fee DECIMAL(10, 2) NOT NULL, check_in_time TIME NOT NULL, check_out_time TIME NOT NULL, PRIMARY KEY (id))"
 	rentalUnitVariableSettingsCreate := "CREATE TABLE IF NOT EXISTS rental_unit_variable_settings (id INT NOT NULL AUTO_INCREMENT, rental_unit_id INT NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, minimum_booking_duration INT NOT NULL, nightly_cost DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY rental_unit_id (rental_unit_id))"
 	rentalPhotosCreate := "CREATE TABLE IF NOT EXISTS rental_photos (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, photo_id INT NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY photo_id (photo_id))"
+
+
+	//Boats
+	boatsCreate := "CREATE TABLE IF NOT EXISTS boats (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, location_id INT NOT NULL, occupancy INT NOT NULL, max_weight INT NOT NULL, PRIMARY KEY (id), KEY location_id (location_id))"
+	boatTimeblockCreate := "CREATE TABLE IF NOT EXISTS boat_timeblock (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, boat_booking_id INT, PRIMARY KEY (id), KEY boat_id (boat_id), KEY boat_booking_id (boat_booking_id))"
+	boatPhotosCreate := "CREATE TABLE IF NOT EXISTS boat_photos (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, photo_id INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id), KEY photo_id (photo_id))"
+
 
 	//Photos
 	photosCreate := "CREATE TABLE IF NOT EXISTS photos (id INT NOT NULL AUTO_INCREMENT, url VARCHAR(255) NOT NULL, PRIMARY KEY (id))"
@@ -40,9 +47,11 @@ func main() {
 	bookingDetailsCreate := "CREATE TABLE IF NOT EXISTS booking_details (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL UNIQUE, payment_complete BOOLEAN NOT NULL, payment_due_date DATE NOT NULL, documents_signed BOOLEAN NOT NULL, PRIMARY KEY (id))"
 	rentalBookingCreate := "CREATE TABLE IF NOT EXISTS rental_booking (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, booking_id INT NOT NULL, rental_time_block_id INT NOT NULL, booking_status_id INT NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY booking_id (booking_id), KEY rental_time_block_id (rental_time_block_id), KEY booking_status_id (booking_status_id))"
 	rentalBookingCostsCreate := "CREATE TABLE IF NOT EXISTS rental_booking_costs (id INT NOT NULL AUTO_INCREMENT, rental_booking_id INT NOT NULL, booking_cost_items_id INT NOT NULL, PRIMARY KEY (id), KEY rental_booking_id (rental_booking_id), KEY booking_cost_items_id (booking_cost_items_id))"
+	boatBookingCreate := "CREATE TABLE IF NOT EXISTS boat_booking (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, booking_id INT NOT NULL, boat_time_block_id INT NOT NULL, booking_status_id INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id), KEY booking_id (booking_id), KEY boat_time_block_id (boat_time_block_id), KEY booking_status_id (booking_status_id))"
+	boatBookingCostsCreate := "CREATE TABLE IF NOT EXISTS boat_booking_costs (id INT NOT NULL AUTO_INCREMENT, boat_booking_id INT NOT NULL, booking_cost_items_id INT NOT NULL, PRIMARY KEY (id), KEY boat_booking_id (boat_booking_id), KEY booking_cost_items_id (booking_cost_items_id))"
+
 	bookingPaymentCreate := "CREATE TABLE IF NOT EXISTS booking_payment (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, payment_amount DECIMAL(10, 2) NOT NULL, paypal_order_id INT,cash_payment BOOLEAN NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id))"
 	
-
 
 	bookingCostTypesCreate := "CREATE TABLE IF NOT EXISTS booking_cost_types (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 	bookingCostItemsCreate := "CREATE TABLE IF NOT EXISTS booking_cost_items (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, booking_cost_type_id INT NOT NULL, ammount DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY booking_cost_type_id (booking_cost_type_id))"
@@ -113,6 +122,27 @@ func main() {
 		log.Fatalf("failed to create rental_photos table: %v", err)
 	}
 
+	// Boats
+	_, err = db.Exec(boatsCreate)
+	if err != nil {
+		log.Fatalf("failed to create boats table: %v", err)
+	}
+
+	// Boat Timeblocks
+	_, err = db.Exec(boatTimeblockCreate)
+	if err != nil {
+		log.Fatalf("failed to create boat_timeblock table: %v", err)
+	}
+
+	// Boat Photos
+	_, err = db.Exec(boatPhotosCreate)
+	if err != nil {
+		log.Fatalf("failed to create boat_photos table: %v", err)
+	}
+
+
+
+
 	// Locations
 	_, err = db.Exec(locationsCreate)
 	if err != nil {
@@ -154,6 +184,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create rental_booking_costs table: %v", err)
 	}
+
+	//Boat Booking
+	_, err = db.Exec(boatBookingCreate)
+	if err != nil {
+		log.Fatalf("failed to create boat_booking table: %v", err)
+	}
+
+	//Boat Booking Costs
+	_, err = db.Exec(boatBookingCostsCreate)
+	if err != nil {
+		log.Fatalf("failed to create boat_booking_costs table: %v", err)
+	}
+
 
 	//Booking Cost Types
 	_, err = db.Exec(bookingCostTypesCreate)
