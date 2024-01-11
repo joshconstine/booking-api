@@ -35,18 +35,18 @@ func main() {
 
 	
 	//Eagle River
-	_, err = db.Exec("INSERT INTO locations ( name) VALUES ( 'Eagle River')")
+	_, err = db.Exec("INSERT INTO location ( name) VALUES ( 'Eagle River')")
 	if err != nil {
-		log.Fatalf("failed to seed locations table: %v", err)
+		log.Fatalf("failed to seed location table: %v", err)
 	}
 	//St Germain
-	_, err = db.Exec("INSERT INTO locations (name) VALUES ( 'St Germain')")
+	_, err = db.Exec("INSERT INTO location (name) VALUES ( 'St Germain')")
 	if err != nil {
-		log.Fatalf("failed to seed locations table: %v", err)
+		log.Fatalf("failed to seed location table: %v", err)
 	}
 	
-	//read from locations table
-	rows, err := db.Query("SELECT * FROM locations")
+	//read from location table
+	rows, err := db.Query("SELECT * FROM location")
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
 	}

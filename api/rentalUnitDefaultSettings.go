@@ -27,19 +27,13 @@ func GetSettingsForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	// Get the rental ID from the request URL.
-	// We're using the gorilla/mux package to get the ID.
-	//
-	// For example, if the request URL is "/rentals/1",
-
-	//get settinsforRental join location name from lcoation table
-
 	rows, err := db.Query("SELECT rental_unit_default_settings.id, rental_unit_default_settings.rental_unit_id, rental_unit_default_settings.nightly_cost, rental_unit_default_settings.minimum_booking_duration, rental_unit_default_settings.allows_pets, rental_unit_default_settings.cleaning_fee, rental_unit_default_settings.check_in_time, rental_unit_default_settings.check_out_time FROM rental_unit_default_settings JOIN rentals ON rental_unit_default_settings.rental_unit_id = rentals.id WHERE rentals.id = ?", id)
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
 	}
 	defer rows.Close()
 
+	
 	// Create a slice of rentals to hold the data.
 	var settings []RentalUnitDefaultSettings
 

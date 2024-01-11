@@ -59,7 +59,7 @@ func GetRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	//get rental join location name from lcoation table
 
-	rows, err := db.Query("SELECT rentals.id, rentals.name, locations.name, rentals.location_id, rentals.bathrooms, rentals.bedrooms FROM rentals JOIN locations ON rentals.location_id = locations.id WHERE rentals.id = ?", id)
+	rows, err := db.Query("SELECT rentals.id, rentals.name, location.name, rentals.location_id, rentals.bathrooms, rentals.bedrooms FROM rentals JOIN location ON rentals.location_id = location.id WHERE rentals.id = ?", id)
 
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
