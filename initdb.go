@@ -43,10 +43,10 @@ func main() {
 	//Bookings
 	bookingStatusCreate := "CREATE TABLE IF NOT EXISTS booking_status (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 	bookingCreate := "CREATE TABLE IF NOT EXISTS booking (id INT NOT NULL AUTO_INCREMENT, user_id INT NOT NULL, booking_status_id INT NOT NULL, booking_details_id INT NOT NULL, PRIMARY KEY (id), KEY user_id (user_id), KEY booking_status_id (booking_status_id), KEY booking_details_id (booking_details_id))"
-	bookingDetailsCreate := "CREATE TABLE IF NOT EXISTS booking_details (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL UNIQUE, payment_complete BOOLEAN NOT NULL, payment_due_date DATE NOT NULL, documents_signed BOOLEAN NOT NULL, PRIMARY KEY (id))"
+	bookingDetailsCreate := "CREATE TABLE IF NOT EXISTS booking_details (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL UNIQUE, payment_complete BOOLEAN NOT NULL, payment_due_date DATE NOT NULL, documents_signed BOOLEAN NOT NULL, booking_start_date DATETIME NOT NULL, PRIMARY KEY (id))"
 	rentalBookingCreate := "CREATE TABLE IF NOT EXISTS rental_booking (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, booking_id INT NOT NULL, rental_time_block_id INT NOT NULL, booking_status_id INT NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY booking_id (booking_id), KEY rental_time_block_id (rental_time_block_id), KEY booking_status_id (booking_status_id))"
 	rentalBookingCostCreate := "CREATE TABLE IF NOT EXISTS rental_booking_cost (id INT NOT NULL AUTO_INCREMENT, rental_booking_id INT NOT NULL, booking_cost_item_id INT NOT NULL, PRIMARY KEY (id), KEY rental_booking_id (rental_booking_id), KEY booking_cost_item_id (booking_cost_item_id))"
-	boatBookingCreate := "CREATE TABLE IF NOT EXISTS boat_booking (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, booking_id INT NOT NULL, boat_time_block_id INT NOT NULL, booking_status_id INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id), KEY booking_id (booking_id), KEY boat_time_block_id (boat_time_block_id), KEY booking_status_id (booking_status_id))"
+	boatBookingCreate := "CREATE TABLE IF NOT EXISTS boat_booking (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, booking_id INT NOT NULL, boat_time_block_id INT NOT NULL, booking_status_id INT NOT NULL, location_id INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id), KEY booking_id (booking_id), KEY boat_time_block_id (boat_time_block_id), KEY booking_status_id (booking_status_id), KEY location_id (location_id))"
 	boatBookingCostCreate := "CREATE TABLE IF NOT EXISTS boat_booking_cost (id INT NOT NULL AUTO_INCREMENT, boat_booking_id INT NOT NULL, booking_cost_item_id INT NOT NULL, PRIMARY KEY (id), KEY boat_booking_id (boat_booking_id), KEY booking_cost_item_id (booking_cost_item_id))"
 
 	bookingPaymentCreate := "CREATE TABLE IF NOT EXISTS booking_payment (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, payment_amount DECIMAL(10, 2) NOT NULL, paypal_order_id INT, payment_method_id INT NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY payment_method_id (payment_method_id))"
@@ -71,6 +71,23 @@ func main() {
 	alcoholCreate := "CREATE TABLE IF NOT EXISTS alcohol (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, alcohol_type_id INT NOT NULL, PRIMARY KEY (id), KEY alcohol_type_id (alcohol_type_id))"
 	alcoholQuantityCreate := "CREATE TABLE IF NOT EXISTS alcohol_quantity (id INT NOT NULL AUTO_INCREMENT, alcohol_id INT NOT NULL, alcohol_quantity_type_id INT NOT NULL, PRIMARY KEY (id), KEY alcohol_id (alcohol_id), KEY alcohol_quantity_type_id (alcohol_quantity_type_id))"
 
+
+	
+
+	//Events
+	venueCreate := "CREATE TABLE IF NOT EXISTS venue (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, location_id INT NOT NULL, PRIMARY KEY (id), KEY location_id (location_id))"
+	venuePhotoCreate := "CREATE TABLE IF NOT EXISTS venue_photo (id INT NOT NULL AUTO_INCREMENT, venue_id INT NOT NULL, photo_id INT NOT NULL, PRIMARY KEY (id), KEY venue_id (venue_id), KEY photo_id (photo_id))"
+	venueTimeblockCreate := "CREATE TABLE IF NOT EXISTS venue_timeblock (id INT NOT NULL AUTO_INCREMENT, venue_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, note VARCHAR(255), event_id INT, PRIMARY KEY (id), KEY venue_id (venue_id), KEY event_id (event_id))"
+
+	eventTypeCreate := "CREATE TABLE IF NOT EXISTS event_type (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
+	venueEventTypeCreate := "CREATE TABLE IF NOT EXISTS venue_event_type (id INT NOT NULL AUTO_INCREMENT, venue_id INT NOT NULL, event_type_id INT NOT NULL, PRIMARY KEY (id), KEY venue_id (venue_id), KEY event_type_id (event_type_id))"
+	venueEventTypeDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS venue_event_type_default_settings (id INT NOT NULL AUTO_INCREMENT, venue_event_type_id INT NOT NULL UNIQUE, hourly_rate DECIMAL(10, 2), minimum_booking_duration INT, flat_fee DECIMAL(10, 2), earliest_booking_time TIME NOT NULL, latest_booking_time TIME NOT NULL, PRIMARY KEY (id))"
+
+
+	eventCreate := "CREATE TABLE IF NOT EXISTS event (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255), event_type_id INT NOT NULL, booking_id INT NOT NULL, PRIMARY KEY (id), KEY event_type_id (event_type_id), KEY booking_id (booking_id))"
+	eventVenueCreate := "CREATE TABLE IF NOT EXISTS event_venue (id INT NOT NULL AUTO_INCREMENT, event_id INT NOT NULL, venue_timeblock_id INT NOT NULL, PRIMARY KEY (id), KEY event_id (event_id), KEY venue_timeblock_id (venue_timeblock_id))"
+	eventDetailsCreate := "CREATE TABLE IF NOT EXISTS event_details (id INT NOT NULL AUTO_INCREMENT, event_id INT NOT NULL UNIQUE, open_bar_requested BOOLEAN NOT NULL, alcohol_minimum DECIMAL(10, 2), guests INT NOT NULL, event_start_time DATETIME NOT NULL, notes VARCHAR(255), PRIMARY KEY (id))"
+	eventBookingCostCreate := "CREATE TABLE IF NOT EXISTS event_booking_cost (id INT NOT NULL AUTO_INCREMENT, event_id INT NOT NULL, booking_cost_item_id INT NOT NULL, PRIMARY KEY (id), KEY event_id (event_id), KEY booking_cost_item_id (booking_cost_item_id))"
 
     // Load connection string from .env file
     err := godotenv.Load()
@@ -304,6 +321,71 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create alcohol_order_booking_cost table: %v", err)
 	}
+
+
+	//Events
+	_, err = db.Exec(venueCreate)
+	if err != nil {
+		log.Fatalf("failed to create venue table: %v", err)
+	}
+
+	//Venue Photo
+	_, err = db.Exec(venuePhotoCreate)
+	if err != nil {
+		log.Fatalf("failed to create venue_photo table: %v", err)
+	}
+
+	//Venue Timeblock
+	_, err = db.Exec(venueTimeblockCreate)	
+	if err != nil {
+		log.Fatalf("failed to create venue_timeblock table: %v", err)
+	}
+
+	//Event Type
+	_, err = db.Exec(eventTypeCreate)
+	if err != nil {
+		log.Fatalf("failed to create event_type table: %v", err)
+
+	}
+
+	//Venue Event Type
+	_, err = db.Exec(venueEventTypeCreate)
+	if err != nil {
+		log.Fatalf("failed to create venue_event_type table: %v", err)
+	}
+
+	//Venue Event Type Default Settings
+	_, err = db.Exec(venueEventTypeDefaultSettingsCreate)
+	if err != nil {
+		log.Fatalf("failed to create venue_event_type_default_settings table: %v", err)
+	}
+
+
+	//Event
+	_, err = db.Exec(eventCreate)
+	if err != nil {
+		log.Fatalf("failed to create event table: %v", err)
+	}
+
+	//Event Venue
+	_, err = db.Exec(eventVenueCreate)
+	if err != nil {
+		log.Fatalf("failed to create event_venue table: %v", err)
+	}
+
+	//Event Details
+	_, err = db.Exec(eventDetailsCreate)
+	if err != nil {
+		log.Fatalf("failed to create event_details table: %v", err)
+	}
+
+	//Event Booking Cost
+	_, err = db.Exec(eventBookingCostCreate)
+	if err != nil {
+		log.Fatalf("failed to create event_booking_cost table: %v", err)
+	}
+
+
 
 
 
