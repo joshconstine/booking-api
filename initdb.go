@@ -31,14 +31,11 @@ func main() {
 	boatStatusCreate := "CREATE TABLE IF NOT EXISTS boat_status (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, is_clean BOOLEAN, lowFuel BOOLEAN, current_location_id INT NOT NULL, PRIMARY KEY (id), KEY current_location_id (current_location_id))"
 	boatDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS boat_default_settings (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, daily_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, advertist_all_locations BOOLEAN NOT NULL, PRIMARY KEY (id))"
 
-
 	//Photos
 	photosCreate := "CREATE TABLE IF NOT EXISTS photos (id INT NOT NULL AUTO_INCREMENT, url VARCHAR(255) NOT NULL, PRIMARY KEY (id))"
 
 	//Users
 	usersCreate := "CREATE TABLE IF NOT EXISTS users (id INT NOT NULL AUTO_INCREMENT, email VARCHAR(255) NOT NULL, firstName VARCHAR(255) NOT NULL, lastName VARCHAR(255) NOT NULL, phoneNumber VARCHAR(15) NOT NULL, PRIMARY KEY (id))"
-
-
 
 	//Locations
 	locationsCreate := "CREATE TABLE IF NOT EXISTS locations (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
@@ -63,6 +60,12 @@ func main() {
 	refundStatusesCreate := "CREATE TABLE IF NOT EXISTS refund_statuses (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 	refundRequestsCreate := "CREATE TABLE IF NOT EXISTS refund_requests (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, refund_status_id INT NOT NULL, refund_amount DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY refund_status_id (refund_status_id))"
 
+
+	//Alcohol
+	alcoholTypesCreate := "CREATE TABLE IF NOT EXISTS alcohol_types (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
+	alcoholQuantityTypesCreate := "CREATE TABLE IF NOT EXISTS alcohol_quantity_types (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
+	alcoholCreate := "CREATE TABLE IF NOT EXISTS alcohol (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, alcohol_type_id INT NOT NULL, PRIMARY KEY (id), KEY alcohol_type_id (alcohol_type_id))"
+	alcoholQuantityCreate := "CREATE TABLE IF NOT EXISTS alcohol_quantity (id INT NOT NULL AUTO_INCREMENT, alcohol_id INT NOT NULL, alcohol_quantity_type_id INT NOT NULL, PRIMARY KEY (id), KEY alcohol_id (alcohol_id), KEY alcohol_quantity_type_id (alcohol_quantity_type_id))"
 
 
     // Load connection string from .env file
@@ -235,7 +238,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create payment_method table: %v", err)
 	}
-	
+
 
 	//Booking Payment
 	_, err = db.Exec(bookingPaymentCreate)
@@ -253,6 +256,30 @@ func main() {
 	_, err = db.Exec(refundRequestsCreate)
 	if err != nil {
 		log.Fatalf("failed to create refund_requests table: %v", err)
+	}
+
+	//Alcohol Types
+	_, err = db.Exec(alcoholTypesCreate)
+	if err != nil {
+		log.Fatalf("failed to create alcohol_types table: %v", err)
+	}
+
+	//Alcohol Quantity Types
+	_, err = db.Exec(alcoholQuantityTypesCreate)
+	if err != nil {
+		log.Fatalf("failed to create alcohol_quantity_types table: %v", err)
+	}
+
+	//Alcohol
+	_, err = db.Exec(alcoholCreate)
+	if err != nil {
+		log.Fatalf("failed to create alcohol table: %v", err)
+	}
+
+	//Alcohol Quantity
+	_, err = db.Exec(alcoholQuantityCreate)
+	if err != nil {
+		log.Fatalf("failed to create alcohol_quantity table: %v", err)
 	}
 
 
