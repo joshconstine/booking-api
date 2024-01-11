@@ -28,7 +28,9 @@ func main() {
 	boatsCreate := "CREATE TABLE IF NOT EXISTS boats (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, location_id INT NOT NULL, occupancy INT NOT NULL, max_weight INT NOT NULL, PRIMARY KEY (id), KEY location_id (location_id))"
 	boatTimeblockCreate := "CREATE TABLE IF NOT EXISTS boat_timeblock (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, boat_booking_id INT, PRIMARY KEY (id), KEY boat_id (boat_id), KEY boat_booking_id (boat_booking_id))"
 	boatPhotosCreate := "CREATE TABLE IF NOT EXISTS boat_photos (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, photo_id INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id), KEY photo_id (photo_id))"
-	boatStatusCreate := "CREATE TABLE IF NOT EXISTS boat_status (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, is_clean BOOLEAN, lowFuel BOOLEAN, current_location_id VARCHAR(255), PRIMARY KEY (id))"
+	boatStatusCreate := "CREATE TABLE IF NOT EXISTS boat_status (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, is_clean BOOLEAN, lowFuel BOOLEAN, current_location_id INT NOT NULL, PRIMARY KEY (id), KEY current_location_id (current_location_id))"
+	boatDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS boat_default_settings (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, daily_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, advertist_all_locations BOOLEAN NOT NULL, PRIMARY KEY (id))"
+
 
 	//Photos
 	photosCreate := "CREATE TABLE IF NOT EXISTS photos (id INT NOT NULL AUTO_INCREMENT, url VARCHAR(255) NOT NULL, PRIMARY KEY (id))"
@@ -50,8 +52,8 @@ func main() {
 	boatBookingCreate := "CREATE TABLE IF NOT EXISTS boat_booking (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, booking_id INT NOT NULL, boat_time_block_id INT NOT NULL, booking_status_id INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id), KEY booking_id (booking_id), KEY boat_time_block_id (boat_time_block_id), KEY booking_status_id (booking_status_id))"
 	boatBookingCostsCreate := "CREATE TABLE IF NOT EXISTS boat_booking_costs (id INT NOT NULL AUTO_INCREMENT, boat_booking_id INT NOT NULL, booking_cost_items_id INT NOT NULL, PRIMARY KEY (id), KEY boat_booking_id (boat_booking_id), KEY booking_cost_items_id (booking_cost_items_id))"
 
-	bookingPaymentCreate := "CREATE TABLE IF NOT EXISTS booking_payment (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, payment_amount DECIMAL(10, 2) NOT NULL, paypal_order_id INT,cash_payment BOOLEAN NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id))"
-	
+	bookingPaymentCreate := "CREATE TABLE IF NOT EXISTS booking_payment (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, payment_amount DECIMAL(10, 2) NOT NULL, paypal_order_id INT, payment_method_id INT NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY payment_method_id (payment_method_id))"
+	paymentMethodCreate := "CREATE TABLE IF NOT EXISTS payment_method (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 
 	bookingCostTypesCreate := "CREATE TABLE IF NOT EXISTS booking_cost_types (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 	bookingCostItemsCreate := "CREATE TABLE IF NOT EXISTS booking_cost_items (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, booking_cost_type_id INT NOT NULL, ammount DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY booking_cost_type_id (booking_cost_type_id))"
@@ -145,6 +147,13 @@ func main() {
 		log.Fatalf("failed to create boat_status table: %v", err)
 	}
 
+	// Boat Default Settings
+	_, err = db.Exec(boatDefaultSettingsCreate)
+	if err != nil {
+		log.Fatalf("failed to create boat_default_settings table: %v", err)
+	}
+
+
 	// Boat Photos
 	_, err = db.Exec(boatPhotosCreate)
 	if err != nil {
@@ -220,6 +229,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create booking_cost_items table: %v", err)
 	}
+
+	//Payment Method
+	_, err = db.Exec(paymentMethodCreate)
+	if err != nil {
+		log.Fatalf("failed to create payment_method table: %v", err)
+	}
+	
 
 	//Booking Payment
 	_, err = db.Exec(bookingPaymentCreate)
