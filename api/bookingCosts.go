@@ -46,7 +46,7 @@ func CreateBookingCostType(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	_, err := db.Exec("INSERT INTO booking_cost_type (name) VALUES (?)", bookingCostType.Name)
 	if err != nil {
 		// Check if the error is a duplicate entry error
-		if isDuplicateKeyError(err) {
+		if IsDuplicateKeyError(err) {
 			// Handle duplicate entry error
 			w.WriteHeader(http.StatusConflict) // HTTP 409 Conflict
 			w.Write([]byte("Duplicate entry: The booking cost type already exists."))
@@ -63,7 +63,7 @@ func CreateBookingCostType(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 }
 
 // Function to check if the error is a duplicate key error
-func isDuplicateKeyError(err error) bool {
+func IsDuplicateKeyError(err error) bool {
 	if mysqlErr, ok := err.(*mysql.MySQLError); ok && mysqlErr.Number == 1062 {
 		return true
 	}

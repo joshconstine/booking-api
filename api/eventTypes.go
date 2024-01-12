@@ -36,3 +36,33 @@ func GetEventTypes(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	json.NewEncoder(w).Encode(eventTypes)
 
 }
+
+func CreateEventType(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	var eventType EventType
+	json.NewDecoder(r.Body).Decode(&eventType)
+
+	// Insert the data into the database.
+	_, err := db.Exec("INSERT INTO event_type (name) VALUES (?)", eventType.Name)
+
+	//checkfor Duplicate entry
+	if err != nil {
+		// Check if the error is a duplicate entry error
+		if IsDuplicateKeyError(err) {
+			// Handle duplicate entry error
+			w.WriteHeader(http.StatusConflict) // HTTP 409 Conflict
+			w.Write([]byte("Duplicate entry: The booking cost type already exists."))
+		} else {
+			// Handle other errors
+			log.Printf("failed to insert: %v", err)
+			w.WriteHeader(http.StatusInternalServerError) // HTTP 500 Internal Server Error
+			w.Write([]byte("Internal Server Error"))
+		}
+		return
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(eventType)
+
+}

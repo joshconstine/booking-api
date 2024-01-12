@@ -101,6 +101,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetEventTypes(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/eventTypes", func(w http.ResponseWriter, r *http.Request) {
+		CreateEventType(w, r, db)
+	}).Methods("POST")
+
 	//venues
 	r.HandleFunc("/venues", func(w http.ResponseWriter, r *http.Request) {
 		GetVenues(w, r, db)
