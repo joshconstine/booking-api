@@ -126,4 +126,9 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetVenueEventTypes(w, r, db)
 	}).Methods("GET")
 
+	//Venue Event Type Default Settings
+	r.HandleFunc("/venueEventTypes/{id}/defaultSettings", func(w http.ResponseWriter, r *http.Request) {
+		GetDefaultSettingsForVenueEventType(w, r, db)
+	}).Methods("GET")
+
 }
