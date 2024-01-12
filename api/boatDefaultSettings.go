@@ -31,14 +31,13 @@ func GetDefaultSettingsForBoat(w http.ResponseWriter, r *http.Request, db *sql.D
 
 	defer rows.Close()
 
-	var defaultSettings []BoatDefaultSettings
+	var defaultSettings BoatDefaultSettings
 
-	for rows.Next() {
-		var defaultSetting BoatDefaultSettings
-		if err := rows.Scan(&defaultSetting.ID, &defaultSetting.BoatId, &defaultSetting.DailyCost, &defaultSetting.MinimunBookingDuration, &defaultSetting.AdvertiseAtAllLocations, &defaultSetting.fileId); err != nil {
-			log.Fatalf("failed to scan row: %v", err)
+	if rows.Next() {
+		err := rows.Scan(&defaultSettings.ID, &defaultSettings.BoatId, &defaultSettings.DailyCost, &defaultSettings.MinimunBookingDuration, &defaultSettings.AdvertiseAtAllLocations, &defaultSettings.fileId)
+		if err != nil {
+			log.Fatalf("failed to scan: %v", err)
 		}
-		defaultSettings = append(defaultSettings, defaultSetting)
 	}
 
 	// Return the data as JSON.

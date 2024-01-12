@@ -30,18 +30,17 @@ func GetStatusForBoat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	defer rows.Close()
 
-	var status []BoatStatus
+	var boatStatus BoatStatus
 
-	for rows.Next() {
-		var boatStatus BoatStatus
-		if err := rows.Scan(&boatStatus.ID, &boatStatus.BoatId, &boatStatus.IsClean, &boatStatus.LowFuel, &boatStatus.CurrentLocationID); err != nil {
-			log.Fatalf("failed to scan row: %v", err)
+	if rows.Next() {
+		err := rows.Scan(&boatStatus.ID, &boatStatus.BoatId, &boatStatus.IsClean, &boatStatus.LowFuel, &boatStatus.CurrentLocationID)
+		if err != nil {
+			log.Fatalf("failed to scan: %v", err)
 		}
-		status = append(status, boatStatus)
 	}
 
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(status)
+	json.NewEncoder(w).Encode(boatStatus)
 
 }
