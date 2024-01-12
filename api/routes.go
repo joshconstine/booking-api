@@ -21,8 +21,13 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 	}).Methods("GET")
 
 	r.HandleFunc("/rentals/{id}/defaultSettings", func(w http.ResponseWriter, r *http.Request) {
-		GetSettingsForRental(w, r, db)
+		GetDefaultSettingsForRental(w, r, db)
 	}).Methods("GET")
+
+	r.HandleFunc("/rentals/{id}/defaultSettings", func(w http.ResponseWriter, r *http.Request) {
+		UpdateDefaultSettingsForRental(w, r, db)
+	}).Methods("PUT")
+
 	r.HandleFunc("/rentals/{id}/timeblocks", func(w http.ResponseWriter, r *http.Request) {
 		GetRentalTimeblocks(w, r, db)
 	}).Methods("GET")

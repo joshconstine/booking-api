@@ -21,7 +21,7 @@ type RentalUnitDefaultSettings struct {
 	FileID                 int
 }
 
-func GetSettingsForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func GetDefaultSettingsForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
@@ -52,6 +52,40 @@ func GetSettingsForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		if err != nil {
 			log.Fatalf("failed to scan: %v", err)
 		}
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(rentalUnitDefualtSetting)
+}
+func UpdateDefaultSettingsForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	// Create a single instance of RentalUnitDefaultSettings.
+	var rentalUnitDefualtSetting RentalUnitDefaultSettings
+
+	// Decode the JSON data sent by the client.
+	err := json.NewDecoder(r.Body).Decode(&rentalUnitDefualtSetting)
+	if err != nil {
+		log.Fatalf("failed to decode: %v", err)
+	}
+
+	// Update the database only for values that where passed in teh json.
+
+	query := "UPDATE rental_unit_default_settings SET nightly_cost = ?, minimum_booking_duration = ?, allows_pets = ?, cleaning_fee = ?, check_in_time = ?, check_out_time = ?, file_id = ? WHERE rental_id = ?"
+	_, err = db.Exec(query,
+		rentalUnitDefualtSetting.NightlyCost,
+		rentalUnitDefualtSetting.MinimumBookingDuration,
+		rentalUnitDefualtSetting.AllowsPets,
+		rentalUnitDefualtSetting.CleaningFee,
+		rentalUnitDefualtSetting.CheckInTime,
+		rentalUnitDefualtSetting.CheckOutTime,
+		rentalUnitDefualtSetting.FileID,
+		id,
+	)
+	if err != nil {
+		log.Fatalf("failed to update: %v", err)
 	}
 
 	// Return the data as JSON.
