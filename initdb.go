@@ -1,20 +1,17 @@
 package main
 
 import (
-    "database/sql"
-    "log"
-    "os"
+	"database/sql"
+	"log"
+	"os"
 
-    "github.com/joho/godotenv"
-     _ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
-
-
 
 func main() {
 
 	//SQL CREATE TABLES
-	
 
 	//Rentals
 	rentalCreate := "CREATE TABLE IF NOT EXISTS rental (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, location_id INT NOT NULL, bedrooms INT NOT NULL, bathrooms INT NOT NULL, PRIMARY KEY (id), KEY location_id (location_id))"
@@ -57,7 +54,7 @@ func main() {
 
 	alcoholOrderCreate := "CREATE TABLE IF NOT EXISTS alcohol_order (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, PRIMARY KEY (id))"
 	alcoholOrderItemCreate := "CREATE TABLE IF NOT EXISTS alcohol_order_item (id INT NOT NULL AUTO_INCREMENT, alcohol_order_id INT NOT NULL,alcohol_order_booking_cost_id INT NOT NULL,alcohol_quantity_id INT NOT NULL,quantity INT NOT NULL, PRIMARY KEY (id), KEY alcohol_order_id (alcohol_order_id), KEY alcohol_order_booking_cost_id (alcohol_order_booking_cost_id), KEY alcohol_quantity_id (alcohol_quantity_id))"
-	alcoholOrderBookingCost :=  "CREATE TABLE IF NOT EXISTS alcohol_order_booking_cost (id INT NOT NULL AUTO_INCREMENT, alcohol_order_id INT NOT NULL,alcohol_order_item_id INT NOT NULL, booking_cost_item_id INT NOT NULL,quantity INT NOT NULL, PRIMARY KEY (id), KEY alcohol_order_id (alcohol_order_id), KEY alcohol_order_item_id (alcohol_order_item_id),  KEY booking_cost_item_id (booking_cost_item_id))"
+	alcoholOrderBookingCost := "CREATE TABLE IF NOT EXISTS alcohol_order_booking_cost (id INT NOT NULL AUTO_INCREMENT, alcohol_order_id INT NOT NULL,alcohol_order_item_id INT NOT NULL, booking_cost_item_id INT NOT NULL,quantity INT NOT NULL, PRIMARY KEY (id), KEY alcohol_order_id (alcohol_order_id), KEY alcohol_order_item_id (alcohol_order_item_id),  KEY booking_cost_item_id (booking_cost_item_id))"
 
 	bookingFileCreate := "CREATE TABLE IF NOT EXISTS booking_file (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, file_id INT NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY file_id (file_id))"
 
@@ -66,15 +63,11 @@ func main() {
 	refundStatusCreate := "CREATE TABLE IF NOT EXISTS refund_status (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 	refundRequestCreate := "CREATE TABLE IF NOT EXISTS refund_request (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, refund_status_id INT NOT NULL, refund_amount DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY refund_status_id (refund_status_id))"
 
-
 	//Alcohol
 	alcoholTypeCreate := "CREATE TABLE IF NOT EXISTS alcohol_type (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 	alcoholQuantityTypeCreate := "CREATE TABLE IF NOT EXISTS alcohol_quantity_type (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 	alcoholCreate := "CREATE TABLE IF NOT EXISTS alcohol (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, alcohol_type_id INT NOT NULL, PRIMARY KEY (id), KEY alcohol_type_id (alcohol_type_id))"
-	alcoholQuantityCreate := "CREATE TABLE IF NOT EXISTS alcohol_quantity (id INT NOT NULL AUTO_INCREMENT, alcohol_id INT NOT NULL, alcohol_quantity_type_id INT NOT NULL, PRIMARY KEY (id), KEY alcohol_id (alcohol_id), KEY alcohol_quantity_type_id (alcohol_quantity_type_id))"
-
-
-	
+	alcoholQuantityCreate := "CREATE TABLE IF NOT EXISTS alcohol_quantity (id INT NOT NULL AUTO_INCREMENT, alcohol_id INT NOT NULL, alcohol_quantity_type_id INT NOT NULL, price DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY alcohol_id (alcohol_id), KEY alcohol_quantity_type_id (alcohol_quantity_type_id))"
 
 	//Events
 	venueCreate := "CREATE TABLE IF NOT EXISTS venue (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, location_id INT NOT NULL, PRIMARY KEY (id), KEY location_id (location_id))"
@@ -85,46 +78,38 @@ func main() {
 	venueEventTypeCreate := "CREATE TABLE IF NOT EXISTS venue_event_type (id INT NOT NULL AUTO_INCREMENT, venue_id INT NOT NULL, event_type_id INT NOT NULL, PRIMARY KEY (id), KEY venue_id (venue_id), KEY event_type_id (event_type_id))"
 	venueEventTypeDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS venue_event_type_default_settings (id INT NOT NULL AUTO_INCREMENT, venue_event_type_id INT NOT NULL UNIQUE, hourly_rate DECIMAL(10, 2), minimum_booking_duration INT, flat_fee DECIMAL(10, 2), earliest_booking_time TIME NOT NULL, latest_booking_time TIME NOT NULL, PRIMARY KEY (id))"
 
-
 	eventCreate := "CREATE TABLE IF NOT EXISTS event (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255), event_type_id INT NOT NULL, booking_id INT NOT NULL, PRIMARY KEY (id), KEY event_type_id (event_type_id), KEY booking_id (booking_id))"
 	eventVenueCreate := "CREATE TABLE IF NOT EXISTS event_venue (id INT NOT NULL AUTO_INCREMENT, event_id INT NOT NULL, venue_timeblock_id INT NOT NULL, PRIMARY KEY (id), KEY event_id (event_id), KEY venue_timeblock_id (venue_timeblock_id))"
 	eventDetailsCreate := "CREATE TABLE IF NOT EXISTS event_details (id INT NOT NULL AUTO_INCREMENT, event_id INT NOT NULL UNIQUE, open_bar_requested BOOLEAN NOT NULL, alcohol_minimum DECIMAL(10, 2), guests INT NOT NULL, event_start_time DATETIME NOT NULL, notes VARCHAR(255), PRIMARY KEY (id))"
 	eventBookingCostCreate := "CREATE TABLE IF NOT EXISTS event_booking_cost (id INT NOT NULL AUTO_INCREMENT, event_id INT NOT NULL, booking_cost_item_id INT NOT NULL, PRIMARY KEY (id), KEY event_id (event_id), KEY booking_cost_item_id (booking_cost_item_id))"
 
-
 	//file
 	fileCreate := "CREATE TABLE IF NOT EXISTS file (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL, url VARCHAR(255) NOT NULL, PRIMARY KEY (id))"
 
+	// Load connection string from .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("failed to load env", err)
+	}
 
-
-
-
-    // Load connection string from .env file
-    err := godotenv.Load()
-    if err != nil {
-        log.Fatal("failed to load env", err)
-    }
-
-    // Open a connection to PlanetScale
-    db, err := sql.Open("mysql", os.Getenv("DSN"))
-    if err != nil {
-        log.Fatalf("failed to connect: %v", err)
-    }
+	// Open a connection to PlanetScale
+	db, err := sql.Open("mysql", os.Getenv("DSN"))
+	if err != nil {
+		log.Fatalf("failed to connect: %v", err)
+	}
 	log.Println("connected to PlanetScale")
-    
-    err = db.Ping()
 
-    if err != nil {
-        log.Fatalf("failed to ping: %v", err)
-    }
+	err = db.Ping()
 
+	if err != nil {
+		log.Fatalf("failed to ping: %v", err)
+	}
 
 	//Photo
 	_, err = db.Exec(photoCreate)
 	if err != nil {
 		log.Fatalf("failed to create photo table: %v", err)
 	}
-	
 
 	// Rentals
 
@@ -138,7 +123,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create rental_unit_status table: %v", err)
 	}
-
 
 	// Rental Settings
 	_, err = db.Exec(rentalTimeblockCreate)
@@ -187,22 +171,18 @@ func main() {
 		log.Fatalf("failed to create boat_default_settings table: %v", err)
 	}
 
-
 	// Boat Photo
 	_, err = db.Exec(boatPhotoCreate)
 	if err != nil {
 		log.Fatalf("failed to create boat_photo table: %v", err)
 	}
 
-
-
-
 	// Location
 	_, err = db.Exec(locationCreate)
 	if err != nil {
 		log.Fatalf("failed to create location table: %v", err)
 	}
-	
+
 	// User
 	_, err = db.Exec(userCreate)
 	if err != nil {
@@ -251,7 +231,6 @@ func main() {
 		log.Fatalf("failed to create boat_booking_cost table: %v", err)
 	}
 
-
 	//Booking Cost Type
 	_, err = db.Exec(bookingCostTypeCreate)
 	if err != nil {
@@ -269,7 +248,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create payment_method table: %v", err)
 	}
-
 
 	//Booking Payment
 	_, err = db.Exec(bookingPaymentCreate)
@@ -313,7 +291,6 @@ func main() {
 		log.Fatalf("failed to create alcohol_quantity table: %v", err)
 	}
 
-
 	//Alcohol Order
 	_, err = db.Exec(alcoholOrderCreate)
 	if err != nil {
@@ -332,7 +309,6 @@ func main() {
 		log.Fatalf("failed to create alcohol_order_booking_cost table: %v", err)
 	}
 
-
 	//Events
 	_, err = db.Exec(venueCreate)
 	if err != nil {
@@ -346,7 +322,7 @@ func main() {
 	}
 
 	//Venue Timeblock
-	_, err = db.Exec(venueTimeblockCreate)	
+	_, err = db.Exec(venueTimeblockCreate)
 	if err != nil {
 		log.Fatalf("failed to create venue_timeblock table: %v", err)
 	}
@@ -369,7 +345,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create venue_event_type_default_settings table: %v", err)
 	}
-
 
 	//Event
 	_, err = db.Exec(eventCreate)
@@ -395,7 +370,6 @@ func main() {
 		log.Fatalf("failed to create event_booking_cost table: %v", err)
 	}
 
-
 	//File
 	_, err = db.Exec(fileCreate)
 	if err != nil {
@@ -408,22 +382,18 @@ func main() {
 		log.Fatalf("failed to create booking_file table: %v", err)
 	}
 
+	rows, err := db.Query("SHOW TABLES")
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+	defer rows.Close()
 
-
-
-
-    rows, err := db.Query("SHOW TABLES")
-    if err != nil {
-        log.Fatalf("failed to query: %v", err)
-    }
-    defer rows.Close()
-
-    var tableName string
-    for rows.Next() {
-        if err := rows.Scan(&tableName); err != nil {
-            log.Fatalf("failed to scan row: %v", err)
-        }
-        log.Println(tableName)
+	var tableName string
+	for rows.Next() {
+		if err := rows.Scan(&tableName); err != nil {
+			log.Fatalf("failed to scan row: %v", err)
+		}
+		log.Println(tableName)
 		//describe each table
 		describe := "DESCRIBE " + tableName
 		rows2, err := db.Query(describe)
@@ -433,8 +403,7 @@ func main() {
 		}
 		defer rows2.Close()
 
-		
-    }
+	}
 
-    defer db.Close()
+	defer db.Close()
 }
