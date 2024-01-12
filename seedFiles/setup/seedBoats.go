@@ -11,11 +11,10 @@ import (
 )
 
 type Boat struct {
-	ID         int
-	Name       string
-	LocationID int
-	occupancy  int
-	maxWeight  int
+	ID        int
+	Name      string
+	occupancy int
+	maxWeight int
 }
 
 func main() {
@@ -39,16 +38,16 @@ func main() {
 	}
 
 	boats := []Boat{
-		{1, "22' Pontoon", 1, 10, 2000},
-		{2, "24' Pontoon", 1, 12, 2500},
-		{3, "23' Ski Boat", 1, 12, 2500},
-		{4, "28' Pontoon", 2, 8, 1800},
+		{1, "22' Pontoon", 10, 2000},
+		{2, "24' Pontoon", 12, 2500},
+		{3, "23' Ski Boat", 12, 2500},
+		{4, "28' Pontoon", 8, 1800},
 	}
 
 	// Loop through the data and insert into the boat table
 	for _, boat := range boats {
-		insertQuery := "INSERT INTO boat (name, location_id, occupancy, max_weight) VALUES (?, ?, ?, ?)"
-		_, err := db.Exec(insertQuery, boat.Name, boat.LocationID, boat.occupancy, boat.maxWeight)
+		insertQuery := "INSERT INTO boat (name, occupancy, max_weight) VALUES (?,  ?, ?)"
+		_, err := db.Exec(insertQuery, boat.Name, boat.occupancy, boat.maxWeight)
 		if err != nil {
 			log.Fatal(err)
 
@@ -65,11 +64,11 @@ func main() {
 	var boat Boat
 	// Loop through the data and print the results to the console
 	for rows.Next() {
-		err := rows.Scan(&boat.ID, &boat.Name, &boat.LocationID, &boat.occupancy, &boat.maxWeight)
+		err := rows.Scan(&boat.ID, &boat.Name, &boat.occupancy, &boat.maxWeight)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("ID: %d, Name: %s, LocationID: %d, Occupancy: %d, Max Weight: %d\n", boat.ID, boat.Name, boat.LocationID, boat.occupancy, boat.maxWeight)
+		fmt.Printf("ID: %d, Name: %s, Occupancy: %d, Max Weight: %d\n", boat.ID, boat.Name, boat.occupancy, boat.maxWeight)
 	}
 
 }

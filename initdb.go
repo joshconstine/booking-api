@@ -22,10 +22,10 @@ func main() {
 	rentalStatusCreate := "CREATE TABLE IF NOT EXISTS rental_status (id INT NOT NULL AUTO_INCREMENT, rental_unit_id INT NOT NULL UNIQUE, is_clean BOOLEAN, PRIMARY KEY (id))"
 
 	//Boats
-	boatCreate := "CREATE TABLE IF NOT EXISTS boat (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, location_id INT NOT NULL, occupancy INT NOT NULL, max_weight INT NOT NULL, PRIMARY KEY (id), KEY location_id (location_id))"
+	boatCreate := "CREATE TABLE IF NOT EXISTS boat (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, occupancy INT NOT NULL, max_weight INT NOT NULL, PRIMARY KEY (id))"
 	boatTimeblockCreate := "CREATE TABLE IF NOT EXISTS boat_timeblock (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, boat_booking_id INT, PRIMARY KEY (id), KEY boat_id (boat_id), KEY boat_booking_id (boat_booking_id))"
 	boatPhotoCreate := "CREATE TABLE IF NOT EXISTS boat_photo (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, photo_id INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id), KEY photo_id (photo_id))"
-	boatStatusCreate := "CREATE TABLE IF NOT EXISTS boat_status (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, is_clean BOOLEAN, lowFuel BOOLEAN, current_location_id INT NOT NULL, PRIMARY KEY (id), KEY current_location_id (current_location_id))"
+	boatStatusCreate := "CREATE TABLE IF NOT EXISTS boat_status (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, is_clean BOOLEAN, low_fuel BOOLEAN, current_location_id INT NOT NULL, PRIMARY KEY (id), KEY current_location_id (current_location_id))"
 	boatDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS boat_default_settings (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, daily_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, advertise_at_all_locations BOOLEAN NOT NULL, file_id INT NOT NULL, PRIMARY KEY (id), KEY file_id (file_id))"
 
 	//Photo
@@ -380,29 +380,6 @@ func main() {
 	_, err = db.Exec(bookingFileCreate)
 	if err != nil {
 		log.Fatalf("failed to create booking_file table: %v", err)
-	}
-
-	rows, err := db.Query("SHOW TABLES")
-	if err != nil {
-		log.Fatalf("failed to query: %v", err)
-	}
-	defer rows.Close()
-
-	var tableName string
-	for rows.Next() {
-		if err := rows.Scan(&tableName); err != nil {
-			log.Fatalf("failed to scan row: %v", err)
-		}
-		log.Println(tableName)
-		//describe each table
-		describe := "DESCRIBE " + tableName
-		rows2, err := db.Query(describe)
-		if err != nil {
-			log.Fatalf("failed to query: %v", err)
-
-		}
-		defer rows2.Close()
-
 	}
 
 	defer db.Close()

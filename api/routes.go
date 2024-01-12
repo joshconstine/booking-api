@@ -32,7 +32,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 
 	r.HandleFunc("/alcohol", func(w http.ResponseWriter, r *http.Request) {
 		GetAlcohol(w, r, db)
+	}).Methods("GET")
 
+	r.HandleFunc("/boats", func(w http.ResponseWriter, r *http.Request) {
+		GetBoats(w, r, db)
 	}).Methods("GET")
 
 }
