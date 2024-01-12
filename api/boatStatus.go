@@ -44,3 +44,29 @@ func GetStatusForBoat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	json.NewEncoder(w).Encode(boatStatus)
 
 }
+func UpdateStatusForBoat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	vars := mux.Vars(r)
+	boatID := vars["id"]
+
+	// Create a single instance of RentalUnitDefaultSettings.
+	var boatStatus BoatStatus
+
+	// Decode the JSON data.
+	err := json.NewDecoder(r.Body).Decode(&boatStatus)
+	if err != nil {
+		log.Fatalf("failed to decode: %v", err)
+	}
+
+	// Update the database.
+	updateQuery := "UPDATE boat_status SET is_clean = ?, low_fuel = ?, current_location_id = ? WHERE boat_id = ?"
+	_, err = db.Exec(updateQuery, boatStatus.IsClean, boatStatus.LowFuel, boatStatus.CurrentLocationID, boatID)
+	if err != nil {
+		log.Fatalf("failed to update: %v", err)
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(boatStatus)
+
+}
