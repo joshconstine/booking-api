@@ -99,4 +99,9 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetLocations(w, r, db)
 	}).Methods("GET")
 
+	//Payment Methods
+	r.HandleFunc("/paymentMethods", func(w http.ResponseWriter, r *http.Request) {
+		GetPaymentMethods(w, r, db)
+	}).Methods("GET")
+
 }
