@@ -12,7 +12,7 @@ import (
 
 type RentalUnitDefaultSettings struct {
 	ID                     int
-	RentalUnitID           int
+	RentalID               int
 	NightlyCost            float64
 	MinimumBookingDuration int
 	AllowsPets             bool
@@ -59,8 +59,8 @@ func main() {
 
 	// Loop through the data and insert into rental_unit_default_settings table
 	for _, settings := range defaultSettings {
-		insertQuery := "INSERT INTO rental_unit_default_settings (rental_unit_id, nightly_cost, minimum_booking_duration, allows_pets, cleaning_fee, check_in_time, check_out_time, file_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-		result, err := db.Exec(insertQuery, settings.RentalUnitID, settings.NightlyCost, settings.MinimumBookingDuration, settings.AllowsPets, settings.CleaningFee, settings.CheckInTime, settings.CheckOutTime, settings.FileID)
+		insertQuery := "INSERT INTO rental_unit_default_settings (rental_id, nightly_cost, minimum_booking_duration, allows_pets, cleaning_fee, check_in_time, check_out_time, file_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+		result, err := db.Exec(insertQuery, settings.RentalID, settings.NightlyCost, settings.MinimumBookingDuration, settings.AllowsPets, settings.CleaningFee, settings.CheckInTime, settings.CheckOutTime, settings.FileID)
 		if err != nil {
 			log.Fatal(err)
 		}

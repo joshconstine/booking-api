@@ -1,4 +1,3 @@
-
 package api
 
 import (
@@ -6,14 +5,15 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"github.com/gorilla/mux"
 
+	"github.com/gorilla/mux"
 )
+
 type RentalTimeblock struct {
-	ID int
-	RentalUnitID int
+	ID        int
+	RentalID  int
 	StartTime string
-	EndTime string
+	EndTime   string
 }
 
 func GetRentalTimeblocks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -26,14 +26,14 @@ func GetRentalTimeblocks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 
 	defer rows.Close()
-	
+
 	// Create a slice of rentals to hold the data.
 	var timeblocks []RentalTimeblock
 
 	// Loop through the data and insert into the rentals slice.
 	for rows.Next() {
 		var timeblock RentalTimeblock
-		if err := rows.Scan(&timeblock.ID, &timeblock.RentalUnitID, &timeblock.StartTime, &timeblock.EndTime); err != nil {
+		if err := rows.Scan(&timeblock.ID, &timeblock.RentalID, &timeblock.StartTime, &timeblock.EndTime); err != nil {
 			log.Fatalf("failed to scan row: %v", err)
 		}
 		timeblocks = append(timeblocks, timeblock)
@@ -63,7 +63,3 @@ func CreateRentalTimeblock(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	// Return a status code.
 	w.WriteHeader(http.StatusCreated)
 }
-
-
-
-

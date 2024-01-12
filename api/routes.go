@@ -31,6 +31,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		CreateRentalTimeblock(w, r, db)
 	}).Methods("POST")
 
+	r.HandleFunc("/rentals/{id}/status", func(w http.ResponseWriter, r *http.Request) {
+		GetStatusForRental(w, r, db)
+	}).Methods("GET")
+
 	//Boats
 	r.HandleFunc("/boats", func(w http.ResponseWriter, r *http.Request) {
 		GetBoats(w, r, db)
