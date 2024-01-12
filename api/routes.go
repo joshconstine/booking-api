@@ -121,4 +121,9 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetPaymentMethods(w, r, db)
 	}).Methods("GET")
 
+	//Venue Event Types
+	r.HandleFunc("/venueEventTypes", func(w http.ResponseWriter, r *http.Request) {
+		GetVenueEventTypes(w, r, db)
+	}).Methods("GET")
+
 }
