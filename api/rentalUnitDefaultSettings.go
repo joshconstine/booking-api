@@ -18,32 +18,48 @@ type RentalUnitDefaultSettings struct {
 	CleaningFee            float64
 	CheckInTime            string
 	CheckOutTime           string
+	FileID                 int
 }
 
 func GetSettingsForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	rows, err := db.Query("SELECT rental_unit_default_settings.id, rental_unit_default_settings.rental_id, rental_unit_default_settings.nightly_cost, rental_unit_default_settings.minimum_booking_duration, rental_unit_default_settings.allows_pets, rental_unit_default_settings.cleaning_fee, rental_unit_default_settings.check_in_time, rental_unit_default_settings.check_out_time FROM rental_unit_default_settings JOIN rentals ON rental_unit_default_settings.rental_id = rentals.id WHERE rentals.id = ?", id)
+	// Query the database for the default setting of the id.
+	query := "SELECT * FROM rental_unit_default_settings WHERE rental_id = ?"
+	rows, err := db.Query(query, id)
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
 	}
 	defer rows.Close()
 
-	// Create a slice of rentals to hold the data.
-	var settings []RentalUnitDefaultSettings
+	// Create a slice of RentalUnitDefaultSettings to hold the data.
+	rentalUnitDefualtSettings := []RentalUnitDefaultSettings{}
 
-	// Loop through the data and insert into the rentals slice.
+	// Loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
-		var setting RentalUnitDefaultSettings
-		if err := rows.Scan(&setting.ID, &setting.RentalID, &setting.NightlyCost, &setting.MinimumBookingDuration, &setting.AllowsPets, &setting.CleaningFee, &setting.CheckInTime, &setting.CheckOutTime); err != nil {
-			log.Fatalf("failed to scan row: %v", err)
+		var rentalUnitDefualtSetting RentalUnitDefaultSettings
+		err := rows.Scan(
+			&rentalUnitDefualtSetting.ID,
+			&rentalUnitDefualtSetting.RentalID,
+			&rentalUnitDefualtSetting.NightlyCost,
+			&rentalUnitDefualtSetting.MinimumBookingDuration,
+			&rentalUnitDefualtSetting.AllowsPets,
+			&rentalUnitDefualtSetting.CleaningFee,
+			&rentalUnitDefualtSetting.CheckInTime,
+			&rentalUnitDefualtSetting.CheckOutTime,
+			&rentalUnitDefualtSetting.FileID,
+		)
+		if err != nil {
+			log.Fatalf("failed to scan: %v", err)
 		}
-		settings = append(settings, setting)
+
+		// Append the struct to the slice.
+		rentalUnitDefualtSettings = append(rentalUnitDefualtSettings, rentalUnitDefualtSetting)
 	}
 
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(settings)
+	json.NewEncoder(w).Encode(rentalUnitDefualtSettings)
 
 }
