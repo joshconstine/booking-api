@@ -54,3 +54,28 @@ func GetDefaultSettingsForVenueEventType(w http.ResponseWriter, r *http.Request,
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(venueEventTypeDefaultSettings)
 }
+
+func UpdateDefaultSettingsForVenueEventType(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	// Create a single instance of VenueEventTypeDefaultSettings.
+	var venueEventTypeDefaultSettings VenueEventTypeDefaultSettings
+
+	// Decode the JSON data.
+	err := json.NewDecoder(r.Body).Decode(&venueEventTypeDefaultSettings)
+	if err != nil {
+		log.Fatalf("failed to decode: %v", err)
+	}
+
+	// Update the database.
+	query := "UPDATE venue_event_type_default_settings SET hourly_rate = ?, minimum_booking_duration = ?, flat_fee = ?, earliest_booking_time = ?, latest_booking_time = ? WHERE venue_event_type_id = ?"
+	_, err = db.Exec(query, venueEventTypeDefaultSettings.HourlyRate, venueEventTypeDefaultSettings.MinimumBookingDuration, venueEventTypeDefaultSettings.FlatFee, venueEventTypeDefaultSettings.EarliestBookingTime, venueEventTypeDefaultSettings.LatestBookingTime, id)
+	if err != nil {
+		log.Fatalf("failed to update: %v", err)
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(venueEventTypeDefaultSettings)
+}
