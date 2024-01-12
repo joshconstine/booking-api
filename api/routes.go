@@ -67,4 +67,14 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetAlcoholQuantityTypes(w, r, db)
 	}).Methods("GET")
 
+	//Event Types
+	r.HandleFunc("/eventTypes", func(w http.ResponseWriter, r *http.Request) {
+		GetEventTypes(w, r, db)
+	}).Methods("GET")
+
+	//venues
+	r.HandleFunc("/venues", func(w http.ResponseWriter, r *http.Request) {
+		GetVenues(w, r, db)
+	}).Methods("GET")
+
 }
