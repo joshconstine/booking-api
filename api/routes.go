@@ -49,6 +49,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetDefaultSettingsForBoat(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/boats/{id}/defaultSettings", func(w http.ResponseWriter, r *http.Request) {
+		UpdateDefaultSettingsForBoat(w, r, db)
+	}).Methods("PUT")
+
 	r.HandleFunc("/boats/{id}/status", func(w http.ResponseWriter, r *http.Request) {
 		GetStatusForBoat(w, r, db)
 	}).Methods("GET")

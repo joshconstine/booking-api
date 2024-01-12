@@ -45,3 +45,28 @@ func GetDefaultSettingsForBoat(w http.ResponseWriter, r *http.Request, db *sql.D
 	json.NewEncoder(w).Encode(defaultSettings)
 
 }
+func UpdateDefaultSettingsForBoat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	vars := mux.Vars(r)
+	boatID := vars["id"]
+
+	// Create a single instance of RentalUnitDefaultSettings.
+	var defaultSettings BoatDefaultSettings
+
+	// Decode the JSON data.
+	err := json.NewDecoder(r.Body).Decode(&defaultSettings)
+	if err != nil {
+		log.Fatalf("failed to decode: %v", err)
+	}
+
+	// Update the database.
+	query := "UPDATE boat_default_settings SET daily_cost = ?, minimum_booking_duration = ?, advertise_at_all_locations = ? WHERE boat_id = ?"
+	_, err = db.Exec(query, defaultSettings.DailyCost, defaultSettings.MinimunBookingDuration, defaultSettings.AdvertiseAtAllLocations, boatID)
+	if err != nil {
+		log.Fatalf("failed to update: %v", err)
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(defaultSettings)
+}
