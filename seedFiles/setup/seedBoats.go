@@ -71,4 +71,6 @@ func main() {
 		fmt.Printf("ID: %d, Name: %s, Occupancy: %d, Max Weight: %d\n", boat.ID, boat.Name, boat.occupancy, boat.maxWeight)
 	}
 
+	defer db.Close()
+
 }
