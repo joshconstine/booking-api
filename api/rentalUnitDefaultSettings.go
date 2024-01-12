@@ -33,12 +33,11 @@ func GetSettingsForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 	defer rows.Close()
 
-	// Create a slice of RentalUnitDefaultSettings to hold the data.
-	rentalUnitDefualtSettings := []RentalUnitDefaultSettings{}
+	// Create a single instance of RentalUnitDefaultSettings.
+	var rentalUnitDefualtSetting RentalUnitDefaultSettings
 
-	// Loop through rows, using Scan to assign column data to struct fields.
-	for rows.Next() {
-		var rentalUnitDefualtSetting RentalUnitDefaultSettings
+	// Check if there is at least one row.
+	if rows.Next() {
 		err := rows.Scan(
 			&rentalUnitDefualtSetting.ID,
 			&rentalUnitDefualtSetting.RentalID,
@@ -53,13 +52,9 @@ func GetSettingsForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		if err != nil {
 			log.Fatalf("failed to scan: %v", err)
 		}
-
-		// Append the struct to the slice.
-		rentalUnitDefualtSettings = append(rentalUnitDefualtSettings, rentalUnitDefualtSetting)
 	}
 
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(rentalUnitDefualtSettings)
-
+	json.NewEncoder(w).Encode(rentalUnitDefualtSetting)
 }

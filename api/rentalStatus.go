@@ -16,30 +16,29 @@ type RentalStatus struct {
 }
 
 func GetStatusForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-
 	vars := mux.Vars(r)
-	rentalId := vars["id"]
+	rentalID := vars["id"]
 
-	rows, err := db.Query("SELECT * FROM rental_status WHERE rental_id = ?", rentalId)
-
+	// Query the database for the status of the rental.
+	query := "SELECT * FROM rental_status WHERE rental_id = ?"
+	rows, err := db.Query(query, rentalID)
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
 	}
-
 	defer rows.Close()
 
-	var rentalStatus []RentalStatus
+	// Create a single instance of RentalStatus.
+	var rentalStatus RentalStatus
 
-	for rows.Next() {
-		var status RentalStatus
-		if err := rows.Scan(&status.ID, &status.RentalID, &status.IsClean); err != nil {
-			log.Fatalf("failed to scan row: %v", err)
+	// Check if there is at least one row.
+	if rows.Next() {
+		err := rows.Scan(&rentalStatus.ID, &rentalStatus.RentalID, &rentalStatus.IsClean)
+		if err != nil {
+			log.Fatalf("failed to scan: %v", err)
 		}
-		rentalStatus = append(rentalStatus, status)
 	}
 
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(rentalStatus)
-
 }
