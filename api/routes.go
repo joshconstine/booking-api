@@ -94,4 +94,9 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		CreateBookingCostType(w, r, db)
 	}).Methods("POST")
 
+	//Locations
+	r.HandleFunc("/locations", func(w http.ResponseWriter, r *http.Request) {
+		GetLocations(w, r, db)
+	}).Methods("GET")
+
 }
