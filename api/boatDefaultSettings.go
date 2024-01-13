@@ -11,22 +11,19 @@ import (
 
 type BoatDefaultSettings struct {
 	ID                      int
-	BoatId                  int
+	BoatID                  int
 	DailyCost               float32
 	MinimunBookingDuration  int
 	AdvertiseAtAllLocations bool
-	fileId                  int
+	FileID                  int
 }
 
-func GetDefaultSettingsForBoat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func GetDefaultSettingsForBoatId(boatId string, db *sql.DB) (BoatDefaultSettings, error) {
 
-	vars := mux.Vars(r)
-	boatID := vars["id"]
-
-	rows, err := db.Query("SELECT * FROM boat_default_settings WHERE boat_id = ?", boatID)
+	rows, err := db.Query("SELECT * FROM boat_default_settings WHERE boat_id = ?", boatId)
 
 	if err != nil {
-		log.Fatalf("failed to query: %v", err)
+		return BoatDefaultSettings{}, err
 	}
 
 	defer rows.Close()
@@ -34,10 +31,23 @@ func GetDefaultSettingsForBoat(w http.ResponseWriter, r *http.Request, db *sql.D
 	var defaultSettings BoatDefaultSettings
 
 	if rows.Next() {
-		err := rows.Scan(&defaultSettings.ID, &defaultSettings.BoatId, &defaultSettings.DailyCost, &defaultSettings.MinimunBookingDuration, &defaultSettings.AdvertiseAtAllLocations, &defaultSettings.fileId)
+		err := rows.Scan(&defaultSettings.ID, &defaultSettings.BoatID, &defaultSettings.DailyCost, &defaultSettings.MinimunBookingDuration, &defaultSettings.AdvertiseAtAllLocations, &defaultSettings.FileID)
 		if err != nil {
-			log.Fatalf("failed to scan: %v", err)
+			return BoatDefaultSettings{}, err
 		}
+	}
+
+	return defaultSettings, nil
+}
+
+func GetDefaultSettingsForBoat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	vars := mux.Vars(r)
+	boatID := vars["id"]
+
+	defaultSettings, err := GetDefaultSettingsForBoatId(boatID, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
 	}
 
 	// Return the data as JSON.

@@ -28,8 +28,16 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetRentalBookingsForBooking(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/bookings/{id}/boatBookings", func(w http.ResponseWriter, r *http.Request) {
+		GetBoatBookingsForBooking(w, r, db)
+	}).Methods("GET")
+
 	r.HandleFunc("/bookings/{id}/rentalBookings/{rentalBookingId}/details", func(w http.ResponseWriter, r *http.Request) {
 		GetRentalBookingDetails(w, r, db)
+	}).Methods("GET")
+
+	r.HandleFunc("/bookings/{id}/boatBookings/{boatBookingId}/details", func(w http.ResponseWriter, r *http.Request) {
+		GetBoatBookingDetails(w, r, db)
 	}).Methods("GET")
 
 	//Rentals
@@ -179,6 +187,15 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 
 	r.HandleFunc("/rentalBooking", func(w http.ResponseWriter, r *http.Request) {
 		CreateRentalBooking(w, r, db)
+	}).Methods("POST")
+
+	//boat booking
+	r.HandleFunc("/boatBooking", func(w http.ResponseWriter, r *http.Request) {
+		GetBoatBookings(w, r, db)
+	}).Methods("GET")
+
+	r.HandleFunc("/boatBooking", func(w http.ResponseWriter, r *http.Request) {
+		CreateBoatBooking(w, r, db)
 	}).Methods("POST")
 
 	//rentalTimeblock
