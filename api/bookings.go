@@ -15,15 +15,6 @@ type Booking struct {
 	BookingDetailsID int
 }
 
-type BookingDetails struct {
-	ID               int
-	BookingID        int
-	PaymantComplete  bool
-	PaymentDueDate   time.Time
-	DocumentsSigned  bool
-	BookingStartDate time.Time
-}
-
 func createNewBooking(db *sql.DB, userID int) (int, error) {
 
 	//start transaction
