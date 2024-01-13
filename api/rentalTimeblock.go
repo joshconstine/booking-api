@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -16,6 +17,40 @@ type RentalTimeblock struct {
 	StartTime       time.Time
 	EndTime         time.Time
 	RentalBookingID *int
+}
+
+// Attempt to insert a rental timeblock into the database
+func attemptToInsertRentalTimeblock(db *sql.DB, rentalID string, startTimeStr string, endTimeStr string, rentalBookingID *int) (bool, error) {
+	// Check for overlapping timeblocks
+	overlapQuery := "SELECT id FROM rental_timeblock WHERE rental_id = ? AND ((start_time <= ? AND end_time >= ?) OR (start_time <= ? AND end_time >= ?) OR (start_time >= ? AND end_time <= ?))"
+	rows, err := db.Query(overlapQuery, rentalID, startTimeStr, startTimeStr, endTimeStr, endTimeStr, startTimeStr, endTimeStr)
+	if err != nil {
+		return false, err
+
+	}
+	defer rows.Close()
+
+	// If there are overlapping timeblocks, return false
+	if rows.Next() {
+		log.Printf("Overlapping timeblocks")
+		fmt.Println("Overlapping timeblocks")
+		return false, nil
+	}
+
+	// Insert the data into the database
+	_, err = db.Exec("INSERT INTO rental_timeblock (rental_id, start_time, end_time, rental_booking_id) VALUES (?, ?, ?, ?)", rentalID, startTimeStr, endTimeStr, rentalBookingID)
+
+	// Check if the error is a duplicate entry error
+	if IsDuplicateKeyError(err) {
+		// Handle duplicate entry error
+		return false, nil
+	} else if err != nil {
+		// Handle other errors
+		return false, err
+	}
+
+	// Rental timeblock was successfully created
+	return true, nil
 }
 
 func GetRentalTimeblocks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -79,11 +114,26 @@ func CreateRentalTimeblock(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	endTimeStr := timeblock.EndTime.Format("2006-01-02 15:04:05")
 
 	// Insert the data into the database.
-	_, err := db.Exec("INSERT INTO rental_timeblock (rental_id, start_time, end_time, rental_booking_id) VALUES (?, ?, ?, ?)", id, startTimeStr, endTimeStr, timeblock.RentalBookingID)
+	created, err := attemptToInsertRentalTimeblock(db, id, startTimeStr, endTimeStr, timeblock.RentalBookingID)
+
+	// Check for errors.
 	if err != nil {
-		log.Fatalf("failed to insert: %v", err)
+		log.Printf("failed to insert: %v", err)
+		w.WriteHeader(http.StatusInternalServerError) // HTTP 500 Internal Server Error
+		w.Write([]byte("Internal Server Error"))
+		return
 	}
 
-	// Return a status code.
-	w.WriteHeader(http.StatusCreated)
+	// Check if the timeblock was created.
+	if !created {
+		w.WriteHeader(http.StatusConflict) // HTTP 409 Conflict
+		w.Write([]byte("Conflict: The timeblock already exists."))
+		return
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated) // HTTP 201 Created
+	json.NewEncoder(w).Encode(timeblock)
+
 }
