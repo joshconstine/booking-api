@@ -181,26 +181,25 @@ func CreateBoatBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 func GetBoatBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
-	id := vars["id"]
+	boatBookingId := vars["boatBookingId"]
 
-	// Query the database for the boat booking joined with the boat timeblock.
-	query := "SELECT rb.id, rb.boat_id, rb.booking_id, rb.boat_time_block_id, rb.booking_status_id, rb.booking_file_id, rt.start_time, rt.end_time, rt.boat_booking_id, rb.location_id FROM boat_booking rb JOIN boat_timeblock rt ON rb.boat_time_block_id = rt.id WHERE rb.id = ?"
-	rows, err := db.Query(query, id)
+	query := "SELECT boat_booking.id, boat_booking.boat_id, boat_booking.booking_id, boat_booking.boat_time_block_id, boat_booking.booking_status_id, boat_booking.booking_file_id, boat_booking.location_id, boat_timeblock.start_time, boat_timeblock.end_time FROM boat_booking JOIN boat_timeblock ON boat_booking.boat_time_block_id = boat_timeblock.id WHERE boat_booking.id = ?"
+
+	// Query the database.
+	rows, err := db.Query(query, boatBookingId)
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
 	}
+
 	defer rows.Close()
 
-	// Create a single instance of boatBookingDetails.
 	var boatBookingDetails BoatBookingDetails
 
-	// Check if there is at least one row.
 	if rows.Next() {
 		var startTimeStr, endTimeStr string
-		var boatBookingID int
 
 		// Scan the values into variables.
-		if err := rows.Scan(&boatBookingDetails.ID, &boatBookingDetails.BoatID, &boatBookingDetails.BookingID, &boatBookingDetails.BoatTimeBlockID, &boatBookingDetails.BookingStatusID, &boatBookingDetails.BookingFileID, &startTimeStr, &endTimeStr, &boatBookingID, &boatBookingDetails.LocationID); err != nil {
+		if err := rows.Scan(&boatBookingDetails.ID, &boatBookingDetails.BoatID, &boatBookingDetails.BookingID, &boatBookingDetails.BoatTimeBlockID, &boatBookingDetails.BookingStatusID, &boatBookingDetails.BookingFileID, &boatBookingDetails.LocationID, &startTimeStr, &endTimeStr); err != nil {
 			log.Fatalf("failed to scan row: %v", err)
 		}
 
@@ -214,12 +213,9 @@ func GetBoatBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		if err != nil {
 			log.Fatalf("failed to parse end time: %v", err)
 		}
-
-		boatBookingDetails.ID = boatBookingID
 	}
 
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(boatBookingDetails)
-
 }

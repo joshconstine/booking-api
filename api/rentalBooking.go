@@ -178,11 +178,11 @@ func CreateRentalBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 func GetRentalBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
-	id := vars["id"]
+	rentalBookingId := vars["rentalBookingId"]
 
 	// Query the database for the rental booking joined with the rental timeblock.
 	query := "SELECT rb.id, rb.rental_id, rb.booking_id, rb.rental_time_block_id, rb.booking_status_id, rb.booking_file_id, rt.start_time, rt.end_time, rt.rental_booking_id FROM rental_booking rb JOIN rental_timeblock rt ON rb.rental_time_block_id = rt.id WHERE rb.id = ?"
-	rows, err := db.Query(query, id)
+	rows, err := db.Query(query, rentalBookingId)
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
 	}
