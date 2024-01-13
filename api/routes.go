@@ -11,6 +11,15 @@ import (
 func InitRoutes(r *mux.Router, db *sql.DB) {
 	// Define the routes.
 
+	//Bookings
+	r.HandleFunc("/bookings", func(w http.ResponseWriter, r *http.Request) {
+		GetBookings(w, r, db)
+	}).Methods("GET")
+
+	r.HandleFunc("/bookings", func(w http.ResponseWriter, r *http.Request) {
+		CreateBooking(w, r, db)
+	}).Methods("POST")
+
 	//Rentals
 	r.HandleFunc("/rentals", func(w http.ResponseWriter, r *http.Request) {
 		GetRentals(w, r, db)
