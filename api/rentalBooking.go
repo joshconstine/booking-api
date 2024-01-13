@@ -27,6 +27,17 @@ type RequestRentalBooking struct {
 	EndTime   time.Time
 }
 
+type RentalBookingDetails struct {
+	ID                int
+	RentalID          int
+	BookingID         int
+	RentalTimeBlockID int
+	BookingStatusID   int
+	BookingFileID     int
+	StartTime         time.Time
+	EndTime           time.Time
+}
+
 func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error) {
 
 	//oprn transaction
@@ -80,14 +91,11 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 
 }
 
-func GetRentalBookingsForBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	vars := mux.Vars(r)
-	id := vars["id"]
-
+func GetRentalBookingsForBookingId(bookingId string, db *sql.DB) ([]RentalBooking, error) {
 	// Query the database for all rental bookings.
-	rows, err := db.Query("SELECT * FROM rental_booking WHERE booking_id = ?", id)
+	rows, err := db.Query("SELECT * FROM rental_booking WHERE booking_id = ?", bookingId)
 	if err != nil {
-		log.Fatalf("failed to query: %v", err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -98,9 +106,24 @@ func GetRentalBookingsForBooking(w http.ResponseWriter, r *http.Request, db *sql
 	for rows.Next() {
 		var rentalBooking RentalBooking
 		if err := rows.Scan(&rentalBooking.ID, &rentalBooking.RentalID, &rentalBooking.BookingID, &rentalBooking.RentalTimeBlockID, &rentalBooking.BookingStatusID, &rentalBooking.BookingFileID); err != nil {
-			log.Fatalf("failed to scan row: %v", err)
+			return nil, err
 		}
 		rentalBookings = append(rentalBookings, rentalBooking)
+	}
+
+	return rentalBookings, nil
+}
+
+// API Handlers
+func GetRentalBookingsForBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	// Query the database for all rental bookings.
+
+	rentalBookings, err := GetRentalBookingsForBookingId(id, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
 	}
 
 	// Return the data as JSON.
@@ -150,5 +173,49 @@ func CreateRentalBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	// Return the rental booking ID as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(rentalBookingID)
+
+}
+
+func GetRentalBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	// Query the database for the rental booking joined with the rental timeblock.
+	query := "SELECT rb.id, rb.rental_id, rb.booking_id, rb.rental_time_block_id, rb.booking_status_id, rb.booking_file_id, rt.start_time, rt.end_time, rt.rental_booking_id FROM rental_booking rb JOIN rental_timeblock rt ON rb.rental_time_block_id = rt.id WHERE rb.id = ?"
+	rows, err := db.Query(query, id)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+	defer rows.Close()
+
+	// Create a single instance of RentalBookingDetails.
+	var rentalBookingDetails RentalBookingDetails
+
+	// Check if there is at least one row.
+	if rows.Next() {
+		var startTimeStr, endTimeStr string
+		var rentalBookingID int
+		// Scan the values into variables.
+		if err := rows.Scan(&rentalBookingDetails.ID, &rentalBookingDetails.RentalID, &rentalBookingDetails.BookingID, &rentalBookingDetails.RentalTimeBlockID, &rentalBookingDetails.BookingStatusID, &rentalBookingDetails.BookingFileID, &startTimeStr, &endTimeStr, &rentalBookingID); err != nil {
+			log.Fatalf("failed to scan row: %v", err)
+		}
+
+		// Convert the datetime strings to time.Time.
+		rentalBookingDetails.StartTime, err = time.Parse("2006-01-02 15:04:05", startTimeStr)
+		if err != nil {
+			log.Fatalf("failed to parse start time: %v", err)
+		}
+
+		rentalBookingDetails.EndTime, err = time.Parse("2006-01-02 15:04:05", endTimeStr)
+		if err != nil {
+			log.Fatalf("failed to parse end time: %v", err)
+		}
+
+		rentalBookingDetails.ID = rentalBookingID
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(rentalBookingDetails)
 
 }

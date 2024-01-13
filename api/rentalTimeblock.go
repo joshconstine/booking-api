@@ -62,6 +62,60 @@ func AttemptToInsertRentalTimeblock(db *sql.DB, rentalID string, startTime time.
 
 }
 
+func GetRentalTimeblockById(id string, db *sql.DB) (RentalTimeblock, error) {
+	// Query the database for the rental timeblock of the id.
+	query := "SELECT * FROM rental_timeblock WHERE id = ?"
+	rows, err := db.Query(query, id)
+	if err != nil {
+		return RentalTimeblock{}, err
+	}
+	defer rows.Close()
+
+	// Create a single instance of RentalTimeblock.
+	var rentalTimeblock RentalTimeblock
+
+	// Check if there is at least one row.
+	if rows.Next() {
+		var startTimeStr, endTimeStr string
+		var rentalBookingID *int
+
+		// Scan the values into variables.
+		if err := rows.Scan(&rentalTimeblock.ID, &rentalTimeblock.RentalID, &startTimeStr, &endTimeStr, &rentalBookingID); err != nil {
+			return RentalTimeblock{}, err
+		}
+
+		// Convert the datetime strings to time.Time.
+		rentalTimeblock.StartTime, err = time.Parse("2006-01-02 15:04:05", startTimeStr)
+		if err != nil {
+			return RentalTimeblock{}, err
+		}
+
+		rentalTimeblock.EndTime, err = time.Parse("2006-01-02 15:04:05", endTimeStr)
+		if err != nil {
+			return RentalTimeblock{}, err
+		}
+
+		rentalTimeblock.RentalBookingID = rentalBookingID
+	}
+
+	return rentalTimeblock, nil
+}
+
+func GetRentalTimeblock(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	timeblock, err := GetRentalTimeblockById(id, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(timeblock)
+
+}
+
 func GetRentalTimeblocks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
 	id := vars["id"]

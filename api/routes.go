@@ -28,6 +28,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetRentalBookingsForBooking(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/bookings/{id}/rentalBookings/{rentalBookingId}/details", func(w http.ResponseWriter, r *http.Request) {
+		GetRentalBookingDetails(w, r, db)
+	}).Methods("GET")
+
 	//Rentals
 	r.HandleFunc("/rentals", func(w http.ResponseWriter, r *http.Request) {
 		GetRentals(w, r, db)
@@ -169,4 +173,9 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		CreateRentalBooking(w, r, db)
 	}).Methods("POST")
 
+	//rentalTimeblock
+
+	r.HandleFunc("/rentalTimeblock/{id}", func(w http.ResponseWriter, r *http.Request) {
+		GetRentalTimeblock(w, r, db)
+	}).Methods("GET")
 }
