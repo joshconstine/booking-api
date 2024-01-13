@@ -51,6 +51,25 @@ func AttemptToBookBoat(details RequestBoatBooking, db *sql.DB) (int64, error) {
 
 	boatIdString := strconv.Itoa(details.BoatID)
 
+	//get boat default settings
+
+	boatSettings, err := GetDefaultSettingsForBoatId(boatIdString, db)
+	if err != nil {
+		return 0, err
+	}
+
+	boatStatus, err := GetStatusForBoatId(boatIdString, db)
+	if err != nil {
+		return 0, err
+	}
+
+	if boatStatus.CurrentLocationID != details.LocationID {
+		if boatSettings.AdvertiseAtAllLocations == false {
+			tx.Rollback()
+			return -2, nil
+		}
+	}
+
 	// Attempt to create boat timeblock
 	boatTimeblockID, err := AttemptToInsertBoatTimeblock(db, boatIdString, details.StartTime, details.EndTime, nil)
 	if err != nil {
@@ -182,6 +201,12 @@ func CreateBoatBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if boatBookingID == -1 {
 		w.WriteHeader(http.StatusConflict)
 		w.Write([]byte("Boat is already booked for this time"))
+		return
+	}
+
+	if boatBookingID == -2 {
+		w.WriteHeader(http.StatusConflict)
+		w.Write([]byte("Boat is not available at this location"))
 		return
 	}
 

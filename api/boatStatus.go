@@ -17,15 +17,12 @@ type BoatStatus struct {
 	CurrentLocationID int
 }
 
-func GetStatusForBoat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func GetStatusForBoatId(boatId string, db *sql.DB) (BoatStatus, error) {
 
-	vars := mux.Vars(r)
-	boatID := vars["id"]
-
-	rows, err := db.Query("SELECT * FROM boat_status WHERE boat_id = ?", boatID)
+	rows, err := db.Query("SELECT * FROM boat_status WHERE boat_id = ?", boatId)
 
 	if err != nil {
-		log.Fatalf("failed to query: %v", err)
+		return BoatStatus{}, err
 	}
 
 	defer rows.Close()
@@ -35,8 +32,21 @@ func GetStatusForBoat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if rows.Next() {
 		err := rows.Scan(&boatStatus.ID, &boatStatus.BoatId, &boatStatus.IsClean, &boatStatus.LowFuel, &boatStatus.CurrentLocationID)
 		if err != nil {
-			log.Fatalf("failed to scan: %v", err)
+			return BoatStatus{}, err
 		}
+	}
+
+	return boatStatus, nil
+}
+
+func GetStatusForBoat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	vars := mux.Vars(r)
+	boatID := vars["id"]
+
+	boatStatus, err := GetStatusForBoatId(boatID, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
 	}
 
 	// Return the data as JSON.
