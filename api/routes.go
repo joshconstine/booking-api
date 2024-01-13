@@ -86,6 +86,14 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		UpdateStatusForBoat(w, r, db)
 	}).Methods("PUT")
 
+	r.HandleFunc("/boats/{id}/timeblocks", func(w http.ResponseWriter, r *http.Request) {
+		GetBoatTimeblocks(w, r, db)
+	}).Methods("GET")
+
+	r.HandleFunc("/boats/{id}/timeblocks", func(w http.ResponseWriter, r *http.Request) {
+		CreateBoatTimeblock(w, r, db)
+	}).Methods("POST")
+
 	//Booking Status
 	r.HandleFunc("/bookingStatus", func(w http.ResponseWriter, r *http.Request) {
 		GetBookingStatus(w, r, db)
@@ -178,4 +186,11 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 	r.HandleFunc("/rentalTimeblock/{id}", func(w http.ResponseWriter, r *http.Request) {
 		GetRentalTimeblock(w, r, db)
 	}).Methods("GET")
+
+	//boatTimeblock
+
+	r.HandleFunc("/boatTimeblock/{id}", func(w http.ResponseWriter, r *http.Request) {
+		GetBoatTimeblock(w, r, db)
+	}).Methods("GET")
+
 }
