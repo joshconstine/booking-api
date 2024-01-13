@@ -21,15 +21,12 @@ type RentalUnitDefaultSettings struct {
 	FileID                 int
 }
 
-func GetDefaultSettingsForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	vars := mux.Vars(r)
-	id := vars["id"]
-
+func GetDefaultSettingsForRentalId(id string, db *sql.DB) (RentalUnitDefaultSettings, error) {
 	// Query the database for the default setting of the id.
 	query := "SELECT * FROM rental_unit_default_settings WHERE rental_id = ?"
 	rows, err := db.Query(query, id)
 	if err != nil {
-		log.Fatalf("failed to query: %v", err)
+		return RentalUnitDefaultSettings{}, err
 	}
 	defer rows.Close()
 
@@ -50,8 +47,20 @@ func GetDefaultSettingsForRental(w http.ResponseWriter, r *http.Request, db *sql
 			&rentalUnitDefualtSetting.FileID,
 		)
 		if err != nil {
-			log.Fatalf("failed to scan: %v", err)
+			return RentalUnitDefaultSettings{}, err
 		}
+	}
+
+	return rentalUnitDefualtSetting, nil
+}
+
+func GetDefaultSettingsForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	rentalUnitDefualtSetting, err := GetDefaultSettingsForRentalId(id, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
 	}
 
 	// Return the data as JSON.

@@ -19,35 +19,47 @@ type RentalTimeblock struct {
 }
 
 // Attempt to insert a rental timeblock into the database
-func attemptToInsertRentalTimeblock(db *sql.DB, rentalID string, startTimeStr string, endTimeStr string, rentalBookingID *int) (bool, error) {
+func AttemptToInsertRentalTimeblock(db *sql.DB, rentalID string, startTime time.Time, endTime time.Time, rentalBookingID *int) (int, error) {
+	// Format time values as strings in the MySQL datetime format.
+	startTimeStr := startTime.Format("2006-01-02 15:04:05")
+	endTimeStr := endTime.Format("2006-01-02 15:04:05")
+
 	// Check for overlapping timeblocks
 	overlapQuery := "SELECT id FROM rental_timeblock WHERE rental_id = ? AND ((start_time <= ? AND end_time >= ?) OR (start_time <= ? AND end_time >= ?) OR (start_time >= ? AND end_time <= ?))"
 	rows, err := db.Query(overlapQuery, rentalID, startTimeStr, startTimeStr, endTimeStr, endTimeStr, startTimeStr, endTimeStr)
 	if err != nil {
-		return false, err
-
+		return -1, err
 	}
+
 	defer rows.Close()
 
 	// If there are overlapping timeblocks, return false
 	if rows.Next() {
-		return false, nil
+		return -1, nil
 	}
 
 	// Insert the data into the database
-	_, err = db.Exec("INSERT INTO rental_timeblock (rental_id, start_time, end_time, rental_booking_id) VALUES (?, ?, ?, ?)", rentalID, startTimeStr, endTimeStr, rentalBookingID)
+	result, err := db.Exec("INSERT INTO rental_timeblock (rental_id, start_time, end_time, rental_booking_id) VALUES (?, ?, ?, ?)", rentalID, startTimeStr, endTimeStr, rentalBookingID)
 
 	// Check if the error is a duplicate entry error
 	if IsDuplicateKeyError(err) {
 		// Handle duplicate entry error
-		return false, nil
+		return -1, nil
 	} else if err != nil {
 		// Handle other errors
-		return false, err
+		return -1, err
 	}
 
 	// Rental timeblock was successfully created
-	return true, nil
+
+	// Get the ID of the newly created rental timeblock
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(id), nil
+
 }
 
 func GetRentalTimeblocks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -106,13 +118,9 @@ func CreateRentalTimeblock(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if err := json.NewDecoder(r.Body).Decode(&timeblock); err != nil {
 		log.Fatalf("failed to decode: %v", err)
 	}
-	// Format time values as strings in the MySQL datetime format.
-	startTimeStr := timeblock.StartTime.Format("2006-01-02 15:04:05")
-	endTimeStr := timeblock.EndTime.Format("2006-01-02 15:04:05")
 
 	// Insert the data into the database.
-	created, err := attemptToInsertRentalTimeblock(db, id, startTimeStr, endTimeStr, timeblock.RentalBookingID)
-
+	createdId, err := AttemptToInsertRentalTimeblock(db, id, timeblock.StartTime, timeblock.EndTime, timeblock.RentalBookingID)
 	// Check for errors.
 	if err != nil {
 		log.Printf("failed to insert: %v", err)
@@ -122,7 +130,7 @@ func CreateRentalTimeblock(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 
 	// Check if the timeblock was created.
-	if !created {
+	if createdId == -1 {
 		w.WriteHeader(http.StatusConflict) // HTTP 409 Conflict
 		w.Write([]byte("Conflict: The timeblock already exists."))
 		return

@@ -156,4 +156,13 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		UpdateDefaultSettingsForVenueEventType(w, r, db)
 	}).Methods("PUT")
 
+	//rental booking
+	r.HandleFunc("/rentalBooking", func(w http.ResponseWriter, r *http.Request) {
+		GetRentalBookings(w, r, db)
+	}).Methods("GET")
+
+	r.HandleFunc("/rentalBooking", func(w http.ResponseWriter, r *http.Request) {
+		CreateRentalBooking(w, r, db)
+	}).Methods("POST")
+
 }
