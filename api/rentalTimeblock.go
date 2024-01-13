@@ -3,7 +3,6 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -32,8 +31,6 @@ func attemptToInsertRentalTimeblock(db *sql.DB, rentalID string, startTimeStr st
 
 	// If there are overlapping timeblocks, return false
 	if rows.Next() {
-		log.Printf("Overlapping timeblocks")
-		fmt.Println("Overlapping timeblocks")
 		return false, nil
 	}
 
