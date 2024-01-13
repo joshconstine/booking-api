@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 type RentalBooking struct {
@@ -76,6 +78,34 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 
 	return rentalBookingID, nil
 
+}
+
+func GetRentalBookingsForBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	// Query the database for all rental bookings.
+	rows, err := db.Query("SELECT * FROM rental_booking WHERE booking_id = ?", id)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+	defer rows.Close()
+
+	// Create a slice of rental bookings to hold the data.
+	var rentalBookings []RentalBooking
+
+	// Loop through the data and insert into the rental bookings slice.
+	for rows.Next() {
+		var rentalBooking RentalBooking
+		if err := rows.Scan(&rentalBooking.ID, &rentalBooking.RentalID, &rentalBooking.BookingID, &rentalBooking.RentalTimeBlockID, &rentalBooking.BookingStatusID, &rentalBooking.BookingFileID); err != nil {
+			log.Fatalf("failed to scan row: %v", err)
+		}
+		rentalBookings = append(rentalBookings, rentalBooking)
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(rentalBookings)
 }
 
 func GetRentalBookings(w http.ResponseWriter, r *http.Request, db *sql.DB) {
