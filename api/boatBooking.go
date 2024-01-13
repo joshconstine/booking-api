@@ -56,6 +56,12 @@ func AttemptToBookBoat(details RequestBoatBooking, db *sql.DB) (int64, error) {
 	if err != nil {
 		log.Fatalf("Failed to insert boat timeblock: %v", err)
 	}
+
+	if boatTimeblockID == -1 {
+		tx.Rollback()
+		return -1, nil
+	}
+
 	var boatDefaultSettings BoatDefaultSettings
 
 	//read boat DefaultSettings for boatId
@@ -173,6 +179,13 @@ func CreateBoatBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		log.Fatalf("failed to book boat: %v", err)
 	}
 
+	if boatBookingID == -1 {
+		w.WriteHeader(http.StatusConflict)
+		w.Write([]byte("Boat is already booked for this time"))
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
 	// Return the boat booking ID as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(boatBookingID)

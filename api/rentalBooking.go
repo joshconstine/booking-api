@@ -53,6 +53,12 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 	if err != nil {
 		log.Fatalf("Failed to insert rental timeblock: %v", err)
 	}
+
+	if rentalTimeblockID == -1 {
+		tx.Rollback()
+		return -1, nil
+	}
+
 	var rentalUnitDefaultSettings RentalUnitDefaultSettings
 
 	//read rental DefaultSettings for rentalId
@@ -170,6 +176,15 @@ func CreateRentalBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		log.Fatalf("failed to book rental: %v", err)
 	}
 
+	if rentalBookingID == -1 {
+		// Return a 409 Conflict if the rental is already booked.
+		w.WriteHeader(http.StatusConflict)
+		w.Write([]byte("Rental is already booked"))
+
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
 	// Return the rental booking ID as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(rentalBookingID)
