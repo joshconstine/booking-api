@@ -63,6 +63,11 @@ func GetDetailsForBookingID(bookingId string, db *sql.DB) (BookingDetails, error
 	return bookingDetails, nil
 }
 
+func UpdateBookingDetails(bookingDetails BookingDetails, db *sql.DB) error {
+	_, err := db.Exec("UPDATE booking_details SET payment_complete = ?, payment_due_date = ?, documents_signed = ?, booking_start_date = ? WHERE id = ?", bookingDetails.PaymentComplete, bookingDetails.PaymentDueDate, bookingDetails.DocumentsSigned, bookingDetails.BookingStartDate, bookingDetails.ID)
+	return err
+}
+
 func GetBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -75,4 +80,28 @@ func GetBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(bookingDetails)
+
+}
+
+func UpdateBookingDetailsForBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	// Create a single instance of BookingDetails.
+	var bookingDetails BookingDetails
+
+	// Decode the JSON data.
+	err := json.NewDecoder(r.Body).Decode(&bookingDetails)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Update the database.
+	err = UpdateBookingDetails(bookingDetails, db)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(bookingDetails)
+
 }
