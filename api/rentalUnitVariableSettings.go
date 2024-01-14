@@ -125,19 +125,35 @@ func GetVariableSettingsForRentalIdAndDateRange(rentalId string, startDate time.
 
 	return rentalUnitVariableSettings, nil
 }
+func UpdateVariableSettingsForRentalId(variableSettingsId int, rentalId string, nightlyCost float64, minimumBookingDuration int, cleaningFee float64, eventRequired bool, StartDate time.Time, EndDate time.Time, db *sql.DB) (int, error) {
 
-func UpdateVariableSettingsForRentalId(rentalId string, nightlyCost float64, minimumBookingDuration int, cleaningFee float64, eventRequired bool, StartDate time.Time, EndDate time.Time, db *sql.DB) error {
-
-	query := "UPDATE rental_unit_variable_settings SET nightly_cost = ?, minimum_booking_duration = ?, cleaning_fee = ?, event_required = ?, start_date = ?, end_date = ? WHERE rental_id = ?"
-
-	_, err := db.Exec(query, nightlyCost, minimumBookingDuration, cleaningFee, eventRequired, StartDate, EndDate, rentalId)
-
+	// Check if a row exists in these dates
+	rentalUnitVariableSettings, err := GetVariableSettingsForRentalIdAndDateRange(rentalId, StartDate, EndDate, db)
 	if err != nil {
-		return err
+		return -1, err
 	}
 
-	return nil
+	// If there are existing date ranges that overlap
+	if len(rentalUnitVariableSettings) > 0 {
+		// If there's only one record and it's the same as the one being updated
+		if len(rentalUnitVariableSettings) == 1 && rentalUnitVariableSettings[0].ID == variableSettingsId {
+			// This is the same row being updated, allow the update
+		} else {
+			// There is an overlap with other date ranges, disallow the update
+			return -2, nil
+		}
+	}
 
+	// Update the rental unit variable settings
+	query := "UPDATE rental_unit_variable_settings SET nightly_cost = ?, minimum_booking_duration = ?, cleaning_fee = ?, event_required = ?, start_date = ?, end_date = ? WHERE rental_id = ?"
+
+	_, err = db.Exec(query, nightlyCost, minimumBookingDuration, cleaningFee, eventRequired, StartDate, EndDate, rentalId)
+
+	if err != nil {
+		return -1, err
+	}
+
+	return 0, nil
 }
 
 func CreateVariableSettingsForRentalId(rentalId string, nightlyCost float64, minimumBookingDuration int, cleaningFee float64, eventRequired bool, StartDate time.Time, EndDate time.Time, db *sql.DB) (int, error) {
@@ -212,10 +228,20 @@ func UpdateVariableSettingsForRental(w http.ResponseWriter, r *http.Request, db 
 		log.Fatalf("failed to decode: %v", err)
 	}
 
-	err = UpdateVariableSettingsForRentalId(rentalID, rentalUnitVariableSettings.NightlyCost, rentalUnitVariableSettings.MinimumBookingDuration, rentalUnitVariableSettings.CleaningFee, rentalUnitVariableSettings.EventRequired, rentalUnitVariableSettings.StartDate, rentalUnitVariableSettings.EndDate, db)
+	result, err := UpdateVariableSettingsForRentalId(rentalUnitVariableSettings.ID, rentalID, rentalUnitVariableSettings.NightlyCost, rentalUnitVariableSettings.MinimumBookingDuration, rentalUnitVariableSettings.CleaningFee, rentalUnitVariableSettings.EventRequired, rentalUnitVariableSettings.StartDate, rentalUnitVariableSettings.EndDate, db)
 	if err != nil {
 		log.Fatalf("failed to update: %v", err)
 	}
+
+	if result == -2 {
+		w.WriteHeader(http.StatusConflict)
+		w.Write([]byte("Conflict: The rental unit variable settings already exists."))
+		return
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(rentalUnitVariableSettings)
 
 }
 
@@ -259,5 +285,7 @@ func DeleteVariableSettingsForRental(w http.ResponseWriter, r *http.Request, db 
 	if err != nil {
 		log.Fatalf("failed to delete: %v", err)
 	}
+
+	w.WriteHeader(http.StatusNoContent)
 
 }
