@@ -38,6 +38,32 @@ type RentalBookingDetails struct {
 	EndTime           time.Time
 }
 
+func CalculateRentalCost(rentalUnitVariableSettings []RentalUnitVariableSettings, rentalUnitDefaultSettings RentalUnitDefaultSettings, startTime time.Time, endTime time.Time) float64 {
+	// Calculate the duration in days
+	durationInDays := int(endTime.Sub(startTime).Hours() / 24)
+
+	// Loop through each day
+	var totalCost float64
+	for i := 0; i <= durationInDays; i++ {
+		currentDay := startTime.Add(time.Duration(i) * 24 * time.Hour)
+		// Check if there is a variable setting for this day
+		varSettingFound := false
+		for _, rentalUnitVariableSetting := range rentalUnitVariableSettings {
+			if currentDay.After(rentalUnitVariableSetting.StartDate) && currentDay.Before(rentalUnitVariableSetting.EndDate) {
+				totalCost += rentalUnitVariableSetting.NightlyCost
+				varSettingFound = true
+				break
+			}
+		}
+		// If no variable setting, use default
+		if !varSettingFound {
+			totalCost += rentalUnitDefaultSettings.NightlyCost
+		}
+	}
+
+	return totalCost
+}
+
 func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error) {
 
 	//oprn transaction
@@ -96,6 +122,29 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 	//Update rental timeblock with rental booking id
 	query = "UPDATE rental_timeblock SET rental_booking_id = ? WHERE id = ?"
 	_, err = tx.Exec(query, rentalBookingID, rentalTimeblockID)
+	if err != nil {
+		return 0, err
+	}
+
+	//get variable settings for Dates
+	var rentalUnitVariableSettings []RentalUnitVariableSettings
+
+	rentalUnitVariableSettings, err = GetVariableSettingsForRentalIdAndDateRange(rentalIdString, details.StartTime, details.EndTime, db)
+	if err != nil {
+		return 0, err
+	}
+
+	//calculate cost
+	totalCost := CalculateRentalCost(rentalUnitVariableSettings, rentalUnitDefaultSettings, details.StartTime, details.EndTime)
+
+	//create booking cost item
+	bookingCostItem := BookingCostItem{
+		BookingID:         details.BookingID,
+		BookingCostTypeID: 3,
+		Ammount:           totalCost,
+	}
+
+	err = AttemptToCreateBookingCostItem(bookingCostItem, db)
 	if err != nil {
 		return 0, err
 	}
