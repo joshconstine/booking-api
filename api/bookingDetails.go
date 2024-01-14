@@ -19,14 +19,10 @@ type BookingDetails struct {
 	BookingStartDate time.Time
 }
 
-func GetBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	vars := mux.Vars(r)
-	id := vars["id"]
-
-	// Query the database.
-	rows, err := db.Query("SELECT * FROM booking_details WHERE booking_id = ?", id)
+func GetDetailsForBookingID(bookingId string, db *sql.DB) (BookingDetails, error) {
+	rows, err := db.Query("SELECT id, booking_id, payment_complete, payment_due_date, documents_signed, booking_start_date FROM booking_details WHERE booking_id = ?", bookingId)
 	if err != nil {
-		log.Fatalf("failed to query: %v", err)
+		return BookingDetails{}, err
 	}
 	defer rows.Close()
 
@@ -39,7 +35,7 @@ func GetBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		err := rows.Scan(&bookingDetails.ID, &bookingDetails.BookingID, &bookingDetails.PaymentComplete, &dueDateString, &bookingDetails.DocumentsSigned, &startDateString)
 
 		if err != nil {
-			log.Fatalf("failed to scan: %v", err)
+			return BookingDetails{}, err
 		}
 
 		// Attempt to parse with date and time layout
@@ -48,7 +44,7 @@ func GetBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			// If parsing fails, attempt to parse with date-only layout
 			bookingDetails.PaymentDueDate, err = time.Parse("2006-01-02", dueDateString)
 			if err != nil {
-				log.Fatalf("failed to parse date: %v", err)
+				return BookingDetails{}, err
 			}
 		}
 
@@ -58,10 +54,22 @@ func GetBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			// If parsing fails, attempt to parse with date-only layout
 			bookingDetails.BookingStartDate, err = time.Parse("2006-01-02", startDateString)
 			if err != nil {
-				log.Fatalf("failed to parse date: %v", err)
+				return BookingDetails{}, err
 			}
 		}
 
+	}
+
+	return bookingDetails, nil
+}
+
+func GetBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	bookingDetails, err := GetDetailsForBookingID(id, db)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	// Return the data as JSON.
