@@ -36,6 +36,7 @@ type RentalBookingDetails struct {
 	BookingFileID     int
 	StartTime         time.Time
 	EndTime           time.Time
+	CostItems         []BookingCostItem
 }
 type RentalBookingCost struct {
 	ID                int
@@ -46,6 +47,34 @@ type RentalBookingCost struct {
 func AddRentalBookingCost(rentalBookingCost RentalBookingCost, db *sql.DB) error {
 	_, err := db.Exec("INSERT INTO rental_booking_cost (rental_booking_id, booking_cost_item_id) VALUES (?, ?)", rentalBookingCost.RentalBookingID, rentalBookingCost.BookingCostItemID)
 	return err
+}
+func GetCostItemsForRentalBookingId(rentalBookingId string, db *sql.DB) ([]BookingCostItem, error) {
+
+	rows, err := db.Query("SELECT bci.id, bci.booking_id, bci.booking_cost_type_id, bci.ammount FROM booking_cost_item bci JOIN rental_booking_cost rbc ON bci.id = rbc.booking_cost_item_id WHERE rbc.rental_booking_id = ?", rentalBookingId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var bookingCostItems []BookingCostItem
+
+	for rows.Next() {
+		var bookingCostItem BookingCostItem
+
+		err := rows.Scan(
+			&bookingCostItem.ID,
+			&bookingCostItem.BookingID,
+			&bookingCostItem.BookingCostTypeID,
+			&bookingCostItem.Ammount,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		bookingCostItems = append(bookingCostItems, bookingCostItem)
+	}
+
+	return bookingCostItems, nil
 }
 
 func DetermineCleanFee(rentalUnitDefaultSettings RentalUnitDefaultSettings, rentalUnitVariableSettings []RentalUnitVariableSettings, startTime time.Time, endTime time.Time) float64 {
@@ -342,6 +371,8 @@ func GetRentalBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB)
 	if rows.Next() {
 		var startTimeStr, endTimeStr string
 		var rentalBookingID int
+		var costItems []BookingCostItem
+
 		// Scan the values into variables.
 		if err := rows.Scan(&rentalBookingDetails.ID, &rentalBookingDetails.RentalID, &rentalBookingDetails.BookingID, &rentalBookingDetails.RentalTimeBlockID, &rentalBookingDetails.BookingStatusID, &rentalBookingDetails.BookingFileID, &startTimeStr, &endTimeStr, &rentalBookingID); err != nil {
 			log.Fatalf("failed to scan row: %v", err)
@@ -357,6 +388,12 @@ func GetRentalBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB)
 		if err != nil {
 			log.Fatalf("failed to parse end time: %v", err)
 		}
+		costItems, err = GetCostItemsForRentalBookingId(rentalBookingId, db)
+		if err != nil {
+			log.Fatalf("failed to query: %v", err)
+		}
+
+		rentalBookingDetails.CostItems = costItems
 
 		rentalBookingDetails.ID = rentalBookingID
 	}
