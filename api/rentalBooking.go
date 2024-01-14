@@ -48,6 +48,19 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 
 	rentalIdString := strconv.Itoa(details.RentalID)
 
+	//get rental default settings
+	rentalSettings, err := GetDefaultSettingsForRentalId(rentalIdString, db)
+	if err != nil {
+		return 0, err
+	}
+	// Calculate the duration in days
+	durationInDays := details.EndTime.Sub(details.StartTime) / (24 * time.Hour)
+
+	// Check if the duration meets the minimum requirement
+	if int(durationInDays) < rentalSettings.MinimumBookingDuration {
+		return -2, nil
+	}
+
 	// Attempt to create rental timeblock
 	rentalTimeblockID, err := AttemptToInsertRentalTimeblock(db, rentalIdString, details.StartTime, details.EndTime, nil)
 	if err != nil {
@@ -180,6 +193,14 @@ func CreateRentalBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		// Return a 409 Conflict if the rental is already booked.
 		w.WriteHeader(http.StatusConflict)
 		w.Write([]byte("Rental is already booked"))
+
+		return
+	}
+
+	if rentalBookingID == -2 {
+		//minimum duration not met
+		w.WriteHeader(http.StatusConflict)
+		w.Write([]byte("Minimum duration not met"))
 
 		return
 	}
