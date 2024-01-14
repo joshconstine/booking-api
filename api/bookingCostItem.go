@@ -44,9 +44,20 @@ func GetCostItemsForBookingId(bookingId string, db *sql.DB) ([]BookingCostItem, 
 	return bookingCostItems, nil
 }
 
-func AttemptToCreateBookingCostItem(bookingCostItem BookingCostItem, db *sql.DB) error {
-	_, err := db.Exec("INSERT INTO booking_cost_item (booking_id, booking_cost_type_id, ammount) VALUES (?, ?, ?)", bookingCostItem.BookingID, bookingCostItem.BookingCostTypeID, bookingCostItem.Ammount)
-	return err
+func AttemptToCreateBookingCostItem(bookingCostItem BookingCostItem, db *sql.DB) (int, error) {
+	result, err := db.Exec("INSERT INTO booking_cost_item (booking_id, booking_cost_type_id, ammount) VALUES (?, ?, ?)", bookingCostItem.BookingID, bookingCostItem.BookingCostTypeID, bookingCostItem.Ammount)
+
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(id), nil
+
 }
 
 func AttemptToUpdateBookingCostItem(bookingCostItem BookingCostItem, db *sql.DB) error {
@@ -86,7 +97,7 @@ func CreateBookingCostItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		log.Fatalf("failed to decode: %v", err)
 	}
 
-	err := AttemptToCreateBookingCostItem(bookingCostItem, db)
+	createdId, err := AttemptToCreateBookingCostItem(bookingCostItem, db)
 	if err != nil {
 		// Check if the error is a duplicate entry error
 		if IsDuplicateKeyError(err) {
@@ -101,6 +112,8 @@ func CreateBookingCostItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		}
 		return
 	}
+
+	bookingCostItem.ID = createdId
 
 	w.WriteHeader(http.StatusCreated) // HTTP 201 Created
 

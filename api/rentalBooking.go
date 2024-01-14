@@ -37,6 +37,16 @@ type RentalBookingDetails struct {
 	StartTime         time.Time
 	EndTime           time.Time
 }
+type RentalBookingCost struct {
+	ID                int
+	RentalBookingID   int
+	BookingCostItemID int
+}
+
+func AddRentalBookingCost(rentalBookingCost RentalBookingCost, db *sql.DB) error {
+	_, err := db.Exec("INSERT INTO rental_booking_cost (rental_booking_id, booking_cost_item_id) VALUES (?, ?)", rentalBookingCost.RentalBookingID, rentalBookingCost.BookingCostItemID)
+	return err
+}
 
 func DetermineCleanFee(rentalUnitDefaultSettings RentalUnitDefaultSettings, rentalUnitVariableSettings []RentalUnitVariableSettings, startTime time.Time, endTime time.Time) float64 {
 
@@ -154,7 +164,7 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 	totalCost := CalculateRentalCost(rentalUnitVariableSettings, rentalUnitDefaultSettings, details.StartTime, details.EndTime)
 
 	//create booking cost item for rental cost
-	bookingCostItem := BookingCostItem{
+	rentalFeeBookingCostItem := BookingCostItem{
 		BookingID:         details.BookingID,
 		BookingCostTypeID: 3,
 		Ammount:           totalCost,
@@ -163,18 +173,40 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 
 	cleaningFee := DetermineCleanFee(rentalUnitDefaultSettings, rentalUnitVariableSettings, details.StartTime, details.EndTime)
 
-	bookingCostItemCleaningFee := BookingCostItem{
+	cleaningFeeBookingCostItem := BookingCostItem{
 		BookingID:         details.BookingID,
 		BookingCostTypeID: 2,
 		Ammount:           cleaningFee,
 	}
 
-	err = AttemptToCreateBookingCostItem(bookingCostItem, db)
+	createdRentalFee, err := AttemptToCreateBookingCostItem(rentalFeeBookingCostItem, db)
 	if err != nil {
 		return 0, err
 	}
 
-	err = AttemptToCreateBookingCostItem(bookingCostItemCleaningFee, db)
+	createdCleaningFee, err := AttemptToCreateBookingCostItem(cleaningFeeBookingCostItem, db)
+	if err != nil {
+		return 0, err
+	}
+
+	//create rental booking cost
+	rentalBookingCost := RentalBookingCost{
+		RentalBookingID:   int(rentalBookingID),
+		BookingCostItemID: createdRentalFee,
+	}
+
+	err = AddRentalBookingCost(rentalBookingCost, db)
+	if err != nil {
+		return 0, err
+	}
+
+	//create cleaning fee booking cost
+	cleaningFeeBookingCost := RentalBookingCost{
+		RentalBookingID:   int(rentalBookingID),
+		BookingCostItemID: createdCleaningFee,
+	}
+
+	err = AddRentalBookingCost(cleaningFeeBookingCost, db)
 	if err != nil {
 		return 0, err
 	}
