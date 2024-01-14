@@ -91,8 +91,7 @@ func GetVariableSettingsForRentalIdAndDate(rentalId string, date time.Time, db *
 
 func GetVariableSettingsForRentalIdAndDateRange(rentalId string, startDate time.Time, endDate time.Time, db *sql.DB) ([]RentalUnitVariableSettings, error) {
 
-	rows, err := db.Query("SELECT * FROM rental_unit_variable_settings WHERE rental_id = ? AND start_date <= ? AND end_date >= ?", rentalId, startDate, endDate)
-
+	rows, err := db.Query("SELECT id, rental_id, nightly_cost, minimum_booking_duration, cleaning_fee, event_required, start_date, end_date FROM rental_unit_variable_settings WHERE rental_id = ? AND start_date <= ? AND end_date >= ?", rentalId, endDate, startDate)
 	if err != nil {
 		return nil, err
 	}
@@ -102,11 +101,25 @@ func GetVariableSettingsForRentalIdAndDateRange(rentalId string, startDate time.
 	var rentalUnitVariableSettings []RentalUnitVariableSettings
 
 	for rows.Next() {
+		var startDateStr, endDateStr string // Change types to string
+
 		var rentalUnitVariableSetting RentalUnitVariableSettings
-		err := rows.Scan(&rentalUnitVariableSetting.ID, &rentalUnitVariableSetting.RentalID, &rentalUnitVariableSetting.NightlyCost, &rentalUnitVariableSetting.MinimumBookingDuration, &rentalUnitVariableSetting.CleaningFee, &rentalUnitVariableSetting.EventRequired, &rentalUnitVariableSetting.StartDate, &rentalUnitVariableSetting.EndDate)
+		err := rows.Scan(&rentalUnitVariableSetting.ID, &rentalUnitVariableSetting.RentalID, &rentalUnitVariableSetting.NightlyCost, &rentalUnitVariableSetting.MinimumBookingDuration, &rentalUnitVariableSetting.CleaningFee, &rentalUnitVariableSetting.EventRequired, &startDateStr, &endDateStr)
 		if err != nil {
 			return nil, err
 		}
+
+		// Parse date strings to time.Time
+		rentalUnitVariableSetting.StartDate, err = time.Parse("2006-01-02", startDateStr)
+		if err != nil {
+			return nil, err
+		}
+
+		rentalUnitVariableSetting.EndDate, err = time.Parse("2006-01-02", endDateStr)
+		if err != nil {
+			return nil, err
+		}
+
 		rentalUnitVariableSettings = append(rentalUnitVariableSettings, rentalUnitVariableSetting)
 	}
 
@@ -127,17 +140,32 @@ func UpdateVariableSettingsForRentalId(rentalId string, nightlyCost float64, min
 
 }
 
-func CreateVariableSettingsForRentalId(rentalId string, nightlyCost float64, minimumBookingDuration int, cleaningFee float64, eventRequired bool, StartDate time.Time, EndDate time.Time, db *sql.DB) error {
+func CreateVariableSettingsForRentalId(rentalId string, nightlyCost float64, minimumBookingDuration int, cleaningFee float64, eventRequired bool, StartDate time.Time, EndDate time.Time, db *sql.DB) (int, error) {
+	//check if a row exists in these dates
+	rentalUnitVariableSettings, err := GetVariableSettingsForRentalIdAndDateRange(rentalId, StartDate, EndDate, db)
+	if err != nil {
+		return -1, err
+	}
+
+	if len(rentalUnitVariableSettings) > 0 {
+		return -2, nil
+	}
 
 	query := "INSERT INTO rental_unit_variable_settings (rental_id, nightly_cost, minimum_booking_duration, cleaning_fee, event_required, start_date, end_date) VALUES (?, ?, ?, ?, ?, ?, ?)"
 
-	_, err := db.Exec(query, rentalId, nightlyCost, minimumBookingDuration, cleaningFee, eventRequired, StartDate, EndDate)
+	result, err := db.Exec(query, rentalId, nightlyCost, minimumBookingDuration, cleaningFee, eventRequired, StartDate, EndDate)
 
 	if err != nil {
-		return err
+		return -1, err
 	}
 
-	return nil
+	// Get the ID of the newly created rental unit variable settings
+	id, err := result.LastInsertId()
+	if err != nil {
+		return -1, err
+	}
+
+	return int(id), nil
 
 }
 
@@ -202,10 +230,23 @@ func CreateVariableSettingsForRental(w http.ResponseWriter, r *http.Request, db 
 		log.Fatalf("failed to decode: %v", err)
 	}
 
-	err = CreateVariableSettingsForRentalId(rentalID, rentalUnitVariableSettings.NightlyCost, rentalUnitVariableSettings.MinimumBookingDuration, rentalUnitVariableSettings.CleaningFee, rentalUnitVariableSettings.EventRequired, rentalUnitVariableSettings.StartDate, rentalUnitVariableSettings.EndDate, db)
+	createdId, err := CreateVariableSettingsForRentalId(rentalID, rentalUnitVariableSettings.NightlyCost, rentalUnitVariableSettings.MinimumBookingDuration, rentalUnitVariableSettings.CleaningFee, rentalUnitVariableSettings.EventRequired, rentalUnitVariableSettings.StartDate, rentalUnitVariableSettings.EndDate, db)
 	if err != nil {
 		log.Fatalf("failed to create: %v", err)
 	}
+
+	if createdId == -2 {
+		w.WriteHeader(http.StatusConflict)
+		w.Write([]byte("Conflict: The rental unit variable settings already exists."))
+		return
+	}
+
+	rentalUnitVariableSettings.ID = createdId
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated) // HTTP 201 Created
+	json.NewEncoder(w).Encode(rentalUnitVariableSettings)
 
 }
 
