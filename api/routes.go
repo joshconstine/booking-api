@@ -48,6 +48,14 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		CreateBookingCostItem(w, r, db)
 	}).Methods("POST")
 
+	r.HandleFunc("/bookings/{id}/costItems", func(w http.ResponseWriter, r *http.Request) {
+		UpdateBookingCostItem(w, r, db)
+	}).Methods("PUT")
+
+	r.HandleFunc("/bookings/{id}/costItems", func(w http.ResponseWriter, r *http.Request) {
+		DeleteBookingCostItem(w, r, db)
+	}).Methods("DELETE")
+
 	//Rentals
 	r.HandleFunc("/rentals", func(w http.ResponseWriter, r *http.Request) {
 		GetRentals(w, r, db)

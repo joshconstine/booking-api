@@ -49,6 +49,22 @@ func AttemptToCreateBookingCostItem(bookingCostItem BookingCostItem, db *sql.DB)
 	return err
 }
 
+func AttemptToUpdateBookingCostItem(bookingCostItem BookingCostItem, db *sql.DB) error {
+	_, err := db.Exec("UPDATE booking_cost_item SET  booking_cost_type_id = ?, ammount = ? WHERE id = ?", bookingCostItem.BookingCostTypeID, bookingCostItem.Ammount, bookingCostItem.ID)
+	return err
+}
+func DeleteBookingCostItemForBookingId(bookingId string, db *sql.DB) error {
+
+	query := "DELETE FROM booking_cost_item WHERE booking_id = ?"
+	_, err := db.Exec(query, bookingId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
 func GetBookingCostItems(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	vars := mux.Vars(r)
@@ -87,5 +103,44 @@ func CreateBookingCostItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 
 	w.WriteHeader(http.StatusCreated) // HTTP 201 Created
-	w.Write([]byte("Created"))
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(bookingCostItem)
+
+}
+
+func UpdateBookingCostItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	var bookingCostItem BookingCostItem
+	if err := json.NewDecoder(r.Body).Decode(&bookingCostItem); err != nil {
+		log.Fatalf("failed to decode: %v", err)
+	}
+
+	err := AttemptToUpdateBookingCostItem(bookingCostItem, db)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError) // HTTP 500 Internal Server Error
+		w.Write([]byte("Internal Server Error"))
+		return
+
+	}
+
+	w.WriteHeader(http.StatusOK) // HTTP 200 OK
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(bookingCostItem)
+
+}
+
+func DeleteBookingCostItem(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	bookingCostItemId := vars["id"]
+
+	err := DeleteBookingCostItemForBookingId(bookingCostItemId, db)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError) // HTTP 500 Internal Server Error
+		w.Write([]byte("Internal Server Error"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK) // HTTP 200 OK
+	w.Write([]byte("Booking Cost Item Deleted"))
+
 }
