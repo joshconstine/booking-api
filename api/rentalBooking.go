@@ -38,6 +38,22 @@ type RentalBookingDetails struct {
 	EndTime           time.Time
 }
 
+func DetermineCleanFee(rentalUnitDefaultSettings RentalUnitDefaultSettings, rentalUnitVariableSettings []RentalUnitVariableSettings, startTime time.Time, endTime time.Time) float64 {
+
+	// check if cleaning fee is in variable settings
+	varSettingFound := false
+	for _, rentalUnitVariableSetting := range rentalUnitVariableSettings {
+		if startTime.After(rentalUnitVariableSetting.StartDate) && startTime.Before(rentalUnitVariableSetting.EndDate) {
+			return rentalUnitVariableSetting.CleaningFee
+		}
+	}
+	// If no variable setting, use default
+	if !varSettingFound {
+		return rentalUnitDefaultSettings.CleaningFee
+	}
+	return 0
+}
+
 func CalculateRentalCost(rentalUnitVariableSettings []RentalUnitVariableSettings, rentalUnitDefaultSettings RentalUnitDefaultSettings, startTime time.Time, endTime time.Time) float64 {
 	// Calculate the duration in days
 	durationInDays := int(endTime.Sub(startTime).Hours() / 24)
@@ -137,14 +153,28 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 	//calculate cost
 	totalCost := CalculateRentalCost(rentalUnitVariableSettings, rentalUnitDefaultSettings, details.StartTime, details.EndTime)
 
-	//create booking cost item
+	//create booking cost item for rental cost
 	bookingCostItem := BookingCostItem{
 		BookingID:         details.BookingID,
 		BookingCostTypeID: 3,
 		Ammount:           totalCost,
 	}
+	//create Cleanign fee cost item
+
+	cleaningFee := DetermineCleanFee(rentalUnitDefaultSettings, rentalUnitVariableSettings, details.StartTime, details.EndTime)
+
+	bookingCostItemCleaningFee := BookingCostItem{
+		BookingID:         details.BookingID,
+		BookingCostTypeID: 2,
+		Ammount:           cleaningFee,
+	}
 
 	err = AttemptToCreateBookingCostItem(bookingCostItem, db)
+	if err != nil {
+		return 0, err
+	}
+
+	err = AttemptToCreateBookingCostItem(bookingCostItemCleaningFee, db)
 	if err != nil {
 		return 0, err
 	}
