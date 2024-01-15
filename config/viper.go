@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/spf13/viper"
@@ -13,14 +14,6 @@ type EnvVars struct {
 }
 
 func LoadConfig() (config EnvVars, err error) {
-	env := os.Getenv("GO_ENV")
-	if env == "production" {
-		return EnvVars{
-			DSN:  os.Getenv("DSN"),
-			PORT: os.Getenv("PORT"),
-		}, nil
-	}
-
 	viper.AddConfigPath(".")
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
@@ -29,7 +22,13 @@ func LoadConfig() (config EnvVars, err error) {
 
 	err = viper.ReadInConfig()
 	if err != nil {
-		return
+		// Fallback to environment variables if config file is not found
+		config.DSN = os.Getenv("DSN")
+		config.PORT = os.Getenv("PORT")
+		if config.DSN == "" || config.PORT == "" {
+			return config, fmt.Errorf("error loading config, %v", err)
+		}
+		return config, nil
 	}
 
 	err = viper.Unmarshal(&config)
