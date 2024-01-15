@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func InitDb() {
 
 	//SQL CREATE TABLES
 

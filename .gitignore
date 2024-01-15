@@ -3,3 +3,4 @@ env
 .env
 app.env
 ~.env
+.env
