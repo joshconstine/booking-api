@@ -91,7 +91,10 @@ func UpdateBookingDetailsForBooking(w http.ResponseWriter, r *http.Request, db *
 	// Decode the JSON data.
 	err := json.NewDecoder(r.Body).Decode(&bookingDetails)
 	if err != nil {
-		log.Fatal(err)
+		// Log the error and send a bad request response
+		log.Printf("error decoding request: %v", err)
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
 	}
 
 	// Update the database.
