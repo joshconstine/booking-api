@@ -181,6 +181,25 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 		return 0, err
 	}
 
+	//get booking details
+	bookingDetails, err := GetDetailsForBookingID(strconv.Itoa(details.BookingID), db)
+	if err != nil {
+		return 0, err
+	}
+
+	//update booking details
+	bookingDetails.BookingStartDate = details.StartTime
+
+	twoWeeksBeforeBookingStartDate := details.StartTime.AddDate(0, 0, -14)
+
+	bookingDetails.PaymentDueDate = twoWeeksBeforeBookingStartDate
+
+	err = UpdateBookingDetails(bookingDetails, db)
+
+	if err != nil {
+		return 0, err
+	}
+
 	//get variable settings for Dates
 	var rentalUnitVariableSettings []RentalUnitVariableSettings
 

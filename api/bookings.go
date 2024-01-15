@@ -35,8 +35,10 @@ func createNewBooking(db *sql.DB, userID int) (int, error) {
 		log.Fatal(err)
 	}
 
+	tenYearFromNow := time.Now().AddDate(10, 0, 0)
+
 	//create booking details
-	bookingResult, err = tx.Exec("INSERT INTO booking_details (booking_id, payment_complete, payment_due_date, documents_signed, booking_start_date) VALUES (?, ?, ?, ?, ?)", bookingID, false, time.Now(), false, time.Now())
+	bookingResult, err = tx.Exec("INSERT INTO booking_details (booking_id, payment_complete, payment_due_date, documents_signed, booking_start_date) VALUES (?, ?, ?, ?, ?)", bookingID, false, tenYearFromNow, false, tenYearFromNow)
 	if err != nil {
 		log.Fatal(err)
 	}
