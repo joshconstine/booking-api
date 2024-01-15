@@ -83,7 +83,7 @@ func buildServer(env config.EnvVars) (*http.Server, func(), error) {
 	api.InitRoutes(r, db)
 
 	server := &http.Server{
-		Addr:    ":" + env.Port,
+		Addr:    ":" + env.PORT,
 		Handler: r,
 	}
 

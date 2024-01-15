@@ -9,7 +9,7 @@ import (
 
 type EnvVars struct {
 	DSN  string `mapstructure:"DSN"`
-	Port string `mapstructure:"Port"`
+	PORT string `mapstructure:"PORT"`
 }
 
 func LoadConfig() (config EnvVars, err error) {
@@ -17,7 +17,7 @@ func LoadConfig() (config EnvVars, err error) {
 	if env == "production" {
 		return EnvVars{
 			DSN:  os.Getenv("DSN"),
-			Port: os.Getenv("Port"),
+			PORT: os.Getenv("PORT"),
 		}, nil
 	}
 
@@ -41,8 +41,8 @@ func LoadConfig() (config EnvVars, err error) {
 		return
 	}
 
-	if config.Port == "" {
-		err = errors.New("Port is required")
+	if config.PORT == "" {
+		err = errors.New("PORT is required")
 	}
 
 	return
