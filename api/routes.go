@@ -66,7 +66,7 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 	}).Methods("GET")
 
 	r.HandleFunc("/rentals/{id}", func(w http.ResponseWriter, r *http.Request) {
-		GetRental(w, r, db)
+		GetSingleRentalByID(w, r, db)
 	}).Methods("GET")
 
 	r.HandleFunc("/rentals/{id}/defaultSettings", func(w http.ResponseWriter, r *http.Request) {
