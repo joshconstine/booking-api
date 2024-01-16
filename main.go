@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/handlers"
+
 	"booking-api/pkg/shutdown"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -65,8 +67,12 @@ func run(env config.EnvVars) (func(), error) {
 }
 
 func buildServer(env config.EnvVars) (*http.Server, func(), error) {
-
 	r := mux.NewRouter()
+
+	// Configure CORS
+	corsOpts := handlers.AllowedOrigins([]string{"http://localhost:3000"}) // Update this with the allowed origin(s)
+	handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
+	handlers.AllowedHeaders([]string{"Content-Type", "Authorization"})
 
 	// Open a connection to PlanetScale
 	db, err := sql.Open("mysql", env.DSN)
@@ -84,7 +90,7 @@ func buildServer(env config.EnvVars) (*http.Server, func(), error) {
 
 	server := &http.Server{
 		Addr:    ":" + env.PORT,
-		Handler: r,
+		Handler: handlers.CORS(corsOpts)(r), // Wrap the router with the CORS handler
 	}
 
 	return server, func() {
