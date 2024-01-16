@@ -70,10 +70,12 @@ func buildServer(env config.EnvVars) (*http.Server, func(), error) {
 	r := mux.NewRouter()
 
 	// Configure CORS
-	corsOpts := handlers.AllowedOrigins([]string{"http://localhost:3000"}) // Update this with the allowed origin(s)
-	handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
-	handlers.AllowedHeaders([]string{"Content-Type", "Authorization"})
-
+	corsOpts := handlers.CORS(
+		handlers.AllowedOrigins([]string{"http://localhost:3000"}),                   // Allowed origins
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}), // Allowed methods
+		handlers.AllowedHeaders([]string{"Content-Type", "Application/json"}),        // Allowed headers
+		handlers.AllowCredentials(),                                                  // Credentials
+	)
 	// Open a connection to PlanetScale
 	db, err := sql.Open("mysql", env.DSN)
 	if err != nil {
@@ -90,7 +92,7 @@ func buildServer(env config.EnvVars) (*http.Server, func(), error) {
 
 	server := &http.Server{
 		Addr:    ":" + env.PORT,
-		Handler: handlers.CORS(corsOpts)(r), // Wrap the router with the CORS handler
+		Handler: corsOpts(r), // Wrap the router with the CORS handler
 	}
 
 	return server, func() {
