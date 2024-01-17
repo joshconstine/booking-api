@@ -60,6 +60,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		DeleteBookingCostItem(w, r, db)
 	}).Methods("DELETE")
 
+	r.HandleFunc("/bookings/{id}/info", func(w http.ResponseWriter, r *http.Request) {
+		GetBookingInformation(w, r, db)
+	}).Methods("GET")
+
 	//Rentals
 	r.HandleFunc("/rentals", func(w http.ResponseWriter, r *http.Request) {
 		GetRentals(w, r, db)

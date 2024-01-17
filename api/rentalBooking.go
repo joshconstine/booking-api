@@ -129,7 +129,6 @@ func GetRentalBookingDetailsByRentalIdForRange(rentalID int, from time.Time, to 
 	var rentalBookingDetails []RentalBookingDetails
 
 	for _, rentalBookingId := range rentalBookingIds {
-
 		rentalBookingDetail, err := GetDetailsForRentalBookingID(strconv.Itoa(rentalBookingId), db)
 		if err != nil {
 			return nil, err
@@ -412,6 +411,28 @@ func GetRentalBookingsForRentalId(rentalId int, db *sql.DB) ([]RentalBooking, er
 	}
 
 	return rentalBookings, nil
+}
+func GetRentalBookingIDsForBookingId(bookingId string, db *sql.DB) ([]int, error) {
+	// Query the database for all rental bookings.
+	rows, err := db.Query("SELECT id FROM rental_booking WHERE booking_id = ?", bookingId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Create a slice of rental bookings to hold the data.
+	var rentalBookingIds []int
+
+	// Loop through the data and insert into the rental bookings slice.
+	for rows.Next() {
+		var rentalBookingId int
+		if err := rows.Scan(&rentalBookingId); err != nil {
+			return nil, err
+		}
+		rentalBookingIds = append(rentalBookingIds, rentalBookingId)
+	}
+
+	return rentalBookingIds, nil
 }
 
 // API Handlers
