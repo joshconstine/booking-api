@@ -44,6 +44,103 @@ type RentalBookingCost struct {
 	BookingCostItemID int
 }
 
+func GetDetailsForRentalBookingID(rentalBookingId string, db *sql.DB) (RentalBookingDetails, error) {
+
+	// Query the database for the rental booking joined with the rental timeblock.
+	query := "SELECT rb.id, rb.rental_id, rb.booking_id, rb.rental_time_block_id, rb.booking_status_id, rb.booking_file_id, rt.start_time, rt.end_time, rt.rental_booking_id FROM rental_booking rb JOIN rental_timeblock rt ON rb.rental_time_block_id = rt.id WHERE rb.id = ?"
+	rows, err := db.Query(query, rentalBookingId)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+	defer rows.Close()
+
+	// Create a single instance of RentalBookingDetails.
+	var rentalBookingDetails RentalBookingDetails
+
+	// Check if there is at least one row.
+	if rows.Next() {
+		var startTimeStr, endTimeStr string
+		var rentalBookingID int
+		var costItems []BookingCostItem
+
+		// Scan the values into variables.
+		if err := rows.Scan(&rentalBookingDetails.ID, &rentalBookingDetails.RentalID, &rentalBookingDetails.BookingID, &rentalBookingDetails.RentalTimeBlockID, &rentalBookingDetails.BookingStatusID, &rentalBookingDetails.BookingFileID, &startTimeStr, &endTimeStr, &rentalBookingID); err != nil {
+			log.Fatalf("failed to scan row: %v", err)
+		}
+
+		// Convert the datetime strings to time.Time.
+		rentalBookingDetails.StartTime, err = time.Parse("2006-01-02 15:04:05", startTimeStr)
+		if err != nil {
+			log.Fatalf("failed to parse start time: %v", err)
+		}
+
+		rentalBookingDetails.EndTime, err = time.Parse("2006-01-02 15:04:05", endTimeStr)
+		if err != nil {
+			log.Fatalf("failed to parse end time: %v", err)
+		}
+		costItems, err = GetCostItemsForRentalBookingId(rentalBookingId, db)
+		if err != nil {
+			log.Fatalf("failed to query: %v", err)
+		}
+
+		rentalBookingDetails.CostItems = costItems
+
+		rentalBookingDetails.ID = rentalBookingID
+	}
+
+	return rentalBookingDetails, nil
+
+}
+
+func GetRentalBookingIdsFromRentalIdWithRange(rentalID int, from time.Time, to time.Time, db *sql.DB) ([]int, error) {
+
+	rentalIdString := strconv.Itoa(rentalID)
+	fromString := from.Format("2006-01-02 15:04:05")
+	toString := to.Format("2006-01-02 15:04:05")
+
+	// Query the database for all rental bookings.
+	rows, err := db.Query("SELECT rb.id FROM rental_booking rb JOIN rental_timeblock rt ON rb.rental_time_block_id = rt.id WHERE rb.rental_id = ? AND rt.start_time >= ? AND rt.end_time <= ?", rentalIdString, fromString, toString)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var bookingIds []int
+
+	for rows.Next() {
+		var bookingId int
+		if err := rows.Scan(&bookingId); err != nil {
+			return nil, err
+		}
+		bookingIds = append(bookingIds, bookingId)
+	}
+
+	return bookingIds, nil
+
+}
+
+func GetRentalBookingDetailsByRentalIdForRange(rentalID int, from time.Time, to time.Time, db *sql.DB) ([]RentalBookingDetails, error) {
+
+	rentalBookingIds, err := GetRentalBookingIdsFromRentalIdWithRange(rentalID, from, to, db)
+	if err != nil {
+		return nil, err
+	}
+
+	var rentalBookingDetails []RentalBookingDetails
+
+	for _, rentalBookingId := range rentalBookingIds {
+
+		rentalBookingDetail, err := GetDetailsForRentalBookingID(strconv.Itoa(rentalBookingId), db)
+		if err != nil {
+			return nil, err
+		}
+		rentalBookingDetails = append(rentalBookingDetails, rentalBookingDetail)
+	}
+
+	return rentalBookingDetails, nil
+
+}
+
 func AddRentalBookingCost(rentalBookingCost RentalBookingCost, db *sql.DB) error {
 	_, err := db.Exec("INSERT INTO rental_booking_cost (rental_booking_id, booking_cost_item_id) VALUES (?, ?)", rentalBookingCost.RentalBookingID, rentalBookingCost.BookingCostItemID)
 	return err
@@ -400,46 +497,9 @@ func GetRentalBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB)
 	vars := mux.Vars(r)
 	rentalBookingId := vars["rentalBookingId"]
 
-	// Query the database for the rental booking joined with the rental timeblock.
-	query := "SELECT rb.id, rb.rental_id, rb.booking_id, rb.rental_time_block_id, rb.booking_status_id, rb.booking_file_id, rt.start_time, rt.end_time, rt.rental_booking_id FROM rental_booking rb JOIN rental_timeblock rt ON rb.rental_time_block_id = rt.id WHERE rb.id = ?"
-	rows, err := db.Query(query, rentalBookingId)
+	rentalBookingDetails, err := GetDetailsForRentalBookingID(rentalBookingId, db)
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
-	}
-	defer rows.Close()
-
-	// Create a single instance of RentalBookingDetails.
-	var rentalBookingDetails RentalBookingDetails
-
-	// Check if there is at least one row.
-	if rows.Next() {
-		var startTimeStr, endTimeStr string
-		var rentalBookingID int
-		var costItems []BookingCostItem
-
-		// Scan the values into variables.
-		if err := rows.Scan(&rentalBookingDetails.ID, &rentalBookingDetails.RentalID, &rentalBookingDetails.BookingID, &rentalBookingDetails.RentalTimeBlockID, &rentalBookingDetails.BookingStatusID, &rentalBookingDetails.BookingFileID, &startTimeStr, &endTimeStr, &rentalBookingID); err != nil {
-			log.Fatalf("failed to scan row: %v", err)
-		}
-
-		// Convert the datetime strings to time.Time.
-		rentalBookingDetails.StartTime, err = time.Parse("2006-01-02 15:04:05", startTimeStr)
-		if err != nil {
-			log.Fatalf("failed to parse start time: %v", err)
-		}
-
-		rentalBookingDetails.EndTime, err = time.Parse("2006-01-02 15:04:05", endTimeStr)
-		if err != nil {
-			log.Fatalf("failed to parse end time: %v", err)
-		}
-		costItems, err = GetCostItemsForRentalBookingId(rentalBookingId, db)
-		if err != nil {
-			log.Fatalf("failed to query: %v", err)
-		}
-
-		rentalBookingDetails.CostItems = costItems
-
-		rentalBookingDetails.ID = rentalBookingID
 	}
 
 	// Return the data as JSON.

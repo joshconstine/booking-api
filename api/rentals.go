@@ -29,7 +29,7 @@ type RentalInformtion struct {
 	LocationID    int
 	LocationName  string
 	RentalIsClean bool
-	Bookings      []RentalBooking
+	Bookings      []RentalBookingDetails
 	Timeblocks    []RentalTimeblock
 }
 
@@ -153,7 +153,7 @@ func GetRentalInformation(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			log.Fatalf("failed to scan row: %v", err)
 		}
 
-		rentalBookings, err := GetRentalBookingsForRentalId(rentalInfo.RentalID, db)
+		rentalBookings, err := GetRentalBookingDetailsByRentalIdForRange(rentalInfo.RentalID, today, threeMonthsFromNow, db)
 
 		if err != nil {
 			log.Fatalf("failed to scan row: %v", err)
