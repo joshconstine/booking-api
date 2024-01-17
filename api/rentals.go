@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -20,6 +21,16 @@ type Rental struct {
 type RentalWithLocation struct {
 	Rental
 	LocationName string
+}
+
+type RentalInformtion struct {
+	RentalID      int
+	Name          string
+	LocationID    int
+	LocationName  string
+	RentalIsClean bool
+	Bookings      []RentalBooking
+	Timeblocks    []RentalTimeblock
 }
 
 func GetSingleRentalByID(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -107,4 +118,55 @@ func GetRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(rentalWithLocation)
+}
+
+func GetRentalInformation(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	// Get the rental ID from the request URL.
+	// We're using the gorilla/mux package to get the ID.
+	//
+	// For example, if the request URL is "/rentals/1",
+
+	//get rental join location name from lcoation table
+
+	rows, err := db.Query("SELECT rental.id, rental.name, location.name, rental.location_id, rs.is_clean FROM rental JOIN location ON rental.location_id = location.id JOIN rental_status rs ON rental.id = rs.rental_id")
+
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	defer rows.Close()
+
+	var rentalInformation []RentalInformtion
+
+	for rows.Next() {
+		var rentalInfo RentalInformtion
+		if err := rows.Scan(&rentalInfo.RentalID, &rentalInfo.Name, &rentalInfo.LocationName, &rentalInfo.LocationID, &rentalInfo.RentalIsClean); err != nil {
+			log.Fatalf("failed to scan row: %v", err)
+		}
+
+		threeMonthsFromNow := time.Now().AddDate(0, 3, 0)
+		today := time.Now()
+
+		rentalTimeblocks, err := GetRentalTimeblocksByRentalIDForRange(rentalInfo.RentalID, today, threeMonthsFromNow, db)
+		if err != nil {
+			log.Fatalf("failed to scan row: %v", err)
+		}
+
+		rentalBookings, err := GetRentalBookingsForRentalId(rentalInfo.RentalID, db)
+
+		if err != nil {
+			log.Fatalf("failed to scan row: %v", err)
+		}
+
+		rentalInfo.Bookings = rentalBookings
+		rentalInfo.Timeblocks = rentalTimeblocks
+
+		rentalInformation = append(rentalInformation, rentalInfo)
+
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(rentalInformation)
 }

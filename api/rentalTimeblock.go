@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -116,14 +117,14 @@ func GetRentalTimeblock(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 }
 
-func GetRentalTimeblocks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	vars := mux.Vars(r)
-	id := vars["id"]
+func GetRentalTimeblocksByRentalID(rentalID int, db *sql.DB) ([]RentalTimeblock, error) {
+	rentalIdString := strconv.Itoa(rentalID)
 
-	// Query the database.
-	rows, err := db.Query("SELECT * FROM rental_timeblock WHERE rental_id = ?", id)
+	// Query the database for the rental timeblock of the id.
+	query := "SELECT * FROM rental_timeblock WHERE rental_id = ?"
+	rows, err := db.Query(query, rentalIdString)
 	if err != nil {
-		log.Fatalf("failed to query: %v", err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -138,18 +139,18 @@ func GetRentalTimeblocks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		// Scan the values into variables.
 		if err := rows.Scan(&timeblock.ID, &timeblock.RentalID, &startTimeStr, &endTimeStr, &rentalBookingID); err != nil {
-			log.Fatalf("failed to scan row: %v", err)
+			return nil, err
 		}
 
 		// Convert the datetime strings to time.Time.
 		timeblock.StartTime, err = time.Parse("2006-01-02 15:04:05", startTimeStr)
 		if err != nil {
-			log.Fatalf("failed to parse start time: %v", err)
+			return nil, err
 		}
 
 		timeblock.EndTime, err = time.Parse("2006-01-02 15:04:05", endTimeStr)
 		if err != nil {
-			log.Fatalf("failed to parse end time: %v", err)
+			return nil, err
 		}
 
 		timeblock.RentalBookingID = rentalBookingID
@@ -157,6 +158,61 @@ func GetRentalTimeblocks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		timeblocks = append(timeblocks, timeblock)
 	}
 
+	return timeblocks, nil
+}
+func GetRentalTimeblocksByRentalIDForRange(rentalID int, from time.Time, to time.Time, db *sql.DB) ([]RentalTimeblock, error) {
+	rentalIdString := strconv.Itoa(rentalID)
+	fromString := from.Format("2006-01-02 15:04:05")
+	toString := to.Format("2006-01-02 15:04:05")
+
+	// Modify the query to filter by start and end time
+	query := `SELECT * FROM rental_timeblock WHERE rental_id = ? AND start_time >= ? AND end_time <= ?`
+	rows, err := db.Query(query, rentalIdString, fromString, toString)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var timeblocks []RentalTimeblock
+
+	for rows.Next() {
+		var timeblock RentalTimeblock
+		var startTimeStr, endTimeStr string
+		var rentalBookingID *int
+
+		if err := rows.Scan(&timeblock.ID, &timeblock.RentalID, &startTimeStr, &endTimeStr, &rentalBookingID); err != nil {
+			return nil, err
+		}
+
+		timeblock.StartTime, err = time.Parse("2006-01-02 15:04:05", startTimeStr)
+		if err != nil {
+			return nil, err
+		}
+
+		timeblock.EndTime, err = time.Parse("2006-01-02 15:04:05", endTimeStr)
+		if err != nil {
+			return nil, err
+		}
+
+		timeblock.RentalBookingID = rentalBookingID
+
+		timeblocks = append(timeblocks, timeblock)
+	}
+
+	return timeblocks, nil
+}
+
+func GetRentalTimeblocks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	intId, err := strconv.Atoi(id)
+
+	timeblocks, err := GetRentalTimeblocksByRentalID(intId, db)
+
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(timeblocks)

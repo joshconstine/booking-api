@@ -292,6 +292,31 @@ func GetRentalBookingsForBookingId(bookingId string, db *sql.DB) ([]RentalBookin
 	return rentalBookings, nil
 }
 
+func GetRentalBookingsForRentalId(rentalId int, db *sql.DB) ([]RentalBooking, error) {
+	rentalIdString := strconv.Itoa(rentalId)
+
+	// Query the database for all rental bookings.
+	rows, err := db.Query("SELECT id, rental_id, booking_id, rental_time_block_id, booking_status_id, booking_file_id FROM rental_booking WHERE rental_id = ?", rentalIdString)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Create a slice of rental bookings to hold the data.
+	var rentalBookings []RentalBooking
+
+	// Loop through the data and insert into the rental bookings slice.
+	for rows.Next() {
+		var rentalBooking RentalBooking
+		if err := rows.Scan(&rentalBooking.ID, &rentalBooking.RentalID, &rentalBooking.BookingID, &rentalBooking.RentalTimeBlockID, &rentalBooking.BookingStatusID, &rentalBooking.BookingFileID); err != nil {
+			return nil, err
+		}
+		rentalBookings = append(rentalBookings, rentalBooking)
+	}
+
+	return rentalBookings, nil
+}
+
 // API Handlers
 func GetRentalBookingsForBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
