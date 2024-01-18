@@ -28,6 +28,11 @@ func GetTotalCostItemsForBookingID(bookingID int, db *sql.DB) (float64, error) {
 
 	defer rows.Close()
 
+	//check if there are no payments
+	if rows.Next() == false {
+		return 0, nil
+	}
+
 	for rows.Next() {
 
 		err := rows.Scan(&totalCost)
