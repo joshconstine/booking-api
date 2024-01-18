@@ -90,33 +90,29 @@ func GetBookingPaymentsForBookingID(bookingID int, db *sql.DB) ([]BookingPayment
 	return bookingPayments, err
 }
 func GetTotalPaymentsForBookingID(bookingID int, db *sql.DB) (float64, error) {
+	var totalPayments sql.NullFloat64 // Use sql.NullFloat64 to handle NULL values
 
-	var totalPayments float64
+	// Execute the query
+	row := db.QueryRow("SELECT SUM(payment_amount) FROM booking_payment WHERE booking_id = ?", bookingID)
 
-	rows, err := db.Query("SELECT SUM(payment_amount) FROM booking_payment WHERE booking_id = ?", bookingID)
-
+	// Scan the result
+	err := row.Scan(&totalPayments)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			// No rows were returned, which means no payments were found
+			return 0, nil
+		}
 		log.Fatalf("failed to query: %v", err)
 	}
 
-	defer rows.Close()
-
-	//check if there are no payments
-	if rows.Next() == false {
+	// If the SUM result is NULL (i.e., no payments), return 0
+	if !totalPayments.Valid {
 		return 0, nil
 	}
 
-	for rows.Next() {
+	// Return the sum
+	return totalPayments.Float64, nil
 
-		err := rows.Scan(&totalPayments)
-
-		if err != nil {
-			log.Fatalf("failed to query: %v", err)
-		}
-
-	}
-
-	return totalPayments, err
 }
 
 func AddPaymentToBooking(bookingPayment BookingPayment, db *sql.DB) (int64, error) {

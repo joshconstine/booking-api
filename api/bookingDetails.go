@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -30,31 +31,26 @@ func VerifyBookingPaymentStatus(bookingID int, db *sql.DB) (bool, error) {
 		log.Fatalf("failed to query: %v", err)
 	}
 
-	//get the booking cost items
-
 	totalBill, err := GetTotalCostItemsForBookingID(bookingID, db)
-
 	if err != nil {
-		log.Fatalf("failed to query: %v", err)
+		return false, fmt.Errorf("failed to query total bill: %v", err)
 	}
 
 	totalPayments, err := GetTotalPaymentsForBookingID(bookingID, db)
-
 	if err != nil {
-		log.Fatalf("failed to query: %v", err)
+		return false, fmt.Errorf("failed to query total payments: %v", err)
 	}
 
-	var paymentComplete bool
+	paymentComplete := totalPayments >= totalBill
 
-	if totalPayments >= totalBill {
-		paymentComplete = true
-	} else {
-		paymentComplete = false
+	// Update only if there is a change in the payment status
+	if bookingDetails.PaymentComplete != paymentComplete {
+		bookingDetails.PaymentComplete = paymentComplete
+		err = UpdateBookingDetails(bookingDetails, db)
+		if err != nil {
+			return false, fmt.Errorf("failed to update booking details: %v", err)
+		}
 	}
-
-	//if what is saved already doesent match, update it
-	bookingDetails.PaymentComplete = paymentComplete
-	UpdateBookingDetails(bookingDetails, db)
 
 	return paymentComplete, err
 }

@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -17,33 +18,23 @@ type BookingCostItem struct {
 }
 
 func GetTotalCostItemsForBookingID(bookingID int, db *sql.DB) (float64, error) {
+	var totalCost sql.NullFloat64 // Use sql.NullFloat64 to handle NULL values
 
-	var totalCost float64
-
-	rows, err := db.Query("SELECT SUM(amount) FROM booking_cost_item WHERE booking_id = ?", bookingID)
-
+	// Use QueryRow for a single row result
+	err := db.QueryRow("SELECT SUM(amount) FROM booking_cost_item WHERE booking_id = ?", bookingID).Scan(&totalCost)
 	if err != nil {
-		log.Fatalf("failed to query: %v", err)
+		// Handle the error properly
+		return 0, fmt.Errorf("failed to query total cost: %v", err)
 	}
 
-	defer rows.Close()
-
-	//check if there are no payments
-	if rows.Next() == false {
+	// Check if the result is NULL (no rows found or sum of nothing)
+	if !totalCost.Valid {
+		// Return 0 if the SUM is NULL
 		return 0, nil
 	}
 
-	for rows.Next() {
-
-		err := rows.Scan(&totalCost)
-
-		if err != nil {
-			log.Fatalf("failed to query: %v", err)
-		}
-
-	}
-
-	return totalCost, err
+	// Return the sum
+	return totalCost.Float64, nil
 }
 
 func GetCostItemsForBookingId(bookingId string, db *sql.DB) ([]BookingCostItem, error) {
