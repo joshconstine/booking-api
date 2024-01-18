@@ -27,6 +27,17 @@ type BookingInformation struct {
 	CostItems      []BookingCostItem
 }
 
+type BookingSnapshot struct {
+	BookingID       int
+	BookingStatus   string
+	RentalsBooked   []string
+	BoatsBooked     []string
+	Events          []string
+	HasAlcoholOrder bool
+	BookingDetails  BookingDetails
+	User            User
+}
+
 func createNewBooking(db *sql.DB, userID int) (int, error) {
 
 	//start transaction
@@ -213,4 +224,83 @@ func GetBookingInformation(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(bookingInformation)
 
+}
+
+func GetBookingSnapshots(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	//get query params
+	vars := r.URL.Query()
+	startDateString := vars.Get("startDate")
+	endDateString := vars.Get("endDate")
+
+	//parse dates or set to defaults today, 10 years from now
+	var startDate time.Time
+	var endDate time.Time
+
+	if startDateString == "" {
+		startDate = time.Now()
+	} else {
+		startDate, _ = time.Parse("2006-01-02", startDateString)
+	}
+
+	if endDateString == "" {
+		endDate = time.Now().AddDate(10, 0, 0)
+	} else {
+		endDate, _ = time.Parse("2006-01-02", endDateString)
+	}
+
+	// perform query
+
+	rows, err := db.Query("SELECT b.id,b.user_id, bs.name, bd.id, bd.payment_complete, bd.payment_due_date, bd.documents_signed, bd.booking_start_date FROM booking b JOIN booking_status bs ON b.booking_status_id = bs.id JOIN booking_details bd ON b.booking_details_id = bd.id WHERE bd.booking_start_date >= ? AND bd.booking_start_date <= ?", startDate, endDate)
+
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+	defer rows.Close()
+
+	var bookingSnapshots []BookingSnapshot
+
+	for rows.Next() {
+		var user User
+
+		var bookingSnapshot BookingSnapshot
+
+		var dueDateString string
+		var startDateString string
+
+		if err := rows.Scan(&bookingSnapshot.BookingID, &bookingSnapshot.User.ID, &bookingSnapshot.BookingStatus, &bookingSnapshot.BookingDetails.ID, &bookingSnapshot.BookingDetails.PaymentComplete, &endDateString, &bookingSnapshot.BookingDetails.DocumentsSigned, &startDateString); err != nil {
+			log.Fatalf("failed to scan row: %v", err)
+		}
+
+		// Attempt to parse with date and time layout
+		bookingSnapshot.BookingDetails.PaymentDueDate, err = time.Parse("2006-01-02 15:04:05", dueDateString)
+		if err != nil {
+		}
+
+		// Attempt to parse with date and time layout
+		bookingSnapshot.BookingDetails.BookingStartDate, err = time.Parse("2006-01-02 15:04:05", startDateString)
+		if err != nil {
+
+		}
+
+		//get user
+		user, err := GetUserForUserID(strconv.Itoa(bookingSnapshot.User.ID), db)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		rentalNames, err := GetRentalNamesForBookingId(strconv.Itoa(bookingSnapshot.BookingID), db)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		bookingSnapshot.User = user
+		bookingSnapshot.RentalsBooked = rentalNames
+
+		bookingSnapshots = append(bookingSnapshots, bookingSnapshot)
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(bookingSnapshots)
 }
