@@ -19,7 +19,7 @@ func GetUserForUserID(userId string, db *sql.DB) (User, error) {
 
 	var user User
 
-	err := db.QueryRow("SELECT id, firstName, lastName, email, phoneNumber FROM user WHERE id = ?", userId).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.PhoneNumber)
+	err := db.QueryRow("SELECT id, first_name, last_name, email, phone_number FROM user WHERE id = ?", userId).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.PhoneNumber)
 
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
@@ -30,7 +30,7 @@ func GetUserForUserID(userId string, db *sql.DB) (User, error) {
 
 func AttemptToInsertUser(user User, db *sql.DB) (int64, error) {
 
-	result, err := db.Exec("INSERT INTO user (firstName, lastName, email, phoneNumber) VALUES (?, ?, ?, ?)", user.FirstName, user.LastName, user.Email, user.PhoneNumber)
+	result, err := db.Exec("INSERT INTO user (first_name, last_name, email, phone_number) VALUES (?, ?, ?, ?)", user.FirstName, user.LastName, user.Email, user.PhoneNumber)
 
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
@@ -58,7 +58,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 func GetUsers(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
-	rows, err := db.Query("SELECT id, firstName, lastName, email, phoneNumber FROM user")
+	rows, err := db.Query("SELECT id, first_name, last_name, email, phone_number FROM user")
 
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)

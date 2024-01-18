@@ -32,7 +32,7 @@ func InitDb() {
 	photoCreate := "CREATE TABLE IF NOT EXISTS photo (id INT NOT NULL AUTO_INCREMENT, url VARCHAR(255) NOT NULL, PRIMARY KEY (id))"
 
 	//User
-	userCreate := "CREATE TABLE IF NOT EXISTS user (id INT NOT NULL AUTO_INCREMENT, email VARCHAR(255) NOT NULL, firstName VARCHAR(255) NOT NULL, lastName VARCHAR(255) NOT NULL, phoneNumber VARCHAR(15) NOT NULL, PRIMARY KEY (id))"
+	userCreate := "CREATE TABLE IF NOT EXISTS user (id INT NOT NULL AUTO_INCREMENT, email VARCHAR(255) NOT NULL, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, phone_number VARCHAR(15) NOT NULL, PRIMARY KEY (id))"
 
 	//Location
 	locationCreate := "CREATE TABLE IF NOT EXISTS location (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
@@ -46,7 +46,7 @@ func InitDb() {
 	boatBookingCreate := "CREATE TABLE IF NOT EXISTS boat_booking (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, booking_id INT NOT NULL, boat_time_block_id INT NOT NULL, booking_status_id INT NOT NULL, location_id INT NOT NULL, booking_file_id INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id), KEY booking_id (booking_id), KEY boat_time_block_id (boat_time_block_id), KEY booking_status_id (booking_status_id), KEY location_id (location_id), KEY booking_file_id (booking_file_id))"
 	boatBookingCostCreate := "CREATE TABLE IF NOT EXISTS boat_booking_cost (id INT NOT NULL AUTO_INCREMENT, boat_booking_id INT NOT NULL, booking_cost_item_id INT NOT NULL, PRIMARY KEY (id), KEY boat_booking_id (boat_booking_id), KEY booking_cost_item_id (booking_cost_item_id))"
 
-	bookingPaymentCreate := "CREATE TABLE IF NOT EXISTS booking_payment (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, payment_amount DECIMAL(10, 2) NOT NULL, paypal_order_id INT, payment_method_id INT NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY payment_method_id (payment_method_id))"
+	bookingPaymentCreate := "CREATE TABLE IF NOT EXISTS booking_payment (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, payment_amount DECIMAL(10, 2) NOT NULL, paypal_order_id INT, payment_method_id INT NOT NULL,  payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (id), KEY booking_id (booking_id), KEY payment_method_id (payment_method_id))"
 	paymentMethodCreate := "CREATE TABLE IF NOT EXISTS payment_method (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 
 	bookingCostTypeCreate := "CREATE TABLE IF NOT EXISTS booking_cost_type (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"

@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -17,13 +18,14 @@ type BookingPayment struct {
 	PaymentAmount   float64
 	PaymentMethodID int
 	PaypalOrderID   *string
+	PaymentDate     time.Time
 }
 
 func GetAllBookingPayments(db *sql.DB) ([]BookingPayment, error) {
 
 	var bookingPayments []BookingPayment
 
-	rows, err := db.Query("SELECT id, booking_id, payment_amount, payment_method_id, paypal_order_id FROM booking_payment")
+	rows, err := db.Query("SELECT id, booking_id, payment_amount, payment_method_id, paypal_order_id, payment_date FROM booking_payment")
 
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
@@ -34,9 +36,15 @@ func GetAllBookingPayments(db *sql.DB) ([]BookingPayment, error) {
 	for rows.Next() {
 
 		var bookingPayment BookingPayment
+		var paymentDateStr string
 
-		err := rows.Scan(&bookingPayment.ID, &bookingPayment.BookingID, &bookingPayment.PaymentAmount, &bookingPayment.PaymentMethodID, &bookingPayment.PaypalOrderID)
+		err := rows.Scan(&bookingPayment.ID, &bookingPayment.BookingID, &bookingPayment.PaymentAmount, &bookingPayment.PaymentMethodID, &bookingPayment.PaypalOrderID, &paymentDateStr)
 
+		if err != nil {
+			log.Fatalf("failed to query: %v", err)
+		}
+
+		bookingPayment.PaymentDate, err = time.Parse("2006-01-02 15:04:05", paymentDateStr)
 		if err != nil {
 			log.Fatalf("failed to query: %v", err)
 		}
@@ -51,7 +59,7 @@ func GetBookingPaymentsForBookingID(bookingID int, db *sql.DB) ([]BookingPayment
 
 	var bookingPayments []BookingPayment
 
-	rows, err := db.Query("SELECT id, booking_id, payment_amount, payment_method_id, paypal_order_id FROM booking_payment WHERE booking_id = ?", bookingID)
+	rows, err := db.Query("SELECT id, booking_id, payment_amount, payment_method_id, paypal_order_id, payment_date FROM booking_payment WHERE booking_id = ?", bookingID)
 
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
@@ -63,8 +71,15 @@ func GetBookingPaymentsForBookingID(bookingID int, db *sql.DB) ([]BookingPayment
 
 		var bookingPayment BookingPayment
 
-		err := rows.Scan(&bookingPayment.ID, &bookingPayment.BookingID, &bookingPayment.PaymentAmount, &bookingPayment.PaymentMethodID, &bookingPayment.PaypalOrderID)
+		var paymentDateStr string
 
+		err := rows.Scan(&bookingPayment.ID, &bookingPayment.BookingID, &bookingPayment.PaymentAmount, &bookingPayment.PaymentMethodID, &bookingPayment.PaypalOrderID, &paymentDateStr)
+
+		if err != nil {
+			log.Fatalf("failed to query: %v", err)
+		}
+
+		bookingPayment.PaymentDate, err = time.Parse("2006-01-02 15:04:05", paymentDateStr)
 		if err != nil {
 			log.Fatalf("failed to query: %v", err)
 		}
