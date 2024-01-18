@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type BookingPayment struct {
@@ -143,4 +146,22 @@ func CreateBookingPayment(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(id)
+}
+
+func GetBookingPaymentsForBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	vars := mux.Vars(r)
+	bookingID := vars["id"]
+
+	bookingIDInt, err := strconv.Atoi(bookingID)
+
+	bookingPayments, err := GetBookingPaymentsForBookingID(bookingIDInt, db)
+
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(bookingPayments)
+
 }
