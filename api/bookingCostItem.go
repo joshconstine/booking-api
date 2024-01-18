@@ -81,6 +81,12 @@ func AttemptToCreateBookingCostItem(bookingCostItem BookingCostItem, db *sql.DB)
 		return 0, err
 	}
 
+	//Verify Booking Details
+	_, err = VerifyBookingPaymentStatus(bookingCostItem.BookingID, db)
+	if err != nil {
+		return 0, err
+	}
+
 	return int(id), nil
 
 }
