@@ -50,7 +50,7 @@ func InitDb() {
 	paymentMethodCreate := "CREATE TABLE IF NOT EXISTS payment_method (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 
 	bookingCostTypeCreate := "CREATE TABLE IF NOT EXISTS booking_cost_type (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
-	bookingCostItemCreate := "CREATE TABLE IF NOT EXISTS booking_cost_item (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, booking_cost_type_id INT NOT NULL, ammount DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY booking_cost_type_id (booking_cost_type_id))"
+	bookingCostItemCreate := "CREATE TABLE IF NOT EXISTS booking_cost_item (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, booking_cost_type_id INT NOT NULL, amount DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY booking_cost_type_id (booking_cost_type_id))"
 
 	alcoholOrderCreate := "CREATE TABLE IF NOT EXISTS alcohol_order (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, PRIMARY KEY (id))"
 	alcoholOrderItemCreate := "CREATE TABLE IF NOT EXISTS alcohol_order_item (id INT NOT NULL AUTO_INCREMENT, alcohol_order_id INT NOT NULL,alcohol_order_booking_cost_id INT NOT NULL,alcohol_quantity_id INT NOT NULL,quantity INT NOT NULL, PRIMARY KEY (id), KEY alcohol_order_id (alcohol_order_id), KEY alcohol_order_booking_cost_id (alcohol_order_booking_cost_id), KEY alcohol_quantity_id (alcohol_quantity_id))"

@@ -146,7 +146,7 @@ func AddRentalBookingCost(rentalBookingCost RentalBookingCost, db *sql.DB) error
 }
 func GetCostItemsForRentalBookingId(rentalBookingId string, db *sql.DB) ([]BookingCostItem, error) {
 
-	rows, err := db.Query("SELECT bci.id, bci.booking_id, bci.booking_cost_type_id, bci.ammount FROM booking_cost_item bci JOIN rental_booking_cost rbc ON bci.id = rbc.booking_cost_item_id WHERE rbc.rental_booking_id = ?", rentalBookingId)
+	rows, err := db.Query("SELECT bci.id, bci.booking_id, bci.booking_cost_type_id, bci.amount FROM booking_cost_item bci JOIN rental_booking_cost rbc ON bci.id = rbc.booking_cost_item_id WHERE rbc.rental_booking_id = ?", rentalBookingId)
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +161,7 @@ func GetCostItemsForRentalBookingId(rentalBookingId string, db *sql.DB) ([]Booki
 			&bookingCostItem.ID,
 			&bookingCostItem.BookingID,
 			&bookingCostItem.BookingCostTypeID,
-			&bookingCostItem.Ammount,
+			&bookingCostItem.Amount,
 		)
 		if err != nil {
 			return nil, err
@@ -311,7 +311,7 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 	rentalFeeBookingCostItem := BookingCostItem{
 		BookingID:         details.BookingID,
 		BookingCostTypeID: 3,
-		Ammount:           totalCost,
+		Amount:            totalCost,
 	}
 	//create Cleanign fee cost item
 
@@ -320,7 +320,7 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 	cleaningFeeBookingCostItem := BookingCostItem{
 		BookingID:         details.BookingID,
 		BookingCostTypeID: 2,
-		Ammount:           cleaningFee,
+		Amount:            cleaningFee,
 	}
 
 	createdRentalFee, err := AttemptToCreateBookingCostItem(rentalFeeBookingCostItem, db)

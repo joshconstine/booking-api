@@ -13,14 +13,14 @@ type BookingCostItem struct {
 	ID                int
 	BookingID         int
 	BookingCostTypeID int
-	Ammount           float64
+	Amount            float64
 }
 
 func GetTotalCostItemsForBookingID(bookingID int, db *sql.DB) (float64, error) {
 
 	var totalCost float64
 
-	rows, err := db.Query("SELECT SUM(ammount) FROM booking_cost_item WHERE booking_id = ?", bookingID)
+	rows, err := db.Query("SELECT SUM(amount) FROM booking_cost_item WHERE booking_id = ?", bookingID)
 
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
@@ -42,7 +42,7 @@ func GetTotalCostItemsForBookingID(bookingID int, db *sql.DB) (float64, error) {
 }
 
 func GetCostItemsForBookingId(bookingId string, db *sql.DB) ([]BookingCostItem, error) {
-	rows, err := db.Query("SELECT id, booking_id, booking_cost_type_id, ammount FROM booking_cost_item WHERE booking_id = ?", bookingId)
+	rows, err := db.Query("SELECT id, booking_id, booking_cost_type_id, amount FROM booking_cost_item WHERE booking_id = ?", bookingId)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func GetCostItemsForBookingId(bookingId string, db *sql.DB) ([]BookingCostItem, 
 			&bookingCostItem.ID,
 			&bookingCostItem.BookingID,
 			&bookingCostItem.BookingCostTypeID,
-			&bookingCostItem.Ammount,
+			&bookingCostItem.Amount,
 		)
 		if err != nil {
 			return nil, err
@@ -70,7 +70,7 @@ func GetCostItemsForBookingId(bookingId string, db *sql.DB) ([]BookingCostItem, 
 }
 
 func AttemptToCreateBookingCostItem(bookingCostItem BookingCostItem, db *sql.DB) (int, error) {
-	result, err := db.Exec("INSERT INTO booking_cost_item (booking_id, booking_cost_type_id, ammount) VALUES (?, ?, ?)", bookingCostItem.BookingID, bookingCostItem.BookingCostTypeID, bookingCostItem.Ammount)
+	result, err := db.Exec("INSERT INTO booking_cost_item (booking_id, booking_cost_type_id, amount) VALUES (?, ?, ?)", bookingCostItem.BookingID, bookingCostItem.BookingCostTypeID, bookingCostItem.Amount)
 
 	if err != nil {
 		return 0, err
@@ -92,7 +92,7 @@ func AttemptToCreateBookingCostItem(bookingCostItem BookingCostItem, db *sql.DB)
 }
 
 func AttemptToUpdateBookingCostItem(bookingCostItem BookingCostItem, db *sql.DB) error {
-	_, err := db.Exec("UPDATE booking_cost_item SET  booking_cost_type_id = ?, ammount = ? WHERE id = ?", bookingCostItem.BookingCostTypeID, bookingCostItem.Ammount, bookingCostItem.ID)
+	_, err := db.Exec("UPDATE booking_cost_item SET  booking_cost_type_id = ?, amount = ? WHERE id = ?", bookingCostItem.BookingCostTypeID, bookingCostItem.Amount, bookingCostItem.ID)
 	return err
 }
 func DeleteBookingCostItemForBookingId(bookingId string, db *sql.DB) error {
