@@ -16,6 +16,31 @@ type BookingCostItem struct {
 	Ammount           float64
 }
 
+func GetTotalCostItemsForBookingID(bookingID int, db *sql.DB) (float64, error) {
+
+	var totalCost float64
+
+	rows, err := db.Query("SELECT SUM(ammount) FROM booking_cost_item WHERE booking_id = ?", bookingID)
+
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+
+		err := rows.Scan(&totalCost)
+
+		if err != nil {
+			log.Fatalf("failed to query: %v", err)
+		}
+
+	}
+
+	return totalCost, err
+}
+
 func GetCostItemsForBookingId(bookingId string, db *sql.DB) ([]BookingCostItem, error) {
 	rows, err := db.Query("SELECT id, booking_id, booking_cost_type_id, ammount FROM booking_cost_item WHERE booking_id = ?", bookingId)
 	if err != nil {

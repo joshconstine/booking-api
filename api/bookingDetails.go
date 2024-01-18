@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -17,6 +18,47 @@ type BookingDetails struct {
 	PaymentDueDate   time.Time
 	DocumentsSigned  bool
 	BookingStartDate time.Time
+}
+
+func VerifyBookingPaymentStatus(bookingID int, db *sql.DB) (bool, error) {
+
+	bookingIdString := strconv.Itoa(bookingID)
+
+	bookingDetails, err := GetDetailsForBookingID(bookingIdString, db)
+
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	//get the booking cost items
+
+	totalBill, err := GetTotalCostItemsForBookingID(bookingID, db)
+
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	totalPayments, err := GetTotalPaymentsForBookingID(bookingID, db)
+
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	var paymentComplete bool
+
+	if totalPayments >= totalBill {
+		paymentComplete = true
+	} else {
+		paymentComplete = false
+	}
+
+	//if what is saved already doesent match, update it
+	if bookingDetails.PaymentComplete != paymentComplete {
+		bookingDetails.PaymentComplete = paymentComplete
+		UpdateBookingDetails(bookingDetails, db)
+	}
+
+	return paymentComplete, err
 }
 
 func GetDetailsForBookingID(bookingId string, db *sql.DB) (BookingDetails, error) {

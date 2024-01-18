@@ -267,4 +267,14 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		CreateUser(w, r, db)
 	}).Methods("POST")
 
+	//Booking Payments
+
+	r.HandleFunc("/bookingPayments", func(w http.ResponseWriter, r *http.Request) {
+		GetBookingPayments(w, r, db)
+	}).Methods("GET")
+
+	r.HandleFunc("/bookingPayments", func(w http.ResponseWriter, r *http.Request) {
+		CreateBookingPayment(w, r, db)
+	}).Methods("POST")
+
 }
