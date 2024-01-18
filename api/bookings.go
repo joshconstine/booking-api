@@ -20,8 +20,8 @@ type Booking struct {
 
 type BookingInformation struct {
 	BookingID      int
-	UserID         int
 	BookingStatus  string
+	User           User
 	BookingDetails BookingDetails
 	RentalBookings []RentalBookingDetails
 	CostItems      []BookingCostItem
@@ -90,7 +90,7 @@ func createNewBooking(db *sql.DB, userID int) (int, error) {
 func GetInformationForBookingID(bookingId string, db *sql.DB) (BookingInformation, error) {
 
 	//get booking
-	rows, err := db.Query("SELECT b.id, b.user_id, bs.name, bd.id, bd.payment_complete, bd.payment_due_date, bd.documents_signed, bd.booking_start_date FROM booking b JOIN booking_status bs ON b.booking_status_id = bs.id JOIN booking_details bd ON b.booking_details_id = bd.id WHERE b.id = ?", bookingId)
+	rows, err := db.Query("SELECT b.id, bs.name, bd.id, bd.payment_complete, bd.payment_due_date, bd.documents_signed, bd.booking_start_date, u.id, u.first_name, u.last_name, u.email, u.phone_number FROM booking b JOIN booking_status bs ON b.booking_status_id = bs.id JOIN booking_details bd ON b.booking_details_id = bd.id JOIN user u ON b.user_id = u.id WHERE b.id = ?", bookingId)
 	if err != nil {
 		return BookingInformation{}, err
 	}
@@ -102,7 +102,7 @@ func GetInformationForBookingID(bookingId string, db *sql.DB) (BookingInformatio
 	var startDateString string
 
 	if rows.Next() {
-		err := rows.Scan(&bookingInformation.BookingID, &bookingInformation.UserID, &bookingInformation.BookingStatus, &bookingInformation.BookingDetails.ID, &bookingInformation.BookingDetails.PaymentComplete, &dueDateString, &bookingInformation.BookingDetails.DocumentsSigned, &startDateString)
+		err := rows.Scan(&bookingInformation.BookingID, &bookingInformation.BookingStatus, &bookingInformation.BookingDetails.ID, &bookingInformation.BookingDetails.PaymentComplete, &dueDateString, &bookingInformation.BookingDetails.DocumentsSigned, &startDateString, &bookingInformation.User.ID, &bookingInformation.User.FirstName, &bookingInformation.User.LastName, &bookingInformation.User.Email, &bookingInformation.User.PhoneNumber)
 
 		if err != nil {
 			return BookingInformation{}, err
