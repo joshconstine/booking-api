@@ -25,6 +25,7 @@ type BookingInformation struct {
 	BookingDetails BookingDetails
 	RentalBookings []RentalBookingDetails
 	CostItems      []BookingCostItem
+	Payments       []BookingPayment
 }
 
 type BookingSnapshot struct {
@@ -153,6 +154,17 @@ func GetInformationForBookingID(bookingId string, db *sql.DB) (BookingInformatio
 
 	bookingInformation.CostItems = costItems
 
+	bookingIdInt, err := strconv.Atoi(bookingId)
+	if err != nil {
+		return BookingInformation{}, err
+	}
+	//get payments
+	payments, err := GetBookingPaymentsForBookingID(bookingIdInt, db)
+	if err != nil {
+		return BookingInformation{}, err
+	}
+
+	bookingInformation.Payments = payments
 	return bookingInformation, nil
 
 }
