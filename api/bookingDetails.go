@@ -53,10 +53,8 @@ func VerifyBookingPaymentStatus(bookingID int, db *sql.DB) (bool, error) {
 	}
 
 	//if what is saved already doesent match, update it
-	if bookingDetails.PaymentComplete != paymentComplete {
-		bookingDetails.PaymentComplete = paymentComplete
-		UpdateBookingDetails(bookingDetails, db)
-	}
+	bookingDetails.PaymentComplete = paymentComplete
+	UpdateBookingDetails(bookingDetails, db)
 
 	return paymentComplete, err
 }
