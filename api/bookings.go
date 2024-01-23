@@ -222,6 +222,52 @@ func CreateBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	json.NewEncoder(w).Encode(id)
 
 }
+
+func CreateBookingWithUserInformation(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	//User without an ID
+	var userInfo User
+	json.NewDecoder(r.Body).Decode(&userInfo)
+
+	//check if this user already exists
+	user, err := GetUserForEmail(userInfo.Email, db)
+
+	if err != nil {
+		//if not create a new user
+		userID, err := AttemptToInsertUser(userInfo, db)
+		if err != nil {
+			log.Fatal(err)
+		}
+		userInfo.ID = int(userID)
+	} else {
+		userInfo.ID = user.ID
+	}
+
+	//create booking
+	id, err := createNewBooking(db, userInfo.ID)
+
+	//checkfor Duplicate entry
+	if err != nil {
+		// Check if the error is a duplicate entry error
+		if IsDuplicateKeyError(err) {
+			// Handle duplicate entry error
+			w.WriteHeader(http.StatusConflict) // HTTP 409 Conflict
+			w.Write([]byte("Duplicate entry: The booking cost type already exists."))
+		} else {
+			// Handle other errors
+			log.Printf("failed to insert: %v", err)
+			w.WriteHeader(http.StatusInternalServerError) // HTTP 500 Internal Server Error
+			w.Write([]byte("Internal Server Error"))
+		}
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(id)
+
+}
+
 func GetBookingInformation(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	vars := mux.Vars(r)
