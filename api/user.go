@@ -20,7 +20,21 @@ func GetUserForUserID(userId string, db *sql.DB) (User, error) {
 
 	var user User
 
-	err := db.QueryRow("SELECT id, first_name, last_name, email, phone_number FROM user WHERE id = ?", userId).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.PhoneNumber)
+	rows, err := db.Query("SELECT id, first_name, last_name, email, phone_number FROM user WHERE id = ?", userId)
+
+	//check if there was at least one result
+	if rows == nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	if rows.Next() {
+		err = rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.PhoneNumber)
+	} else {
+		return user, errors.New("No user found for id: " + userId)
+	}
+	if err != nil {
+		log.Fatalf("failed to scan row: %v", err)
+	}
 
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)

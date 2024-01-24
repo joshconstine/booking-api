@@ -343,12 +343,12 @@ func GetBookingSnapshots(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		//get user
 		user, err := GetUserForUserID(strconv.Itoa(bookingSnapshot.User.ID), db)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		rentalNames, err := GetRentalNamesForBookingId(strconv.Itoa(bookingSnapshot.BookingID), db)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		bookingSnapshot.User = user
