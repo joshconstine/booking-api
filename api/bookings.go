@@ -231,7 +231,6 @@ func CreateBookingWithUserInformation(w http.ResponseWriter, r *http.Request, db
 
 	//check if this user already exists
 	user, err := GetUserForEmail(userInfo.Email, db)
-
 	if err != nil {
 		//if not create a new user
 		userID, err := AttemptToInsertUser(userInfo, db)
@@ -307,9 +306,16 @@ func GetBookingSnapshots(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		endDate, _ = time.Parse("2006-01-02", endDateString)
 	}
 
-	// perform query
+	var rows *sql.Rows
+	var err error
 
-	rows, err := db.Query("SELECT b.id,b.user_id, bs.name, bd.id, bd.payment_complete, bd.payment_due_date, bd.documents_signed, bd.booking_start_date FROM booking b JOIN booking_status bs ON b.booking_status_id = bs.id JOIN booking_details bd ON b.booking_details_id = bd.id WHERE bd.booking_start_date >= ? AND bd.booking_start_date <= ?", startDate, endDate)
+	if startDateString == "" && endDateString == "" {
+		rows, err = db.Query("SELECT b.id,b.user_id, bs.name, bd.id, bd.payment_complete, bd.payment_due_date, bd.documents_signed, bd.booking_start_date FROM booking b JOIN booking_status bs ON b.booking_status_id = bs.id JOIN booking_details bd ON b.booking_details_id = bd.id ")
+
+	} else {
+		// perform query
+		rows, err = db.Query("SELECT b.id,b.user_id, bs.name, bd.id, bd.payment_complete, bd.payment_due_date, bd.documents_signed, bd.booking_start_date FROM booking b JOIN booking_status bs ON b.booking_status_id = bs.id JOIN booking_details bd ON b.booking_details_id = bd.id WHERE bd.booking_start_date >= ? AND bd.booking_start_date <= ?", startDate, endDate)
+	}
 
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
