@@ -198,6 +198,35 @@ func DeleteVariableSettingsForRentalId(rentalId string, db *sql.DB) error {
 	return nil
 
 }
+func DeleteVariableSettingsById(id string, db *sql.DB) error {
+
+	query := "DELETE FROM rental_unit_variable_settings WHERE id = ?"
+
+	_, err := db.Exec(query, id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+func HandleDeleteVariableSettingsById(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	// log the request
+	log.Println("DeleteVariableSettingsById: " + id)
+
+	err := DeleteVariableSettingsById(id, db)
+	if err != nil {
+		log.Fatalf("failed to delete: %v", err)
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+
+}
 
 // API functions
 

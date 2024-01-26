@@ -113,6 +113,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		DeleteVariableSettingsForRental(w, r, db)
 	}).Methods("DELETE")
 
+	r.HandleFunc("/variableSettings/{id}", func(w http.ResponseWriter, r *http.Request) {
+		HandleDeleteVariableSettingsById(w, r, db)
+	}).Methods("DELETE")
+
 	r.HandleFunc("/rentals/{id}/timeblocks", func(w http.ResponseWriter, r *http.Request) {
 		GetRentalTimeblocks(w, r, db)
 	}).Methods("GET")
