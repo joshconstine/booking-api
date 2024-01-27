@@ -13,7 +13,7 @@ type BoatDefaultSettings struct {
 	ID                      int
 	BoatID                  int
 	DailyCost               float32
-	MinimunBookingDuration  int
+	MinimumBookingDuration  int
 	AdvertiseAtAllLocations bool
 	FileID                  int
 }
@@ -31,7 +31,7 @@ func GetDefaultSettingsForBoatId(boatId string, db *sql.DB) (BoatDefaultSettings
 	var defaultSettings BoatDefaultSettings
 
 	if rows.Next() {
-		err := rows.Scan(&defaultSettings.ID, &defaultSettings.BoatID, &defaultSettings.DailyCost, &defaultSettings.MinimunBookingDuration, &defaultSettings.AdvertiseAtAllLocations, &defaultSettings.FileID)
+		err := rows.Scan(&defaultSettings.ID, &defaultSettings.BoatID, &defaultSettings.DailyCost, &defaultSettings.MinimumBookingDuration, &defaultSettings.AdvertiseAtAllLocations, &defaultSettings.FileID)
 		if err != nil {
 			return BoatDefaultSettings{}, err
 		}
@@ -71,7 +71,7 @@ func UpdateDefaultSettingsForBoat(w http.ResponseWriter, r *http.Request, db *sq
 
 	// Update the database.
 	query := "UPDATE boat_default_settings SET daily_cost = ?, minimum_booking_duration = ?, advertise_at_all_locations = ? WHERE boat_id = ?"
-	_, err = db.Exec(query, defaultSettings.DailyCost, defaultSettings.MinimunBookingDuration, defaultSettings.AdvertiseAtAllLocations, boatID)
+	_, err = db.Exec(query, defaultSettings.DailyCost, defaultSettings.MinimumBookingDuration, defaultSettings.AdvertiseAtAllLocations, boatID)
 	if err != nil {
 		log.Fatalf("failed to update: %v", err)
 	}
