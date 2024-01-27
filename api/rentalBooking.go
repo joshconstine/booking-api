@@ -500,6 +500,25 @@ func GetRentalBookings(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	json.NewEncoder(w).Encode(rentalBookings)
 }
 
+func GetRentalBookingsForRental(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		log.Fatalf("failed to convert id to int: %v", err)
+	}
+	rentalBookings, err := GetRentalBookingsForRentalId(idInt, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(rentalBookings)
+
+}
+
 func CreateRentalBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	// Decode the request body into a RequestRentalBooking struct.
