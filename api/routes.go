@@ -286,6 +286,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetBoatTimeblock(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/boatTimeblock/{id}", func(w http.ResponseWriter, r *http.Request) {
+		RemoveBoatTimeblock(w, r, db)
+	}).Methods("DELETE")
+
 	//Users
 	r.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 		GetUsers(w, r, db)

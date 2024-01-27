@@ -101,6 +101,17 @@ func GetBoatTimeblockById(id string, db *sql.DB) (BoatTimeblock, error) {
 	return boatTimeblock, nil
 }
 
+func RemoveBoatTimeblockById(id string, db *sql.DB) error {
+	// Query the database for the boat timeblock of the id.
+	query := "DELETE FROM boat_timeblock WHERE id = ?"
+	_, err := db.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GetBoatTimeblock(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -195,4 +206,15 @@ func CreateBoatTimeblock(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	w.WriteHeader(http.StatusCreated) // HTTP 201 Created
 	json.NewEncoder(w).Encode(timeblock)
 
+}
+func RemoveBoatTimeblock(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	err := RemoveBoatTimeblockById(id, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
