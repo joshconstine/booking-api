@@ -1,11 +1,13 @@
 package api
 
 import (
+	"booking-api/config"
 	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -15,6 +17,33 @@ type RentalPhoto struct {
 	ID       int
 	RentalID int
 	PhotoURL string
+}
+
+func GetRentalThumbnailByRentalID(rentalID int, db *sql.DB) (string, error) {
+	rentalIDString := strconv.Itoa(rentalID)
+	rows, err := db.Query("SELECT photo_url FROM rental_photo WHERE rental_id = ? LIMIT 1", rentalIDString)
+	if err != nil {
+		return "", err
+	}
+	defer rows.Close()
+
+	var photoURL string
+
+	for rows.Next() {
+		if err := rows.Scan(&photoURL); err != nil {
+			return "", err
+		}
+	}
+
+	// Load connection string from .env file
+	env, err := config.LoadConfig()
+	if err != nil {
+		log.Fatal("failed to load env", err)
+	}
+
+	photoURL = env.OBJECT_STORAGE_URL + "/" + photoURL
+
+	return photoURL, nil
 }
 
 func getRentalPhotos(rentalID string, db *sql.DB) ([]RentalPhoto, error) {
