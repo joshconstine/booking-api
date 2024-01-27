@@ -36,6 +36,15 @@ func main() {
 	rentalPhotos := []RentalPhoto{
 		{1, 1, "lodge-cabin-eagle-river-09.PNG"},
 		{2, 2, "morrey-cabin-eagle-river-04.PNG"},
+		{3, 3, "gables-cabin-eagle-river-26.PNG"},
+		{4, 4, "clubhouse-cabin-eagle-river-24.PNG"},
+		{5, 5, "eisenhower-cabin-eagle-river-04.PNG"},
+		{6, 6, "musky-inn-eagle-river-03.PNG"},
+		{7, 7, "musky-inn-eagle-river-03.PNG"},
+		{8, 8, "musky-inn-eagle-river-03.PNG"},
+		{9, 9, "musky-inn-eagle-river-03.PNG"},
+		{10, 10, "musky-inn-eagle-river-03.PNG"},
+		{11, 11, "musky-inn-eagle-river-03.PNG"},
 	}
 
 	for _, rentalPhoto := range rentalPhotos {

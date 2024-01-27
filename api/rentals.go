@@ -29,6 +29,7 @@ type RentalInformtion struct {
 	LocationID    int
 	LocationName  string
 	RentalIsClean bool
+	Thumbnail     string
 	Bookings      []RentalBookingDetails
 	Timeblocks    []RentalTimeblock
 }
@@ -159,6 +160,13 @@ func GetRentalInformation(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			log.Fatalf("failed to scan row: %v", err)
 		}
 
+		thumbnail, err := GetRentalThumbnailByRentalID(rentalInfo.RentalID, db)
+
+		if err != nil {
+			log.Fatalf("failed to scan row: %v", err)
+		}
+
+		rentalInfo.Thumbnail = thumbnail
 		rentalInfo.Bookings = rentalBookings
 		rentalInfo.Timeblocks = rentalTimeblocks
 
