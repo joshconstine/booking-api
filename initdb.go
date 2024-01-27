@@ -18,7 +18,7 @@ func InitDb() {
 	rentalTimeblockCreate := "CREATE TABLE IF NOT EXISTS rental_timeblock (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, rental_booking_id INT, PRIMARY KEY (id), KEY rental_id (rental_id), KEY rental_booking_id (rental_booking_id))"
 	rentalUnitDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS rental_unit_default_settings (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL UNIQUE, nightly_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, allows_pets BOOLEAN NOT NULL, cleaning_fee DECIMAL(10, 2) NOT NULL, check_in_time TIME NOT NULL, check_out_time TIME NOT NULL, file_id INT NOT NULL, PRIMARY KEY (id), KEY file_id (file_id))"
 	rentalUnitVariableSettingsCreate := "CREATE TABLE IF NOT EXISTS rental_unit_variable_settings (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, minimum_booking_duration INT NOT NULL, nightly_cost DECIMAL(10, 2) NOT NULL, cleaning_fee DECIMAL(10, 2) NOT NULL, event_required BOOLEAN NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id))"
-	rentalPhotoCreate := "CREATE TABLE IF NOT EXISTS rental_photo (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, photo_id INT NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY photo_id (photo_id))"
+	rentalPhotoCreate := "CREATE TABLE IF NOT EXISTS rental_photo (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, photo_url VARCHAR(255) NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id))"
 	rentalStatusCreate := "CREATE TABLE IF NOT EXISTS rental_status (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL UNIQUE, is_clean BOOLEAN, PRIMARY KEY (id))"
 
 	//Boats

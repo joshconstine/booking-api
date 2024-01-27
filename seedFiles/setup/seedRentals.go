@@ -42,7 +42,7 @@ func main() {
 		{1, "The Lodge", 1, 4, 3},
 		{2, "The Morey", 1, 2, 1},
 		{3, "The Gables", 1, 7, 4},
-		{4, "The Clbuhouse", 1, 4, 2},
+		{4, "The Clubhouse", 1, 4, 2},
 		{6, "The Musky Inn", 2, 13, 7},
 		{7, "The Musky Inn North", 2, 6, 4},
 		{8, "The Musky Inn North + middle", 2, 9, 4},

@@ -133,6 +133,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		UpdateStatusForRental(w, r, db)
 	}).Methods("PUT")
 
+	r.HandleFunc("/rentals/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
+		GetRentalPhotos(w, r, db)
+	}).Methods("GET")
+
 	//Boats
 	r.HandleFunc("/boats", func(w http.ResponseWriter, r *http.Request) {
 		GetBoats(w, r, db)
