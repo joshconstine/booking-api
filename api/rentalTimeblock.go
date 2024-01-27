@@ -202,6 +202,27 @@ func GetRentalTimeblocksByRentalIDForRange(rentalID int, from time.Time, to time
 	return timeblocks, nil
 }
 
+func RemoveRentalTimeblockById(id string, db *sql.DB) error {
+
+	_, err := db.Exec("DELETE FROM rental_timeblock WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func RemoveRentalTimeblock(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	err := RemoveRentalTimeblockById(id, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+}
+
 func GetRentalTimeblocks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
 	id := vars["id"]
