@@ -39,6 +39,7 @@ type BoatBookingDetails struct {
 	LocationID      int
 	StartTime       time.Time
 	EndTime         time.Time
+	CostItems       []BookingCostItem
 }
 
 type BoatBookingCost struct {
@@ -51,6 +52,26 @@ func AddBoatBookingCost(boatBookingCost BoatBookingCost, db *sql.DB) error {
 	_, err := db.Exec("INSERT INTO boat_booking_cost (boat_booking_id, booking_cost_item_id) VALUES (?, ?)", boatBookingCost.BoatBookingID, boatBookingCost.BookingCostItemID)
 	return err
 }
+func GetBoatBookingIDsForBookingId(bookingId string, db *sql.DB) ([]int, error) {
+	rows, err := db.Query("SELECT id FROM boat_booking WHERE booking_id = ?", bookingId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var boatBookingIDs []int
+
+	for rows.Next() {
+		var boatBookingID int
+		if err := rows.Scan(&boatBookingID); err != nil {
+			return nil, err
+		}
+		boatBookingIDs = append(boatBookingIDs, boatBookingID)
+	}
+
+	return boatBookingIDs, nil
+}
+
 func GetCostItemsForBoatBookingId(boatBookingId string, db *sql.DB) ([]BookingCostItem, error) {
 
 	query := "SELECT bci.id, bci.booking_id, bci.booking_cost_type_id, bci.amount FROM booking_cost_item bci JOIN boat_booking_cost bbc ON bci.id = bbc.booking_cost_item_id WHERE bbc.boat_booking_id = ?"
@@ -341,16 +362,13 @@ func CreateBoatBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 }
 
-func GetBoatBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	vars := mux.Vars(r)
-	boatBookingId := vars["boatBookingId"]
-
+func GetDetailsForBoatBookingId(boatBookingId string, db *sql.DB) (BoatBookingDetails, error) {
 	query := "SELECT boat_booking.id, boat_booking.boat_id, boat_booking.booking_id, boat_booking.boat_time_block_id, boat_booking.booking_status_id, boat_booking.booking_file_id, boat_booking.location_id, boat_timeblock.start_time, boat_timeblock.end_time FROM boat_booking JOIN boat_timeblock ON boat_booking.boat_time_block_id = boat_timeblock.id WHERE boat_booking.id = ?"
 
 	// Query the database.
 	rows, err := db.Query(query, boatBookingId)
 	if err != nil {
-		log.Fatalf("failed to query: %v", err)
+		return BoatBookingDetails{}, err
 	}
 
 	defer rows.Close()
@@ -362,22 +380,42 @@ func GetBoatBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		// Scan the values into variables.
 		if err := rows.Scan(&boatBookingDetails.ID, &boatBookingDetails.BoatID, &boatBookingDetails.BookingID, &boatBookingDetails.BoatTimeBlockID, &boatBookingDetails.BookingStatusID, &boatBookingDetails.BookingFileID, &boatBookingDetails.LocationID, &startTimeStr, &endTimeStr); err != nil {
-			log.Fatalf("failed to scan row: %v", err)
+			return BoatBookingDetails{}, err
 		}
 
 		// Convert the datetime strings to time.Time.
 		boatBookingDetails.StartTime, err = time.Parse("2006-01-02 15:04:05", startTimeStr)
 		if err != nil {
-			log.Fatalf("failed to parse start time: %v", err)
+			return BoatBookingDetails{}, err
 		}
 
 		boatBookingDetails.EndTime, err = time.Parse("2006-01-02 15:04:05", endTimeStr)
 		if err != nil {
-			log.Fatalf("failed to parse end time: %v", err)
+			return BoatBookingDetails{}, err
 		}
+	}
+
+	costItems, err := GetCostItemsForBoatBookingId(boatBookingId, db)
+	if err != nil {
+		return BoatBookingDetails{}, err
+	}
+
+	boatBookingDetails.CostItems = costItems
+
+	return boatBookingDetails, nil
+}
+
+func GetBoatBookingDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	boatBookingId := vars["id"]
+
+	boatBookingDetails, err := GetDetailsForBoatBookingId(boatBookingId, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
 	}
 
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(boatBookingDetails)
+
 }

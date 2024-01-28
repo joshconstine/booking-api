@@ -24,6 +24,7 @@ type BookingInformation struct {
 	User           User
 	BookingDetails BookingDetails
 	RentalBookings []RentalBookingDetails
+	BoatBookings   []BoatBookingDetails
 	CostItems      []BookingCostItem
 	Payments       []BookingPayment
 }
@@ -145,6 +146,22 @@ func GetInformationForBookingID(bookingId string, db *sql.DB) (BookingInformatio
 	}
 
 	bookingInformation.RentalBookings = rentalBookings
+
+	//get boat bookings
+	var boatBookings []BoatBookingDetails
+
+	boatBookingIds, err := GetBoatBookingIDsForBookingId(bookingId, db)
+
+	for _, boatBookingId := range boatBookingIds {
+		bbIdString := strconv.Itoa(boatBookingId)
+		boatBooking, err := GetDetailsForBoatBookingId(bbIdString, db)
+		if err != nil {
+			return BookingInformation{}, err
+		}
+		boatBookings = append(boatBookings, boatBooking)
+	}
+
+	bookingInformation.BoatBookings = boatBookings
 
 	//get cost items
 	costItems, err := GetCostItemsForBookingId(bookingId, db)
