@@ -12,7 +12,7 @@ import (
 type BoatDefaultSettings struct {
 	ID                      int
 	BoatID                  int
-	DailyCost               float32
+	DailyCost               float64
 	MinimumBookingDuration  int
 	AdvertiseAtAllLocations bool
 	FileID                  int

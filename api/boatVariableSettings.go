@@ -93,6 +93,45 @@ func GetVariableSettingsForBoat(w http.ResponseWriter, r *http.Request, db *sql.
 	json.NewEncoder(w).Encode(boatVariableSettings)
 }
 
+func GetVariableSettingsForBoatIdAndDateRange(boatId string, startDate time.Time, endDate time.Time, db *sql.DB) ([]BoatVariableSettings, error) {
+	rows, err := db.Query("SELECT id, boat_id, start_date, end_date, daily_cost, minimum_booking_duration FROM boat_variable_settings WHERE boat_id = ? AND start_date <= ? AND end_date >= ?", boatId, startDate, endDate)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var boatVariableSettings []BoatVariableSettings
+
+	for rows.Next() {
+		var boatVariableSetting BoatVariableSettings
+
+		var startDateString string
+		var endDateString string
+		err := rows.Scan(&boatVariableSetting.ID, &boatVariableSetting.BoatID, &startDateString, &endDateString, &boatVariableSetting.DailyCost, &boatVariableSetting.MinimumBookingDuration)
+		if err != nil {
+			return nil, err
+		}
+
+		boatVariableSetting.StartDate, err = time.Parse("2006-01-02", startDateString)
+		if err != nil {
+			return nil, err
+		}
+
+		boatVariableSetting.EndDate, err = time.Parse("2006-01-02", endDateString)
+		if err != nil {
+			return nil, err
+		}
+
+		boatVariableSettings = append(boatVariableSettings, boatVariableSetting)
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+
+	return boatVariableSettings, nil
+
+}
 func CreateVariableSettingsForBoat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
 	boatId := vars["id"]

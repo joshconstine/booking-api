@@ -41,6 +41,43 @@ type BoatBookingDetails struct {
 	EndTime         time.Time
 }
 
+type BoatBookingCost struct {
+	ID                int
+	BoatBookingID     int
+	BookingCostItemID int
+}
+
+func AddBoatBookingCost(boatBookingCost BoatBookingCost, db *sql.DB) error {
+	_, err := db.Exec("INSERT INTO boat_booking_cost (boat_booking_id, booking_cost_item_id) VALUES (?, ?)", boatBookingCost.BoatBookingID, boatBookingCost.BookingCostItemID)
+	return err
+}
+func GetCostItemsForBoatBookingId(boatBookingId string, db *sql.DB) ([]BookingCostItem, error) {
+
+	query := "SELECT bci.id, bci.booking_id, bci.booking_cost_type_id, bci.amount FROM booking_cost_item bci JOIN boat_booking_cost bbc ON bci.id = bbc.booking_cost_item_id WHERE bbc.boat_booking_id = ?"
+
+	// Query the database.
+	rows, err := db.Query(query, boatBookingId)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var bookingCostItems []BookingCostItem
+
+	for rows.Next() {
+		var bookingCostItem BookingCostItem
+
+		if err := rows.Scan(&bookingCostItem.ID, &bookingCostItem.BookingID, &bookingCostItem.BookingCostTypeID, &bookingCostItem.Amount); err != nil {
+			return nil, err
+		}
+
+		bookingCostItems = append(bookingCostItems, bookingCostItem)
+	}
+
+	return bookingCostItems, nil
+
+}
 func AttemptToBookBoat(details RequestBoatBooking, db *sql.DB) (int64, error) {
 
 	//oprn transaction
@@ -109,6 +146,30 @@ func AttemptToBookBoat(details RequestBoatBooking, db *sql.DB) (int64, error) {
 		return 0, err
 	}
 
+	//get boat variable settings
+	boatVariableSettings, err := GetVariableSettingsForBoatId(details.BoatID, db)
+	if err != nil {
+		return 0, err
+	}
+
+	//calculate cost
+	cost := CalculateBoatRentalCost(boatVariableSettings, boatDefaultSettings, details.StartTime, details.EndTime)
+
+	//create booking cost item
+	boatRentalFeeBookingCostItem := BookingCostItem{BookingID: details.BookingID, BookingCostTypeID: 4, Amount: cost}
+
+	createdBookingCostItemID, err := AttemptToCreateBookingCostItem(boatRentalFeeBookingCostItem, db)
+	if err != nil {
+		return 0, err
+	}
+
+	//create boat booking cost
+	boatBookingCost := BoatBookingCost{BoatBookingID: int(boatBookingID), BookingCostItemID: int(createdBookingCostItemID)}
+	err = AddBoatBookingCost(boatBookingCost, db)
+	if err != nil {
+		return 0, err
+	}
+
 	//commit transaction
 	err = tx.Commit()
 	if err != nil {
@@ -117,6 +178,30 @@ func AttemptToBookBoat(details RequestBoatBooking, db *sql.DB) (int64, error) {
 
 	return boatBookingID, nil
 
+}
+func CalculateBoatRentalCost(boatVariableSettings []BoatVariableSettings, boatDefaultSettings BoatDefaultSettings, startTime time.Time, endTime time.Time) float64 {
+
+	durationInDays := int(endTime.Sub(startTime).Hours() / 24)
+
+	var cost float64
+
+	for i := 0; i < durationInDays; i++ {
+		currentDay := startTime.Add(time.Duration(i) * 24 * time.Hour)
+		varSettingFound := false
+		for _, boatVariableSetting := range boatVariableSettings {
+			if currentDay.After(boatVariableSetting.StartDate) && currentDay.Before(boatVariableSetting.EndDate) {
+				cost += boatVariableSetting.DailyCost
+				varSettingFound = true
+				break
+			}
+		}
+		if varSettingFound == false {
+			cost += float64(boatDefaultSettings.DailyCost)
+		}
+
+	}
+
+	return cost
 }
 
 func GetBoatBookingsForBookingId(bookingId string, db *sql.DB) ([]BoatBooking, error) {
