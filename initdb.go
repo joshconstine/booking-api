@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func InitDb() {
+func main() {
 
 	//SQL CREATE TABLES
 
@@ -27,6 +27,7 @@ func InitDb() {
 	boatPhotoCreate := "CREATE TABLE IF NOT EXISTS boat_photo (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, photo_id INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id), KEY photo_id (photo_id))"
 	boatStatusCreate := "CREATE TABLE IF NOT EXISTS boat_status (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, is_clean BOOLEAN, low_fuel BOOLEAN, current_location_id INT NOT NULL, PRIMARY KEY (id), KEY current_location_id (current_location_id))"
 	boatDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS boat_default_settings (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, daily_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, advertise_at_all_locations BOOLEAN NOT NULL, file_id INT NOT NULL, PRIMARY KEY (id), KEY file_id (file_id))"
+	boatVariableSettingsCreate := "CREATE TABLE IF NOT EXISTS boat_variable_settings (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, daily_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id))"
 
 	//Photo
 	photoCreate := "CREATE TABLE IF NOT EXISTS photo (id INT NOT NULL AUTO_INCREMENT, url VARCHAR(255) NOT NULL, PRIMARY KEY (id))"
@@ -381,6 +382,15 @@ func InitDb() {
 	if err != nil {
 		log.Fatalf("failed to create booking_file table: %v", err)
 	}
+
+	//Boat Variable Settings
+
+	_, err = db.Exec(boatVariableSettingsCreate)
+	if err != nil {
+		log.Fatalf("failed to create boat_variable_settings table: %v", err)
+	}
+
+	// Close the connection
 
 	defer db.Close()
 }
