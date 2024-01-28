@@ -142,6 +142,45 @@ func GetBoatBookingsForBookingId(bookingId string, db *sql.DB) ([]BoatBooking, e
 	return boatBookings, nil
 }
 
+func GetBoatBookingsForBoatId(boatId string, db *sql.DB) ([]BoatBooking, error) {
+	// Query the database for all boat bookings.
+	rows, err := db.Query("SELECT id, boat_id, booking_id, boat_time_block_id, booking_status_id, location_id, booking_file_id FROM boat_booking WHERE boat_id = ?", boatId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Create a slice of boat bookings to hold the data.
+	var boatBookings []BoatBooking
+
+	// Loop through the data and insert into the boat bookings slice.
+	for rows.Next() {
+		var boatBooking BoatBooking
+		if err := rows.Scan(&boatBooking.ID, &boatBooking.BoatID, &boatBooking.BookingID, &boatBooking.BoatTimeBlockID, &boatBooking.BookingStatusID, &boatBooking.LocationID, &boatBooking.BookingFileID); err != nil {
+			return nil, err
+		}
+		boatBookings = append(boatBookings, boatBooking)
+	}
+
+	return boatBookings, nil
+}
+
+func GetBoatBookingsForBoat(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	// Query the database for all boat bookings.
+
+	boatBookings, err := GetBoatBookingsForBoatId(id, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(boatBookings)
+}
+
 // API Handlers
 func GetBoatBookingsForBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
