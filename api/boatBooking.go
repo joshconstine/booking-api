@@ -71,7 +71,7 @@ func AttemptToBookBoat(details RequestBoatBooking, db *sql.DB) (int64, error) {
 	}
 
 	// Attempt to create boat timeblock
-	boatTimeblockID, err := AttemptToInsertBoatTimeblock(db, boatIdString, details.StartTime, details.EndTime, nil)
+	boatTimeblockID, err := AttemptToInsertBoatTimeblock(db, details.BoatID, details.StartTime, details.EndTime, nil)
 	if err != nil {
 		log.Fatalf("Failed to insert boat timeblock: %v", err)
 	}

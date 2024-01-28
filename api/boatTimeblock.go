@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -19,7 +20,7 @@ type BoatTimeblock struct {
 }
 
 // Attempt to insert a boat timeblock into the database
-func AttemptToInsertBoatTimeblock(db *sql.DB, boatID string, startTime time.Time, endTime time.Time, boatBookingID *int) (int, error) {
+func AttemptToInsertBoatTimeblock(db *sql.DB, boatID int, startTime time.Time, endTime time.Time, boatBookingID *int) (int, error) {
 	// Format time values as strings in the MySQL datetime format.
 	startTimeStr := startTime.Format("2006-01-02 15:04:05")
 	endTimeStr := endTime.Format("2006-01-02 15:04:05")
@@ -184,8 +185,9 @@ func CreateBoatTimeblock(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		log.Fatalf("failed to decode: %v", err)
 	}
 
+	idInt, err := strconv.Atoi(id)
 	// Insert the data into the database.
-	createdId, err := AttemptToInsertBoatTimeblock(db, id, timeblock.StartTime, timeblock.EndTime, timeblock.BoatBookingID)
+	createdId, err := AttemptToInsertBoatTimeblock(db, idInt, timeblock.StartTime, timeblock.EndTime, timeblock.BoatBookingID)
 	// Check for errors.
 	if err != nil {
 		log.Printf("failed to insert: %v", err)
