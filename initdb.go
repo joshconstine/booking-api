@@ -72,7 +72,7 @@ func InitDb() {
 
 	//Events
 	venueCreate := "CREATE TABLE IF NOT EXISTS venue (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, location_id INT NOT NULL, PRIMARY KEY (id), KEY location_id (location_id))"
-	venuePhotoCreate := "CREATE TABLE IF NOT EXISTS venue_photo (id INT NOT NULL AUTO_INCREMENT, venue_id INT NOT NULL, photo_id INT NOT NULL, PRIMARY KEY (id), KEY venue_id (venue_id), KEY photo_id (photo_id))"
+	venuePhotoCreate := "CREATE TABLE IF NOT EXISTS venue_photo (id INT NOT NULL AUTO_INCREMENT, venue_id INT NOT NULL, photo_url VARCHAR(255) NOT NULL, PRIMARY KEY (id), KEY venue_id (venue_id))"
 	venueTimeblockCreate := "CREATE TABLE IF NOT EXISTS venue_timeblock (id INT NOT NULL AUTO_INCREMENT, venue_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, note VARCHAR(255), event_id INT, PRIMARY KEY (id), KEY venue_id (venue_id), KEY event_id (event_id))"
 
 	eventTypeCreate := "CREATE TABLE IF NOT EXISTS event_type (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"

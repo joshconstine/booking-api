@@ -231,6 +231,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetVenues(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/venues/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
+		GetVenuePhotos(w, r, db)
+	}).Methods("GET")
+
 	//Booking Cost Types
 	r.HandleFunc("/bookingCostTypes", func(w http.ResponseWriter, r *http.Request) {
 		GetBookingCostTypes(w, r, db)
