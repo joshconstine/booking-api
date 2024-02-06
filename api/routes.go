@@ -243,6 +243,14 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetVenueEventTypesForVenue(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/venues/{id}/timeblocks", func(w http.ResponseWriter, r *http.Request) {
+		GetVenueTimeblocks(w, r, db)
+	}).Methods("GET")
+
+	r.HandleFunc("/venues/{id}/timeblocks", func(w http.ResponseWriter, r *http.Request) {
+		CreateVenueTimeblock(w, r, db)
+	}).Methods("POST")
+
 	//Booking Cost Types
 	r.HandleFunc("/bookingCostTypes", func(w http.ResponseWriter, r *http.Request) {
 		GetBookingCostTypes(w, r, db)
