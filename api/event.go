@@ -43,6 +43,15 @@ type EventDetails struct {
 	CostItems        []BookingCostItem
 }
 
+func GetNameFromVenueEventTypeID(venueEventTypeID int, db *sql.DB) string {
+	var name string
+	err := db.QueryRow("SELECT et.name FROM venue_event_type vet  JOIN event_type et ON vet.event_type_id = et.id WHERE vet.id = ?", venueEventTypeID).Scan(&name)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+	return name
+}
+
 func GetDetailsForEventID(eventId string, db *sql.DB) (EventDetails, error) {
 
 	// Query the database for the event  joined with the event timeblock.
@@ -200,53 +209,53 @@ func AttemptToCreateEvent(details RequestEvent, db *sql.DB) (int64, error) {
 		return 0, err
 	}
 
-	rentalIdString := strconv.Itoa(details.VenueID)
-
+	venueEventTypeIDString := strconv.Itoa(details.VenueEventTypeID)
 	//get rental default settings
-	rentalSettings, err := GetDefaultSettingsForRentalId(rentalIdString, db)
+	venueEventTypeDefaultSettings, err := GetDefaultSettingsForVenueEventTypeID(venueEventTypeIDString, db)
 	if err != nil {
 		return 0, err
 	}
-	// Calculate the duration in days
-	durationInDays := details.EndTime.Sub(details.StartTime) / (24 * time.Hour)
 
+	durationInHours := details.EndTime.Sub(details.StartTime).Hours()
 	// Check if the duration meets the minimum requirement
-	if int(durationInDays) < rentalSettings.MinimumBookingDuration {
+	if int(durationInHours) < venueEventTypeDefaultSettings.MinimumBookingDuration {
 		return -2, nil
 	}
 
 	// Attempt to create rental timeblock
-	rentalTimeblockID, err := AttemptToInsertRentalTimeblock(db, rentalIdString, details.StartTime, details.EndTime, nil)
+	// rentalTimeblockID, err := AttemptToInsertRentalTimeblock(db, rentalIdString, details.StartTime, details.EndTime, nil)
+	// if err != nil {
+	// 	log.Fatalf("Failed to insert rental timeblock: %v", err)
+	// }
+
+	venueTimeblockID, err := AttemptToInsertVenueTimeblock(db, details.VenueID, details.StartTime, details.EndTime, nil, nil)
 	if err != nil {
-		log.Fatalf("Failed to insert rental timeblock: %v", err)
+		log.Fatalf("Failed to insert venue timeblock: %v", err)
 	}
 
-	if rentalTimeblockID == -1 {
+	if err != nil {
 		tx.Rollback()
 		return -1, nil
 	}
 
-	var rentalUnitDefaultSettings RentalUnitDefaultSettings
+	name := GetNameFromVenueEventTypeID(details.VenueEventTypeID, db)
 
-	//read rental DefaultSettings for venueID
-	venueEventTypeDefaultSettings, err := GetDefaultSettingsForVenueEventTypeID(strconv.Itoa(details.VenueEventTypeID), db)
-
-	//Create rental booking
-	query := "INSERT INTO event (rental_id, booking_id, rental_time_block_id, booking_status_id, booking_file_id) VALUES (?, ?, ?, ?, ?)"
-	result, err := tx.Exec(query, details.VenueID, details.BookingID, rentalTimeblockID, 1, rentalUnitDefaultSettings.FileID)
+	//Create event
+	query := "INSERT INTO event (name, venue_event_type_id, booking_id, venue_timeblock_id) VALUES (?, ?, ?, ?)"
+	result, err := tx.Exec(query, name, details.VenueEventTypeID, details.BookingID, venueTimeblockID)
 	if err != nil {
 		return 0, err
 	}
 
-	//get rental booking id
+	//get event id
 	eventID, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
-	//Update rental timeblock with rental booking id
-	query = "UPDATE rental_timeblock SET event_id = ? WHERE id = ?"
-	_, err = tx.Exec(query, eventID, rentalTimeblockID)
+	//Update venue timeblock with rental booking id
+	query = "UPDATE venue_timeblock SET event_id = ? WHERE id = ?"
+	_, err = tx.Exec(query, eventID, venueTimeblockID)
 	if err != nil {
 		return 0, err
 	}
@@ -415,7 +424,7 @@ func GetEventsForBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 func GetEvents(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	// Query the database for all rental bookings.
-	rows, err := db.Query("SELECT id, name, booking_id, venue_event_type_id, rental_time_block_id, booking_status_id, booking_file_id FROM event")
+	rows, err := db.Query("SELECT id, name, booking_id, venue_event_type_id, venue_timeblock_id FROM event")
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
 	}
