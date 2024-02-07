@@ -38,6 +38,7 @@ type EventDetails struct {
 	VenueID          int
 	BookingID        int
 	VenueTimeBlockID int
+	EventType        string
 	StartTime        time.Time
 	EndTime          time.Time
 	CostItems        []BookingCostItem
@@ -56,7 +57,7 @@ func GetDetailsForEventId(eventId string, db *sql.DB) (EventDetails, error) {
 
 	// Query the database for the event  joined with the event timeblock.
 
-	query := "SELECT e.id, vet.venue_id, e.booking_id, e.venue_timeblock_id, vtb.start_time, vtb.end_time FROM event e JOIN venue_timeblock vtb ON e.venue_timeblock_id = vtb.id JOIN venue_event_type vet ON e.venue_event_type_id = vet.id WHERE e.id = ?"
+	query := "SELECT e.id, vet.venue_id, e.booking_id, e.venue_timeblock_id, vtb.start_time, vtb.end_time, et.name FROM event e JOIN venue_timeblock vtb ON e.venue_timeblock_id = vtb.id JOIN venue_event_type vet ON e.venue_event_type_id = vet.id  JOIN event_type et ON vet.event_type_id = et.id WHERE e.id = ?"
 	rows, err := db.Query(query, eventId)
 	if err != nil {
 		return EventDetails{}, err
@@ -73,7 +74,7 @@ func GetDetailsForEventId(eventId string, db *sql.DB) (EventDetails, error) {
 		var costItems []BookingCostItem
 
 		// Scan the row into the EventDetails struct.
-		if err := rows.Scan(&eventID, &eventDetails.VenueID, &eventDetails.BookingID, &eventDetails.VenueTimeBlockID, &startTimeStr, &endTimeStr); err != nil {
+		if err := rows.Scan(&eventID, &eventDetails.VenueID, &eventDetails.BookingID, &eventDetails.VenueTimeBlockID, &startTimeStr, &endTimeStr, &eventDetails.EventType); err != nil {
 			return EventDetails{}, err
 		}
 
