@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func InitDb() {
+func InitDB() {
 
 	//SQL CREATE TABLES
 
@@ -79,9 +79,8 @@ func InitDb() {
 	venueEventTypeCreate := "CREATE TABLE IF NOT EXISTS venue_event_type (id INT NOT NULL AUTO_INCREMENT, venue_id INT NOT NULL, event_type_id INT NOT NULL, PRIMARY KEY (id), KEY venue_id (venue_id), KEY event_type_id (event_type_id))"
 	venueEventTypeDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS venue_event_type_default_settings (id INT NOT NULL AUTO_INCREMENT, venue_event_type_id INT NOT NULL UNIQUE, hourly_rate DECIMAL(10, 2), minimum_booking_duration INT, flat_fee DECIMAL(10, 2), earliest_booking_time TIME NOT NULL, latest_booking_time TIME NOT NULL, PRIMARY KEY (id))"
 
-	eventCreate := "CREATE TABLE IF NOT EXISTS event (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255), event_type_id INT NOT NULL, booking_id INT NOT NULL, PRIMARY KEY (id), KEY event_type_id (event_type_id), KEY booking_id (booking_id))"
-	eventVenueCreate := "CREATE TABLE IF NOT EXISTS event_venue (id INT NOT NULL AUTO_INCREMENT, event_id INT NOT NULL, venue_timeblock_id INT NOT NULL, PRIMARY KEY (id), KEY event_id (event_id), KEY venue_timeblock_id (venue_timeblock_id))"
-	eventDetailsCreate := "CREATE TABLE IF NOT EXISTS event_details (id INT NOT NULL AUTO_INCREMENT, event_id INT NOT NULL UNIQUE, open_bar_requested BOOLEAN NOT NULL, alcohol_minimum DECIMAL(10, 2), guests INT NOT NULL, event_start_time DATETIME NOT NULL, notes VARCHAR(255), PRIMARY KEY (id))"
+	eventCreate := "CREATE TABLE IF NOT EXISTS event (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255), booking_id INT NOT NULL, venue_event_type_id INT NOT NULL, venue_timeblock_id INT NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY venue_event_type_id (venue_event_type_id), KEY venue_timeblock_id (venue_timeblock_id))"
+	eventDetailsCreate := "CREATE TABLE IF NOT EXISTS event_details (id INT NOT NULL AUTO_INCREMENT, event_id INT NOT NULL UNIQUE, open_bar_requested BOOLEAN NOT NULL, alcohol_minimum DECIMAL(10, 2), guests INT, notes VARCHAR(255), PRIMARY KEY (id))"
 	eventBookingCostCreate := "CREATE TABLE IF NOT EXISTS event_booking_cost (id INT NOT NULL AUTO_INCREMENT, event_id INT NOT NULL, booking_cost_item_id INT NOT NULL, PRIMARY KEY (id), KEY event_id (event_id), KEY booking_cost_item_id (booking_cost_item_id))"
 
 	//file
@@ -351,12 +350,6 @@ func InitDb() {
 	_, err = db.Exec(eventCreate)
 	if err != nil {
 		log.Fatalf("failed to create event table: %v", err)
-	}
-
-	//Event Venue
-	_, err = db.Exec(eventVenueCreate)
-	if err != nil {
-		log.Fatalf("failed to create event_venue table: %v", err)
 	}
 
 	//Event Details
