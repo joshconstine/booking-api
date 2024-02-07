@@ -25,6 +25,7 @@ type BookingInformation struct {
 	BookingDetails BookingDetails
 	RentalBookings []RentalBookingDetails
 	BoatBookings   []BoatBookingDetails
+	Events         []EventDetails
 	CostItems      []BookingCostItem
 	Payments       []BookingPayment
 }
@@ -162,6 +163,21 @@ func GetInformationForBookingID(bookingId string, db *sql.DB) (BookingInformatio
 	}
 
 	bookingInformation.BoatBookings = boatBookings
+
+	//get events
+	var events []EventDetails
+
+	eventIds, err := GetEventIdsForBookingId(bookingId, db)
+
+	for _, eventId := range eventIds {
+		eventIdString := strconv.Itoa(eventId)
+		event, err := GetDetailsForEventId(eventIdString, db)
+		if err != nil {
+			return BookingInformation{}, err
+		}
+		events = append(events, event)
+	}
+	bookingInformation.Events = events
 
 	//get cost items
 	costItems, err := GetCostItemsForBookingId(bookingId, db)

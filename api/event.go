@@ -52,7 +52,7 @@ func GetNameFromVenueEventTypeID(venueEventTypeID int, db *sql.DB) string {
 	return name
 }
 
-func GetDetailsForEventID(eventId string, db *sql.DB) (EventDetails, error) {
+func GetDetailsForEventId(eventId string, db *sql.DB) (EventDetails, error) {
 
 	// Query the database for the event  joined with the event timeblock.
 
@@ -142,7 +142,7 @@ func GetEventDetailsByVenueIdForRange(venueID int, from time.Time, to time.Time,
 	var eventDetails []EventDetails
 
 	for _, eventId := range eventIds {
-		eventDetail, err := GetDetailsForEventID(strconv.Itoa(eventId), db)
+		eventDetail, err := GetDetailsForEventId(strconv.Itoa(eventId), db)
 		if err != nil {
 			return nil, err
 		}
@@ -360,7 +360,7 @@ func GetEventsForVenueId(rentalId int, db *sql.DB) ([]Event, error) {
 
 	return events, nil
 }
-func GetEventIDsForBookingId(bookingId string, db *sql.DB) ([]int, error) {
+func GetEventIdsForBookingId(bookingId string, db *sql.DB) ([]int, error) {
 	// Query the database for all rental bookings.
 	rows, err := db.Query("SELECT id FROM event WHERE booking_id = ?", bookingId)
 	if err != nil {
@@ -505,7 +505,7 @@ func GetEventDetails(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)
 	eventId := vars["eventId"]
 
-	eventDetails, err := GetDetailsForEventID(eventId, db)
+	eventDetails, err := GetDetailsForEventId(eventId, db)
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
 	}
