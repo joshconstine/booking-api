@@ -19,10 +19,7 @@ type VenueEventTypeDefaultSettings struct {
 	LatestBookingTime      string
 }
 
-func GetDefaultSettingsForVenueEventType(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	vars := mux.Vars(r)
-	id := vars["id"]
-
+func GetDefaultSettingsForVenueEventTypeID(id string, db *sql.DB) (VenueEventTypeDefaultSettings, error) {
 	// Query the database for the default setting of the id.
 	query := "SELECT * FROM venue_event_type_default_settings WHERE venue_event_type_id = ?"
 	rows, err := db.Query(query, id)
@@ -50,6 +47,20 @@ func GetDefaultSettingsForVenueEventType(w http.ResponseWriter, r *http.Request,
 		}
 	}
 
+	return venueEventTypeDefaultSettings, nil
+}
+
+func GetDefaultSettingsForVenueEventType(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	// Get the default settings for the venue event type.
+	venueEventTypeDefaultSettings, err := GetDefaultSettingsForVenueEventTypeID(id, db)
+
+	// Check if there is an error.
+	if err != nil {
+		log.Fatalf("failed to get default settings: %v", err)
+	}
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(venueEventTypeDefaultSettings)

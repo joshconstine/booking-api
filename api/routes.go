@@ -40,6 +40,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetBoatBookingsForBooking(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/bookings/{id}/events", func(w http.ResponseWriter, r *http.Request) {
+		GetEventsForBooking(w, r, db)
+	}).Methods("GET")
+
 	r.HandleFunc("/bookings/{id}/rentalBookings/{rentalBookingId}/details", func(w http.ResponseWriter, r *http.Request) {
 		GetRentalBookingDetails(w, r, db)
 	}).Methods("GET")

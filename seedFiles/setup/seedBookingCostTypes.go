@@ -44,7 +44,7 @@ func main() {
 		{6, "Labor"},
 		{7, "Damage Fee"},
 		{8, "Wedding Fee"},
-		{9, "Event fee hourly"},
+		{9, "Event fee"},
 		{10, "Event Fee Flat"},
 		{11, "Open Bar Fee"},
 		{12, "Cancelation Fee"},
