@@ -56,7 +56,7 @@ func GetDetailsForEventID(eventId string, db *sql.DB) (EventDetails, error) {
 
 	// Query the database for the event  joined with the event timeblock.
 
-	query := "SELECT e.id, vet.venue_id, e.booking_id, vtb.start_time, vtb.end_time FROM event e JOIN venue_timeblock vtb ON e.venue_timeblock_id = vtb.id JOIN venue_event_type vet ON e.venue_event_type_id = vet.id WHERE e.id = ?"
+	query := "SELECT e.id, vet.venue_id, e.booking_id, e.venue_timeblock_id, vtb.start_time, vtb.end_time FROM event e JOIN venue_timeblock vtb ON e.venue_timeblock_id = vtb.id JOIN venue_event_type vet ON e.venue_event_type_id = vet.id WHERE e.id = ?"
 	rows, err := db.Query(query, eventId)
 	if err != nil {
 		return EventDetails{}, err
@@ -94,6 +94,7 @@ func GetDetailsForEventID(eventId string, db *sql.DB) (EventDetails, error) {
 		}
 
 		eventDetails.CostItems = costItems
+		eventDetails.ID = eventID
 
 	} else {
 		return EventDetails{}, nil
