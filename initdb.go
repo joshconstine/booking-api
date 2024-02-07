@@ -24,7 +24,7 @@ func InitDB() {
 	//Boats
 	boatCreate := "CREATE TABLE IF NOT EXISTS boat (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, occupancy INT NOT NULL, max_weight INT NOT NULL, PRIMARY KEY (id))"
 	boatTimeblockCreate := "CREATE TABLE IF NOT EXISTS boat_timeblock (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, boat_booking_id INT, PRIMARY KEY (id), KEY boat_id (boat_id), KEY boat_booking_id (boat_booking_id))"
-	boatPhotoCreate := "CREATE TABLE IF NOT EXISTS boat_photo (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, photo_id INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id), KEY photo_id (photo_id))"
+	boatPhotoCreate := "CREATE TABLE IF NOT EXISTS boat_photo (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, photo_url VARCHAR(255) NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id))"
 	boatStatusCreate := "CREATE TABLE IF NOT EXISTS boat_status (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, is_clean BOOLEAN, low_fuel BOOLEAN, current_location_id INT NOT NULL, PRIMARY KEY (id), KEY current_location_id (current_location_id))"
 	boatDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS boat_default_settings (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, daily_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, advertise_at_all_locations BOOLEAN NOT NULL, file_id INT NOT NULL, PRIMARY KEY (id), KEY file_id (file_id))"
 	boatVariableSettingsCreate := "CREATE TABLE IF NOT EXISTS boat_variable_settings (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, daily_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id))"
