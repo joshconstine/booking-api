@@ -233,7 +233,7 @@ func AttemptToCreateEvent(details RequestEvent, db *sql.DB) (int64, error) {
 		log.Fatalf("Failed to insert venue timeblock: %v", err)
 	}
 
-	if err != nil {
+	if venueTimeblockID == -1 {
 		tx.Rollback()
 		return -1, nil
 	}
@@ -474,13 +474,13 @@ func CreateEvent(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	// Attempt to book the rental.
 	eventID, err := AttemptToCreateEvent(details, db)
 	if err != nil {
-		log.Fatalf("failed to book rental: %v", err)
+		log.Fatalf("failed to create event: %v", err)
 	}
 
 	if eventID == -1 {
 		// Return a 409 Conflict if the rental is already booked.
 		w.WriteHeader(http.StatusConflict)
-		w.Write([]byte("Rental is already booked"))
+		w.Write([]byte("Venue is already booked"))
 
 		return
 	}
