@@ -14,6 +14,46 @@ type RentalAmenity struct {
 	Amenity Amenity
 }
 
+type CreateRentalAmenityRequest struct {
+	AmenityID int
+	RentalID  int
+}
+
+func DeleteRentalAmenity(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	//
+	// Delete a rental amenity by its ID.
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	_, err := db.Exec("DELETE FROM rental_amenity WHERE id = ?", id)
+
+	if err != nil {
+		log.Fatalf("failed to delete rental amenity: %v", err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func CreateRentalAmenity(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	//
+	// Create a rental amenity.
+
+	var request CreateRentalAmenityRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		log.Fatalf("failed to decode request: %v", err)
+	}
+
+	_, err := db.Exec("INSERT INTO rental_amenity (amenity_id, rental_id) VALUES (?, ?)", request.AmenityID, request.RentalID)
+
+	if err != nil {
+		log.Fatalf("failed to insert rental amenity: %v", err)
+	}
+
+	w.WriteHeader(http.StatusCreated)
+
+}
+
 func GetAmenitiesForRentalID(id string, db *sql.DB) ([]RentalAmenity, error) {
 	//
 	// Get all the amenities for a rental by its ID.

@@ -18,10 +18,47 @@ type AmenityType struct {
 	Name string
 }
 
-type AmenityWithTypeName struct {
-	ID       int
-	Name     string
-	TypeName string
+type AmenityWithType struct {
+	ID            int
+	Name          string
+	TypeName      string
+	AmenityTypeID int
+}
+
+func CreateAmenity(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	//
+	// Create an amenity.
+
+	var amenity Amenity
+	if err := json.NewDecoder(r.Body).Decode(&amenity); err != nil {
+		log.Fatalf("failed to decode request: %v", err)
+	}
+
+	_, err := db.Exec("INSERT INTO amenity (name, amenity_type_id) VALUES (?, ?)", amenity.Name, amenity.AmenityTypeID)
+
+	if err != nil {
+		log.Fatalf("failed to insert amenity: %v", err)
+	}
+
+	w.WriteHeader(http.StatusCreated)
+}
+
+func CreateAmenityType(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	//
+	// Create an amenity type.
+
+	var amenityType AmenityType
+	if err := json.NewDecoder(r.Body).Decode(&amenityType); err != nil {
+		log.Fatalf("failed to decode request: %v", err)
+	}
+
+	_, err := db.Exec("INSERT INTO amenity_type (name) VALUES (?)", amenityType.Name)
+
+	if err != nil {
+		log.Fatalf("failed to insert amenity type: %v", err)
+	}
+
+	w.WriteHeader(http.StatusCreated)
 }
 
 func GetAmenityTypes(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -55,7 +92,7 @@ func GetAmenities(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	//
 	// Get all the amenities from the database wiht their type name.
 
-	rows, err := db.Query("SELECT a.id, a.name, at.name FROM amenity a JOIN amenity_type at ON a.amenity_type_id = at.id")
+	rows, err := db.Query("SELECT a.id, a.name, a.amenity_type_id ,at.name FROM amenity a JOIN amenity_type at ON a.amenity_type_id = at.id")
 
 	if err != nil {
 		log.Fatalf("failed to query: %v", err)
@@ -63,11 +100,11 @@ func GetAmenities(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	defer rows.Close()
 
-	var amenities []AmenityWithTypeName
+	var amenities []AmenityWithType
 
 	for rows.Next() {
-		var amenity AmenityWithTypeName
-		if err := rows.Scan(&amenity.ID, &amenity.Name, &amenity.TypeName); err != nil {
+		var amenity AmenityWithType
+		if err := rows.Scan(&amenity.ID, &amenity.Name, &amenity.AmenityTypeID, &amenity.TypeName); err != nil {
 			log.Fatalf("failed to scan row: %v", err)
 		}
 		amenities = append(amenities, amenity)

@@ -384,9 +384,28 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetAmenities(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/amenities", func(w http.ResponseWriter, r *http.Request) {
+		CreateAmenity(w, r, db)
+	}).Methods("POST")
+
 	//Amenity Types
 
 	r.HandleFunc("/amenityTypes", func(w http.ResponseWriter, r *http.Request) {
 		GetAmenityTypes(w, r, db)
 	}).Methods("GET")
+
+	r.HandleFunc("/amenityTypes", func(w http.ResponseWriter, r *http.Request) {
+		CreateAmenityType(w, r, db)
+	}).Methods("POST")
+
+	//Rental Amenities
+
+	r.HandleFunc("/rentalAmenity", func(w http.ResponseWriter, r *http.Request) {
+		CreateRentalAmenity(w, r, db)
+	}).Methods("POST")
+
+	r.HandleFunc("/rentalAmenity/{id}", func(w http.ResponseWriter, r *http.Request) {
+		DeleteRentalAmenity(w, r, db)
+	}).Methods("DELETE")
+
 }
