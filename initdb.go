@@ -14,12 +14,27 @@ func InitDB() {
 	//SQL CREATE TABLES
 
 	//Rentals
-	rentalCreate := "CREATE TABLE IF NOT EXISTS rental (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, location_id INT NOT NULL, bedrooms INT NOT NULL, bathrooms INT NOT NULL, PRIMARY KEY (id), KEY location_id (location_id))"
+	rentalCreate := "CREATE TABLE IF NOT EXISTS rental (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, location_id INT NOT NULL, bedrooms INT NOT NULL, bathrooms INT NOT NULL, description VARCHAR(255), PRIMARY KEY (id), KEY location_id (location_id))"
 	rentalTimeblockCreate := "CREATE TABLE IF NOT EXISTS rental_timeblock (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, rental_booking_id INT, PRIMARY KEY (id), KEY rental_id (rental_id), KEY rental_booking_id (rental_booking_id))"
 	rentalUnitDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS rental_unit_default_settings (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL UNIQUE, nightly_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, allows_pets BOOLEAN NOT NULL, cleaning_fee DECIMAL(10, 2) NOT NULL, check_in_time TIME NOT NULL, check_out_time TIME NOT NULL, file_id INT NOT NULL, PRIMARY KEY (id), KEY file_id (file_id))"
 	rentalUnitVariableSettingsCreate := "CREATE TABLE IF NOT EXISTS rental_unit_variable_settings (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, minimum_booking_duration INT NOT NULL, nightly_cost DECIMAL(10, 2) NOT NULL, cleaning_fee DECIMAL(10, 2) NOT NULL, event_required BOOLEAN NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id))"
 	rentalPhotoCreate := "CREATE TABLE IF NOT EXISTS rental_photo (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, photo_url VARCHAR(255) NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id))"
 	rentalStatusCreate := "CREATE TABLE IF NOT EXISTS rental_status (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL UNIQUE, is_clean BOOLEAN, PRIMARY KEY (id))"
+
+	//rental Bedrooms
+	bedTypeCreate := "CREATE TABLE IF NOT EXISTS bed_type (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
+
+	rentalBedroomCreate := "CREATE TABLE IF NOT EXISTS rental_bedroom (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, rental_photo_id INT, name VARCHAR(255), description VARCHAR(255), floor INT NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY rental_photo_id (rental_photo_id))"
+	rentalBedroomBedCreate := "CREATE TABLE IF NOT EXISTS rental_bedroom_bed (id INT NOT NULL AUTO_INCREMENT, rental_bedroom_id INT NOT NULL, bed_type_id INT NOT NULL, PRIMARY KEY (id), KEY rental_bedroom_id (rental_bedroom_id), KEY bed_type_id (bed_type_id))"
+
+	//rental Bathrooms
+	rentallBathroomCreate := "CREATE TABLE IF NOT EXISTS rental_bathroom (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, rental_photo_id INT, name VARCHAR(255), description VARCHAR(255), floor INT NOT NULL, shower BOOLEAN NOT NULL, bathtub BOOLEAN NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY rental_photo_id (rental_photo_id))"
+
+	//ameniy
+	amenityTypeCreate := "CREATE TABLE IF NOT EXISTS amenity_type (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
+	amenityCreate := "CREATE TABLE IF NOT EXISTS amenity (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, amenity_type_id INT NOT NULL, PRIMARY KEY (id), KEY amenity_type_id (amenity_type_id))"
+
+	rentalAmenityCreate := "CREATE TABLE IF NOT EXISTS rental_amenity(id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, amenity_id INT NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY amenity_id (amenity_id))"
 
 	//Boats
 	boatCreate := "CREATE TABLE IF NOT EXISTS boat (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, occupancy INT NOT NULL, max_weight INT NOT NULL, PRIMARY KEY (id))"
@@ -381,6 +396,45 @@ func InitDB() {
 	_, err = db.Exec(boatVariableSettingsCreate)
 	if err != nil {
 		log.Fatalf("failed to create boat_variable_settings table: %v", err)
+	}
+
+	//Rental Bedrooms
+	_, err = db.Exec(bedTypeCreate)
+	if err != nil {
+		log.Fatalf("failed to create bed_type table: %v", err)
+	}
+
+	_, err = db.Exec(rentalBedroomCreate)
+	if err != nil {
+		log.Fatalf("failed to create rental_bedroom table: %v", err)
+	}
+
+	_, err = db.Exec(rentalBedroomBedCreate)
+	if err != nil {
+		log.Fatalf("failed to create rental_bedroom_bed table: %v", err)
+	}
+
+	//Rental Bathrooms
+	_, err = db.Exec(rentallBathroomCreate)
+
+	if err != nil {
+		log.Fatalf("failed to create rental_bathroom table: %v", err)
+	}
+
+	//Amenities
+	_, err = db.Exec(amenityTypeCreate)
+	if err != nil {
+		log.Fatalf("failed to create amenity_type table: %v", err)
+	}
+
+	_, err = db.Exec(amenityCreate)
+	if err != nil {
+		log.Fatalf("failed to create amenity table: %v", err)
+	}
+
+	_, err = db.Exec(rentalAmenityCreate)
+	if err != nil {
+		log.Fatalf("failed to create rental_amenity table: %v", err)
 	}
 
 	// Close the connection
