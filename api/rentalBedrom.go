@@ -19,10 +19,6 @@ type RentalBedroom struct {
 	RentalPhotoID *int
 }
 
-type BedType struct {
-	ID   int
-	Name string
-}
 type RentalBedroomBed struct {
 	ID      int
 	BedType BedType
