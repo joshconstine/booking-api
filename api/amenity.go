@@ -24,6 +24,33 @@ type AmenityWithTypeName struct {
 	TypeName string
 }
 
+func GetAmenityTypes(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	//
+	// Get all the amenity types from the database.
+
+	rows, err := db.Query("SELECT id, name FROM amenity_type")
+
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	defer rows.Close()
+
+	var amenityTypes []AmenityType
+
+	for rows.Next() {
+		var amenityType AmenityType
+		if err := rows.Scan(&amenityType.ID, &amenityType.Name); err != nil {
+			log.Fatalf("failed to scan row: %v", err)
+		}
+		amenityTypes = append(amenityTypes, amenityType)
+	}
+
+	// Return the data as JSON.
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(amenityTypes)
+}
+
 func GetAmenities(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	//
 	// Get all the amenities from the database wiht their type name.
