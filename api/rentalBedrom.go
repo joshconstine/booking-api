@@ -19,15 +19,13 @@ type RentalBedroom struct {
 	RentalPhotoID *int
 }
 
-type RentalBedroomBed struct {
-	ID              int
-	RentalBedroomID int
-	BedTypeID       int
-}
-
 type BedType struct {
 	ID   int
 	Name string
+}
+type RentalBedroomBed struct {
+	ID      int
+	BedType BedType
 }
 
 type RentalBedroomWithBeds struct {
@@ -37,26 +35,93 @@ type RentalBedroomWithBeds struct {
 	Description   string
 	Floor         int
 	RentalPhotoID *int
-	Beds          []BedType
+	Beds          []RentalBedroomBed
 }
 
-func GetBedsForRentalBedroomID(id int, db *sql.DB) ([]BedType, error) {
-	rows, err := db.Query("SELECT bed_type.id, bed_type.name FROM bed_type JOIN rental_bedroom_bed ON bed_type.id = rental_bedroom_bed.bed_type_id WHERE rental_bedroom_bed.rental_bedroom_id = ?", id)
+type CreateRentalBedroomBedRequest struct {
+	RentalBedroomID int
+	BedTypeID       int
+}
+
+func CreateRentalBedroomBed(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	var request CreateRentalBedroomBedRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		log.Fatalf("failed to decode request: %v", err)
+	}
+
+	_, err := db.Exec("INSERT INTO rental_bedroom_bed (rental_bedroom_id, bed_type_id) VALUES (?, ?)", request.RentalBedroomID, request.BedTypeID)
+
+	if err != nil {
+		log.Fatalf("failed to insert rental bedroom bed: %v", err)
+	}
+
+	w.WriteHeader(http.StatusCreated)
+
+}
+func DeleteRentalBedroomBed(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	_, err := db.Exec("DELETE FROM rental_bedroom_bed WHERE id = ?", id)
+
+	if err != nil {
+		log.Fatalf("failed to delete rental bedroom bed: %v", err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func CreateRentalBedroom(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	var bedroom RentalBedroom
+	if err := json.NewDecoder(r.Body).Decode(&bedroom); err != nil {
+		log.Fatalf("failed to decode request: %v", err)
+	}
+
+	_, err := db.Exec("INSERT INTO rental_bedroom (rental_id, name, description, floor, rental_photo_id) VALUES (?, ?, ?, ?, ?)", bedroom.RentalID, bedroom.Name, bedroom.Description, bedroom.Floor, bedroom.RentalPhotoID)
+
+	if err != nil {
+		log.Fatalf("failed to insert rental bedroom: %v", err)
+	}
+
+	w.WriteHeader(http.StatusCreated)
+}
+
+func DeleteRentalBedroom(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	_, err := db.Exec("DELETE FROM rental_bedroom WHERE id = ?", id)
+
+	if err != nil {
+		log.Fatalf("failed to delete rental bedroom: %v", err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func GetBedsForRentalBedroomID(id int, db *sql.DB) ([]RentalBedroomBed, error) {
+	rows, err := db.Query("SELECT bed_type.id, bed_type.name, rental_bedroom_bed.id FROM bed_type JOIN rental_bedroom_bed ON bed_type.id = rental_bedroom_bed.bed_type_id WHERE rental_bedroom_bed.rental_bedroom_id = ?", id)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var beds []BedType
+	var beds []RentalBedroomBed
 	for rows.Next() {
-		var bed BedType
-		err := rows.Scan(&bed.ID, &bed.Name)
+		var bed RentalBedroomBed
+		err := rows.Scan(&bed.BedType.ID, &bed.BedType.Name, &bed.ID)
 		if err != nil {
 			return nil, err
 		}
 
 		beds = append(beds, bed)
+
 	}
+
 	return beds, nil
 }
 
