@@ -69,6 +69,22 @@ func DeleteRentalBedroomBed(w http.ResponseWriter, r *http.Request, db *sql.DB) 
 	w.WriteHeader(http.StatusOK)
 }
 
+func UpdateRentalBedroom(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	var bedroom RentalBedroom
+	if err := json.NewDecoder(r.Body).Decode(&bedroom); err != nil {
+		log.Fatalf("failed to decode request: %v", err)
+	}
+
+	_, err := db.Exec("UPDATE rental_bedroom SET name = ?, description = ?, floor = ?, rental_photo_id = ? WHERE id = ?", bedroom.Name, bedroom.Description, bedroom.Floor, bedroom.RentalPhotoID, bedroom.ID)
+
+	if err != nil {
+		log.Fatalf("failed to update rental bedroom: %v", err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func CreateRentalBedroom(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	var bedroom RentalBedroom
