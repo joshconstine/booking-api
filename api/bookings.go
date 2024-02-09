@@ -202,6 +202,27 @@ func GetInformationForBookingID(bookingId string, db *sql.DB) (BookingInformatio
 
 }
 
+func GetAllBookingIDsThatAreNotCancelledOrCompleted(db *sql.DB) ([]int, error) {
+
+	rows, err := db.Query("SELECT id FROM booking WHERE booking_status_id != 5 AND booking_status_id != 4")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var bookingIDs []int
+
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		bookingIDs = append(bookingIDs, id)
+	}
+
+	return bookingIDs, nil
+}
+
 func GetBookings(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	rows, err := db.Query("SELECT * FROM booking")
@@ -240,7 +261,7 @@ func CreateBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		if IsDuplicateKeyError(err) {
 			// Handle duplicate entry error
 			w.WriteHeader(http.StatusConflict) // HTTP 409 Conflict
-			w.Write([]byte("Duplicate entry: The booking cost type already exists."))
+			// w.Write([]byte("Duplicate entry: The booking cost type already exists."))
 		} else {
 			// Handle other errors
 			log.Printf("failed to insert: %v", err)
@@ -393,4 +414,81 @@ func GetBookingSnapshots(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(bookingSnapshots)
+}
+
+func AttemptToUpdateBookingStatusForBookingID(bookingID int, statusID int, db *sql.DB) error {
+
+	_, err := db.Exec("UPDATE booking SET booking_status_id = ? WHERE id = ?", statusID, bookingID)
+
+	return err
+}
+func GetBookingStatusForBookingID(bookingID int, db *sql.DB) (int, error) {
+
+	var statusID int
+	err := db.QueryRow("SELECT booking_status_id FROM booking WHERE id = ?", bookingID).Scan(&statusID)
+	return statusID, err
+}
+
+func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
+	// Get the current status of the booking
+
+	statusID, err := GetBookingStatusForBookingID(bookingID, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	// If the booking is requested, check if the payment is complete
+	if statusID == 1 {
+		paymentComplete, err := VerifyBookingPaymentStatus(bookingID, db)
+		if err != nil {
+			log.Fatalf("failed to verify payment status: %v", err)
+		}
+
+		// If the payment is complete, update the status to confirmed
+		if paymentComplete {
+			err = AttemptToUpdateBookingStatusForBookingID(bookingID, 2, db)
+
+			if err != nil {
+				log.Fatalf("failed to update booking status: %v", err)
+			}
+
+			return true, nil
+
+		}
+
+		//if the status if confirmed, check if the booking start date is today
+	}
+
+	bookingDetails, err := GetDetailsForBookingID(strconv.Itoa(bookingID), db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+	// Truncate the current time to the beginning of the day
+	currentDay := time.Now().Truncate(24 * time.Hour)
+
+	// Truncate the booking start date to the beginning of the day
+	bookingDay := bookingDetails.BookingStartDate.Truncate(24 * time.Hour)
+
+	// Compare if the booking start date is on the same day as today
+	if bookingDay.Equal(currentDay) && statusID != 3 {
+
+		err = AttemptToUpdateBookingStatusForBookingID(bookingID, 3, db)
+		if err != nil {
+			log.Fatalf("failed to update booking status: %v", err)
+		}
+		return true, nil
+	}
+
+	// If the status is in progress, check if the booking end date is today
+
+	if statusID == 3 {
+		// Get the booking end date
+
+		// If the booking end date is in the past update here
+	}
+
+	return false, nil
+
+	// If the status is in progress, check if the booking end date is today
+
 }

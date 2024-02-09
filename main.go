@@ -3,6 +3,7 @@ package main
 import (
 	"booking-api/api"
 	"booking-api/config"
+	"booking-api/jobs"
 	"database/sql"
 	"fmt"
 	"log"
@@ -36,6 +37,8 @@ func main() {
 	// run the server
 	cleanup, err := run(env)
 
+	// Run jobs
+	jobs.VerifyBookingStatuses() // Call the function to run the jobs
 	// run the cleanup after the server is terminated
 	defer cleanup()
 	if err != nil {
