@@ -31,14 +31,13 @@ type BookingInformation struct {
 }
 
 type BookingSnapshot struct {
-	BookingID       int
-	BookingStatus   string
-	RentalsBooked   []string
-	BoatsBooked     []string
-	Events          []string
-	HasAlcoholOrder bool
-	BookingDetails  BookingDetails
-	User            User
+	BookingID      int
+	BookingStatus  string
+	RentalsBooked  []RentalInfo
+	BoatsBooked    []BoatInfo
+	Events         []EventInfo
+	BookingDetails BookingDetails
+	User           User
 }
 
 func createNewBooking(db *sql.DB, userID int) (int, error) {
@@ -400,13 +399,23 @@ func GetBookingSnapshots(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			log.Println(err)
 		}
 
-		rentalNames, err := GetRentalNamesForBookingId(strconv.Itoa(bookingSnapshot.BookingID), db)
+		rentals, err := GetRentalsForBookingId(strconv.Itoa(bookingSnapshot.BookingID), db)
 		if err != nil {
 			log.Println(err)
 		}
+		boats, err := GetBoatsForBookingId(strconv.Itoa(bookingSnapshot.BookingID), db)
+		if err != nil {
+			log.Println(err)
+		}
+		// events, err := GetEventsForBookingId(strconv.Itoa(bookingSnapshot.BookingID), db)
+		// if err != nil {
+		// 	log.Println(err)
+		// }
+
+		bookingSnapshot.BoatsBooked = boats
 
 		bookingSnapshot.User = user
-		bookingSnapshot.RentalsBooked = rentalNames
+		bookingSnapshot.RentalsBooked = rentals
 
 		bookingSnapshots = append(bookingSnapshots, bookingSnapshot)
 	}

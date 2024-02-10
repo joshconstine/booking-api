@@ -48,10 +48,37 @@ type BoatBookingCost struct {
 	BookingCostItemID int
 }
 
+type BoatInfo struct {
+	ID   int
+	Name string
+}
+
 func AddBoatBookingCost(boatBookingCost BoatBookingCost, db *sql.DB) error {
 	_, err := db.Exec("INSERT INTO boat_booking_cost (boat_booking_id, booking_cost_item_id) VALUES (?, ?)", boatBookingCost.BoatBookingID, boatBookingCost.BookingCostItemID)
 	return err
 }
+
+func GetBoatsForBookingId(bookingId string, db *sql.DB) ([]BoatInfo, error) {
+
+	rows, err := db.Query("SELECT b.id, b.name FROM boat b JOIN boat_booking bb ON b.id = bb.boat_id WHERE bb.booking_id = ?", bookingId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var boats []BoatInfo
+
+	for rows.Next() {
+		var boat BoatInfo
+		if err := rows.Scan(&boat.ID, &boat.Name); err != nil {
+			return nil, err
+		}
+		boats = append(boats, boat)
+	}
+
+	return boats, nil
+}
+
 func GetBoatBookingIDsForBookingId(bookingId string, db *sql.DB) ([]int, error) {
 	rows, err := db.Query("SELECT id FROM boat_booking WHERE booking_id = ?", bookingId)
 	if err != nil {
