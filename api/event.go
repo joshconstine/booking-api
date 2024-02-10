@@ -44,6 +44,14 @@ type EventDetails struct {
 	CostItems        []BookingCostItem
 }
 
+type EventInfo struct {
+	EventName  string
+	VenueName  string
+	VenueID    int
+	EventStart time.Time
+	EventEnd   time.Time
+}
+
 func GetNameFromVenueEventTypeID(venueEventTypeID int, db *sql.DB) string {
 	var name string
 	err := db.QueryRow("SELECT et.name FROM venue_event_type vet  JOIN event_type et ON vet.event_type_id = et.id WHERE vet.id = ?", venueEventTypeID).Scan(&name)
@@ -130,6 +138,69 @@ func GetEventIdsFromVenueIDWithRange(venueID int, from time.Time, to time.Time, 
 	}
 
 	return bookingIds, nil
+
+}
+
+func GetInfoForEventId(eventId string, db *sql.DB) (EventInfo, error) {
+
+	// Query the database for the event  joined with the event timeblock.
+
+	query := "SELECT e.name, v.name, v.id, vtb.start_time, vtb.end_time FROM event e JOIN venue_timeblock vtb ON e.venue_timeblock_id = vtb.id JOIN venue v ON vtb.venue_id = v.id WHERE e.id = ?"
+	rows, err := db.Query(query, eventId)
+	if err != nil {
+		return EventInfo{}, err
+	}
+	defer rows.Close()
+
+	// Create a single instance of EventDetails.
+	var eventInfo EventInfo
+
+	// Check if there is at least one row.
+	if rows.Next() {
+		var startTimeStr, endTimeStr string
+
+		// Scan the row into the EventDetails struct.
+		if err := rows.Scan(&eventInfo.EventName, &eventInfo.VenueName, &eventInfo.VenueID, &startTimeStr, &endTimeStr); err != nil {
+			return EventInfo{}, err
+		}
+
+		// Parse the start and end times into time.Time.
+		eventInfo.EventStart, err = time.Parse("2006-01-02 15:04:05", startTimeStr)
+		if err != nil {
+			return EventInfo{}, err
+		}
+		eventInfo.EventEnd, err = time.Parse("2006-01-02 15:04:05", endTimeStr)
+		if err != nil {
+			return EventInfo{}, err
+		}
+
+	} else {
+		return EventInfo{}, nil
+
+	}
+
+	return eventInfo, nil
+
+}
+
+func GetEventInfoForBookingId(bookingId string, db *sql.DB) ([]EventInfo, error) {
+
+	eventIds, err := GetEventIdsForBookingId(bookingId, db)
+	if err != nil {
+		return nil, err
+	}
+
+	var eventInfos []EventInfo
+
+	for _, eventId := range eventIds {
+		eventInfo, err := GetInfoForEventId(strconv.Itoa(eventId), db)
+		if err != nil {
+			return nil, err
+		}
+		eventInfos = append(eventInfos, eventInfo)
+	}
+
+	return eventInfos, nil
 
 }
 

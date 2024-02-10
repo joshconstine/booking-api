@@ -4,6 +4,7 @@ import (
 	"booking-api/api"
 	"database/sql"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 	"github.com/robfig/cron"
@@ -49,6 +50,21 @@ func VerifyAndUpdateBookingStatuses() {
 			log.Infof("Updated booking status for booking ID: %d", bookingID)
 		}
 
+		bookingIDString := strconv.Itoa(bookingID)
+		rentalBookings, err := api.GetRentalBookingsForBookingId(bookingIDString, db)
+		if err != nil {
+			log.Fatalf("failed to query rental bookings: %v", err)
+		}
+		for _, rentalBooking := range rentalBookings {
+			updated, err := api.AuditRentalBookingStatus(rentalBooking.ID, db)
+			if err != nil {
+				log.Fatalf("failed to verify rental booking payment status: %v", err)
+			}
+			if updated {
+				log.Infof("Updated rental booking status for rental booking ID: %d", rentalBooking.ID)
+			}
+		}
+
 	}
 
 	defer db.Close()
@@ -58,7 +74,7 @@ func VerifyAndUpdateBookingStatuses() {
 func VerifyBookingStatuses() {
 	log.Info("Create new cron")
 	c := cron.New()
-	c.AddFunc("0 6,12,18,0 * * *", func() { VerifyAndUpdateBookingStatuses() })
+	// c.AddFunc("0 */1 * * *", func() { VerifyAndUpdateBookingStatuses() })
 
 	// Start cron with one scheduled job
 	log.Info("Start cron")

@@ -407,13 +407,14 @@ func GetBookingSnapshots(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		if err != nil {
 			log.Println(err)
 		}
-		// events, err := GetEventsForBookingId(strconv.Itoa(bookingSnapshot.BookingID), db)
-		// if err != nil {
-		// 	log.Println(err)
-		// }
+		events, err := GetEventInfoForBookingId(strconv.Itoa(bookingSnapshot.BookingID), db)
+		if err != nil {
+			log.Println(err)
+		}
 
 		bookingSnapshot.BoatsBooked = boats
 
+		bookingSnapshot.Events = events
 		bookingSnapshot.User = user
 		bookingSnapshot.RentalsBooked = rentals
 

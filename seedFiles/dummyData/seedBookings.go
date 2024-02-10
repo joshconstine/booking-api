@@ -26,6 +26,14 @@ type RentalBookingCreate struct {
 	BookingID int
 }
 
+type BoatBookingCreate struct {
+	BoatID     int
+	StartTime  time.Time
+	EndTime    time.Time
+	BookingID  int
+	LocationID int
+}
+
 // get random time between 1 and 100 days
 func randomTime() time.Time {
 	rand.Seed(time.Now().UnixNano())
@@ -57,10 +65,23 @@ func GenerateRandomRentalBooking(bookingID int) RentalBookingCreate {
 	}
 }
 
+func GenerateRandomBoatBooking(bookingID int) BoatBookingCreate {
+
+	start, end := RandomDateRangeBetweenNowAnd180Days()
+	return BoatBookingCreate{
+		BoatID:     rand.Intn(4),
+		StartTime:  start,
+		EndTime:    end,
+		BookingID:  bookingID,
+		LocationID: rand.Intn(2),
+	}
+}
+
 func main() {
 	// Mock API endpoint
 	bookingCreateApiEndpoint := "http://localhost:8080/bookings/ui"
 	rentalBookingCreateApiEndpoint := "http://localhost:8080/rentalBooking"
+	boatBookingCreateApiEndpoint := "http://localhost:8080/boatBooking"
 
 	// Seed some bookings
 	numBookings := 10 // Change as needed
@@ -108,6 +129,18 @@ func main() {
 			log.Fatal(err)
 		}
 		resp, err := http.Post(rentalBookingCreateApiEndpoint, "application/json", bytes.NewBuffer(bookingJSON))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println(resp.Status)
+
+		boatBooking := GenerateRandomBoatBooking(bookingID)
+		boatBookingJSON, err := json.Marshal(boatBooking)
+		if err != nil {
+			log.Fatal(err)
+		}
+		resp, err = http.Post(boatBookingCreateApiEndpoint, "application/json", bytes.NewBuffer(boatBookingJSON))
 		if err != nil {
 			log.Fatal(err)
 		}

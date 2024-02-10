@@ -44,6 +44,11 @@ type RentalBookingCost struct {
 	BookingCostItemID int
 }
 
+type RentalInfo struct {
+	ID   int
+	Name string
+}
+
 func GetDetailsForRentalBookingID(rentalBookingId string, db *sql.DB) (RentalBookingDetails, error) {
 
 	// Query the database for the rental booking joined with the rental timeblock.
@@ -387,6 +392,102 @@ func GetRentalBookingsForBookingId(bookingId string, db *sql.DB) ([]RentalBookin
 
 	return rentalBookings, nil
 }
+func GetRentalBookingByID(rentalBookingId string, db *sql.DB) (RentalBooking, error) {
+	// Query the database for the rental booking.
+	rows, err := db.Query("SELECT id, rental_id, booking_id, rental_time_block_id, booking_status_id, booking_file_id FROM rental_booking WHERE id = ?", rentalBookingId)
+	if err != nil {
+		return RentalBooking{}, err
+	}
+	defer rows.Close()
+
+	// Create a single instance of RentalBooking.
+	var rentalBooking RentalBooking
+
+	// Check if there is at least one row.
+	if rows.Next() {
+		// Scan the values into variables.
+		if err := rows.Scan(&rentalBooking.ID, &rentalBooking.RentalID, &rentalBooking.BookingID, &rentalBooking.RentalTimeBlockID, &rentalBooking.BookingStatusID, &rentalBooking.BookingFileID); err != nil {
+			return RentalBooking{}, err
+		}
+	}
+
+	return rentalBooking, nil
+}
+
+func AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingID int, statusID int, db *sql.DB) error {
+	_, err := db.Exec("UPDATE rental_booking SET booking_status_id = ? WHERE id = ?", statusID, rentalBookingID)
+	return err
+}
+
+func GetStartTimeAndEndTimeForRentalBookingID(rentalBookingID int, db *sql.DB) (time.Time, time.Time, error) {
+	// Query the database for the rental booking.
+	rows, err := db.Query("SELECT rt.start_time, rt.end_time FROM rental_timeblock rt JOIN rental_booking rb ON rt.id = rb.rental_time_block_id WHERE rb.id = ?", rentalBookingID)
+	if err != nil {
+		return time.Time{}, time.Time{}, err
+	}
+	defer rows.Close()
+
+	// Create a single instance of RentalBooking.
+	var startTime, endTime time.Time
+
+	// Check if there is at least one row.
+	if rows.Next() {
+		// Scan the values into variables.
+		if err := rows.Scan(&startTime, &endTime); err != nil {
+			return time.Time{}, time.Time{}, err
+		}
+	}
+
+	return startTime, endTime, nil
+}
+
+func AuditRentalBookingStatus(rentalBookingId int, db *sql.DB) (bool, error) {
+	rentalBooking, err := GetRentalBookingByID(strconv.Itoa(rentalBookingId), db)
+	if err != nil {
+		return false, err
+	}
+	//if the status is requested, check if the booking has been paid
+	if rentalBooking.BookingStatusID == 1 {
+		paymentComplete, err := VerifyBookingPaymentStatus(rentalBooking.BookingID, db)
+		if err != nil {
+			log.Fatalf("failed to verify payment status: %v", err)
+		}
+
+		// If the payment is complete, update the status to confirmed
+		if paymentComplete {
+			err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBooking.BookingID, 2, db)
+
+			if err != nil {
+				log.Fatalf("failed to update booking status: %v", err)
+			}
+
+			return true, nil
+
+		}
+	}
+
+	//check if the booking has started
+
+	startTime, endTime, err := GetStartTimeAndEndTimeForRentalBookingID(rentalBookingId, db)
+
+	if time.Now().After(startTime) {
+		if rentalBooking.BookingStatusID == 2 {
+			err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 3, db)
+			return true, nil
+		}
+	}
+
+	// Check if the rental booking is in the past
+	if time.Now().After(endTime) {
+		err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 4, db)
+		if err != nil {
+			return false, err
+		}
+		return true, nil
+	}
+
+	return false, nil
+}
 
 func GetRentalBookingsForRentalId(rentalId int, db *sql.DB) ([]RentalBooking, error) {
 	rentalIdString := strconv.Itoa(rentalId)
@@ -433,29 +534,31 @@ func GetRentalBookingIDsForBookingId(bookingId string, db *sql.DB) ([]int, error
 	}
 
 	return rentalBookingIds, nil
+
 }
 
-func GetRentalNamesForBookingId(bookingId string, db *sql.DB) ([]string, error) {
+func GetRentalsForBookingId(bookingId string, db *sql.DB) ([]RentalInfo, error) {
 	// Query the database for all rental bookings.
-	rows, err := db.Query("SELECT r.name FROM rental r JOIN rental_booking rb ON r.id = rb.rental_id WHERE rb.booking_id = ?", bookingId)
+	rows, err := db.Query("SELECT r.name, r.id FROM rental r JOIN rental_booking rb ON r.id = rb.rental_id WHERE rb.booking_id = ?", bookingId)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	// Create a slice of rental bookings to hold the data.
-	var rentalNames []string
+	var rentalInfos []RentalInfo
 
 	// Loop through the data and insert into the rental bookings slice.
 	for rows.Next() {
-		var rentalName string
-		if err := rows.Scan(&rentalName); err != nil {
+		var rentalInfo RentalInfo
+		if err := rows.Scan(&rentalInfo.Name, &rentalInfo.ID); err != nil {
 			return nil, err
 		}
-		rentalNames = append(rentalNames, rentalName)
+		rentalInfos = append(rentalInfos, rentalInfo)
 	}
 
-	return rentalNames, nil
+	return rentalInfos, nil
+
 }
 
 // API Handlers
