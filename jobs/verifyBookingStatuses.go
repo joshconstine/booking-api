@@ -58,7 +58,7 @@ func VerifyAndUpdateBookingStatuses() {
 func VerifyBookingStatuses() {
 	log.Info("Create new cron")
 	c := cron.New()
-	c.AddFunc("0 */1 * * * *", func() { VerifyAndUpdateBookingStatuses() })
+	c.AddFunc("0 6,12,18,0 * * *", func() { VerifyAndUpdateBookingStatuses() })
 
 	// Start cron with one scheduled job
 	log.Info("Start cron")
