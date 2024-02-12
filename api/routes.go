@@ -149,6 +149,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetRentalPhotos(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/rentals/{id}/thumbnail", func(w http.ResponseWriter, r *http.Request) {
+		GetRentalThumbnailByRental(w, r, db)
+	}).Methods("GET")
+
 	r.HandleFunc("/rentals/{id}/bedrooms", func(w http.ResponseWriter, r *http.Request) {
 		GetBedroomsForRental(w, r, db)
 	}).Methods("GET")
@@ -208,6 +212,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 
 	r.HandleFunc("/boats/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
 		GetBoatPhotos(w, r, db)
+	}).Methods("GET")
+
+	r.HandleFunc("/boats/{id}/thumbnail", func(w http.ResponseWriter, r *http.Request) {
+		GetBoatThumbnail(w, r, db)
 	}).Methods("GET")
 
 	//Booking Status
