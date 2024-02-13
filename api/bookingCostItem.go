@@ -21,10 +21,21 @@ func GetTotalCostItemsForBookingID(bookingID int, db *sql.DB) (float64, error) {
 	var totalCost sql.NullFloat64 // Use sql.NullFloat64 to handle NULL values
 
 	// Use QueryRow for a single row result
-	err := db.QueryRow("SELECT SUM(amount) FROM booking_cost_item WHERE booking_id = ?", bookingID).Scan(&totalCost)
+	rows, err := db.Query("SELECT SUM(amount) FROM booking_cost_item WHERE booking_id = ?", bookingID)
+
 	if err != nil {
 		// Handle the error properly
 		return 0, fmt.Errorf("failed to query total cost: %v", err)
+	}
+
+	if rows.Next() {
+
+		//check if the result is NULL
+		err = rows.Scan(&totalCost)
+		if err != nil {
+			// Handle the error properly
+			return 0, fmt.Errorf("failed to scan total cost: %v", err)
+		}
 	}
 
 	// Check if the result is NULL (no rows found or sum of nothing)

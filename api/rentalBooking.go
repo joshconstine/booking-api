@@ -428,7 +428,7 @@ func GetStartTimeAndEndTimeForRentalBookingID(rentalBookingID int, db *sql.DB) (
 	defer rows.Close()
 
 	// Create a single instance of RentalBooking.
-	var startTime, endTime time.Time
+	var startTime, endTime string
 
 	// Check if there is at least one row.
 	if rows.Next() {
@@ -436,9 +436,21 @@ func GetStartTimeAndEndTimeForRentalBookingID(rentalBookingID int, db *sql.DB) (
 		if err := rows.Scan(&startTime, &endTime); err != nil {
 			return time.Time{}, time.Time{}, err
 		}
+
 	}
 
-	return startTime, endTime, nil
+	var startTimeTime, endTimeTime time.Time
+	startTimeTime, err = time.Parse("2006-01-02 15:04:05", startTime)
+	if err != nil {
+		return time.Time{}, time.Time{}, err
+	}
+
+	endTimeTime, err = time.Parse("2006-01-02 15:04:05", endTime)
+	if err != nil {
+		return time.Time{}, time.Time{}, err
+	}
+
+	return startTimeTime, endTimeTime, nil
 }
 
 func AuditRentalBookingStatus(rentalBookingId int, db *sql.DB) (bool, error) {
@@ -455,7 +467,7 @@ func AuditRentalBookingStatus(rentalBookingId int, db *sql.DB) (bool, error) {
 
 		// If the payment is complete, update the status to confirmed
 		if paymentComplete {
-			err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBooking.BookingID, 2, db)
+			err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 2, db)
 
 			if err != nil {
 				log.Fatalf("failed to update booking status: %v", err)
@@ -466,26 +478,35 @@ func AuditRentalBookingStatus(rentalBookingId int, db *sql.DB) (bool, error) {
 		}
 	}
 
-	//check if the booking has started
+	if rentalBooking.BookingStatusID != 4 {
 
-	startTime, endTime, err := GetStartTimeAndEndTimeForRentalBookingID(rentalBookingId, db)
+		//check if the booking has started
 
-	if time.Now().After(startTime) {
-		if rentalBooking.BookingStatusID == 2 {
-			err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 3, db)
+		startTime, endTime, err := GetStartTimeAndEndTimeForRentalBookingID(rentalBookingId, db)
+
+		if time.Now().After(startTime) {
+			if rentalBooking.BookingStatusID == 2 {
+				err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 3, db)
+				return true, nil
+			}
+		}
+
+		// Check if the rental booking is in the past
+		if time.Now().After(endTime) {
+			//log info
+			log.Printf("Rental booking with ID %d is in the past", rentalBookingId)
+			//print times
+			log.Printf("Start time: %v", startTime)
+			log.Printf("End time: %v", endTime)
+
+			err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 4, db)
+			if err != nil {
+				return false, err
+			}
 			return true, nil
 		}
-	}
 
-	// Check if the rental booking is in the past
-	if time.Now().After(endTime) {
-		err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 4, db)
-		if err != nil {
-			return false, err
-		}
-		return true, nil
 	}
-
 	return false, nil
 }
 
