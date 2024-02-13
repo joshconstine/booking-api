@@ -478,6 +478,20 @@ func GetEventNamesForBookingId(bookingId string, db *sql.DB) ([]string, error) {
 	return eventNames, nil
 }
 
+func GetEventEndTime(eventId string, db *sql.DB) (time.Time, error) {
+	var endTime time.Time
+	err := db.QueryRow("SELECT end_time FROM venue_timeblock WHERE id = (SELECT venue_timeblock_id FROM event WHERE id = ?)", eventId).Scan(&endTime)
+	if err != nil {
+		return time.Time{}, err
+	}
+	parsedTime, err := time.Parse("2006-01-02 15:04:05", endTime.String())
+	if err != nil {
+		return time.Time{}, err
+
+	}
+	return parsedTime, nil
+}
+
 // API Handlers
 func GetEventsForBooking(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	vars := mux.Vars(r)

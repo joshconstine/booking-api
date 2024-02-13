@@ -439,6 +439,57 @@ func GetBookingStatusForBookingID(bookingID int, db *sql.DB) (int, error) {
 	return statusID, err
 }
 
+func CheckIfAllBookingItemsAreComplete(bookingID int, db *sql.DB) (bool, error) {
+
+	bookingIdString := strconv.Itoa(bookingID)
+
+	// Get the rental bookings for the booking
+	rentalBookings, err := GetRentalBookingsForBookingId(bookingIdString, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	// Check if all rental bookings are complete
+	for _, rentalBooking := range rentalBookings {
+		if rentalBooking.BookingStatusID != 4 {
+			return false, nil
+		}
+	}
+
+	// Get the boat bookings for the booking
+	boatBookings, err := GetBoatBookingsForBookingId(bookingIdString, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+	// Check if all boat bookings are complete
+	for _, boatBooking := range boatBookings {
+		if boatBooking.BookingStatusID != 4 {
+			return false, nil
+		}
+
+	}
+
+	// Get the event bookings for the booking
+	eventIDs, err := GetEventIdsForBookingId(bookingIdString, db)
+	if err != nil {
+		log.Fatalf("failed to query: %v", err)
+	}
+
+	// Check if all event bookings are complete
+	for _, eventID := range eventIDs {
+		eventIDString := strconv.Itoa(eventID)
+		endTime, err := GetEventEndTime(eventIDString, db)
+		if err != nil {
+			log.Fatalf("failed to query: %v", err)
+		}
+		if endTime.After(time.Now()) {
+			return false, nil
+		}
+	}
+
+	return true, nil
+}
+
 func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 	// Get the current status of the booking
 
@@ -489,11 +540,27 @@ func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 		return true, nil
 	}
 
-	// If the status is in progress, check if the booking end date is today
+	// If the status is in progress, check if the booking is complete
 
 	if statusID == 3 {
 		// Get the booking end date
+		areAllBookingItemsComplete, err := CheckIfAllBookingItemsAreComplete(bookingID, db)
+		if err != nil {
+			log.Fatalf("failed to check if all booking items are complete: %v", err)
+		}
 
+		// If all booking items are complete, update the status to completed
+		if areAllBookingItemsComplete {
+			//log booking completion
+			log.Printf("Booking %d has all items  complete", bookingID)
+
+			err = AttemptToUpdateBookingStatusForBookingID(bookingID, 4, db)
+			if err != nil {
+				log.Fatalf("failed to update booking status: %v", err)
+			}
+
+			return true, nil
+		}
 		// If the booking end date is in the past update here
 	}
 

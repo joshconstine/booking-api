@@ -494,11 +494,6 @@ func AuditRentalBookingStatus(rentalBookingId int, db *sql.DB) (bool, error) {
 		// Check if the rental booking is in the past
 		if time.Now().After(endTime) {
 			//log info
-			log.Printf("Rental booking with ID %d is in the past", rentalBookingId)
-			//print times
-			log.Printf("Start time: %v", startTime)
-			log.Printf("End time: %v", endTime)
-
 			err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 4, db)
 			if err != nil {
 				return false, err
