@@ -218,6 +218,28 @@ func AttemptToBookBoat(details RequestBoatBooking, db *sql.DB) (int64, error) {
 		return 0, err
 	}
 
+	//get booking details
+	bookingDetails, err := GetDetailsForBookingID(strconv.Itoa(details.BookingID), db)
+	if err != nil {
+		return 0, err
+	}
+
+	if details.StartTime.Before(bookingDetails.BookingStartDate) {
+		//update booking details
+		bookingDetails.BookingStartDate = details.StartTime
+
+		twoWeeksBeforeBookingStartDate := details.StartTime.AddDate(0, 0, -14)
+
+		bookingDetails.PaymentDueDate = twoWeeksBeforeBookingStartDate
+
+		err = UpdateBookingDetails(bookingDetails, db)
+
+		if err != nil {
+			return 0, err
+		}
+
+	}
+
 	//commit transaction
 	err = tx.Commit()
 	if err != nil {

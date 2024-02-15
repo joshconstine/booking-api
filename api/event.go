@@ -339,19 +339,21 @@ func AttemptToCreateEvent(details RequestEvent, db *sql.DB) (int64, error) {
 		return 0, err
 	}
 
-	//update booking details
-	bookingDetails.BookingStartDate = details.StartTime
+	if details.StartTime.Before(bookingDetails.BookingStartDate) {
+		//update booking details
+		bookingDetails.BookingStartDate = details.StartTime
 
-	twoWeeksBeforeBookingStartDate := details.StartTime.AddDate(0, 0, -14)
+		twoWeeksBeforeBookingStartDate := details.StartTime.AddDate(0, 0, -14)
 
-	bookingDetails.PaymentDueDate = twoWeeksBeforeBookingStartDate
+		bookingDetails.PaymentDueDate = twoWeeksBeforeBookingStartDate
 
-	err = UpdateBookingDetails(bookingDetails, db)
+		err = UpdateBookingDetails(bookingDetails, db)
 
-	if err != nil {
-		return 0, err
+		if err != nil {
+			return 0, err
+		}
+
 	}
-
 	//calculate cost
 	totalCost := CalculateEventHourlyCost(venueEventTypeDefaultSettings, details.StartTime, details.EndTime)
 
