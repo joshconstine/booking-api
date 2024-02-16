@@ -498,6 +498,12 @@ func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 		log.Fatalf("failed to query: %v", err)
 	}
 
+	//if it is cancelled or complete return
+
+	if statusID == 4 || statusID == 5 {
+		return false
+	}
+
 	// If the booking is requested, check if the payment is complete
 	if statusID == 1 {
 		paymentComplete, err := VerifyBookingPaymentStatus(bookingID, db)
@@ -531,7 +537,7 @@ func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 	bookingDay := bookingDetails.BookingStartDate.Truncate(24 * time.Hour)
 
 	// Compare if the booking start date is on the same day as today
-	if bookingDay.Equal(currentDay) && statusID != 3 {
+	if (bookingDay.Equal(currentDay) || bookingDay.Before(currentDay)) && statusID != 3 {
 
 		err = AttemptToUpdateBookingStatusForBookingID(bookingID, 3, db)
 		if err != nil {
