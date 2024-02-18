@@ -14,10 +14,12 @@ type EnvVars struct {
 	OBJECT_STORAGE_URL        string `mapstructure:"OBJECT_STORAGE_URL"`
 	OBJECT_STORAGE_ACCESS_KEY string `mapstructure:"OBJECT_STORAGE_ACCESS_KEY"`
 	OBJECT_STORAGE_SECRET     string `mapstructure:"OBJECT_STORAGE_SECRET"`
+	OBJECT_STORAGE_BUCKET     string `mapstructure:"OBJECT_STORAGE_BUCKET"`
 }
 
 func LoadConfig() (config EnvVars, err error) {
 	viper.AddConfigPath(".")
+	// viper.SetConfigName("app")
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
@@ -28,10 +30,11 @@ func LoadConfig() (config EnvVars, err error) {
 		config.DSN = os.Getenv("DSN")
 		config.PORT = os.Getenv("PORT")
 		config.OBJECT_STORAGE_URL = os.Getenv("OBJECT_STORAGE_URL")
+		config.OBJECT_STORAGE_BUCKET = os.Getenv("OBJECT_STORAGE_BUCKET")
 		config.OBJECT_STORAGE_ACCESS_KEY = os.Getenv("OBJECT_STORAGE_ACCESS_KEY")
 		config.OBJECT_STORAGE_SECRET = os.Getenv("OBJECT_STORAGE_SECRET")
 
-		if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" {
+		if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" {
 			return config, fmt.Errorf("error loading config, %v", err)
 		}
 		return config, nil
@@ -62,6 +65,10 @@ func LoadConfig() (config EnvVars, err error) {
 
 	if config.OBJECT_STORAGE_SECRET == "" {
 		err = errors.New("OBJECT_STORAGE_SECRET is required")
+	}
+
+	if config.OBJECT_STORAGE_BUCKET == "" {
+		err = errors.New("OBJECT_STORAGE_BUCKET is required")
 	}
 
 	return
