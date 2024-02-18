@@ -501,7 +501,7 @@ func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 	//if it is cancelled or complete return
 
 	if statusID == 4 || statusID == 5 {
-		return false
+		return true, nil
 	}
 
 	// If the booking is requested, check if the payment is complete
