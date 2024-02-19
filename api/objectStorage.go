@@ -103,6 +103,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request, key string) (string, 
 		Bucket:      aws.String(bucket),
 		Key:         aws.String(newFilePath),
 		Body:        file,
+		ACL:         aws.String("public-read"), // Set ACL to public-read
 		ContentType: aws.String(fileExt),
 	})
 	if err != nil {
