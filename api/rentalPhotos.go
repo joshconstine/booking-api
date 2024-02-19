@@ -9,7 +9,6 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
@@ -92,30 +91,8 @@ func GetRentalPhotos(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 func CreateRentalPhoto(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	rentalID := mux.Vars(r)["id"]
 
-	//get the filetype
-
-	file, _, err := r.FormFile("photo")
-	if err != nil {
-		log.Fatalf("failed to get file: %v", err)
-		return
-	}
-
-	//get the file extension
-
-	fileBytes, err := fileToBytes(file)
-	if err != nil {
-		log.Fatalf("failed to convert file to bytes: %v", err)
-		return
-	}
-
-	fileType := http.DetectContentType(fileBytes)
-	if err != nil {
-		log.Fatalf("failed to detect file type: %v", err)
-		return
-	}
-
 	//insert the photo location into the database
-	newFilePath := "rental_photos/" + rentalID + "/" + uuid.New().String() + fileType
+	newFilePath := "rental_photos/" + rentalID
 
 	uploadedFilePath, err := UploadHandler(w, r, newFilePath)
 	if err != nil {
