@@ -89,3 +89,61 @@ func GetBoatPhotos(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(boatPhotos)
 }
+
+func CreateBoatPhoto(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	boatID := mux.Vars(r)["id"]
+
+	newFilePath := "boat_photos/" + boatID
+
+	uploadedFilePath, err := UploadHandler(w, r, newFilePath)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Error uploading photo", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = db.Exec("INSERT INTO boat_photo (boat_id, photo_url) VALUES (?, ?)", boatID, uploadedFilePath)
+	if err != nil {
+
+		log.Println(err)
+		http.Error(w, "Error inserting photo", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+
+}
+
+func DeleteBoatPhoto(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	boatID := mux.Vars(r)["id"]
+	photoID := mux.Vars(r)["photoID"]
+
+	//delete the photo from object storage
+	var photoURL string
+
+	err := db.QueryRow("SELECT photo_url FROM boat_photo WHERE id = ? AND boat_id = ?", photoID, boatID).Scan(&photoURL)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Error getting photo", http.StatusInternalServerError)
+		return
+	}
+
+	err = DeleteHandler(w, r, photoURL)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Error deleting photo", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = db.Exec("DELETE FROM boat_photo WHERE id = ? AND boat_id = ?", photoID, boatID)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Error deleting photo", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNoContent)
+
+}

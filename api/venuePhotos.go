@@ -87,3 +87,56 @@ func GetVenuePhotos(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	json.NewEncoder(w).Encode(venuePhotos)
 
 }
+
+func CreateVenuePhoto(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	venueID := mux.Vars(r)["id"]
+
+	newFilePath := "venue_photos/" + venueID
+
+	uploadedFilePath, err := UploadHandler(w, r, newFilePath)
+	if err != nil {
+		log.Fatalf("failed to upload venue photo: %v", err)
+		http.Error(w, "Failed to upload venue photo", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = db.Exec("INSERT INTO venue_photo (venue_id, photo_url) VALUES (?, ?)", venueID, uploadedFilePath)
+	if err != nil {
+		log.Fatalf("failed to insert venue photo into database: %v", err)
+		http.Error(w, "Failed to insert venue photo into database", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+}
+
+func DeleteVenuePhoto(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	photoID := vars["photoID"]
+
+	var photoURL string
+	err := db.QueryRow("SELECT photo_url FROM venue_photo WHERE id = ?", photoID).Scan(&photoURL)
+	if err != nil {
+		log.Fatalf("failed to get venue photo: %v", err)
+		http.Error(w, "Failed to get venue photo", http.StatusInternalServerError)
+		return
+	}
+
+	err = DeleteHandler(w, r, photoURL)
+	if err != nil {
+		log.Fatalf("failed to delete venue photo: %v", err)
+		http.Error(w, "Failed to delete venue photo", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = db.Exec("DELETE FROM venue_photo WHERE id = ?", photoID)
+	if err != nil {
+		log.Fatalf("failed to delete venue photo: %v", err)
+		http.Error(w, "Failed to delete venue photo", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNoContent)
+}

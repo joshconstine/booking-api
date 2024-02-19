@@ -222,6 +222,14 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetBoatPhotos(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/boats/{id}/photos/{photoID}", func(w http.ResponseWriter, r *http.Request) {
+		DeleteBoatPhoto(w, r, db)
+	}).Methods("DELETE")
+
+	r.HandleFunc("/boats/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
+		CreateBoatPhoto(w, r, db)
+	}).Methods("POST")
+
 	r.HandleFunc("/boats/{id}/thumbnail", func(w http.ResponseWriter, r *http.Request) {
 		GetBoatThumbnail(w, r, db)
 	}).Methods("GET")
@@ -278,6 +286,14 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 	r.HandleFunc("/venues/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
 		GetVenuePhotos(w, r, db)
 	}).Methods("GET")
+
+	r.HandleFunc("/venues/{id}/photos/{photoID}", func(w http.ResponseWriter, r *http.Request) {
+		DeleteVenuePhoto(w, r, db)
+	}).Methods("DELETE")
+
+	r.HandleFunc("/venues/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
+		CreateVenuePhoto(w, r, db)
+	}).Methods("POST")
 
 	r.HandleFunc("/venues/{id}/eventTypes", func(w http.ResponseWriter, r *http.Request) {
 		GetVenueEventTypesForVenue(w, r, db)
