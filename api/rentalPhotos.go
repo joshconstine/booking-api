@@ -4,6 +4,7 @@ import (
 	"booking-api/config"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -109,4 +110,35 @@ func CreateRentalPhoto(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 
+}
+
+func DeleteRentalPhoto(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	rentalID := mux.Vars(r)["id"]
+	photoID := mux.Vars(r)["photoID"]
+
+	//get the photo location from the database
+	var photoURL string
+	err := db.QueryRow("SELECT photo_url FROM rental_photo WHERE rental_id = ? AND id = ?", rentalID, photoID).Scan(&photoURL)
+	if err != nil {
+		log.Fatalf("failed to get rental photo: %v", err)
+		return
+
+	}
+
+	//delete the photo from the object storage
+	err = DeleteHandler(w, r, photoURL)
+	if err != nil {
+		fmt.Fprintf(w, "failed to delete photo from object storage: %v", err)
+		return
+	}
+
+	//delete the photo from the database
+	_, err = db.Exec("DELETE FROM rental_photo WHERE rental_id = ? AND id = ?", rentalID, photoID)
+	if err != nil {
+		log.Fatalf("failed to delete rental photo: %v", err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNoContent)
 }

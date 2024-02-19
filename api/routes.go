@@ -149,6 +149,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetRentalPhotos(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/rentals/{id}/photos/{photoID}", func(w http.ResponseWriter, r *http.Request) {
+		DeleteRentalPhoto(w, r, db)
+	}).Methods("DELETE")
+
 	r.HandleFunc("/rentals/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
 		CreateRentalPhoto(w, r, db)
 	}).Methods("POST")
