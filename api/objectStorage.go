@@ -3,7 +3,6 @@ package api
 import (
 	"booking-api/config"
 	"context"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -35,7 +34,7 @@ func fileToBytes(file multipart.File) ([]byte, error) {
 
 func UploadHandler(w http.ResponseWriter, r *http.Request, key string) (string, error) {
 	var bucket string
-	var timeout time.Duration
+	timeout := 20 * time.Second
 
 	env, err := config.LoadConfig()
 	if err != nil {
@@ -43,11 +42,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request, key string) (string, 
 	}
 
 	bucket = env.OBJECT_STORAGE_BUCKET
-
-	// flag.StringVar(&bucket, "b", "", "Bucket name.")
-	// flag.StringVar(&key, "k", "", "Object key name.")
-	flag.DurationVar(&timeout, "d", 0, "Upload timeout.")
-	flag.Parse()
 
 	ACCESS_KEY := env.OBJECT_STORAGE_ACCESS_KEY
 	SECRET_KEY := env.OBJECT_STORAGE_SECRET
