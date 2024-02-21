@@ -25,22 +25,28 @@ func LoadConfig() (config EnvVars, err error) {
 
 	viper.AutomaticEnv()
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		// Fallback to environment variables if config file is not found
-		config.DSN = os.Getenv("DSN")
-		config.PORT = os.Getenv("PORT")
-		config.OBJECT_STORAGE_URL = os.Getenv("OBJECT_STORAGE_URL")
-		config.OBJECT_STORAGE_BUCKET = os.Getenv("OBJECT_STORAGE_BUCKET")
-		config.OBJECT_STORAGE_ACCESS_KEY = os.Getenv("OBJECT_STORAGE_ACCESS_KEY")
-		config.OBJECT_STORAGE_SECRET = os.Getenv("OBJECT_STORAGE_SECRET")
-		config.SEND_GRID_KEY = os.Getenv("SEND_GRID_KEY")
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			// Config file not found; ignore error if desired
+			// Fallback to environment variables if config file is not found
+			config.DSN = os.Getenv("DSN")
+			config.PORT = os.Getenv("PORT")
+			config.OBJECT_STORAGE_URL = os.Getenv("OBJECT_STORAGE_URL")
+			config.OBJECT_STORAGE_BUCKET = os.Getenv("OBJECT_STORAGE_BUCKET")
+			config.OBJECT_STORAGE_ACCESS_KEY = os.Getenv("OBJECT_STORAGE_ACCESS_KEY")
+			config.OBJECT_STORAGE_SECRET = os.Getenv("OBJECT_STORAGE_SECRET")
+			config.SEND_GRID_KEY = os.Getenv("SEND_GRID_KEY")
 
-		if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" || config.SEND_GRID_KEY == "" {
-			return config, fmt.Errorf("error loading config, %v", err)
+			if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" || config.SEND_GRID_KEY == "" {
+				return config, fmt.Errorf("error loading config, %v", err)
+			}
+			return config, nil
+		} else {
+			// Config file was found but another error was produced
 		}
-		return config, nil
 	}
+
+	// Config file found and successfully parsed
 
 	err = viper.Unmarshal(&config)
 
