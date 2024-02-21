@@ -25,6 +25,12 @@ func LoadConfig() (config EnvVars, err error) {
 
 	viper.AutomaticEnv()
 
+	//check if all values are populated
+
+	if config.DSN != "" && config.PORT != "" && config.OBJECT_STORAGE_URL != "" && config.OBJECT_STORAGE_ACCESS_KEY != "" && config.OBJECT_STORAGE_SECRET != "" && config.OBJECT_STORAGE_BUCKET != "" && config.SEND_GRID_KEY != "" {
+		return config, nil
+	}
+
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			// Config file not found; ignore error if desired
