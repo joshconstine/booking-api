@@ -34,11 +34,12 @@ func SendEmail(senderName, senderEmail, recipientName, recipientEmail, emailSubj
 	}
 }
 
-func SendEmailTemplate(senderName, senderEmail, recipientName, recipientEmail, emailSubject, templateID string, dynamicData map[string]interface{}) {
+func SendEmailTemplate(senderName, senderEmail, recipientName, recipientEmail, emailSubject, templateID string, dynamicData map[string]interface{}) error {
 
 	env, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
 
 	from := mail.NewEmail(senderName, senderEmail)
@@ -59,10 +60,12 @@ func SendEmailTemplate(senderName, senderEmail, recipientName, recipientEmail, e
 	response, err := sendgrid.NewSendClient(env.SEND_GRID_KEY).Send(message)
 	if err != nil {
 		log.Println(err)
+		return err
 	} else {
 		fmt.Println(response.StatusCode)
 		fmt.Println(response.Body)
 		fmt.Println(response.Headers)
 	}
 
+	return nil
 }

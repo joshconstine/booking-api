@@ -57,10 +57,9 @@ func GenerateRandomRentalBooking(bookingID int) RentalBookingCreate {
 
 	start, end := RandomDateRangeBetweenNowAnd180Days()
 	return RentalBookingCreate{
-		RentalID:  rand.Intn(11),
+		RentalID:  rand.Intn(11) + 1,
 		StartTime: start,
 		EndTime:   end,
-
 		BookingID: bookingID,
 	}
 }
@@ -68,12 +67,13 @@ func GenerateRandomRentalBooking(bookingID int) RentalBookingCreate {
 func GenerateRandomBoatBooking(bookingID int) BoatBookingCreate {
 
 	start, end := RandomDateRangeBetweenNowAnd180Days()
+	//ignore 0
 	return BoatBookingCreate{
-		BoatID:     rand.Intn(4),
+		BoatID:     rand.Intn(4) + 1,
 		StartTime:  start,
 		EndTime:    end,
 		BookingID:  bookingID,
-		LocationID: rand.Intn(2),
+		LocationID: rand.Intn(2) + 1,
 	}
 }
 

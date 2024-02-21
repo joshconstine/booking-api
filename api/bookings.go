@@ -40,6 +40,10 @@ type BookingSnapshot struct {
 	User           User
 }
 
+var emailTemplates = map[string]string{
+	"bookingConfirmation": "d-2e7a756e9e1e4184ba71da45a812975c",
+}
+
 func createNewBooking(db *sql.DB, userID int) (int, error) {
 
 	//start transaction
@@ -490,6 +494,25 @@ func CheckIfAllBookingItemsAreComplete(bookingID int, db *sql.DB) (bool, error) 
 	return true, nil
 }
 
+func SendBookingConfimationEmail(bookingID int, db *sql.DB) error {
+
+	bookingInformation, err := GetInformationForBookingID(strconv.Itoa(bookingID), db)
+	if err != nil {
+		return err
+	}
+
+	//send email
+	err = SendEmailTemplate("everet booking", "joshua.constine97@gmail.com", bookingInformation.User.FirstName, bookingInformation.User.Email, "Booking Confirmation"+strconv.Itoa(bookingID), emailTemplates["bookingConfirmation"], map[string]interface{}{"bookingId": strconv.Itoa(bookingID)})
+	if err != nil {
+		return err
+	}
+
+	//log email sent
+	log.Printf("Booking confirmation email sent to %s", bookingInformation.User.Email)
+
+	return nil
+}
+
 func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 	// Get the current status of the booking
 
@@ -514,7 +537,7 @@ func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 		// If the payment is complete, update the status to confirmed
 		if paymentComplete {
 			err = AttemptToUpdateBookingStatusForBookingID(bookingID, 2, db)
-
+			SendBookingConfimationEmail(bookingID, db)
 			if err != nil {
 				log.Fatalf("failed to update booking status: %v", err)
 			}
