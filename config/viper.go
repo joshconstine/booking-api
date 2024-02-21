@@ -2,6 +2,8 @@ package config
 
 import (
 	"errors"
+	"fmt"
+	"os"
 
 	"github.com/spf13/viper"
 )
@@ -20,26 +22,24 @@ func LoadConfig() (config EnvVars, err error) {
 	viper.AddConfigPath(".")
 	// viper.SetConfigName("app")
 	viper.SetConfigType("env")
+
 	viper.AutomaticEnv()
 
 	err = viper.ReadInConfig()
-	// if err != nil {
-	// 	// Fallback to environment variables if config file is not found
-	// 	config.DSN = os.Getenv("DSN")
-	// 	config.PORT = os.Getenv("PORT")
-	// 	config.OBJECT_STORAGE_URL = os.Getenv("OBJECT_STORAGE_URL")
-	// 	config.OBJECT_STORAGE_BUCKET = os.Getenv("OBJECT_STORAGE_BUCKET")
-	// 	config.OBJECT_STORAGE_ACCESS_KEY = os.Getenv("OBJECT_STORAGE_ACCESS_KEY")
-	// 	config.OBJECT_STORAGE_SECRET = os.Getenv("OBJECT_STORAGE_SECRET")
-	// 	config.SEND_GRID_KEY = os.Getenv("SEND_GRID_KEY")
-
-	// 	if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" || config.SEND_GRID_KEY == "" {
-	// 		return config, fmt.Errorf("error loading config, %v", err)
-	// 	}
-	// 	return config, nil
-	// }
 	if err != nil {
-		return
+		// Fallback to environment variables if config file is not found
+		config.DSN = os.Getenv("DSN")
+		config.PORT = os.Getenv("PORT")
+		config.OBJECT_STORAGE_URL = os.Getenv("OBJECT_STORAGE_URL")
+		config.OBJECT_STORAGE_BUCKET = os.Getenv("OBJECT_STORAGE_BUCKET")
+		config.OBJECT_STORAGE_ACCESS_KEY = os.Getenv("OBJECT_STORAGE_ACCESS_KEY")
+		config.OBJECT_STORAGE_SECRET = os.Getenv("OBJECT_STORAGE_SECRET")
+		config.SEND_GRID_KEY = os.Getenv("SEND_GRID_KEY")
+
+		if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" || config.SEND_GRID_KEY == "" {
+			return config, fmt.Errorf("error loading config, %v", err)
+		}
+		return config, nil
 	}
 
 	err = viper.Unmarshal(&config)
