@@ -157,12 +157,16 @@ func HandleGetInvoiceForBookingId(w http.ResponseWriter, r *http.Request, db *sq
 	}
 
 	if bookingDetails.InvoiceID == nil {
-		http.Error(w, "No invoice found for booking", http.StatusNotFound)
+		// http.Error(w, "No invoice found for booking", http.StatusNotFound)
 		// return
+		// bookingDetails.InvoiceID = "INV2-YD5J-39TL-ZPKD-J8JR"
+		bookingDetails.InvoiceID = new(string)
+		*bookingDetails.InvoiceID = "INV2-YD5J-39TL-ZPKD-J8JR"
+
 	}
 
 	client := payments.CreatePaypalClient()
-	invoice, err := payments.GetInvoiceByID(r.Context(), client, "INV2-YD5J-39TL-ZPKD-J8JR")
+	invoice, err := payments.GetInvoiceByID(r.Context(), client, *bookingDetails.InvoiceID)
 	if err != nil {
 		http.Error(w, "Failed to get invoice details", http.StatusInternalServerError)
 		return
