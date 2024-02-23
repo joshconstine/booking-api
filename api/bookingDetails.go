@@ -19,6 +19,7 @@ type BookingDetails struct {
 	PaymentDueDate   time.Time
 	DocumentsSigned  bool
 	BookingStartDate time.Time
+	InvoiceID        *string
 }
 
 func VerifyBookingPaymentStatus(bookingID int, db *sql.DB) (bool, error) {
@@ -56,7 +57,7 @@ func VerifyBookingPaymentStatus(bookingID int, db *sql.DB) (bool, error) {
 }
 
 func GetDetailsForBookingID(bookingId string, db *sql.DB) (BookingDetails, error) {
-	rows, err := db.Query("SELECT id, booking_id, payment_complete, payment_due_date, documents_signed, booking_start_date FROM booking_details WHERE booking_id = ?", bookingId)
+	rows, err := db.Query("SELECT id, booking_id, payment_complete, payment_due_date, documents_signed, booking_start_date, invoice_id FROM booking_details WHERE booking_id = ?", bookingId)
 	if err != nil {
 		return BookingDetails{}, err
 	}
@@ -68,7 +69,7 @@ func GetDetailsForBookingID(bookingId string, db *sql.DB) (BookingDetails, error
 	var startDateString string
 
 	if rows.Next() {
-		err := rows.Scan(&bookingDetails.ID, &bookingDetails.BookingID, &bookingDetails.PaymentComplete, &dueDateString, &bookingDetails.DocumentsSigned, &startDateString)
+		err := rows.Scan(&bookingDetails.ID, &bookingDetails.BookingID, &bookingDetails.PaymentComplete, &dueDateString, &bookingDetails.DocumentsSigned, &startDateString, &bookingDetails.InvoiceID)
 
 		if err != nil {
 			return BookingDetails{}, err
