@@ -80,6 +80,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetBookingPaymentsForBooking(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/bookings/{id}/invoice", func(w http.ResponseWriter, r *http.Request) {
+		HandleGetInvoiceForBookingId(w, r, db)
+	}).Methods("GET")
+
 	r.HandleFunc("/bookings/snapshots", func(w http.ResponseWriter, r *http.Request) {
 		GetBookingSnapshots(w, r, db)
 	}).Methods("GET")

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"booking-api/api/payments"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -143,5 +144,31 @@ func UpdateBookingDetailsForBooking(w http.ResponseWriter, r *http.Request, db *
 	// Return the data as JSON.
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(bookingDetails)
+
+}
+
+func HandleGetInvoiceForBookingId(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	bookingDetails, err := GetDetailsForBookingID(id, db)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if bookingDetails.InvoiceID == nil {
+		http.Error(w, "No invoice found for booking", http.StatusNotFound)
+		// return
+	}
+
+	client := payments.CreatePaypalClient()
+	invoice, err := payments.GetInvoiceByID(r.Context(), client, "INV2-YD5J-39TL-ZPKD-J8JR")
+	if err != nil {
+		http.Error(w, "Failed to get invoice details", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(invoice)
 
 }
