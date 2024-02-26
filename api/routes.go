@@ -14,7 +14,7 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 	//Invoicing
 
 	r.HandleFunc("/invoice", func(w http.ResponseWriter, r *http.Request) {
-		CreateInvoice(w, r, db)
+		CreateInvoiceHandler(w, r, db)
 	}).Methods("POST")
 
 	//Bookings

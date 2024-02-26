@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func CreateInvoice(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func CreateInvoiceHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	//invoice is a struct that holds the invoice details
 	//decode the request body into struct and check for errors
 
@@ -25,7 +25,7 @@ func CreateInvoice(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	// //log the invoice number
 
 	//log the invoice number
-	fmt.Printf("created invoice number: %s", createdInvoice.ID)
+	// fmt.Printf("created invoice number: %s", createdInvoice)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)

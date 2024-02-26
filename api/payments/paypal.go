@@ -69,7 +69,6 @@ func CreateInvoice(ctx context.Context, client *paypal.Client, r *http.Request) 
 		return nil, fmt.Errorf("failed to unmarshal request body: %v", err)
 	}
 
-	// Assuming your request body has a structure where the invoice number is updated like this.
 	if detail, ok := requestBody["detail"].(map[string]interface{}); ok {
 		detail["invoice_number"] = invoiceNumberResult.InvoiceNumberValue
 	} else {
