@@ -2,8 +2,11 @@ package payments
 
 import (
 	"booking-api/config"
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -37,29 +40,6 @@ func GetInvoiceByID(ctx context.Context, client *paypal.Client, invoiceID string
 	return invoice, nil
 }
 
-// func CreateInvoice(ctx context.Context, client *paypal.Client, r *http.Request) (*paypal.Invoice, error) {
-// 	// 	curl -v -X GET https://api-m.sandbox.paypal.com/v2/invoicing/invoices?total_required=true \
-// 	// -H "Content-Type: application/json" \
-// 	// -H "Authorization: Bearer <Token>"
-
-// 	//log the request body
-
-// 	requestUrl := fmt.Sprintf("%s%s", client.APIBase, "/v2/invoicing/invoices")
-// 	req, err := client.NewRequest(ctx, "POST", requestUrl, r.Body)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed to create new request: %v", err)
-// 	}
-
-// 	// Send the request
-// 	err = client.SendWithAuth(req, nil)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed to send request: %v", err)
-// 	}
-
-// 	return nil, nil
-
-// }
-
 func GenerateInvoiceNumber(ctx context.Context, client *paypal.Client) (*paypal.InvoiceNumber, error) {
 	invoiceNumber, err := client.GenerateInvoiceNumber(ctx)
 	if err != nil {
@@ -68,34 +48,42 @@ func GenerateInvoiceNumber(ctx context.Context, client *paypal.Client) (*paypal.
 	return invoiceNumber, nil
 }
 
-// func CreateInvoice(ctx context.Context, client *paypal.Client, r *http.Request) (*paypal.Invoice, error) {
-// 	requestURL := fmt.Sprintf("%s%s", client.APIBase, "/v2/invoicing/invoices")
-
-// 	//log the request body
-// 	log.Printf("Request Body: %+v", r.Body)
-
-// 	// Assuming r.Body is the correct JSON payload for creating the invoice
-// 	// You might want to log or validate r.Body before sending
-// 	req, err := client.NewRequest(ctx, "POST", requestURL, r.Body)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed to create new request: %v", err)
-// 	}
-
-// 	var createdInvoice paypal.Invoice
-// 	if err = client.SendWithAuth(req, &createdInvoice); err != nil {
-// 		return nil, fmt.Errorf("failed to send request: %v", err)
-// 	}
-
-// 	// Optionally, log the created invoice
-// 	// log.Printf("Created Invoice: %+v", createdInvoice)
-
-// 	return &createdInvoice, nil
-// }
-
-func CreateInvoice(ctx context.Context, client *paypal.Client, r *http.Request) (*paypal.Invoice, error) {
+func CreateInvoice(ctx context.Context, client *paypal.Client, r *http.Request) (*string, error) {
 	requestURL := fmt.Sprintf("%s%s", client.APIBase, "/v2/invoicing/invoices")
+	// Generate the next invoice number.
+	invoiceNumberResult, err := GenerateInvoiceNumber(ctx, client)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate invoice number: %v", err)
+	}
 
-	// requestURL :=
+	// Read the request body.
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read request body: %v", err)
+	}
+	defer r.Body.Close()
+
+	// Update the request body with the new invoice number.
+	var requestBody map[string]interface{}
+	if err := json.Unmarshal(bodyBytes, &requestBody); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal request body: %v", err)
+	}
+
+	// Assuming your request body has a structure where the invoice number is updated like this.
+	if detail, ok := requestBody["detail"].(map[string]interface{}); ok {
+		detail["invoice_number"] = invoiceNumberResult.InvoiceNumberValue
+	} else {
+		// Create the detail field if it does not exist
+		requestBody["detail"] = map[string]interface{}{
+			"invoice_number": invoiceNumberResult.InvoiceNumberValue,
+		}
+	}
+
+	// Re-marshal the modified request body.
+	modifiedBodyBytes, err := json.Marshal(requestBody)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal modified request body: %v", err)
+	}
 
 	token, err := client.GetAccessToken(ctx)
 	if err != nil {
@@ -114,10 +102,8 @@ func CreateInvoice(ctx context.Context, client *paypal.Client, r *http.Request) 
 			"Content-Type":  {"application/json"},
 			"Authorization": {"Bearer " + token.Token},
 		},
-		Body: r.Body,
+		Body: io.NopCloser(bytes.NewReader(modifiedBodyBytes)),
 	}
-
-	var createdInvoice paypal.Invoice
 
 	//create http client
 	httpClient := &http.Client{}
@@ -126,12 +112,10 @@ func CreateInvoice(ctx context.Context, client *paypal.Client, r *http.Request) 
 		return nil, fmt.Errorf("failed to send request: %v", err)
 	}
 
-	//decode the response into
-
-	if resp != nil {
-		defer resp.Body.Close()
+	if resp.StatusCode != http.StatusCreated {
+		return nil, fmt.Errorf("unexpected response status: %s", resp.Status)
 	}
 
-	return &createdInvoice, nil
+	return &invoiceNumberResult.InvoiceNumberValue, nil
 
 }
