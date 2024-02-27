@@ -14,6 +14,15 @@ type BookingCostType struct {
 	Name string
 }
 
+func GetBookingCostTypeNameFromID(costTypeId int, db *sql.DB) (string, error) {
+	var name string
+	err := db.QueryRow("SELECT name FROM booking_cost_type WHERE id = ?", costTypeId).Scan(&name)
+	if err != nil {
+		return "", err
+	}
+	return name, nil
+}
+
 func GetBookingCostTypes(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	rows, err := db.Query("SELECT * FROM booking_cost_type")

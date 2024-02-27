@@ -34,6 +34,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetBookingDetails(w, r, db)
 	}).Methods("GET")
 
+	r.HandleFunc("/bookings/{id}/invoice", func(w http.ResponseWriter, r *http.Request) {
+		HandleCreateInvoiceForBookingHandler(w, r, db)
+	}).Methods("POST")
+
 	r.HandleFunc("/bookings/{id}/details", func(w http.ResponseWriter, r *http.Request) {
 		UpdateBookingDetailsForBooking(w, r, db)
 	}).Methods("PUT")
