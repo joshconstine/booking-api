@@ -36,11 +36,12 @@ func main() {
 	}
 
 	bookingStatuses := []BookingStatus{
-		{1, "Requested"},
-		{2, "Confirmed"},
-		{3, "In Progress"},
-		{4, "Completed"},
-		{5, "Cancelled"},
+		{1, "Drafted"},
+		{2, "Requested"},
+		{3, "Confirmed"},
+		{4, "In Progress"},
+		{5, "Completed"},
+		{6, "Cancelled"},
 	}
 
 	// Insert the data into the booking_statuses table

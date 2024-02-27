@@ -46,11 +46,11 @@ func main() {
 		{4, "The Clubhouse", 1, 5, 2, "cozy up north cabin"},
 		{5, "The Eisenhower", 1, 4, 2, "cozy up north cabin"},
 		{6, "The Musky Inn", 2, 13, 7, "cozy up north cabin"},
-		{7, "The Musky Inn North", 2, 6, 4, "cozy up north cabin"},
-		{8, "The Musky Inn North + middle", 2, 9, 4, "cozy up north cabin"},
-		{9, "The Musky Inn South", 2, 4, 3, "cozy up north cabin"},
-		{10, "The Musky Inn South + middle", 2, 7, 5, "cozy up north cabin"},
-		{11, "The Little Guy", 2, 1, 1, "cozy up north cabin"},
+		// {7, "The Musky Inn North", 2, 6, 4, "cozy up north cabin"},
+		// {8, "The Musky Inn North + middle", 2, 9, 4, "cozy up north cabin"},
+		// {9, "The Musky Inn South", 2, 4, 3, "cozy up north cabin"},
+		// {10, "The Musky Inn South + middle", 2, 7, 5, "cozy up north cabin"},
+		{7, "The Little Guy", 2, 1, 1, "cozy up north cabin"},
 	}
 	// Loop through the data and insert into the rentals table
 	for _, rental := range rentals {

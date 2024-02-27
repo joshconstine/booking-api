@@ -64,6 +64,7 @@ func main() {
 		{19, 6, "Bedroom 6", "Cozy bathroom.", 2, true, true, nil},
 		{20, 6, "Bedroom 7", "Cozy bathroom.", 2, true, true, nil},
 		{21, 6, "Main Bathroom", "Spacious bathroom.", 1, true, true, nil},
+		{22, 7, "Bathroom 1", "Spacious bathroom.", 1, true, true, nil},
 	}
 
 	for _, bathroom := range rentalBathrooms {

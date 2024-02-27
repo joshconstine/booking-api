@@ -36,17 +36,17 @@ func main() {
 	}
 
 	rentalStatuses := []RentalStatus{
-		{1, 1, false},
+		{1, 1, true},
 		{2, 2, true},
-		{3, 3, false},
+		{3, 3, true},
 		{4, 4, true},
-		{5, 5, false},
+		{5, 5, true},
 		{6, 6, true},
-		{7, 7, false},
-		{8, 8, true},
-		{9, 9, false},
-		{10, 10, true},
-		{11, 11, false},
+		{7, 7, true},
+		// {8, 8, true},
+		// {9, 9, false},
+		// {10, 10, true},
+		// {11, 11, false},
 	}
 
 	// Loop through the data and insert int

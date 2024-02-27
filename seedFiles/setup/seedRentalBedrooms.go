@@ -84,7 +84,8 @@ func main() {
 		{41, 5, "The Kids Room", "Cozy bedroom", 1, nil},
 		{42, 5, "The Guest Room", "Cozy bedroom", 1, nil},
 		{43, 5, "The Library", "Cozy bedroom", 1, nil},
-		{44, 11, "The Nest", "Cozy bedroom", 2, nil},
+		// {44, 11, "The Nest", "Cozy bedroom", 2, nil},
+		{44, 7, "The Nest", "Cozy bedroom", 2, nil},
 	}
 
 	// Insert the data into the rental_bedrooms table

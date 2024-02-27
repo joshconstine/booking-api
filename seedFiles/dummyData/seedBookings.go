@@ -56,8 +56,9 @@ func RandomDateRangeBetweenNowAnd180Days() (time.Time, time.Time) {
 func GenerateRandomRentalBooking(bookingID int) RentalBookingCreate {
 
 	start, end := RandomDateRangeBetweenNowAnd180Days()
+	numberOfRentals := 7
 	return RentalBookingCreate{
-		RentalID:  rand.Intn(11) + 1,
+		RentalID:  rand.Intn(numberOfRentals) + 1,
 		StartTime: start,
 		EndTime:   end,
 		BookingID: bookingID,
