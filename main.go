@@ -3,18 +3,17 @@ package main
 import (
 	"booking-api/api"
 	"booking-api/config"
+	"booking-api/database"
 	"booking-api/jobs"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
-	"github.com/gorilla/handlers"
+	"github.com/gin-gonic/gin"
 
 	"booking-api/pkg/shutdown"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -57,44 +56,41 @@ func run(env config.EnvVars) (func(), error) {
 	if err != nil {
 		return nil, err
 	}
+	database.Connect(env.DSN)
+	database.Migrate()
 
 	go func() {
-		app.ListenAndServe()
+		app.Run()
 		log.Println("server started")
 	}()
 
 	return func() {
 		cleanup()
-		app.Shutdown(nil)
+		// app.Shutdown(nil)
 	}, nil
 }
 
-func buildServer(env config.EnvVars) (*http.Server, func(), error) {
-	r := mux.NewRouter()
+func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
+	// r := mux.NewRouter()
 
 	// Configure CORS
-	corsOpts := handlers.CORS(
-		handlers.AllowedOrigins([]string{"http://localhost:3000"}),                   // Allowed origins
-		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}), // Allowed methods
-		handlers.AllowedHeaders([]string{"Content-Type", "Application/json"}),        // Allowed headers
-		handlers.AllowCredentials(),                                                  // Credentials
-	)
+	// corsOpts := handlers.CORS(
+	// 	handlers.AllowedOrigins([]string{"http://localhost:3000"}),                   // Allowed origins
+	// 	handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}), // Allowed methods
+	// 	handlers.AllowedHeaders([]string{"Content-Type", "Application/json"}),        // Allowed headers
+	// 	handlers.AllowCredentials(),                                                  // Credentials
+	// )
 	// Open a connection to PlanetScale
-	db, err := config.ConnectToDB(env)
-	if err != nil {
-		return nil, nil, err
-	}
+	// db, err := database.ConnectToDB(env)
+	// if err != nil {
+	// 	return nil, nil, err
+	// }
 
-	api.InitRoutes(r, db)
+	// api.InitRoutes(r, db)
 
-	server := &http.Server{
-		Addr:    ":" + env.PORT,
-		Handler: corsOpts(r), // Wrap the router with the CORS handler
-	}
+	ginRouter := api.InitRouter()
 
-	return server, func() {
-		if err := server.Close(); err != nil {
-			log.Printf("error: %v", err)
-		}
+	return ginRouter, func() {
+
 	}, nil
 }

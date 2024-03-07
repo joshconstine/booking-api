@@ -1,9 +1,12 @@
 package api
 
 import (
+	"booking-api/controllers"
+	"booking-api/middlewares"
 	"database/sql"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/mux"
 )
 
@@ -497,4 +500,17 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		DeleteRentalBathroom(w, r, db)
 	}).Methods("DELETE")
 
+}
+func InitRouter() *gin.Engine {
+	router := gin.Default()
+	api := router.Group("/api")
+	{
+		api.POST("/token", controllers.GenerateToken)
+		api.POST("/user/register", controllers.RegisterUser)
+		secured := api.Group("/secured").Use(middlewares.Auth())
+		{
+			secured.GET("/ping", controllers.Ping)
+		}
+	}
+	return router
 }
