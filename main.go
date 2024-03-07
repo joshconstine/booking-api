@@ -32,6 +32,7 @@ func main() {
 		exitCode = 1
 		return
 	}
+	//test
 
 	// run the server
 	cleanup, err := run(env)
