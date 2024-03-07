@@ -36,7 +36,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request, key string) (string, 
 	var bucket string
 	timeout := 20 * time.Second
 
-	env, err := config.LoadConfig()
+	env, err := config.LoadConfig("../")
 	if err != nil {
 		log.Fatal("failed to load env", err)
 	}
@@ -126,7 +126,7 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request, key string) error {
 	var bucket string
 	timeout := 20 * time.Second
 
-	env, err := config.LoadConfig()
+	env, err := config.LoadConfig("../")
 	if err != nil {
 		log.Fatal("failed to load env", err)
 	}

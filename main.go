@@ -4,7 +4,6 @@ import (
 	"booking-api/api"
 	"booking-api/config"
 	"booking-api/jobs"
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -27,7 +26,7 @@ func main() {
 	}()
 
 	// load config
-	env, err := config.LoadConfig()
+	env, err := config.LoadConfig(".")
 	if err != nil {
 		fmt.Printf("error: %v", err)
 		exitCode = 1
@@ -80,15 +79,9 @@ func buildServer(env config.EnvVars) (*http.Server, func(), error) {
 		handlers.AllowCredentials(),                                                  // Credentials
 	)
 	// Open a connection to PlanetScale
-	db, err := sql.Open("mysql", env.DSN)
+	db, err := config.ConnectToDB(env)
 	if err != nil {
-		log.Fatalf("failed to connect: %v", err)
-	}
-	log.Println("connected to PlanetScale")
-
-	err = db.Ping()
-	if err != nil {
-		log.Fatalf("failed to ping: %v", err)
+		return nil, nil, err
 	}
 
 	api.InitRoutes(r, db)

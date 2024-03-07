@@ -36,7 +36,7 @@ func GetVenueThumbnailByVenueID(venueID int, db *sql.DB) (string, error) {
 	}
 
 	// Load connection string from .env file
-	env, err := config.LoadConfig()
+	env, err := config.LoadConfig("../")
 	if err != nil {
 		log.Fatal("failed to load env", err)
 	}

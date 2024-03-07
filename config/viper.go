@@ -20,9 +20,10 @@ type EnvVars struct {
 	PAYPAL_CLIENT_SECRET      string `mapstructure:"PAYPAL_CLIENT_SECRET"`
 }
 
-func LoadConfig() (config EnvVars, err error) {
-	viper.AddConfigPath(".")
-	// viper.SetConfigName("app")
+func LoadConfig(configPath string) (config EnvVars, err error) {
+	// viper.AddConfigPath(".")
+	viper.AddConfigPath(configPath)
+	viper.SetConfigName("app")
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()

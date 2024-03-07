@@ -25,7 +25,7 @@ type CreateInvoiceRequest struct {
 
 func CreatePaypalClient() *paypal.Client {
 	// load config
-	env, err := config.LoadConfig()
+	env, err := config.LoadConfig("../")
 	if err != nil {
 		fmt.Printf("error: %v", err)
 		return nil

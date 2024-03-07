@@ -176,7 +176,7 @@ func AttemptToBookBoat(details RequestBoatBooking, db *sql.DB) (int64, error) {
 
 	//Create boat booking
 	query := "INSERT INTO boat_booking (boat_id, booking_id, boat_time_block_id, booking_status_id, booking_file_id, location_id) VALUES (?, ?, ?, ?, ?, ?)"
-	result, err := tx.Exec(query, details.BoatID, details.BookingID, boatTimeblockID, 1, boatDefaultSettings.FileID, details.LocationID)
+	result, err := tx.Exec(query, details.BoatID, details.BookingID, boatTimeblockID, 2, boatDefaultSettings.FileID, details.LocationID)
 	if err != nil {
 		return 0, err
 	}

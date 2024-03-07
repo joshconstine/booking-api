@@ -207,7 +207,7 @@ func GetInformationForBookingID(bookingId string, db *sql.DB) (BookingInformatio
 
 func GetAllBookingIDsThatAreNotCancelledOrCompleted(db *sql.DB) ([]int, error) {
 
-	rows, err := db.Query("SELECT id FROM booking WHERE booking_status_id != 5 AND booking_status_id != 4")
+	rows, err := db.Query("SELECT id FROM booking WHERE booking_status_id != 5 AND booking_status_id != 6")
 	if err != nil {
 		return nil, err
 	}
@@ -455,7 +455,7 @@ func CheckIfAllBookingItemsAreComplete(bookingID int, db *sql.DB) (bool, error) 
 
 	// Check if all rental bookings are complete
 	for _, rentalBooking := range rentalBookings {
-		if rentalBooking.BookingStatusID != 4 {
+		if rentalBooking.BookingStatusID != 5 {
 			return false, nil
 		}
 	}
@@ -467,7 +467,7 @@ func CheckIfAllBookingItemsAreComplete(bookingID int, db *sql.DB) (bool, error) 
 	}
 	// Check if all boat bookings are complete
 	for _, boatBooking := range boatBookings {
-		if boatBooking.BookingStatusID != 4 {
+		if boatBooking.BookingStatusID != 5 {
 			return false, nil
 		}
 
@@ -513,6 +513,23 @@ func SendBookingConfimationEmail(bookingID int, db *sql.DB) error {
 	return nil
 }
 
+func ConfirmBooking(bookingID int, db *sql.DB) error {
+
+	//update booking status
+	err := AttemptToUpdateBookingStatusForBookingID(bookingID, 3, db)
+	if err != nil {
+		return err
+	}
+
+	//send email
+	err = SendBookingConfimationEmail(bookingID, db)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 	// Get the current status of the booking
 
@@ -523,12 +540,12 @@ func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 
 	//if it is cancelled or complete return
 
-	if statusID == 4 || statusID == 5 {
+	if statusID == 5 || statusID == 6 {
 		return true, nil
 	}
 
 	// If the booking is requested, check if the payment is complete
-	if statusID == 1 {
+	if statusID == 2 {
 		paymentComplete, err := VerifyBookingPaymentStatus(bookingID, db)
 		if err != nil {
 			log.Fatalf("failed to verify payment status: %v", err)
@@ -536,7 +553,7 @@ func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 
 		// If the payment is complete, update the status to confirmed
 		if paymentComplete {
-			err = AttemptToUpdateBookingStatusForBookingID(bookingID, 2, db)
+			err = AttemptToUpdateBookingStatusForBookingID(bookingID, 3, db)
 			SendBookingConfimationEmail(bookingID, db)
 			if err != nil {
 				log.Fatalf("failed to update booking status: %v", err)
@@ -560,9 +577,9 @@ func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 	bookingDay := bookingDetails.BookingStartDate.Truncate(24 * time.Hour)
 
 	// Compare if the booking start date is on the same day as today
-	if (bookingDay.Equal(currentDay) || bookingDay.Before(currentDay)) && statusID != 3 {
+	if (bookingDay.Equal(currentDay) || bookingDay.Before(currentDay)) && statusID != 4 {
 
-		err = AttemptToUpdateBookingStatusForBookingID(bookingID, 3, db)
+		err = AttemptToUpdateBookingStatusForBookingID(bookingID, 4, db)
 		if err != nil {
 			log.Fatalf("failed to update booking status: %v", err)
 		}
@@ -571,7 +588,7 @@ func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 
 	// If the status is in progress, check if the booking is complete
 
-	if statusID == 3 {
+	if statusID == 4 {
 		// Get the booking end date
 		areAllBookingItemsComplete, err := CheckIfAllBookingItemsAreComplete(bookingID, db)
 		if err != nil {
@@ -583,7 +600,7 @@ func AuditBookingStatus(bookingID int, db *sql.DB) (bool, error) {
 			//log booking completion
 			log.Printf("Booking %d has all items  complete", bookingID)
 
-			err = AttemptToUpdateBookingStatusForBookingID(bookingID, 4, db)
+			err = AttemptToUpdateBookingStatusForBookingID(bookingID, 5, db)
 			if err != nil {
 				log.Fatalf("failed to update booking status: %v", err)
 			}

@@ -12,7 +12,7 @@ import (
 // A new function to send an email
 func SendEmail(senderName, senderEmail, recipientName, recipientEmail, emailSubject, plainTextContent, htmlContent string) {
 
-	env, err := config.LoadConfig()
+	env, err := config.LoadConfig("../")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,7 +36,7 @@ func SendEmail(senderName, senderEmail, recipientName, recipientEmail, emailSubj
 
 func SendEmailTemplate(senderName, senderEmail, recipientName, recipientEmail, emailSubject, templateID string, dynamicData map[string]interface{}) error {
 
-	env, err := config.LoadConfig()
+	env, err := config.LoadConfig("../")
 	if err != nil {
 		log.Fatal(err)
 		return err

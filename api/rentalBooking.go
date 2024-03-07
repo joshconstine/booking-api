@@ -264,7 +264,7 @@ func AttemptToBookRental(details RequestRentalBooking, db *sql.DB) (int64, error
 
 	//Create rental booking
 	query := "INSERT INTO rental_booking (rental_id, booking_id, rental_time_block_id, booking_status_id, booking_file_id) VALUES (?, ?, ?, ?, ?)"
-	result, err := tx.Exec(query, details.RentalID, details.BookingID, rentalTimeblockID, 1, rentalUnitDefaultSettings.FileID)
+	result, err := tx.Exec(query, details.RentalID, details.BookingID, rentalTimeblockID, 2, rentalUnitDefaultSettings.FileID)
 	if err != nil {
 		return 0, err
 	}
@@ -460,7 +460,7 @@ func AuditRentalBookingStatus(rentalBookingId int, db *sql.DB) (bool, error) {
 		return false, err
 	}
 	//if the status is requested, check if the booking has been paid
-	if rentalBooking.BookingStatusID == 1 {
+	if rentalBooking.BookingStatusID == 2 {
 		paymentComplete, err := VerifyBookingPaymentStatus(rentalBooking.BookingID, db)
 		if err != nil {
 			log.Fatalf("failed to verify payment status: %v", err)
@@ -468,7 +468,7 @@ func AuditRentalBookingStatus(rentalBookingId int, db *sql.DB) (bool, error) {
 
 		// If the payment is complete, update the status to confirmed
 		if paymentComplete {
-			err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 2, db)
+			err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 3, db)
 
 			if err != nil {
 				log.Fatalf("failed to update booking status: %v", err)
@@ -479,7 +479,7 @@ func AuditRentalBookingStatus(rentalBookingId int, db *sql.DB) (bool, error) {
 		}
 	}
 
-	if rentalBooking.BookingStatusID != 4 {
+	if rentalBooking.BookingStatusID != 5 {
 
 		//check if the booking has started
 
@@ -487,7 +487,7 @@ func AuditRentalBookingStatus(rentalBookingId int, db *sql.DB) (bool, error) {
 
 		if time.Now().After(startTime) {
 			if rentalBooking.BookingStatusID == 2 {
-				err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 3, db)
+				err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 4, db)
 				return true, nil
 			}
 		}
@@ -495,7 +495,7 @@ func AuditRentalBookingStatus(rentalBookingId int, db *sql.DB) (bool, error) {
 		// Check if the rental booking is in the past
 		if time.Now().After(endTime) {
 			//log info
-			err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 4, db)
+			err = AttemptToUpdateBookingStatusForRentalBookingID(rentalBookingId, 5, db)
 			if err != nil {
 				return false, err
 			}
