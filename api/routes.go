@@ -503,6 +503,9 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 }
 func InitRouter() *gin.Engine {
 	router := gin.Default()
+	//allow cors
+	router.Use(middlewares.CORSMiddleware())
+
 	api := router.Group("/api")
 	{
 		api.POST("/token", controllers.GenerateToken)
