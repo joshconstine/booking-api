@@ -507,6 +507,10 @@ func InitRouter() *gin.Engine {
 	{
 		api.POST("/token", controllers.GenerateToken)
 		api.POST("/user/register", controllers.RegisterUser)
+		api.GET("/boats", controllers.GetBoats)
+		api.GET("/boats/:id", controllers.GetBoat)
+		api.POST("/boats", controllers.CreateBoat)
+
 		secured := api.Group("/secured").Use(middlewares.Auth())
 		{
 			secured.GET("/ping", controllers.Ping)

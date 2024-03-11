@@ -1,6 +1,7 @@
 package main
 
 import (
+	"booking-api/models"
 	"database/sql"
 	"fmt"
 	"log"
@@ -9,13 +10,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
-
-type Boat struct {
-	ID        int
-	Name      string
-	occupancy int
-	maxWeight int
-}
 
 func main() {
 
@@ -37,17 +31,17 @@ func main() {
 		log.Fatalf("failed to ping: %v", err)
 	}
 
-	boats := []Boat{
-		{1, "22' Pontoon", 10, 2000},
-		{2, "24' Pontoon", 12, 2500},
-		{3, "23' Ski Boat", 12, 2500},
-		{4, "28' Pontoon", 8, 1800},
+	boats := []models.Boat{
+		{Name: "22' Pontoon", Occupancy: 10, MaxWeight: 2000},
+		{Name: "24' Pontoon", Occupancy: 12, MaxWeight: 2500},
+		{Name: "23' Ski Boat", Occupancy: 12, MaxWeight: 2500},
+		{Name: "28' Pontoon", Occupancy: 8, MaxWeight: 1800},
 	}
 
 	// Loop through the data and insert into the boat table
 	for _, boat := range boats {
-		insertQuery := "INSERT INTO boat (name, occupancy, max_weight) VALUES (?,  ?, ?)"
-		_, err := db.Exec(insertQuery, boat.Name, boat.occupancy, boat.maxWeight)
+		insertQuery := "INSERT INTO boats (name, occupancy, max_weight, created_at, updated_at, deleted_at) VALUES (?,  ?, ?, NOW(), NOW(), NULL)"
+		_, err := db.Exec(insertQuery, boat.Name, boat.Occupancy, boat.MaxWeight)
 		if err != nil {
 			log.Fatal(err)
 
@@ -56,19 +50,19 @@ func main() {
 	fmt.Println("Inserted boats into the boat table")
 
 	//Retrieve the data from the boat table
-	rows, err := db.Query("SELECT * FROM boat")
+	rows, err := db.Query("SELECT id, name, occupancy, max_weight FROM boats")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var boat Boat
+	var boat models.Boat
 	// Loop through the data and print the results to the console
 	for rows.Next() {
-		err := rows.Scan(&boat.ID, &boat.Name, &boat.occupancy, &boat.maxWeight)
+		err := rows.Scan(&boat.ID, &boat.Name, &boat.Occupancy, &boat.MaxWeight)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("ID: %d, Name: %s, Occupancy: %d, Max Weight: %d\n", boat.ID, boat.Name, boat.occupancy, boat.maxWeight)
+		fmt.Printf("ID: %d, Name: %s, Occupancy: %d, Max Weight: %d\n", boat.ID, boat.Name, boat.Occupancy, boat.MaxWeight)
 	}
 
 	defer db.Close()
