@@ -9,6 +9,7 @@ type Boat struct {
 	Name      string
 	Occupancy int
 	MaxWeight int
+	Photos    []BoatPhoto
 }
 
 func (b *Boat) TableName() string {
