@@ -1,12 +1,9 @@
 package api
 
 import (
-	"booking-api/controllers"
-	"booking-api/middlewares"
 	"database/sql"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gorilla/mux"
 )
 
@@ -501,27 +498,28 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 	}).Methods("DELETE")
 
 }
-func InitRouter() *gin.Engine {
-	router := gin.Default()
-	//allow cors
-	router.Use(middlewares.CORSMiddleware())
 
-	api := router.Group("/api")
-	{
-		api.POST("/token", controllers.GenerateToken)
-		api.POST("/user/register", controllers.RegisterUser)
-		api.GET("/boats", controllers.GetBoats)
-		api.GET("/boats/:id", controllers.GetBoat)
-		api.GET("/boats/:id/photos", controllers.GetBoatPhotosForBoat)
+// func InitRouter() *gin.Engine {
+// 	router := gin.Default()
+// 	//allow cors
+// 	router.Use(middlewares.CORSMiddleware())
 
-		secured := api.Group("/secured").Use(middlewares.Auth())
-		{
-			secured.GET("/ping", controllers.Ping)
-			secured.POST("/boats", controllers.CreateBoat)
-			secured.POST("/boats/:id/photos", controllers.CreateBoatPhoto)
-			secured.DELETE("/boatPhoto/:id", controllers.DeleteBoatPhoto)
+// 	api := router.Group("/api")
+// 	{
+// 		api.POST("/token", controllers.GenerateToken)
+// 		api.POST("/user/register", controllers.RegisterUser)
+// 		api.GET("/boats", controllers.GetBoats)
+// 		api.GET("/boats/:id", controllers.GetBoat)
+// 		api.GET("/boats/:id/photos", controllers.GetBoatPhotosForBoat)
 
-		}
-	}
-	return router
-}
+// 		secured := api.Group("/secured").Use(middlewares.Auth())
+// 		{
+// 			secured.GET("/ping", controllers.Ping)
+// 			secured.POST("/boats", controllers.CreateBoat)
+// 			secured.POST("/boats/:id/photos", controllers.CreateBoatPhoto)
+// 			secured.DELETE("/boatPhoto/:id", controllers.DeleteBoatPhoto)
+
+// 		}
+// 	}
+// 	return router
+// }

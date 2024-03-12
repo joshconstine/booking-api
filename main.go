@@ -1,15 +1,19 @@
 package main
 
 import (
-	"booking-api/api"
 	"booking-api/config"
+	"booking-api/controllers"
 	"booking-api/database"
 	"booking-api/jobs"
+	"booking-api/repositories"
+	"booking-api/router"
+	"booking-api/services"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 
 	"booking-api/pkg/shutdown"
 
@@ -52,12 +56,12 @@ func main() {
 
 func run(env config.EnvVars) (func(), error) {
 
+	database.Connect(env.DSN)
+	database.Migrate()
 	app, cleanup, err := buildServer(env)
 	if err != nil {
 		return nil, err
 	}
-	database.Connect(env.DSN)
-	database.Migrate()
 
 	go func() {
 		app.Run()
@@ -88,9 +92,23 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 
 	// api.InitRoutes(r, db)
 
-	ginRouter := api.InitRouter()
+	validate := validator.New()
 
-	return ginRouter, func() {
+	//Init Repository
+	boatRepository := repositories.NewBoatRepositoryImplementation(database.Instance)
+
+	//Init Service
+	boatService := services.NewBoatServiceImplementation(boatRepository, validate)
+
+	//Init controller
+	boatController := controllers.NewBoatController(boatService)
+
+	//Router
+	router := router.NewRouter(boatController)
+
+	// ginRouter := router.InitRouter(routes)
+
+	return router, func() {
 
 	}, nil
 }

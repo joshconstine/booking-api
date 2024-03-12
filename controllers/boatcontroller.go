@@ -1,61 +1,104 @@
 package controllers
 
 import (
-	"booking-api/database"
-	"booking-api/models"
+	"booking-api/services"
 	"net/http"
+
+	"booking-api/data/response"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetBoat(context *gin.Context) {
-	var boat models.Boat
-	boatIdString := context.Param("id")
-	boatId, err := strconv.Atoi(boatIdString)
+type BoatController struct {
+	boatService services.BoatService
+}
+
+func NewBoatController(service services.BoatService) *BoatController {
+	return &BoatController{boatService: service}
+}
+
+// func (controller *TagController) Create(ctx *gin.Context) {
+// 	createTagRequest := request.CreateTagsRequest{}
+// 	err := ctx.ShouldBindJSON(&createTagRequest)
+// 	helper.ErrorPanic(err)
+
+// 	controller.tagService.Create(createTagRequest)
+
+// 	webResponse := response.Response{
+// 		Code:   200,
+// 		Status: "Ok",
+// 		Data:   nil,
+// 	}
+
+// 	ctx.JSON(http.StatusOK, webResponse)
+// }
+
+// func (controller *TagController) Update(ctx *gin.Context) {
+// 	updateTagRequest := request.UpdateTagsRequest{}
+// 	err := ctx.ShouldBindJSON(&updateTagRequest)
+// 	helper.ErrorPanic(err)
+
+// 	tagId := ctx.Param("tagId")
+// 	id, err := strconv.Atoi(tagId)
+// 	helper.ErrorPanic(err)
+
+// 	updateTagRequest.Id = id
+
+// 	controller.tagService.Update(updateTagRequest)
+
+// 	webResponse := response.Response{
+// 		Code:   200,
+// 		Status: "Ok",
+// 		Data:   nil,
+// 	}
+
+// 	ctx.JSON(http.StatusOK, webResponse)
+// }
+
+// func (controller *TagController) Delete(ctx *gin.Context) {
+// 	tagId := ctx.Param("tagId")
+// 	id, err := strconv.Atoi(tagId)
+// 	helper.ErrorPanic(err)
+// 	controller.tagService.Delete(id)
+
+// 	webResponse := response.Response{
+// 		Code:   200,
+// 		Status: "Ok",
+// 		Data:   nil,
+// 	}
+
+// 	ctx.JSON(http.StatusOK, webResponse)
+
+// }
+
+func (controller *BoatController) FindById(ctx *gin.Context) {
+	boatId := ctx.Param("boatId")
+	id, err := strconv.Atoi(boatId)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid boat id"})
-		context.Abort()
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid boat id"})
 		return
 	}
+	tagResponse := controller.boatService.FindByID(id)
 
-	boat, err = GetBoatById(boatId)
-	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"error": "Boat not found"})
-		context.Abort()
-		return
+	webResponse := response.Response{
+		Code:   200,
+		Status: "Ok",
+		Data:   tagResponse,
 	}
-
-	context.JSON(http.StatusOK, boat)
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func GetBoats(context *gin.Context) {
-	var boats []models.Boat
-	database.Instance.Find(&boats)
-	context.JSON(http.StatusOK, boats)
-}
+func (controller *BoatController) FindAll(ctx *gin.Context) {
+	boatResponse := controller.boatService.FindAll()
 
-func CreateBoat(context *gin.Context) {
-	var boat models.Boat
-	if err := context.ShouldBindJSON(&boat); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		context.Abort()
-		return
+	webResponse := response.Response{
+		Code:   200,
+		Status: "Ok",
+		Data:   boatResponse,
 	}
-	record := database.Instance.Create(&boat)
-	if record.Error != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": record.Error.Error()})
-		context.Abort()
-		return
-	}
-	context.JSON(http.StatusCreated, boat)
-}
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, webResponse)
 
-func GetBoatById(id int) (models.Boat, error) {
-	var boat models.Boat
-	record := database.Instance.Where("id = ?", id).First(&boat)
-	if record.Error != nil {
-		return boat, record.Error
-	}
-	return boat, nil
 }

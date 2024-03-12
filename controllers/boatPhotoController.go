@@ -50,13 +50,13 @@ func CreateBoatPhoto(context *gin.Context) {
 
 	boatPhoto.PhotoURL = uploadedFilePath
 	boatPhoto.BoatID = boatID
-	boat, err := GetBoatById(boatID)
-	if err != nil {
-		context.JSON(404, gin.H{"error": err.Error()})
-		context.Abort()
-		return
-	}
-	boatPhoto.Boat = boat
+	// // boat, err := GetBoatById(boatID)
+	// // if err != nil {
+	// // 	context.JSON(404, gin.H{"error": err.Error()})
+	// // 	context.Abort()
+	// // 	return
+	// // }
+	// boatPhoto.Boat = boat
 
 	record := database.Instance.Create(&boatPhoto)
 	if record.Error != nil {
