@@ -4,19 +4,28 @@ import (
 	"booking-api/database"
 	"booking-api/models"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func GetBoat(context *gin.Context) {
 	var boat models.Boat
-	boatId := context.Param("id")
-	record := database.Instance.Where("id = ?", boatId).First(&boat)
-	if record.Error != nil {
+	boatIdString := context.Param("id")
+	boatId, err := strconv.Atoi(boatIdString)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid boat id"})
+		context.Abort()
+		return
+	}
+
+	boat, err = GetBoatById(boatId)
+	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": "Boat not found"})
 		context.Abort()
 		return
 	}
+
 	context.JSON(http.StatusOK, boat)
 }
 
@@ -40,4 +49,13 @@ func CreateBoat(context *gin.Context) {
 		return
 	}
 	context.JSON(http.StatusCreated, boat)
+}
+
+func GetBoatById(id int) (models.Boat, error) {
+	var boat models.Boat
+	record := database.Instance.Where("id = ?", id).First(&boat)
+	if record.Error != nil {
+		return boat, record.Error
+	}
+	return boat, nil
 }

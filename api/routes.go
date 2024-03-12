@@ -512,11 +512,14 @@ func InitRouter() *gin.Engine {
 		api.POST("/user/register", controllers.RegisterUser)
 		api.GET("/boats", controllers.GetBoats)
 		api.GET("/boats/:id", controllers.GetBoat)
-		api.POST("/boats", controllers.CreateBoat)
+		api.GET("/boats/:id/photos", controllers.GetBoatPhotosForBoat)
 
 		secured := api.Group("/secured").Use(middlewares.Auth())
 		{
 			secured.GET("/ping", controllers.Ping)
+			secured.POST("/boats", controllers.CreateBoat)
+			secured.POST("/boats/:id/photos", controllers.CreateBoatPhoto)
+
 		}
 	}
 	return router
