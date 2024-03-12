@@ -187,15 +187,6 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetAmenitiesForRental(w, r, db)
 	}).Methods("GET")
 
-	//Boats
-	r.HandleFunc("/boats", func(w http.ResponseWriter, r *http.Request) {
-		GetBoats(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/boats/{id}", func(w http.ResponseWriter, r *http.Request) {
-		GetSingleBoatByID(w, r, db)
-	}).Methods("GET")
-
 	r.HandleFunc("/boats/{id}/defaultSettings", func(w http.ResponseWriter, r *http.Request) {
 		GetDefaultSettingsForBoat(w, r, db)
 	}).Methods("GET")
@@ -498,28 +489,3 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 	}).Methods("DELETE")
 
 }
-
-// func InitRouter() *gin.Engine {
-// 	router := gin.Default()
-// 	//allow cors
-// 	router.Use(middlewares.CORSMiddleware())
-
-// 	api := router.Group("/api")
-// 	{
-// 		api.POST("/token", controllers.GenerateToken)
-// 		api.POST("/user/register", controllers.RegisterUser)
-// 		api.GET("/boats", controllers.GetBoats)
-// 		api.GET("/boats/:id", controllers.GetBoat)
-// 		api.GET("/boats/:id/photos", controllers.GetBoatPhotosForBoat)
-
-// 		secured := api.Group("/secured").Use(middlewares.Auth())
-// 		{
-// 			secured.GET("/ping", controllers.Ping)
-// 			secured.POST("/boats", controllers.CreateBoat)
-// 			secured.POST("/boats/:id/photos", controllers.CreateBoatPhoto)
-// 			secured.DELETE("/boatPhoto/:id", controllers.DeleteBoatPhoto)
-
-// 		}
-// 	}
-// 	return router
-// }
