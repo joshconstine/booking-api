@@ -86,9 +86,9 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
-	bookingService := services.NewBookingServiceImplementation(bookingRepository, validate, userService)
-	boatService := services.NewBoatServiceImplementation(boatRepository, validate)
 	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
+	bookingService := services.NewBookingServiceImplementation(bookingRepository, validate, userService, bookingDetailsService)
+	boatService := services.NewBoatServiceImplementation(boatRepository, validate)
 
 	//Init controller
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)

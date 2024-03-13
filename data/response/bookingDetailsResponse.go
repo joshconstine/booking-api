@@ -9,5 +9,5 @@ type BookingDetailsResponse struct {
 	PaymentDueDate   time.Time `json:"paymentDueDate"`
 	DocumentsSigned  bool      `json:"documentsSigned"`
 	BookingStartDate time.Time `json:"bookingStartDate"`
-	InvoiceID        string    `json:"invoiceID"`
+	InvoiceID        *string   `json:"invoiceID"`
 }

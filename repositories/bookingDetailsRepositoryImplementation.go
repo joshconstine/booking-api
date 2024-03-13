@@ -23,3 +23,21 @@ func (t *bookingDetailsRepositoryImplementation) FindById(id uint) models.Bookin
 
 	return bookingDetails
 }
+
+func (t *bookingDetailsRepositoryImplementation) Create(details models.BookingDetails) models.BookingDetails {
+	result := t.Db.Create(&details)
+	if result.Error != nil {
+		return models.BookingDetails{}
+	}
+
+	return details
+}
+
+func (t *bookingDetailsRepositoryImplementation) Update(details models.BookingDetails) models.BookingDetails {
+	result := t.Db.Save(&details)
+	if result.Error != nil {
+		return models.BookingDetails{}
+	}
+
+	return details
+}
