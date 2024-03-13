@@ -67,8 +67,8 @@ func (t BoatServiceImplementation) FindAll() []response.BoatResponse {
 	return boats
 }
 
-func (t BoatServiceImplementation) FindByID(id int) response.BoatResponse {
-	result := t.BoatRepository.FindByID(id)
+func (t BoatServiceImplementation) FindById(id int) response.BoatResponse {
+	result := t.BoatRepository.FindById(id)
 
 	boat := response.BoatResponse{
 		ID:        result.ID,

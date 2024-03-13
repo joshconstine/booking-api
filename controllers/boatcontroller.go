@@ -79,7 +79,7 @@ func (controller *BoatController) FindById(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid boat id"})
 		return
 	}
-	tagResponse := controller.boatService.FindByID(id)
+	tagResponse := controller.boatService.FindById(id)
 
 	webResponse := response.Response{
 		Code:   200,

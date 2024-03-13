@@ -6,9 +6,9 @@ import (
 
 type Booking struct {
 	gorm.Model
-	UserID           int
-	BookingStatusID  int
-	BookingDetailsID int
+	UserID           uint
+	BookingStatusID  uint
+	BookingDetailsID uint
 	User             User
 	BookingStatus    BookingStatus
 	BookingDetails   BookingDetails

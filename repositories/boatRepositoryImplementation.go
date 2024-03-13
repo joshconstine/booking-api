@@ -24,7 +24,7 @@ func (t *BoatRepositoryImplementation) FindAll() []models.Boat {
 	return boats
 }
 
-func (t *BoatRepositoryImplementation) FindByID(id int) models.Boat {
+func (t *BoatRepositoryImplementation) FindById(id int) models.Boat {
 	var boat models.Boat
 	result := t.Db.Where("id = ?", id).First(&boat)
 	if result.Error != nil {

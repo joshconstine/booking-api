@@ -75,36 +75,23 @@ func run(env config.EnvVars) (func(), error) {
 }
 
 func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
-	// r := mux.NewRouter()
-
-	// Configure CORS
-	// corsOpts := handlers.CORS(
-	// 	handlers.AllowedOrigins([]string{"http://localhost:3000"}),                   // Allowed origins
-	// 	handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}), // Allowed methods
-	// 	handlers.AllowedHeaders([]string{"Content-Type", "Application/json"}),        // Allowed headers
-	// 	handlers.AllowCredentials(),                                                  // Credentials
-	// )
-	// Open a connection to PlanetScale
-	// db, err := database.ConnectToDB(env)
-	// if err != nil {
-	// 	return nil, nil, err
-	// }
-
-	// api.InitRoutes(r, db)
 
 	validate := validator.New()
 
-	//Init Repository
+	//Init Repositories
+	bookingRepository := repositories.NewBookingRepositoryImplementation(database.Instance)
 	boatRepository := repositories.NewBoatRepositoryImplementation(database.Instance)
 
 	//Init Service
+	bookingService := services.NewBookingServiceImplementation(bookingRepository, validate)
 	boatService := services.NewBoatServiceImplementation(boatRepository, validate)
 
 	//Init controller
+	bookingController := controllers.NewBookingController(bookingService)
 	boatController := controllers.NewBoatController(boatService)
 
 	//Router
-	router := router.NewRouter(boatController)
+	router := router.NewRouter(boatController, bookingController)
 
 	// ginRouter := router.InitRouter(routes)
 
