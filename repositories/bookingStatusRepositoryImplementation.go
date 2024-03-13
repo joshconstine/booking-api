@@ -33,3 +33,12 @@ func (t *BookingStatusRepositoryImplementation) FindById(id uint) models.Booking
 
 	return bookingStatus
 }
+
+func (t *BookingStatusRepositoryImplementation) Create(status models.BookingStatus) models.BookingStatus {
+	result := t.Db.Create(&status)
+	if result.Error != nil {
+		return models.BookingStatus{}
+	}
+
+	return status
+}
