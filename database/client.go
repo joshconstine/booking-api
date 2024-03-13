@@ -39,7 +39,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.BookingDetails{})
 	Instance.AutoMigrate(&models.BookingStatus{})
 	Instance.AutoMigrate(&models.BookingCostType{})
-
+	Instance.AutoMigrate(&models.BookingCostItem{})
 	Instance.AutoMigrate(&models.Boat{})
 	Instance.AutoMigrate(&models.BoatPhoto{})
 	log.Println("Database Migration Completed!")
