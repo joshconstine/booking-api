@@ -60,6 +60,96 @@ func SeedBookingStatus(db *gorm.DB) {
 
 }
 
+func SeedBookingCostTypes(db *gorm.DB) {
+	bookingCostTypes := []models.BookingCostType{
+		{
+			Model: gorm.Model{
+				ID: 1,
+			},
+			Name: "Tax",
+		},
+		{
+			Model: gorm.Model{
+				ID: 2,
+			},
+			Name: "Cleaning Fee",
+		},
+		{
+			Model: gorm.Model{
+				ID: 3,
+			},
+			Name: "Cabin Rental Cost",
+		},
+		{
+			Model: gorm.Model{
+				ID: 4,
+			},
+			Name: "Boat Rental Cost",
+		},
+		{
+			Model: gorm.Model{
+				ID: 5,
+			},
+			Name: "Gas Refil fee",
+		},
+		{
+			Model: gorm.Model{
+				ID: 6,
+			},
+			Name: "Labor",
+		},
+		{
+			Model: gorm.Model{
+				ID: 7,
+			},
+			Name: "Damage Fee",
+		},
+		{
+			Model: gorm.Model{
+				ID: 8,
+			},
+			Name: "Wedding Fee",
+		},
+		{
+			Model: gorm.Model{
+				ID: 9,
+			},
+			Name: "Event fee",
+		},
+		{
+			Model: gorm.Model{
+				ID: 10,
+			},
+			Name: "Event Fee Flat",
+		},
+		{
+			Model: gorm.Model{
+				ID: 11,
+			},
+			Name: "Open Bar Fee",
+		},
+		{
+			Model: gorm.Model{
+				ID: 12,
+			},
+			Name: "Cancelation Fee",
+		},
+		{
+			Model: gorm.Model{
+				ID: 13,
+			},
+			Name: "Alcohol",
+		},
+	}
+
+	bookingCostTypeRepository := repositories.NewBookingCostTypeRepositoryImplementation(db)
+
+	for _, bookingCostType := range bookingCostTypes {
+		bookingCostTypeRepository.Create(bookingCostType)
+	}
+
+}
+
 func main() {
 
 	var exitCode int
@@ -79,6 +169,7 @@ func main() {
 	// database.Migrate()
 
 	SeedBookingStatus(database.Instance)
+	SeedBookingCostTypes(database.Instance)
 
 	log.Println("Database seeding Completed!")
 

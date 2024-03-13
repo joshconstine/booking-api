@@ -38,6 +38,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.Booking{})
 	Instance.AutoMigrate(&models.BookingDetails{})
 	Instance.AutoMigrate(&models.BookingStatus{})
+	Instance.AutoMigrate(&models.BookingCostType{})
 
 	Instance.AutoMigrate(&models.Boat{})
 	Instance.AutoMigrate(&models.BoatPhoto{})
