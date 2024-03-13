@@ -58,12 +58,12 @@ func (t BookingController) CreateBookingWithUserInformation(ctx *gin.Context) {
 
 	bookingResponse := t.bookingService.Create(request)
 	webResponse := response.Response{
-		Code:   200,
-		Status: "Ok",
+		Code:   http.StatusCreated,
+		Status: http.StatusText(http.StatusCreated),
 		Data:   bookingResponse,
 	}
 	ctx.Header("Content-Type", "application/json")
-	ctx.JSON(http.StatusOK, webResponse)
+	ctx.JSON(http.StatusCreated, webResponse)
 }
 
 func (t BookingController) GetDetailsForBookingID(ctx *gin.Context) {

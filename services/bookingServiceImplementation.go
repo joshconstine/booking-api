@@ -5,10 +5,10 @@ import (
 	"booking-api/data/response"
 	"booking-api/models"
 	"booking-api/repositories"
-	"log"
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"gorm.io/gorm"
 )
 
 type BookingServiceImplementation struct {
@@ -70,18 +70,22 @@ func (t BookingServiceImplementation) Create(request requests.CreateUserRequest)
 		//if not create a new user
 		createdUser := t.UserService.CreateUser(request)
 
-		// request.ID = int(userID)
 		bookingToCreate.UserID = createdUser.ID
 	} else {
-		// request.ID = user.ID
 		bookingToCreate.UserID = user.ID
 	}
 	bookingToCreate.User = models.User{
 		Email: user.Email,
 	}
 
-	// bookingToCreate.UserID = request.ID
-	log.Printf("Booking to create: %v", bookingToCreate)
+	bookingToCreate.User = models.User{
+		Model: gorm.Model{
+			ID: bookingToCreate.UserID,
+		},
+		Email: request.Email,
+	}
+
+	bookingToCreate.BookingStatusID = 1
 
 	// create booking
 	booking := t.BookingRepository.Create(bookingToCreate)
