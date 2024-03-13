@@ -38,9 +38,11 @@ func Migrate() {
 	Instance.AutoMigrate(&models.Booking{})
 	Instance.AutoMigrate(&models.BookingDetails{})
 	Instance.AutoMigrate(&models.BookingStatus{})
-	Instance.AutoMigrate(&models.BookingCostType{})
 	Instance.AutoMigrate(&models.BookingCostItem{})
 	Instance.AutoMigrate(&models.Location{})
+
+	Instance.AutoMigrate(&models.PaymentMethod{})
+	Instance.AutoMigrate(&models.BookingCostType{})
 
 	Instance.AutoMigrate(&models.AmenityType{})
 	Instance.AutoMigrate(&models.Amenity{})
@@ -48,6 +50,10 @@ func Migrate() {
 	Instance.AutoMigrate(&models.BedType{})
 
 	Instance.AutoMigrate(&models.Boat{})
+	Instance.AutoMigrate(&models.BoatDefaultSettings{})
 	Instance.AutoMigrate(&models.BoatPhoto{})
+
+	Instance.AutoMigrate(&models.Rental{})
+
 	log.Println("Database Migration Completed!")
 }
