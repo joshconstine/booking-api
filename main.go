@@ -83,19 +83,23 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	boatRepository := repositories.NewBoatRepositoryImplementation(database.Instance)
 	userRepository := repositories.NewUserRepositoryImplementation(database.Instance)
 	bookingDetailsRepository := repositories.NewBookingDetailsRepositoryImplementation(database.Instance)
+	bookingStatusRepository := repositories.NewBookingStatusRepositoryImplementation(database.Instance)
 
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
 	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
 	bookingService := services.NewBookingServiceImplementation(bookingRepository, validate, userService, bookingDetailsService)
 	boatService := services.NewBoatServiceImplementation(boatRepository, validate)
+	bookingStatusService := services.NewBookingStatusService(bookingStatusRepository, validate)
 
 	//Init controller
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
 	boatController := controllers.NewBoatController(boatService)
 	userController := controllers.NewUserController(userService)
+	bookingStatusController := controllers.NewBookingStatusController(bookingStatusService)
 	//Router
-	router := router.NewRouter(boatController, bookingController, userController)
+	router := router.NewRouter(boatController, bookingController, userController,
+		bookingStatusController)
 
 	// ginRouter := router.InitRouter(routes)
 
