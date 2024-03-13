@@ -11,11 +11,12 @@ import (
 )
 
 type BookingController struct {
-	bookingService services.BookingService
+	bookingService        services.BookingService
+	bookingDetailsService services.BookingDetailsService
 }
 
-func NewBookingController(service services.BookingService) *BookingController {
-	return &BookingController{bookingService: service}
+func NewBookingController(service services.BookingService, detailsService services.BookingDetailsService) *BookingController {
+	return &BookingController{bookingService: service, bookingDetailsService: detailsService}
 }
 
 func (t BookingController) FindAll(ctx *gin.Context) {
@@ -60,6 +61,20 @@ func (t BookingController) CreateBookingWithUserInformation(ctx *gin.Context) {
 		Code:   200,
 		Status: "Ok",
 		Data:   bookingResponse,
+	}
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, webResponse)
+}
+
+func (t BookingController) GetDetailsForBookingID(ctx *gin.Context) {
+	bookingId := ctx.Param("bookingId")
+	id := convertStringToUint(bookingId)
+
+	bookingDetailsResponse := t.bookingDetailsService.FindById(id)
+	webResponse := response.Response{
+		Code:   200,
+		Status: "Ok",
+		Data:   bookingDetailsResponse,
 	}
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, webResponse)
