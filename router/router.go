@@ -27,6 +27,7 @@ func NewRouter(
 		bookingRouter := api.Group("/bookings")
 		bookingRouter.GET("", bookingController.FindAll)
 		bookingRouter.GET("/:bookingId", bookingController.FindById)
+		bookingRouter.POST("/ui", bookingController.CreateBookingWithUserInformation)
 
 		boatRouter := api.Group("/boats")
 		boatRouter.GET("", boatController.FindAll)

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/services"
 	"net/http"
@@ -48,4 +49,18 @@ func (t BookingController) FindById(ctx *gin.Context) {
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, webResponse)
 
+}
+
+func (t BookingController) CreateBookingWithUserInformation(ctx *gin.Context) {
+	var request request.CreateUserRequest
+	ctx.BindJSON(&request)
+
+	bookingResponse := t.bookingService.Create(request)
+	webResponse := response.Response{
+		Code:   200,
+		Status: "Ok",
+		Data:   bookingResponse,
+	}
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, webResponse)
 }
