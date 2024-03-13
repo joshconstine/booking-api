@@ -10,6 +10,7 @@ import (
 func NewRouter(
 	boatController *controllers.BoatController,
 	bookingController *controllers.BookingController,
+	userController *controllers.UserController,
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -19,7 +20,6 @@ func NewRouter(
 	api := router.Group("/api")
 	{
 		api.POST("/token", controllers.GenerateToken)
-		api.POST("/user/register", controllers.RegisterUser)
 		// api.GET("/boats", controllers.GetBoats)
 		// api.GET("/boats/:id", controllers.GetBoat)
 		// api.GET("/boats/:id/photos", controllers.GetBoatPhotosForBoat)
@@ -35,6 +35,10 @@ func NewRouter(
 		// boatRouter.POST("", boatController.Create)
 		// boatRouter.PATCH("/:boatId", boatController.Update)
 		// boatRouter.DELETE("/:boatId", boatController.Delete)
+
+		userRouter := api.Group("/users")
+		userRouter.GET("", userController.FindAll)
+		userRouter.POST("/register", userController.RegisterUser)
 
 		secured := api.Group("/secured").Use(middlewares.Auth())
 		{

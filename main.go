@@ -91,9 +91,9 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	//Init controller
 	bookingController := controllers.NewBookingController(bookingService)
 	boatController := controllers.NewBoatController(boatService)
-
+	userController := controllers.NewUserController(userService)
 	//Router
-	router := router.NewRouter(boatController, bookingController)
+	router := router.NewRouter(boatController, bookingController, userController)
 
 	// ginRouter := router.InitRouter(routes)
 

@@ -19,6 +19,19 @@ func NewUserServiceImplementation(userRepository repositories.UserRepository, va
 		Validate:       validate,
 	}
 }
+func (t *userServiceImplementation) FindAll() []responses.UserResponse {
+	result := t.userRepository.FindAll()
+
+	var users []responses.UserResponse
+	for _, value := range result {
+		user := responses.UserResponse{
+			ID:    value.ID,
+			Email: value.Email,
+		}
+		users = append(users, user)
+	}
+	return users
+}
 
 func (t *userServiceImplementation) FindById(id uint) responses.UserResponse {
 	result := t.userRepository.FindById(id)

@@ -17,17 +17,8 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		CreateInvoiceHandler(w, r, db)
 	}).Methods("POST")
 
-	//Bookings
-	r.HandleFunc("/bookings", func(w http.ResponseWriter, r *http.Request) {
-		GetBookings(w, r, db)
-	}).Methods("GET")
-
 	r.HandleFunc("/bookings", func(w http.ResponseWriter, r *http.Request) {
 		CreateBooking(w, r, db)
-	}).Methods("POST")
-
-	r.HandleFunc("/bookings/ui", func(w http.ResponseWriter, r *http.Request) {
-		CreateBookingWithUserInformation(w, r, db)
 	}).Methods("POST")
 
 	r.HandleFunc("/bookings/{id}/details", func(w http.ResponseWriter, r *http.Request) {
