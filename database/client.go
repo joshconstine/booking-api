@@ -53,6 +53,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.BoatDefaultSettings{})
 	Instance.AutoMigrate(&models.BoatPhoto{})
 
+	Instance.AutoMigrate(&models.Timeblock{})
 	Instance.AutoMigrate(&models.Rental{})
 
 	log.Println("Database Migration Completed!")

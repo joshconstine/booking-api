@@ -13,6 +13,7 @@ func NewRouter(
 	userController *controllers.UserController,
 	bookingStatusController *controllers.BookingStatusController,
 	bookingCostTypeController *controllers.BookingCostTypeController,
+	rentalController *controllers.RentalController,
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -50,6 +51,10 @@ func NewRouter(
 		userRouter := api.Group("/users")
 		userRouter.GET("", userController.FindAll)
 		userRouter.POST("/register", userController.RegisterUser)
+
+		rentalRouter := api.Group("/rentals")
+		rentalRouter.GET("", rentalController.FindAll)
+		rentalRouter.GET("/:rentalId", rentalController.FindById)
 
 		secured := api.Group("/secured").Use(middlewares.Auth())
 		{

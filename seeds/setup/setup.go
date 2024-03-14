@@ -240,9 +240,9 @@ func main() {
 
 	// database.Migrate()
 
-	// SeedBookingStatus(database.Instance)
-	// SeedBookingCostTypes(database.Instance)
-	// SeedRentals(database.Instance)
+	SeedBookingStatus(database.Instance)
+	SeedBookingCostTypes(database.Instance)
+	SeedRentals(database.Instance)
 	SeedLocations(database.Instance)
 
 	log.Println("Database seeding Completed!")
