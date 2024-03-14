@@ -150,6 +150,78 @@ func SeedBookingCostTypes(db *gorm.DB) {
 
 }
 
+func SeedLocations(db *gorm.DB) {
+	locations := []models.Location{
+		{
+			Model: gorm.Model{
+				ID: 1,
+			},
+			Name: "The Everett Resort",
+		},
+		{
+			Model: gorm.Model{
+				ID: 2,
+			},
+			Name: "Deer Run Resort",
+		},
+	}
+
+	locationRepository := repositories.NewLocationRepositoryImplementation(db)
+
+	for _, location := range locations {
+		locationRepository.Create(location)
+	}
+
+}
+
+// {1, "The Lodge", 1, 13, 5, "cozy up north cabin"},
+// {2, "The Morey", 1, 2, 1, "cozy up north cabin"},
+// {3, "The Gables", 1, 7, 3, "cozy up north cabin"},
+// {4, "The Clubhouse", 1, 5, 2, "cozy up north cabin"},
+// {5, "The Eisenhower", 1, 4, 2, "cozy up north cabin"},
+// {6, "The Musky Inn", 2, 13, 7, "cozy up north cabin"},
+// // {7, "The Musky Inn North", 2, 6, 4, "cozy up north cabin"},
+// // {8, "The Musky Inn North + middle", 2, 9, 4, "cozy up north cabin"},
+// // {9, "The Musky Inn South", 2, 4, 3, "cozy up north cabin"},
+// // {10, "The Musky Inn South + middle", 2, 7, 5, "cozy up north cabin"},
+// {7, "The Little Guy", 2, 1, 1, "cozy up north cabin"},
+
+func SeedRentals(db *gorm.DB) {
+	rentals := []models.Rental{
+		{
+			Model: gorm.Model{
+				ID: 1,
+			},
+			Name:        "The Lodge",
+			LocationID:  1,
+			Bedrooms:    13,
+			Bathrooms:   5,
+			Description: "cozy up north cabin",
+			Amenities:   []models.Amenity{},
+			Timeblocks:  []models.Timeblock{},
+		},
+		{
+			Model: gorm.Model{
+				ID: 2,
+			},
+			Name:        "The Morey",
+			LocationID:  1,
+			Bedrooms:    2,
+			Bathrooms:   1,
+			Description: "cozy up north cabin",
+			Amenities:   []models.Amenity{},
+			Timeblocks:  []models.Timeblock{},
+		},
+	}
+
+	rentalRepository := repositories.NewRentalRepositoryImplementation(db)
+
+	for _, rental := range rentals {
+		rentalRepository.Create(rental)
+	}
+
+}
+
 func main() {
 
 	var exitCode int
@@ -168,8 +240,10 @@ func main() {
 
 	// database.Migrate()
 
-	SeedBookingStatus(database.Instance)
-	SeedBookingCostTypes(database.Instance)
+	// SeedBookingStatus(database.Instance)
+	// SeedBookingCostTypes(database.Instance)
+	// SeedRentals(database.Instance)
+	SeedLocations(database.Instance)
 
 	log.Println("Database seeding Completed!")
 
