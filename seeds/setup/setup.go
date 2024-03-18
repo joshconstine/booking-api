@@ -173,6 +173,65 @@ func SeedLocations(db *gorm.DB) {
 	}
 
 }
+func SeedAmenityTypes(db *gorm.DB) {
+	amenityTypes := []models.AmenityType{
+
+		{
+			Model: gorm.Model{
+				ID: 1,
+			},
+			Name: "Kitchen",
+		},
+		{
+			Model: gorm.Model{
+				ID: 2,
+			},
+			Name: "Bathroom",
+		},
+		{
+			Model: gorm.Model{
+				ID: 3,
+			},
+			Name: "Laundry",
+		},
+		{
+			Model: gorm.Model{
+				ID: 4,
+			},
+			Name: "Entertainment",
+		},
+		{
+			Model: gorm.Model{
+				ID: 5,
+			},
+			Name: "Outdoor",
+		},
+		{
+			Model: gorm.Model{
+				ID: 6,
+			},
+			Name: "Utilities",
+		},
+		{
+			Model: gorm.Model{
+				ID: 7,
+			},
+			Name: "Safety",
+		},
+		{
+			Model: gorm.Model{
+				ID: 8,
+			},
+			Name: "Miscellaneous",
+		},
+	}
+
+	amenityTypeRepository := repositories.NewAmenityTypeRepositoryImplementation(db)
+
+	for _, amenityType := range amenityTypes {
+		amenityTypeRepository.Create(amenityType)
+	}
+}
 
 // {1, "The Lodge", 1, 13, 5, "cozy up north cabin"},
 // {2, "The Morey", 1, 2, 1, "cozy up north cabin"},
@@ -198,7 +257,7 @@ func SeedRentals(db *gorm.DB) {
 			Bathrooms:   5,
 			Description: "cozy up north cabin",
 			Amenities:   []models.Amenity{},
-			Timeblocks:  []models.Timeblock{},
+			// Timeblocks:  []models.Timeblock{},
 		},
 		{
 			Model: gorm.Model{
@@ -210,7 +269,7 @@ func SeedRentals(db *gorm.DB) {
 			Bathrooms:   1,
 			Description: "cozy up north cabin",
 			Amenities:   []models.Amenity{},
-			Timeblocks:  []models.Timeblock{},
+			// Timeblocks:  []models.Timeblock{},
 		},
 	}
 
@@ -243,7 +302,8 @@ func main() {
 
 	SeedBookingStatus(database.Instance)
 	SeedBookingCostTypes(database.Instance)
-	SeedRentals(database.Instance)
+	// SeedRentals(database.Instance)
+	SeedAmenityTypes(database.Instance)
 	SeedLocations(database.Instance)
 
 	log.Println("Database seeding Completed!")
