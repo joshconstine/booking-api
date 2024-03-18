@@ -57,7 +57,7 @@ func (r *RentalRepositoryImplementation) GetInformationForRental(id uint) (renta
 	rentalInformation.RentalIsClean = false
 	rentalInformation.Thumbnail = "https://via.placeholder.com/150"
 
-	// timeblocks := r.TimeblockRepository.FindByEntity("rentals", id)
+	timeblocks = r.TimeblockRepository.FindByEntity("rentals", id)
 
 	rentalInformation.Timeblocks = timeblocks
 

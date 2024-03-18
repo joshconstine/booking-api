@@ -8,7 +8,7 @@ type Timeblock struct {
 	gorm.Model
 	StartTime  string
 	EndTime    string
-	EntityID   uint
-	EntityType string
+	EntityID   uint   `gorm:"primaryKey"`
+	EntityType string `gorm:"primaryKey"`
 	BookingID  *uint
 }
