@@ -10,7 +10,7 @@ type BookingCostTypeRepositoryImplementation struct {
 	Db *gorm.DB
 }
 
-func NewBookingCostTypeRepositoryImplementation(db *gorm.DB) *BookingCostTypeRepositoryImplementation {
+func NewBookingCostTypeRepositoryImplementation(db *gorm.DB) BookingCostTypeRepository {
 	return &BookingCostTypeRepositoryImplementation{Db: db}
 }
 

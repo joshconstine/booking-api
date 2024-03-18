@@ -214,7 +214,8 @@ func SeedRentals(db *gorm.DB) {
 		},
 	}
 
-	rentalRepository := repositories.NewRentalRepositoryImplementation(db)
+	timeblockRepository := repositories.NewTimeblockRepositoryImplementation(db)
+	rentalRepository := repositories.NewRentalRepositoryImplementation(db, timeblockRepository)
 
 	for _, rental := range rentals {
 		rentalRepository.Create(rental)

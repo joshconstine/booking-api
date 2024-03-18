@@ -31,17 +31,12 @@ func InitDB() {
 	rentallBathroomCreate := "CREATE TABLE IF NOT EXISTS rental_bathroom (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, rental_photo_id INT, name VARCHAR(255), description VARCHAR(255), floor INT NOT NULL, shower BOOLEAN NOT NULL, bathtub BOOLEAN NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY rental_photo_id (rental_photo_id))"
 
 	//ameniy
-	amenityTypeCreate := "CREATE TABLE IF NOT EXISTS amenity_type (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
-	amenityCreate := "CREATE TABLE IF NOT EXISTS amenity (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, amenity_type_id INT NOT NULL, PRIMARY KEY (id), KEY amenity_type_id (amenity_type_id))"
 
 	rentalAmenityCreate := "CREATE TABLE IF NOT EXISTS rental_amenity(id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, amenity_id INT NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY amenity_id (amenity_id))"
 
 	//Boats
-	boatCreate := "CREATE TABLE IF NOT EXISTS boat (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, occupancy INT NOT NULL, max_weight INT NOT NULL, PRIMARY KEY (id))"
 	boatTimeblockCreate := "CREATE TABLE IF NOT EXISTS boat_timeblock (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME NOT NULL, boat_booking_id INT, PRIMARY KEY (id), KEY boat_id (boat_id), KEY boat_booking_id (boat_booking_id))"
-	boatPhotoCreate := "CREATE TABLE IF NOT EXISTS boat_photo (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, photo_url VARCHAR(255) NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id))"
 	boatStatusCreate := "CREATE TABLE IF NOT EXISTS boat_status (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, is_clean BOOLEAN, low_fuel BOOLEAN, current_location_id INT NOT NULL, PRIMARY KEY (id), KEY current_location_id (current_location_id))"
-	boatDefaultSettingsCreate := "CREATE TABLE IF NOT EXISTS boat_default_settings (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL UNIQUE, daily_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, advertise_at_all_locations BOOLEAN NOT NULL, file_id INT NOT NULL, PRIMARY KEY (id), KEY file_id (file_id))"
 	boatVariableSettingsCreate := "CREATE TABLE IF NOT EXISTS boat_variable_settings (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, start_date DATE NOT NULL, end_date DATE NOT NULL, daily_cost DECIMAL(10, 2) NOT NULL, minimum_booking_duration INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id))"
 
 	//Photo
@@ -51,22 +46,14 @@ func InitDB() {
 	userCreate := "CREATE TABLE IF NOT EXISTS user (id INT NOT NULL AUTO_INCREMENT, email VARCHAR(255) NOT NULL, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, phone_number VARCHAR(15) NOT NULL, PRIMARY KEY (id))"
 
 	//Location
-	locationCreate := "CREATE TABLE IF NOT EXISTS location (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
 
 	//Bookings
-	bookingStatusCreate := "CREATE TABLE IF NOT EXISTS booking_status (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
-	bookingCreate := "CREATE TABLE IF NOT EXISTS booking (id INT NOT NULL AUTO_INCREMENT, user_id INT NOT NULL, booking_status_id INT NOT NULL, booking_details_id INT NOT NULL, PRIMARY KEY (id), KEY user_id (user_id), KEY booking_status_id (booking_status_id), KEY booking_details_id (booking_details_id))"
-	bookingDetailsCreate := "CREATE TABLE IF NOT EXISTS booking_details (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL UNIQUE, payment_complete BOOLEAN NOT NULL, payment_due_date DATE NOT NULL, documents_signed BOOLEAN NOT NULL, booking_start_date DATETIME NOT NULL, invoice_id VARCHAR(255), PRIMARY KEY (id))"
 	rentalBookingCreate := "CREATE TABLE IF NOT EXISTS rental_booking (id INT NOT NULL AUTO_INCREMENT, rental_id INT NOT NULL, booking_id INT NOT NULL, rental_time_block_id INT NOT NULL, booking_status_id INT NOT NULL, booking_file_id INT NOT NULL, PRIMARY KEY (id), KEY rental_id (rental_id), KEY booking_id (booking_id), KEY rental_time_block_id (rental_time_block_id), KEY booking_status_id (booking_status_id), KEY booking_file_id (booking_file_id))"
 	rentalBookingCostCreate := "CREATE TABLE IF NOT EXISTS rental_booking_cost (id INT NOT NULL AUTO_INCREMENT, rental_booking_id INT NOT NULL, booking_cost_item_id INT NOT NULL, PRIMARY KEY (id), KEY rental_booking_id (rental_booking_id), KEY booking_cost_item_id (booking_cost_item_id))"
 	boatBookingCreate := "CREATE TABLE IF NOT EXISTS boat_booking (id INT NOT NULL AUTO_INCREMENT, boat_id INT NOT NULL, booking_id INT NOT NULL, boat_time_block_id INT NOT NULL, booking_status_id INT NOT NULL, location_id INT NOT NULL, booking_file_id INT NOT NULL, PRIMARY KEY (id), KEY boat_id (boat_id), KEY booking_id (booking_id), KEY boat_time_block_id (boat_time_block_id), KEY booking_status_id (booking_status_id), KEY location_id (location_id), KEY booking_file_id (booking_file_id))"
 	boatBookingCostCreate := "CREATE TABLE IF NOT EXISTS boat_booking_cost (id INT NOT NULL AUTO_INCREMENT, boat_booking_id INT NOT NULL, booking_cost_item_id INT NOT NULL, PRIMARY KEY (id), KEY boat_booking_id (boat_booking_id), KEY booking_cost_item_id (booking_cost_item_id))"
 
 	bookingPaymentCreate := "CREATE TABLE IF NOT EXISTS booking_payment (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, payment_amount DECIMAL(10, 2) NOT NULL, paypal_order_id INT, payment_method_id INT NOT NULL,  payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (id), KEY booking_id (booking_id), KEY payment_method_id (payment_method_id))"
-	paymentMethodCreate := "CREATE TABLE IF NOT EXISTS payment_method (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
-
-	bookingCostTypeCreate := "CREATE TABLE IF NOT EXISTS booking_cost_type (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (id))"
-	bookingCostItemCreate := "CREATE TABLE IF NOT EXISTS booking_cost_item (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, booking_cost_type_id INT NOT NULL, amount DECIMAL(10, 2) NOT NULL, PRIMARY KEY (id), KEY booking_id (booking_id), KEY booking_cost_type_id (booking_cost_type_id))"
 
 	alcoholOrderCreate := "CREATE TABLE IF NOT EXISTS alcohol_order (id INT NOT NULL AUTO_INCREMENT, booking_id INT NOT NULL, PRIMARY KEY (id))"
 	alcoholOrderItemCreate := "CREATE TABLE IF NOT EXISTS alcohol_order_item (id INT NOT NULL AUTO_INCREMENT, alcohol_order_id INT NOT NULL,alcohol_order_booking_cost_id INT NOT NULL,alcohol_quantity_id INT NOT NULL,quantity INT NOT NULL, PRIMARY KEY (id), KEY alcohol_order_id (alcohol_order_id), KEY alcohol_order_booking_cost_id (alcohol_order_booking_cost_id), KEY alcohol_quantity_id (alcohol_quantity_id))"

@@ -6,10 +6,11 @@ import (
 
 type Boat struct {
 	gorm.Model
-	Name      string
-	Occupancy int
-	MaxWeight int
-	Photos    []BoatPhoto
+	Name       string
+	Occupancy  int
+	MaxWeight  int
+	Photos     []BoatPhoto
+	Timeblocks []*Timeblock `gorm:"polymorphic:Entity"`
 }
 
 func (b *Boat) TableName() string {

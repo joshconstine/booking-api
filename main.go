@@ -85,7 +85,8 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	bookingDetailsRepository := repositories.NewBookingDetailsRepositoryImplementation(database.Instance)
 	bookingStatusRepository := repositories.NewBookingStatusRepositoryImplementation(database.Instance)
 	bookingCostTypeRepository := repositories.NewBookingCostTypeRepositoryImplementation(database.Instance)
-	rentalRepository := repositories.NewRentalRepositoryImplementation(database.Instance)
+	timeblockRepository := repositories.NewTimeblockRepositoryImplementation(database.Instance)
+	rentalRepository := repositories.NewRentalRepositoryImplementation(database.Instance, timeblockRepository)
 
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)

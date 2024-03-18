@@ -12,7 +12,8 @@ type Rental struct {
 	Bathrooms   int
 	Description string
 	Location    Location
-	Amenities   []Amenity `gorm:"many2many:rental_amenities;"`
+	Amenities   []Amenity    `gorm:"many2many:rental_amenities;"`
+	Timeblocks  []*Timeblock `gorm:"polymorphic:Entity"`
 }
 
 func (r *Rental) TableName() string {

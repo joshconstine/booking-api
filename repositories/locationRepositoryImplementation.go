@@ -10,7 +10,7 @@ type LocationRepositoryImplementation struct {
 	Db *gorm.DB
 }
 
-func NewLocationRepositoryImplementation(db *gorm.DB) *LocationRepositoryImplementation {
+func NewLocationRepositoryImplementation(db *gorm.DB) LocationRepository {
 	return &LocationRepositoryImplementation{Db: db}
 }
 
