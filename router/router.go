@@ -19,6 +19,7 @@ func NewRouter(
 	amenityTypeController *controllers.AmenityTypeController,
 	bookingCostItemController *controllers.BookingCostItemController,
 	paymentMethodController *controllers.PaymentMethodController,
+	bookingPaymentController *controllers.BookingPaymentController,
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -51,6 +52,11 @@ func NewRouter(
 		paymentMethodRouter := api.Group("/paymentMethods")
 		paymentMethodRouter.GET("", paymentMethodController.FindAll)
 		paymentMethodRouter.GET("/:paymentMethodId", paymentMethodController.FindById)
+
+		bookingPaymentRouter := api.Group("/bookingPayments")
+		bookingPaymentRouter.GET("", bookingPaymentController.FindAll)
+		bookingPaymentRouter.GET("/:bookingPaymentId", bookingPaymentController.FindById)
+		bookingPaymentRouter.POST("", bookingPaymentController.Create)
 
 		bookingRouter := api.Group("/bookings")
 		bookingRouter.GET("", bookingController.FindAll)

@@ -25,6 +25,7 @@ func (t *AmenityRepositoryImplementation) FindAll() []responses.AmenityResponse 
 
 	result := t.Db.Preload("AmenityType").Find(&amenities)
 	if result.Error != nil {
+		return []responses.AmenityResponse{}
 
 	}
 
