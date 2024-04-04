@@ -58,6 +58,8 @@ func NewRouter(
 
 		bookingCostItemRouter := api.Group("/bookingCostItems")
 		bookingCostItemRouter.POST("", bookingCostItemController.Create)
+		bookingCostItemRouter.PUT("", bookingCostItemController.Update)
+		bookingCostItemRouter.DELETE("/:bookingCostItemId", bookingCostItemController.Delete)
 
 		bookingCostTypeRouter := api.Group("/bookingCostTypes")
 		bookingCostTypeRouter.GET("", bookingCostTypeController.FindAll)

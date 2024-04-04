@@ -10,4 +10,6 @@ type BookingCostItemService interface {
 	FindAllCostItemsForBooking(bookingId uint) []responses.BookingCostItemResponse
 	GetTotalCostItemsForBooking(bookingId uint) float64
 	Create(bookingCostItem requests.CreateBookingCostItemRequest) responses.BookingCostItemResponse
+	Update(bookingCostItem requests.UpdateBookingCostItemRequest) responses.BookingCostItemResponse
+	Delete(bookingCostItemId uint) bool
 }

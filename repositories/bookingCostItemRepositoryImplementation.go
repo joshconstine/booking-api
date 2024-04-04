@@ -74,3 +74,38 @@ func (t *BookingCostItemRepositoryImplementation) GetTotalCostItemsForBooking(bo
 	}
 	return total
 }
+
+func (t *BookingCostItemRepositoryImplementation) Update(updateRequest request.UpdateBookingCostItemRequest) response.BookingCostItemResponse {
+	var bookingCostItem models.BookingCostItem
+	result := t.Db.First(&bookingCostItem, updateRequest.Id)
+	if result.Error != nil {
+		return response.BookingCostItemResponse{}
+	}
+
+	bookingCostItem.Amount = updateRequest.Amount
+	bookingCostItem.BookingCostTypeID = updateRequest.BookingCostTypeId
+
+	result = t.Db.Save(&bookingCostItem)
+	if result.Error != nil {
+		return response.BookingCostItemResponse{}
+	}
+
+	return response.BookingCostItemResponse{
+		Id:        bookingCostItem.ID,
+		BookingId: bookingCostItem.BookingID,
+		Amount:    bookingCostItem.Amount,
+		BookingCostType: response.BookingCostTypeResponse{
+			ID:   bookingCostItem.BookingCostType.ID,
+			Name: bookingCostItem.BookingCostType.Name,
+		},
+	}
+}
+
+func (t *BookingCostItemRepositoryImplementation) Delete(bookingCostItemId uint) bool {
+	result := t.Db.Delete(&models.BookingCostItem{}, bookingCostItemId)
+	if result.Error != nil {
+		return false
+	}
+
+	return true
+}

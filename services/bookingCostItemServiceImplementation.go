@@ -42,3 +42,19 @@ func (t BookingCostItemServiceImplementation) GetTotalCostItemsForBooking(bookin
 
 	return result
 }
+
+func (t BookingCostItemServiceImplementation) Update(bookingCostItem request.UpdateBookingCostItemRequest) response.BookingCostItemResponse {
+	err := t.Validate.Struct(bookingCostItem)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return t.bookingCostItemRepository.Update(bookingCostItem)
+}
+
+func (t BookingCostItemServiceImplementation) Delete(bookingCostItemId uint) bool {
+	result := t.bookingCostItemRepository.Delete(bookingCostItemId)
+
+	return result
+}

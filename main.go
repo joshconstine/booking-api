@@ -89,8 +89,8 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	rentalRepository := repositories.NewRentalRepositoryImplementation(database.Instance, timeblockRepository)
 	amenityRepository := repositories.NewAmenityRepositoryImplementation(database.Instance)
 	amenityTypeRepository := repositories.NewAmenityTypeRepositoryImplementation(database.Instance)
-
 	bedTypeRepository := repositories.NewBedTypeRepositoryImplementation(database.Instance)
+	bookingCostItemRepository := repositories.NewBookingCostItemRepositoryImplementation(database.Instance)
 
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
@@ -102,8 +102,8 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	rentalService := services.NewRentalServiceImplementation(rentalRepository, validate)
 	amenityService := services.NewAmenityServiceImplementation(amenityRepository, validate)
 	amenityTypeService := services.NewAmenityTypeServiceImplementation(amenityTypeRepository, validate)
-
 	bedTypeService := services.NewBedTypeServiceImplementation(bedTypeRepository, validate)
+	bookingCostItemService := services.NewBookingCostItemServiceImplementation(bookingCostItemRepository, validate)
 
 	//Init controller
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
@@ -115,10 +115,11 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	amenityController := controllers.NewAmenityController(amenityService)
 	amenityTypeController := controllers.NewAmenityTypeController(amenityTypeService)
 	bedTypeController := controllers.NewBedTypeController(bedTypeService)
+	bookingCostItemController := controllers.NewBookingCostItemController(bookingCostItemService)
 
 	//Router
 	router := router.NewRouter(boatController, bookingController, userController,
-		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController)
+		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController)
 
 	// ginRouter := router.InitRouter(routes)
 
