@@ -234,6 +234,85 @@ func SeedAmenityTypes(db *gorm.DB) {
 	}
 }
 
+func SeedBedTypes(db *gorm.DB) {
+	bedTypes := []models.BedType{
+
+		{
+			Model: gorm.Model{
+				ID: 1,
+			},
+			Name: "Twin",
+		},
+		{
+			Model: gorm.Model{
+				ID: 2,
+			},
+			Name: "Full",
+		},
+		{
+			Model: gorm.Model{
+				ID: 3,
+			},
+			Name: "Queen",
+		},
+		{
+			Model: gorm.Model{
+				ID: 4,
+			},
+			Name: "King",
+		},
+		{
+			Model: gorm.Model{
+				ID: 5,
+			},
+			Name: "California King",
+		},
+
+		{
+			Model: gorm.Model{
+				ID: 6,
+			},
+			Name: "Bunk Bed",
+		},
+		{
+			Model: gorm.Model{
+				ID: 7,
+			},
+			Name: "Sofa Bed",
+		},
+		{
+			Model: gorm.Model{
+				ID: 8,
+			},
+			Name: "Futon",
+		},
+		{
+			Model: gorm.Model{
+				ID: 9,
+			},
+			Name: "Crib",
+		},
+		{
+			Model: gorm.Model{
+				ID: 10,
+			},
+			Name: "Toddler Bed",
+		},
+		{
+			Model: gorm.Model{
+				ID: 11,
+			},
+			Name: "Day Bed",
+		},
+	}
+
+	bedTypeRepository := repositories.NewBedTypeRepositoryImplementation(db)
+
+	for _, bedType := range bedTypes {
+		bedTypeRepository.Create(bedType)
+	}
+
+}
 func SeedAmenities(db *gorm.DB) {
 	amenitiesToSeed := []requests.CreateAmenityRequest{
 		{AmenityTypeId: 1, Name: "Refrigerator"},
@@ -349,12 +428,13 @@ func main() {
 
 	// database.Migrate()
 
-	SeedBookingStatus(database.Instance)
-	SeedBookingCostTypes(database.Instance)
-	SeedRentals(database.Instance)
-	SeedAmenityTypes(database.Instance)
-	SeedLocations(database.Instance)
-	SeedAmenities(database.Instance)
+	// SeedBookingStatus(database.Instance)
+	// SeedBookingCostTypes(database.Instance)
+	// SeedRentals(database.Instance)
+	// SeedAmenityTypes(database.Instance)
+	// SeedLocations(database.Instance)
+	// SeedAmenities(database.Instance)
+	SeedBedTypes(database.Instance)
 
 	log.Println("Database seeding Completed!")
 
