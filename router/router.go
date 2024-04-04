@@ -66,6 +66,9 @@ func NewRouter(
 		bookingRouter.GET("/:bookingId/costItems/total", bookingCostItemController.TotalForBookingId)
 		bookingRouter.POST("/ui", bookingController.CreateBookingWithUserInformation)
 
+		bookingRouter.GET("/:bookingId/payments", bookingPaymentController.FindByBookingId)
+		bookingRouter.GET("/:bookingId/payments/total", bookingPaymentController.FindTotalAmountByBookingId)
+
 		bookingCostItemRouter := api.Group("/bookingCostItems")
 		bookingCostItemRouter.POST("", bookingCostItemController.Create)
 		bookingCostItemRouter.PUT("", bookingCostItemController.Update)

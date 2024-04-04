@@ -78,3 +78,41 @@ func (t *BookingPaymentRepositoryImplementation) Create(bookingPayment requests.
 		PaymentDate:   bookingPaymentModel.Model.CreatedAt,
 	}
 }
+func (t *BookingPaymentRepositoryImplementation) FindByBookingId(id uint) []response.BookingPaymentResponse {
+	var bookingPayments []models.BookingPayment
+	var response []response.BookingPaymentResponse
+
+	result := t.Db.Where("booking_id = ?", id).Find(&bookingPayments)
+	if result.Error != nil {
+		return []responses.BookingPaymentResponse{}
+	}
+
+	var item responses.BookingPaymentResponse
+	for _, bookingPayment := range bookingPayments {
+		item.ID = bookingPayment.ID
+		item.BookingID = bookingPayment.BookingID
+		item.PaymentMethod.ID = bookingPayment.PaymentMethodID
+		item.PaymentMethod.Name = bookingPayment.PaymentMethod.Name
+		item.PaymentAmount = bookingPayment.PaymentAmount
+
+		response = append(response, item)
+
+	}
+	return response
+}
+
+func (t *BookingPaymentRepositoryImplementation) FindTotalAmountByBookingId(id uint) float64 {
+	var totalAmount float64
+	var bookingPayments []models.BookingPayment
+
+	result := t.Db.Where("booking_id = ?", id).Find(&bookingPayments)
+	if result.Error != nil {
+		return 0
+	}
+
+	for _, bookingPayment := range bookingPayments {
+		totalAmount += bookingPayment.PaymentAmount
+	}
+
+	return totalAmount
+}

@@ -69,3 +69,35 @@ func (controller *BookingPaymentController) Create(ctx *gin.Context) {
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, webResponse)
 }
+
+func (controller *BookingPaymentController) FindByBookingId(ctx *gin.Context) {
+	bookingId := ctx.Param("bookingId")
+	id, _ := strconv.Atoi(bookingId)
+
+	bookingPayments := controller.bookingPaymentService.FindByBookingId(uint(id))
+
+	webResponse := responses.Response{
+		Code:   200,
+		Status: "Ok",
+		Data:   bookingPayments,
+	}
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, webResponse)
+}
+
+func (controller *BookingPaymentController) FindTotalAmountByBookingId(ctx *gin.Context) {
+	bookingId := ctx.Param("bookingId")
+	id, _ := strconv.Atoi(bookingId)
+
+	totalAmount := controller.bookingPaymentService.FindTotalAmountByBookingId(uint(id))
+
+	webResponse := responses.Response{
+		Code:   200,
+		Status: "Ok",
+		Data:   totalAmount,
+	}
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, webResponse)
+}
