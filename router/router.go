@@ -16,6 +16,7 @@ func NewRouter(
 	rentalController *controllers.RentalController,
 	amenityController *controllers.AmenityController,
 	bedTypeController *controllers.BedTypeController,
+	amenityTypeController *controllers.AmenityTypeController,
 
 ) *gin.Engine {
 
@@ -36,6 +37,10 @@ func NewRouter(
 		amenityRouter.GET("", amenityController.FindAll)
 		amenityRouter.GET("/:amenityId", amenityController.FindById)
 		amenityRouter.POST("", amenityController.Create)
+
+		amenityTypeRouter := api.Group("/amenityTypes")
+		amenityTypeRouter.GET("", amenityTypeController.FindAll)
+		amenityTypeRouter.GET("/:amenityTypeId", amenityTypeController.FindById)
 
 		bedTypeRouter := api.Group("/bedTypes")
 		bedTypeRouter.GET("", bedTypeController.FindAll)

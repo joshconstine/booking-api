@@ -1,11 +1,12 @@
 package repositories
 
 import (
+	"booking-api/data/response"
 	"booking-api/models"
 )
 
 type AmenityTypeRepository interface {
-	FindAll() []models.AmenityType
-	FindById(id uint) models.AmenityType
-	Create(amenityType models.AmenityType) models.AmenityType
+	FindAll() []response.AmenityTypeResponse
+	FindById(id uint) response.AmenityTypeResponse
+	Create(amenityType models.AmenityType) response.AmenityTypeResponse
 }
