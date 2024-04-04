@@ -1,6 +1,9 @@
 package repositories
 
 import (
+	requests "booking-api/data/request"
+	"booking-api/data/response"
+	responses "booking-api/data/response"
 	"booking-api/models"
 
 	"gorm.io/gorm"
@@ -11,34 +14,72 @@ type AmenityRepositoryImplementation struct {
 }
 
 func NewAmenityRepositoryImplementation(db *gorm.DB) AmenityRepository {
+
 	return &AmenityRepositoryImplementation{Db: db}
+
 }
 
-func (t *AmenityRepositoryImplementation) FindAll() []models.Amenity {
+func (t *AmenityRepositoryImplementation) FindAll() []responses.AmenityResponse {
 	var amenities []models.Amenity
-	result := t.Db.Find(&amenities)
+	var response []response.AmenityResponse
+
+	result := t.Db.Preload("AmenityType").Find(&amenities)
 	if result.Error != nil {
-		return []models.Amenity{}
+
 	}
 
-	return amenities
+	var item responses.AmenityResponse
+	for _, amenity := range amenities {
+		item.ID = amenity.ID
+		item.Name = amenity.Name
+		item.AmenityType = responses.AmenityTypeResponse{
+			ID:   amenity.AmenityType.ID,
+			Name: amenity.AmenityType.Name,
+		}
+
+		response = append(response, item)
+
+	}
+	return response
 }
 
-func (t *AmenityRepositoryImplementation) FindById(id uint) models.Amenity {
+func (t *AmenityRepositoryImplementation) FindById(id uint) response.AmenityResponse {
 	var amenity models.Amenity
-	result := t.Db.Where("id = ?", id).First(&amenity)
+	var response response.AmenityResponse
+
+	result := t.Db.Preload("AmenityType").Find(&amenity)
 	if result.Error != nil {
-		return models.Amenity{}
+
+		return response
 	}
 
-	return amenity
+	response.ID = amenity.ID
+	response.Name = amenity.Name
+	response.AmenityType = responses.AmenityTypeResponse{
+		ID:   amenity.AmenityType.ID,
+		Name: amenity.AmenityType.Name,
+	}
+
+	return response
 }
 
-func (t *AmenityRepositoryImplementation) Create(amenity models.Amenity) models.Amenity {
-	result := t.Db.Create(&amenity)
-	if result.Error != nil {
-		return models.Amenity{}
+func (t *AmenityRepositoryImplementation) Create(amenity requests.CreateAmenityRequest) response.AmenityResponse {
+
+	amenityToCreate := models.Amenity{
+		Name:        amenity.Name,
+		AmenityType: models.AmenityType{Model: gorm.Model{ID: amenity.AmenityTypeId}},
 	}
 
-	return amenity
+	result := t.Db.Table("amenities").Create(&amenityToCreate)
+	if result.Error != nil {
+		return response.AmenityResponse{}
+	}
+
+	return response.AmenityResponse{
+
+		Name: amenity.Name,
+		AmenityType: response.AmenityTypeResponse{
+			ID: amenity.AmenityTypeId,
+		},
+	}
 }

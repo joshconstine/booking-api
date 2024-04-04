@@ -87,6 +87,8 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	bookingCostTypeRepository := repositories.NewBookingCostTypeRepositoryImplementation(database.Instance)
 	timeblockRepository := repositories.NewTimeblockRepositoryImplementation(database.Instance)
 	rentalRepository := repositories.NewRentalRepositoryImplementation(database.Instance, timeblockRepository)
+	amenityRepository := repositories.NewAmenityRepositoryImplementation(database.Instance)
+	// amenityTypeRepository := repositories.NewAmenityTypeRepositoryImplementation(database.Instance)
 
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
@@ -96,6 +98,8 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	bookingStatusService := services.NewBookingStatusService(bookingStatusRepository, validate)
 	bookingCostTypeService := services.NewBookingCostTypeServiceImplementation(bookingCostTypeRepository, validate)
 	rentalService := services.NewRentalServiceImplementation(rentalRepository, validate)
+	amenityService := services.NewAmenityServiceImplementation(amenityRepository, validate)
+	// amenityTypeService := services.NewAmenityTypeServiceImplementation(amenityTypeRepository, validate)
 
 	//Init controller
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
@@ -104,10 +108,11 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	bookingStatusController := controllers.NewBookingStatusController(bookingStatusService)
 	bookingCostTypeController := controllers.NewBookingCostTypeController(bookingCostTypeService)
 	rentalController := controllers.NewRentalController(rentalService)
+	amenityController := controllers.NewAmenityController(amenityService)
 
 	//Router
 	router := router.NewRouter(boatController, bookingController, userController,
-		bookingStatusController, bookingCostTypeController, rentalController)
+		bookingStatusController, bookingCostTypeController, rentalController, amenityController)
 
 	// ginRouter := router.InitRouter(routes)
 

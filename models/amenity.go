@@ -8,6 +8,7 @@ type Amenity struct {
 	gorm.Model
 	Name          string
 	AmenityTypeID uint
+	AmenityType   AmenityType
 }
 
 func (a *Amenity) TableName() string {

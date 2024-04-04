@@ -240,27 +240,6 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetRefundStatus(w, r, db)
 	}).Methods("GET")
 
-	//Alcohol
-	r.HandleFunc("/alcohol", func(w http.ResponseWriter, r *http.Request) {
-		GetAlcohol(w, r, db)
-	}).Methods("GET")
-
-	//OrderableAlcohol
-
-	r.HandleFunc("/orderableAlcohol", func(w http.ResponseWriter, r *http.Request) {
-		GetOrderableAlcohol(w, r, db)
-	}).Methods("GET")
-
-	//Alcohol Types
-	r.HandleFunc("/alcoholTypes", func(w http.ResponseWriter, r *http.Request) {
-		GetAlcoholTypes(w, r, db)
-	}).Methods("GET")
-
-	//Alcohol Quantity Types
-	r.HandleFunc("/alcoholQuantityTypes", func(w http.ResponseWriter, r *http.Request) {
-		GetAlcoholQuantityTypes(w, r, db)
-	}).Methods("GET")
-
 	//Event Types
 	r.HandleFunc("/eventTypes", func(w http.ResponseWriter, r *http.Request) {
 		GetEventTypes(w, r, db)
