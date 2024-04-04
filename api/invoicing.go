@@ -114,7 +114,7 @@ func AddItemsToInvoice(invoice *payments.CreateInvoiceRequest, db *sql.DB, booki
 			return fmt.Errorf("failed to get booking cost type name: %v", err)
 		}
 
-		stringAmmount := fmt.Sprintf("%f", bookingCost.Amount)
+		stringAmount := fmt.Sprintf("%f", bookingCost.Amount)
 
 		item := paypal.InvoiceItem{
 			Name:        name,
@@ -122,7 +122,7 @@ func AddItemsToInvoice(invoice *payments.CreateInvoiceRequest, db *sql.DB, booki
 			Quantity:    "1",
 			UnitAmount: paypal.Money{
 				Currency: "USD",
-				Value:    stringAmmount,
+				Value:    stringAmount,
 			},
 		}
 		items = append(items, item)

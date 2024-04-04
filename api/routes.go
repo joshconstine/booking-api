@@ -439,11 +439,6 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		DeleteRentalBedroom(w, r, db)
 	}).Methods("DELETE")
 
-	//bedTypes
-	r.HandleFunc("/bedTypes", func(w http.ResponseWriter, r *http.Request) {
-		GetBedTypes(w, r, db)
-	}).Methods("GET")
-
 	//rental Bathroom
 
 	r.HandleFunc("/rentalBathroom", func(w http.ResponseWriter, r *http.Request) {

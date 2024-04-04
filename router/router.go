@@ -17,6 +17,7 @@ func NewRouter(
 	amenityController *controllers.AmenityController,
 	bedTypeController *controllers.BedTypeController,
 	amenityTypeController *controllers.AmenityTypeController,
+	bookingCostItemController *controllers.BookingCostItemController,
 
 ) *gin.Engine {
 
@@ -51,7 +52,12 @@ func NewRouter(
 		bookingRouter.GET("", bookingController.FindAll)
 		bookingRouter.GET("/:bookingId/details", bookingController.GetDetailsForBookingID)
 		bookingRouter.GET("/:bookingId", bookingController.FindById)
+		bookingRouter.GET("/:bookingId/costItems", bookingCostItemController.FindByBookingId)
+		bookingRouter.GET("/:bookingId/costItems/total", bookingCostItemController.TotalForBookingId)
 		bookingRouter.POST("/ui", bookingController.CreateBookingWithUserInformation)
+
+		bookingCostItemRouter := api.Group("/bookingCostItems")
+		bookingCostItemRouter.POST("", bookingCostItemController.Create)
 
 		bookingCostTypeRouter := api.Group("/bookingCostTypes")
 		bookingCostTypeRouter.GET("", bookingCostTypeController.FindAll)
