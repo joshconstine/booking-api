@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	requests "booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/services"
 	"net/http"
@@ -45,4 +46,34 @@ func (controller *AmenityTypeController) FindAll(ctx *gin.Context) {
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, webResponse)
+}
+
+func (controller *AmenityTypeController) Create(ctx *gin.Context) {
+	createAmenityTypeRequest := requests.CreateAmenityTypeRequest{}
+	err := ctx.ShouldBindJSON(&createAmenityTypeRequest)
+
+	if err != nil {
+		panic(err)
+	}
+
+	created := controller.amenityTypeService.Create(createAmenityTypeRequest)
+
+	var webResponse response.Response
+	if (created == response.AmenityTypeResponse{}) {
+		webResponse = response.Response{
+			Code:   400,
+			Status: "Bad Request",
+			Data:   "Amenity Type already exists",
+		}
+		ctx.JSON(http.StatusBadRequest, webResponse)
+		return
+	} else {
+
+		webResponse = response.Response{
+			Code:   201,
+			Status: "Ok",
+			Data:   created,
+		}
+	}
+	ctx.JSON(http.StatusCreated, webResponse)
 }

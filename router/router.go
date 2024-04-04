@@ -41,6 +41,7 @@ func NewRouter(
 		amenityTypeRouter := api.Group("/amenityTypes")
 		amenityTypeRouter.GET("", amenityTypeController.FindAll)
 		amenityTypeRouter.GET("/:amenityTypeId", amenityTypeController.FindById)
+		amenityTypeRouter.POST("", amenityTypeController.Create)
 
 		bedTypeRouter := api.Group("/bedTypes")
 		bedTypeRouter.GET("", bedTypeController.FindAll)
