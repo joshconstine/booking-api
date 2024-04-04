@@ -60,6 +60,26 @@ func SeedBookingStatus(db *gorm.DB) {
 	}
 
 }
+func SeedPaymentMethods(db *gorm.DB) {
+	paymentMethods := []requests.CreatePaymentMethodRequest{
+		{
+			Name: "Cash",
+		},
+		{
+			Name: "Check",
+		},
+		{
+			Name: "PayPal",
+		},
+	}
+
+	paymentMethodRepository := repositories.NewPaymentMethodRepositoryImplementation(db)
+
+	for _, paymentMethod := range paymentMethods {
+		paymentMethodRepository.Create(paymentMethod)
+	}
+
+}
 
 func SeedBookingCostTypes(db *gorm.DB) {
 	bookingCostTypes := []models.BookingCostType{
@@ -434,7 +454,8 @@ func main() {
 	// SeedAmenityTypes(database.Instance)
 	// SeedLocations(database.Instance)
 	// SeedAmenities(database.Instance)
-	SeedBedTypes(database.Instance)
+	// SeedBedTypes(database.Instance)
+	SeedPaymentMethods(database.Instance)
 
 	log.Println("Database seeding Completed!")
 

@@ -91,6 +91,7 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	amenityTypeRepository := repositories.NewAmenityTypeRepositoryImplementation(database.Instance)
 	bedTypeRepository := repositories.NewBedTypeRepositoryImplementation(database.Instance)
 	bookingCostItemRepository := repositories.NewBookingCostItemRepositoryImplementation(database.Instance)
+	paymentMethodRepository := repositories.NewPaymentMethodRepositoryImplementation(database.Instance)
 
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
@@ -104,6 +105,7 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	amenityTypeService := services.NewAmenityTypeServiceImplementation(amenityTypeRepository, validate)
 	bedTypeService := services.NewBedTypeServiceImplementation(bedTypeRepository, validate)
 	bookingCostItemService := services.NewBookingCostItemServiceImplementation(bookingCostItemRepository, validate)
+	paymentMethodService := services.NewPaymentMethodServiceImplementation(paymentMethodRepository, validate)
 
 	//Init controller
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
@@ -116,10 +118,11 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	amenityTypeController := controllers.NewAmenityTypeController(amenityTypeService)
 	bedTypeController := controllers.NewBedTypeController(bedTypeService)
 	bookingCostItemController := controllers.NewBookingCostItemController(bookingCostItemService)
+	paymentMethodController := controllers.NewPaymentMethodController(paymentMethodService)
 
 	//Router
 	router := router.NewRouter(boatController, bookingController, userController,
-		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController)
+		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController)
 
 	// ginRouter := router.InitRouter(routes)
 
