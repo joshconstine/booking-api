@@ -21,6 +21,7 @@ func NewRouter(
 	paymentMethodController *controllers.PaymentMethodController,
 	bookingPaymentController *controllers.BookingPaymentController,
 	rentalStatusController *controllers.RentalStatusController,
+	photoController *controllers.PhotoController,
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -54,6 +55,8 @@ func NewRouter(
 		paymentMethodRouter.GET("", paymentMethodController.FindAll)
 		paymentMethodRouter.GET("/:paymentMethodId", paymentMethodController.FindById)
 
+		photoRouter := api.Group("/photos")
+		photoRouter.GET("", photoController.FindAll)
 		/************************ BOOKINGS ************************/
 		bookingRouter := api.Group("/bookings")
 		bookingRouter.GET("", bookingController.FindAll)

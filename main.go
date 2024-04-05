@@ -5,6 +5,7 @@ import (
 	"booking-api/controllers"
 	"booking-api/database"
 	"booking-api/jobs"
+	"booking-api/objectStorage"
 	"booking-api/repositories"
 	"booking-api/router"
 	"booking-api/services"
@@ -58,6 +59,7 @@ func run(env config.EnvVars) (func(), error) {
 
 	database.Connect(env.DSN)
 	database.Migrate()
+	objectStorage.CreateSession()
 	app, cleanup, err := buildServer(env)
 	if err != nil {
 		return nil, err
@@ -94,6 +96,7 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	paymentMethodRepository := repositories.NewPaymentMethodRepositoryImplementation(database.Instance)
 	bookingPaymentRepository := repositories.NewBookingPaymentRepositoryImplementation(database.Instance)
 	rentalStatusRepository := repositories.NewRentalStatusRepositoryImplementation(database.Instance)
+	photoRepository := repositories.NewPhotoRepositoryImplementation(objectStorage.Client, database.Instance)
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
 	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
@@ -109,6 +112,7 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	paymentMethodService := services.NewPaymentMethodServiceImplementation(paymentMethodRepository, validate)
 	bookingPaymentService := services.NewBookingPaymentServiceImplementation(bookingPaymentRepository, validate)
 	rentalStatusService := services.NewRentalStatusServiceImplementation(rentalStatusRepository, validate)
+	photoService := services.NewPhotoServiceImplementation(photoRepository, validate)
 
 	//Init controller
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
@@ -124,10 +128,11 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	paymentMethodController := controllers.NewPaymentMethodController(paymentMethodService)
 	bookingPaymentController := controllers.NewBookingPaymentController(bookingPaymentService)
 	rentalStatusController := controllers.NewRentalStatusController(rentalStatusService)
+	photoController := controllers.NewPhotoController(photoService)
 
 	//Router
 	router := router.NewRouter(boatController, bookingController, userController,
-		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController)
+		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController)
 
 	// ginRouter := router.InitRouter(routes)
 
