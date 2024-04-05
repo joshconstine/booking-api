@@ -13,6 +13,7 @@ type Booking struct {
 	BookingStatus    BookingStatus
 	BookingDetails   BookingDetails
 	BookingCostItems []BookingCostItem
+	BookingPayments  []BookingPayment
 }
 
 func (b *Booking) TableName() string {

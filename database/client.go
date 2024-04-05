@@ -56,6 +56,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.Timeblock{})
 	Instance.AutoMigrate(&models.Rental{})
 	Instance.AutoMigrate(&models.BookingPayment{})
+	Instance.AutoMigrate(&models.RentalStatus{})
 
 	log.Println("Database Migration Completed!")
 }

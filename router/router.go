@@ -20,6 +20,7 @@ func NewRouter(
 	bookingCostItemController *controllers.BookingCostItemController,
 	paymentMethodController *controllers.PaymentMethodController,
 	bookingPaymentController *controllers.BookingPaymentController,
+	rentalStatusController *controllers.RentalStatusController,
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -28,13 +29,13 @@ func NewRouter(
 
 	api := router.Group("/api")
 	{
+		/************************ AUTH ************************/
 		api.POST("/token", controllers.GenerateToken)
 		// api.GET("/boats", controllers.GetBoats)
 		// api.GET("/boats/:id", controllers.GetBoat)
 		// api.GET("/boats/:id/photos", controllers.GetBoatPhotosForBoat)
 
-		//Amenities
-
+		/************************ HELPERS ************************/
 		amenityRouter := api.Group("/amenities")
 		amenityRouter.GET("", amenityController.FindAll)
 		amenityRouter.GET("/:amenityId", amenityController.FindById)
@@ -53,11 +54,7 @@ func NewRouter(
 		paymentMethodRouter.GET("", paymentMethodController.FindAll)
 		paymentMethodRouter.GET("/:paymentMethodId", paymentMethodController.FindById)
 
-		bookingPaymentRouter := api.Group("/bookingPayments")
-		bookingPaymentRouter.GET("", bookingPaymentController.FindAll)
-		bookingPaymentRouter.GET("/:bookingPaymentId", bookingPaymentController.FindById)
-		bookingPaymentRouter.POST("", bookingPaymentController.Create)
-
+		/************************ BOOKINGS ************************/
 		bookingRouter := api.Group("/bookings")
 		bookingRouter.GET("", bookingController.FindAll)
 		bookingRouter.GET("/:bookingId/details", bookingController.GetDetailsForBookingID)
@@ -78,10 +75,16 @@ func NewRouter(
 		bookingCostTypeRouter.GET("", bookingCostTypeController.FindAll)
 		bookingCostTypeRouter.GET("/:costTypeId", bookingCostTypeController.FindById)
 
+		bookingPaymentRouter := api.Group("/bookingPayments")
+		bookingPaymentRouter.GET("", bookingPaymentController.FindAll)
+		bookingPaymentRouter.GET("/:bookingPaymentId", bookingPaymentController.FindById)
+		bookingPaymentRouter.POST("", bookingPaymentController.Create)
+
 		bookingStatusRouter := api.Group("/bookingStatus")
 		bookingStatusRouter.GET("", bookingStatusController.FindAll)
 		bookingStatusRouter.GET("/:statusId", bookingStatusController.FindById)
 
+		/************************ BOATS ************************/
 		boatRouter := api.Group("/boats")
 		boatRouter.GET("", boatController.FindAll)
 		boatRouter.GET("/:boatId", boatController.FindById)
@@ -93,9 +96,15 @@ func NewRouter(
 		userRouter.GET("", userController.FindAll)
 		userRouter.POST("/register", userController.RegisterUser)
 
+		/************************ RENTALS ************************/
 		rentalRouter := api.Group("/rentals")
 		rentalRouter.GET("", rentalController.FindAll)
 		rentalRouter.GET("/:rentalId", rentalController.FindById)
+		rentalRouter.GET("/:rentalId/status", rentalStatusController.FindByRentalId)
+
+		rentalStatusRouter := api.Group("/rentalStatus")
+		rentalStatusRouter.GET("", rentalStatusController.FindAll)
+		rentalStatusRouter.PUT("", rentalStatusController.UpdateStatusForRentalId)
 
 		secured := api.Group("/secured").Use(middlewares.Auth())
 		{

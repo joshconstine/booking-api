@@ -12,3 +12,7 @@ type Timeblock struct {
 	EntityType string `gorm:"primaryKey"`
 	BookingID  *uint
 }
+
+func (t *Timeblock) TableName() string {
+	return "timeblocks"
+}
