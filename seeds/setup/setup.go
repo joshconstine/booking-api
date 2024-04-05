@@ -397,7 +397,7 @@ func SeedRentals(db *gorm.DB) {
 	rentals := []models.Rental{
 		{
 			Model: gorm.Model{
-				ID: 1,
+				ID: 3,
 			},
 			Name:        "The Lodge",
 			LocationID:  1,
@@ -405,11 +405,14 @@ func SeedRentals(db *gorm.DB) {
 			Bathrooms:   5,
 			Description: "cozy up north cabin",
 			Amenities:   []models.Amenity{},
+			RentalStatus: models.RentalStatus{
+				IsClean: true,
+			},
 			// Timeblocks:  []models.Timeblock{},
 		},
 		{
 			Model: gorm.Model{
-				ID: 2,
+				ID: 4,
 			},
 			Name:        "The Morey",
 			LocationID:  1,
@@ -417,6 +420,9 @@ func SeedRentals(db *gorm.DB) {
 			Bathrooms:   1,
 			Description: "cozy up north cabin",
 			Amenities:   []models.Amenity{},
+			RentalStatus: models.RentalStatus{
+				IsClean: true,
+			},
 			// Timeblocks:  []models.Timeblock{},
 		},
 	}
@@ -450,12 +456,12 @@ func main() {
 
 	// SeedBookingStatus(database.Instance)
 	// SeedBookingCostTypes(database.Instance)
-	// SeedRentals(database.Instance)
+	SeedRentals(database.Instance)
 	// SeedAmenityTypes(database.Instance)
 	// SeedLocations(database.Instance)
 	// SeedAmenities(database.Instance)
 	// SeedBedTypes(database.Instance)
-	SeedPaymentMethods(database.Instance)
+	// SeedPaymentMethods(database.Instance)
 
 	log.Println("Database seeding Completed!")
 

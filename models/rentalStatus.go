@@ -6,6 +6,6 @@ import (
 
 type RentalStatus struct {
 	gorm.Model
-	RentalID uint
+	RentalID uint `gorm:"uniqueIndex"`
 	IsClean  bool
 }
