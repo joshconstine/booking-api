@@ -3,10 +3,8 @@
 package objectStorage
 
 import (
-	"context"
 	"fmt"
-	"net/http"
-	"path/filepath"
+	"mime/multipart"
 
 	"booking-api/config"
 
@@ -16,7 +14,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/google/uuid"
 )
 
 type S3Client struct {
@@ -56,17 +53,11 @@ func CreateSession() {
 
 }
 
-func (client *S3Client) UploadFile(ctx context.Context, key string, file http.File, filename string, fileExt string) (string, error) {
-	// Generate a unique filename using a UUID
-	newFilename := uuid.New().String() + fileExt
-
-	// Construct new file path
-	newFilePath := filepath.Join(key, newFilename)
-
-	_, err := client.Service.PutObjectWithContext(ctx, &s3.PutObjectInput{
+func (client *S3Client) UploadFile(file *multipart.File, newFilePath string, fileExt string) (string, error) {
+	_, err := client.Service.PutObject(&s3.PutObjectInput{
 		Bucket:      aws.String(client.Bucket),
 		Key:         aws.String(newFilePath),
-		Body:        file,
+		Body:        *file,
 		ACL:         aws.String("public-read"),
 		ContentType: aws.String(fileExt),
 	})

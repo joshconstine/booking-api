@@ -1,8 +1,10 @@
 package router
 
 import (
+	"booking-api/constants"
 	"booking-api/controllers"
 	"booking-api/middlewares"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -104,6 +106,13 @@ func NewRouter(
 		rentalRouter.GET("", rentalController.FindAll)
 		rentalRouter.GET("/:rentalId", rentalController.FindById)
 		rentalRouter.GET("/:rentalId/status", rentalStatusController.FindByRentalId)
+
+		rentalRouter.POST("/:rentalId/photos", func(ctx *gin.Context) {
+
+			rentalIdint, _ := strconv.Atoi(ctx.Param("rentalId"))
+
+			photoController.AddPhoto(ctx, constants.REANTAL_ENTITY, rentalIdint)
+		})
 
 		rentalStatusRouter := api.Group("/rentalStatus")
 		rentalStatusRouter.GET("", rentalStatusController.FindAll)

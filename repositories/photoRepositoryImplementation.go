@@ -4,6 +4,7 @@ import (
 	"booking-api/data/response"
 	"booking-api/models"
 	"booking-api/objectStorage"
+	"mime/multipart"
 
 	"gorm.io/gorm"
 )
@@ -13,7 +14,7 @@ type PhotoRepositoryImplementation struct {
 	DB            *gorm.DB
 }
 
-func NewPhotoRepositoryImplementation(storageClient *objectStorage.S3Client, db *gorm.DB) *PhotoRepositoryImplementation {
+func NewPhotoRepositoryImplementation(storageClient *objectStorage.S3Client, db *gorm.DB) PhotoRepository {
 	return &PhotoRepositoryImplementation{StorageClient: storageClient, DB: db}
 }
 
@@ -36,5 +37,30 @@ func (r *PhotoRepositoryImplementation) FindAll() []response.PhotoResponse {
 	}
 
 	return photoResponses
+
+}
+
+// AddPhoto adds a photo to the database
+func (r *PhotoRepositoryImplementation) AddPhoto(filePath string, photo *multipart.File, fileExt string) response.PhotoResponse {
+
+	returnedUrl, err := r.StorageClient.UploadFile(photo, filePath, fileExt)
+
+	if err != nil {
+		return response.PhotoResponse{}
+	}
+
+	var photoModel models.Photo
+	photoModel.URL = returnedUrl
+
+	result := r.DB.Create(&photoModel)
+
+	if result.Error != nil {
+		return response.PhotoResponse{}
+	}
+
+	return response.PhotoResponse{
+		ID:  photoModel.ID,
+		URL: photoModel.URL,
+	}
 
 }
