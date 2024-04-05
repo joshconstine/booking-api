@@ -24,6 +24,8 @@ func NewRouter(
 	bookingPaymentController *controllers.BookingPaymentController,
 	rentalStatusController *controllers.RentalStatusController,
 	photoController *controllers.PhotoController,
+	locationController *controllers.LocationController,
+
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -43,6 +45,13 @@ func NewRouter(
 		// api.GET("/boats/:id/photos", controllers.GetBoatPhotosForBoat)
 
 		/************************ HELPERS ************************/
+
+		locationRouter := api.Group("/locations")
+
+		locationRouter.GET("", locationController.FindAll)
+		locationRouter.GET("/:locationId", locationController.FindById)
+		locationRouter.POST("", locationController.Create)
+
 		amenityRouter := api.Group("/amenities")
 		amenityRouter.GET("", amenityController.FindAll)
 		amenityRouter.GET("/:amenityId", amenityController.FindById)
@@ -60,6 +69,10 @@ func NewRouter(
 		paymentMethodRouter := api.Group("/paymentMethods")
 		paymentMethodRouter.GET("", paymentMethodController.FindAll)
 		paymentMethodRouter.GET("/:paymentMethodId", paymentMethodController.FindById)
+
+		bookingCostTypeRouter := api.Group("/bookingCostTypes")
+		bookingCostTypeRouter.GET("", bookingCostTypeController.FindAll)
+		bookingCostTypeRouter.GET("/:costTypeId", bookingCostTypeController.FindById)
 
 		photoRouter := api.Group("/photos")
 		photoRouter.GET("", photoController.FindAll)
@@ -79,10 +92,6 @@ func NewRouter(
 		bookingCostItemRouter.POST("", bookingCostItemController.Create)
 		bookingCostItemRouter.PUT("", bookingCostItemController.Update)
 		bookingCostItemRouter.DELETE("/:bookingCostItemId", bookingCostItemController.Delete)
-
-		bookingCostTypeRouter := api.Group("/bookingCostTypes")
-		bookingCostTypeRouter.GET("", bookingCostTypeController.FindAll)
-		bookingCostTypeRouter.GET("/:costTypeId", bookingCostTypeController.FindById)
 
 		bookingPaymentRouter := api.Group("/bookingPayments")
 		bookingPaymentRouter.GET("", bookingPaymentController.FindAll)

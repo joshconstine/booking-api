@@ -98,6 +98,7 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	rentalStatusRepository := repositories.NewRentalStatusRepositoryImplementation(database.Instance)
 	photoRepository := repositories.NewPhotoRepositoryImplementation(objectStorage.Client, database.Instance)
 	entitiyPhotoRepository := repositories.NewEntityPhotoRepositoryImplementation(database.Instance)
+	locationRepository := repositories.NewLocationRepositoryImplementation(database.Instance)
 
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
@@ -116,6 +117,7 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	rentalStatusService := services.NewRentalStatusServiceImplementation(rentalStatusRepository, validate)
 	photoService := services.NewPhotoServiceImplementation(photoRepository, validate)
 	entityPhotoService := services.NewEntityPhotoServiceImplementation(entitiyPhotoRepository, validate)
+	locationService := services.NewLocationServiceImplementation(locationRepository, validate)
 
 	//Init controller
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
@@ -132,10 +134,11 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	bookingPaymentController := controllers.NewBookingPaymentController(bookingPaymentService)
 	rentalStatusController := controllers.NewRentalStatusController(rentalStatusService)
 	photoController := controllers.NewPhotoController(photoService, entityPhotoService)
+	locationController := controllers.NewLocationController(locationService)
 
 	//Router
 	router := router.NewRouter(boatController, bookingController, userController,
-		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController)
+		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController)
 
 	// ginRouter := router.InitRouter(routes)
 
