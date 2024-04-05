@@ -33,6 +33,10 @@ func NewRouter(
 	api := router.Group("/api")
 	{
 		/************************ AUTH ************************/
+
+		userRouter := api.Group("/users")
+		userRouter.GET("", userController.FindAll)
+		userRouter.POST("/register", userController.RegisterUser)
 		api.POST("/token", controllers.GenerateToken)
 		// api.GET("/boats", controllers.GetBoats)
 		// api.GET("/boats/:id", controllers.GetBoat)
@@ -96,10 +100,15 @@ func NewRouter(
 		// boatRouter.POST("", boatController.Create)
 		// boatRouter.PATCH("/:boatId", boatController.Update)
 		// boatRouter.DELETE("/:boatId", boatController.Delete)
+		boatRouter.POST("/:boatId/photos", func(ctx *gin.Context) {
+			boatIdint, _ := strconv.Atoi(ctx.Param("boatId"))
+			photoController.AddPhoto(ctx, constants.BOAT_ENTITY, boatIdint)
+		})
 
-		userRouter := api.Group("/users")
-		userRouter.GET("", userController.FindAll)
-		userRouter.POST("/register", userController.RegisterUser)
+		boatRouter.GET("/:boatId/photos", func(ctx *gin.Context) {
+			boatIdint, _ := strconv.Atoi(ctx.Param("boatId"))
+			photoController.FindAllForEntity(ctx, constants.BOAT_ENTITY, uint(boatIdint))
+		})
 
 		/************************ RENTALS ************************/
 		rentalRouter := api.Group("/rentals")
@@ -108,10 +117,13 @@ func NewRouter(
 		rentalRouter.GET("/:rentalId/status", rentalStatusController.FindByRentalId)
 
 		rentalRouter.POST("/:rentalId/photos", func(ctx *gin.Context) {
-
 			rentalIdint, _ := strconv.Atoi(ctx.Param("rentalId"))
+			photoController.AddPhoto(ctx, constants.RENTAL_ENTITY, rentalIdint)
+		})
 
-			photoController.AddPhoto(ctx, constants.REANTAL_ENTITY, rentalIdint)
+		rentalRouter.GET("/:rentalId/photos", func(ctx *gin.Context) {
+			rentalIdint, _ := strconv.Atoi(ctx.Param("rentalId"))
+			photoController.FindAllForEntity(ctx, constants.RENTAL_ENTITY, uint(rentalIdint))
 		})
 
 		rentalStatusRouter := api.Group("/rentalStatus")

@@ -22,7 +22,7 @@ func BuildFilePath(entity string, entityID int, fileExt string) string {
 	newFilename := uuid.New().String() + fileExt
 	var location string
 
-	if entity == constants.REANTAL_ENTITY {
+	if entity == constants.RENTAL_ENTITY {
 		location = filepath.Join(constants.RENTAL_PHOTO_EXTENSION, strconv.Itoa(entityID))
 
 	} else if entity == constants.BOAT_ENTITY {

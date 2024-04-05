@@ -17,19 +17,28 @@ func NewEntityPhotoRepositoryImplementation(db *gorm.DB) EntityPhotoRepository {
 
 func (e *EntityPhotoRepositoryImplementation) FindAllForEntity(entity string, entityID uint) []response.PhotoResponse {
 	var entityPhotos []models.EntityPhoto
-	result := e.Db.Where("entity_id = ? AND entity_type = ?", entityID, entity).Find(&entityPhotos)
+	result := e.Db.Model(&models.EntityPhoto{}).Where("entity_id = ? AND entity_type = ?", entityID, entity).Find(&entityPhotos)
 	if result.Error != nil {
 		return []response.PhotoResponse{}
 	}
 
 	var photos []response.PhotoResponse
 	var ph response.PhotoResponse
+	var photoModel models.Photo
 	for _, entityPhoto := range entityPhotos {
-		photo := e.Db.Where("id = ?", entityPhoto.PhotoID).First(&models.Photo{})
+
+		photo := e.Db.Model(&models.Photo{}).Where("id = ?", entityPhoto.PhotoID).First(&photoModel)
+
 		if photo.Error == nil {
 			ph.ID = entityPhoto.PhotoID
 			ph.URL = entityPhoto.Photo.URL
 		}
+
+		ph.ID = photoModel.ID
+		ph.URL = photoModel.URL
+
+		photos = append(photos, ph)
+
 	}
 
 	return photos

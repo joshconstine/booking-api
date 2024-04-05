@@ -34,6 +34,19 @@ func (controller *PhotoController) FindAll(ctx *gin.Context) {
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, response)
 }
+func (controller *PhotoController) FindAllForEntity(ctx *gin.Context, entity string, entityID uint) {
+
+	photos := controller.EntityPhotoService.FindAllForEntity(entity, entityID)
+
+	response := response.Response{
+		Code:   http.StatusOK,
+		Status: http.StatusText(http.StatusOK),
+		Data:   photos,
+	}
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, response)
+}
 
 func (controller *PhotoController) AddPhoto(ctx *gin.Context, entity string, entityID int) {
 
