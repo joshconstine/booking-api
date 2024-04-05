@@ -97,6 +97,8 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	bookingPaymentRepository := repositories.NewBookingPaymentRepositoryImplementation(database.Instance)
 	rentalStatusRepository := repositories.NewRentalStatusRepositoryImplementation(database.Instance)
 	photoRepository := repositories.NewPhotoRepositoryImplementation(objectStorage.Client, database.Instance)
+	entitiyPhotoRepository := repositories.NewEntityPhotoRepositoryImplementation(database.Instance)
+
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
 	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
@@ -113,6 +115,7 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	bookingPaymentService := services.NewBookingPaymentServiceImplementation(bookingPaymentRepository, validate)
 	rentalStatusService := services.NewRentalStatusServiceImplementation(rentalStatusRepository, validate)
 	photoService := services.NewPhotoServiceImplementation(photoRepository, validate)
+	entityPhotoService := services.NewEntityPhotoServiceImplementation(entitiyPhotoRepository, validate)
 
 	//Init controller
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
@@ -128,7 +131,7 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	paymentMethodController := controllers.NewPaymentMethodController(paymentMethodService)
 	bookingPaymentController := controllers.NewBookingPaymentController(bookingPaymentService)
 	rentalStatusController := controllers.NewRentalStatusController(rentalStatusService)
-	photoController := controllers.NewPhotoController(photoService)
+	photoController := controllers.NewPhotoController(photoService, entityPhotoService)
 
 	//Router
 	router := router.NewRouter(boatController, bookingController, userController,

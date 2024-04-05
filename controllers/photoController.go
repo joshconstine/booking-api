@@ -10,11 +10,15 @@ import (
 )
 
 type PhotoController struct {
-	PhotoService services.PhotoService
+	PhotoService       services.PhotoService
+	EntityPhotoService services.EntityPhotoService
 }
 
-func NewPhotoController(photoService services.PhotoService) *PhotoController {
-	return &PhotoController{PhotoService: photoService}
+func NewPhotoController(photoService services.PhotoService, entityPhotoService services.EntityPhotoService) *PhotoController {
+	return &PhotoController{
+		PhotoService:       photoService,
+		EntityPhotoService: entityPhotoService,
+	}
 }
 
 func (controller *PhotoController) FindAll(ctx *gin.Context) {
@@ -67,7 +71,16 @@ func (controller *PhotoController) AddPhoto(ctx *gin.Context, entity string, ent
 	defer file.Close()
 
 	photoResult := controller.PhotoService.AddPhoto(&file, header, entity, entityID)
+	entityPhotoResult := controller.EntityPhotoService.AddPhotoToEntity(photoResult.ID, entity, uint(entityID))
 
+	if entityPhotoResult.ID == 0 {
+		response.Code = http.StatusBadRequest
+		response.Status = http.StatusText(http.StatusBadRequest)
+		response.Data = "Failed to add photo to entity"
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
 	response.Code = http.StatusOK
 	response.Status = http.StatusText(http.StatusOK)
 	response.Data = photoResult
