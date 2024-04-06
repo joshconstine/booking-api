@@ -25,7 +25,8 @@ func NewRouter(
 	rentalStatusController *controllers.RentalStatusController,
 	photoController *controllers.PhotoController,
 	locationController *controllers.LocationController,
-
+	rentalRoomController *controllers.RentalRoomController,
+	roomTypeController *controllers.RoomTypeController,
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -76,6 +77,16 @@ func NewRouter(
 
 		photoRouter := api.Group("/photos")
 		photoRouter.GET("", photoController.FindAll)
+
+		roomTypeRouter := api.Group("/roomTypes")
+		roomTypeRouter.GET("", roomTypeController.FindAll)
+		roomTypeRouter.GET("/:roomTypeId", roomTypeController.FindById)
+
+		/************************ RENTAL ROOMS ************************/
+		rentalRoomRouter := api.Group("/rentalRooms")
+		rentalRoomRouter.GET("", rentalRoomController.FindAll)
+		rentalRoomRouter.GET("/:rentalRoomId", rentalRoomController.FindById)
+
 		/************************ BOOKINGS ************************/
 		bookingRouter := api.Group("/bookings")
 		bookingRouter.GET("", bookingController.FindAll)

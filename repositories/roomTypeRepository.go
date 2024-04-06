@@ -5,7 +5,7 @@ import (
 )
 
 type RoomTypeRepository interface {
-	FindAll() []response.RentalRoomTypeResponse
-	FindById(id uint) response.RentalRoomTypeResponse
-	Create(rentalRoomTypeName string) response.RentalRoomTypeResponse
+	FindAll() []response.RoomTypeResponse
+	FindById(id uint) response.RoomTypeResponse
+	Create(rentalRoomTypeName string) response.RoomTypeResponse
 }

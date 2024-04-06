@@ -1,6 +1,6 @@
 package response
 
-type RentalRoomTypeResponse struct {
+type RoomTypeResponse struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }

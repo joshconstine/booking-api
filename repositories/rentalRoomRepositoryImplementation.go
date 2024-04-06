@@ -18,7 +18,7 @@ func NewRentalRoomRepositoryImplementation(db *gorm.DB) RentalRoomRepository {
 
 func (r *RentalRoomRepositoryImplementation) FindAll() []response.RentalRoomResponse {
 	var rentalRooms []models.RentalRoom
-	result := r.Db.Preload("EntityPhotos").Find(&rentalRooms)
+	result := r.Db.Preload("Photos.Photo").Preload("Beds").Find(&rentalRooms)
 	if result.Error != nil {
 		return []response.RentalRoomResponse{}
 	}
