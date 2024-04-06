@@ -50,7 +50,6 @@ func Migrate() {
 	Instance.AutoMigrate(&models.BedType{})
 
 	Instance.AutoMigrate(&models.Boat{})
-	Instance.AutoMigrate(&models.BoatDefaultSettings{})
 
 	Instance.AutoMigrate(&models.Timeblock{})
 	Instance.AutoMigrate(&models.Rental{})
@@ -61,6 +60,7 @@ func Migrate() {
 
 	Instance.AutoMigrate(&models.RentalRoom{})
 	Instance.AutoMigrate(&models.RoomType{})
+	Instance.AutoMigrate(&models.EntityBookingDurationRule{})
 
 	log.Println("Database Migration Completed!")
 }
