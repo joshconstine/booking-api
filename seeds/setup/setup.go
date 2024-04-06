@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -411,12 +412,80 @@ func SeedRoomTypes(db *gorm.DB) {
 	}
 
 }
+func SeedBoats(db *gorm.DB) {
+	nineAM := time.Date(2021, 1, 1, 9, 0, 0, 0, time.UTC)
+	elevenAM := time.Date(2021, 1, 1, 11, 0, 0, 0, time.UTC)
+	threePM := time.Date(2021, 1, 1, 15, 0, 0, 0, time.UTC)
+
+	fivePM := time.Date(2021, 1, 1, 17, 0, 0, 0, time.UTC)
+	boats := []models.Boat{
+		{
+			Model: gorm.Model{
+				ID: 1,
+			},
+			Name:       "The Big Kahuna",
+			Occupancy:  10,
+			MaxWeight:  2000,
+			Timeblocks: []models.Timeblock{},
+			Photos: []models.EntityPhoto{
+				{
+					Photo: models.Photo{
+						URL: "boat_photos/1/https://bookingapp.us-ord-1.linodeobjects.com/boat_photos/1/5a1ab150-1ef3-4959-8b5b-085263d9b831.jpeg",
+					},
+				},
+			},
+			BookingDurationRule: models.EntityBookingDurationRule{
+				MinimumDuration: 2,
+				MaximumDuration: 14,
+				BookingBuffer:   2,
+				StartTime:       nineAM,
+				EndTime:         threePM,
+			},
+		},
+		{
+			Model: gorm.Model{
+				ID: 2,
+			},
+			Name:       "The Little Dipper",
+			Occupancy:  4,
+			MaxWeight:  1000,
+			Timeblocks: []models.Timeblock{},
+			Photos: []models.EntityPhoto{
+				{
+					Photo: models.Photo{
+
+						URL: "boat_photos/2/https://bookingapp.us-ord-1.linodeobjects.com/boat_photos/2/5a1ab150-1ef3-4959-8b5b-085263d9b831.jpeg",
+					},
+				},
+			},
+			BookingDurationRule: models.EntityBookingDurationRule{
+				MinimumDuration: 3,
+				MaximumDuration: 18,
+				BookingBuffer:   3,
+				StartTime:       elevenAM,
+				EndTime:         fivePM,
+			},
+		},
+	}
+
+	boatRepository := repositories.NewBoatRepositoryImplementation(db)
+
+	for _, boat := range boats {
+		boatRepository.Create(boat)
+	}
+
+}
 
 func SeedRentals(db *gorm.DB) {
+	nineAM := time.Date(2021, 1, 1, 9, 0, 0, 0, time.UTC)
+	elevenAM := time.Date(2021, 1, 1, 11, 0, 0, 0, time.UTC)
+	threePM := time.Date(2021, 1, 1, 15, 0, 0, 0, time.UTC)
+
+	fivePM := time.Date(2021, 1, 1, 17, 0, 0, 0, time.UTC)
 	rentals := []models.Rental{
 		{
 			Model: gorm.Model{
-				ID: 7,
+				ID: 9,
 			},
 			Name:        "The Lodge",
 			LocationID:  1,
@@ -454,11 +523,18 @@ func SeedRentals(db *gorm.DB) {
 					},
 				},
 			},
+			BookingDurationRule: models.EntityBookingDurationRule{
+				MinimumDuration: 2,
+				MaximumDuration: 14,
+				BookingBuffer:   2,
+				StartTime:       nineAM,
+				EndTime:         threePM,
+			},
 		},
 
 		{
 			Model: gorm.Model{
-				ID: 8,
+				ID: 10,
 			},
 			Name:        "The Morey",
 			LocationID:  1,
@@ -484,6 +560,13 @@ func SeedRentals(db *gorm.DB) {
 						},
 					},
 				},
+			},
+			BookingDurationRule: models.EntityBookingDurationRule{
+				MinimumDuration: 3,
+				MaximumDuration: 18,
+				BookingBuffer:   3,
+				StartTime:       elevenAM,
+				EndTime:         fivePM,
 			},
 		},
 	}
@@ -517,8 +600,9 @@ func main() {
 
 	// SeedBookingStatus(database.Instance)
 	// SeedBookingCostTypes(database.Instance)
-	SeedRoomTypes(database.Instance)
+	// SeedRoomTypes(database.Instance)
 	SeedRentals(database.Instance)
+	SeedBoats(database.Instance)
 	// SeedAmenityTypes(database.Instance)
 	// SeedLocations(database.Instance)
 	// SeedAmenities(database.Instance)

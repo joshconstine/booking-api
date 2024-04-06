@@ -9,7 +9,7 @@ type Boat struct {
 	Name                string
 	Occupancy           int
 	MaxWeight           int
-	Timeblocks          []*Timeblock              `gorm:"polymorphic:Entity"`
+	Timeblocks          []Timeblock               `gorm:"polymorphic:Entity"`
 	Photos              []EntityPhoto             `gorm:"polymorphic:Entity"`
 	BookingDurationRule EntityBookingDurationRule `gorm:"polymorphic:Entity"`
 }

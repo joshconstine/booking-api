@@ -48,7 +48,7 @@ func (e *EntityBookingDurationRuleRepositoryImplementation) Update(entityBooking
 	entityBookingDurationRuleToInsert.StartTime = entityBookingDurationRule.StartTime
 	entityBookingDurationRuleToInsert.EndTime = entityBookingDurationRule.EndTime
 
-	result = e.Db.Save(&entityBookingDurationRule)
+	result = e.Db.Save(&entityBookingDurationRuleToInsert)
 	if result.Error != nil {
 		return response.EntityBookingDurationRuleResponse{}
 	}

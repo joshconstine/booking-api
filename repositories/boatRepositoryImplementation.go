@@ -34,6 +34,15 @@ func (t *BoatRepositoryImplementation) FindById(id int) models.Boat {
 	return boat
 }
 
+func (t *BoatRepositoryImplementation) Create(boat models.Boat) models.Boat {
+	result := t.Db.Create(&boat)
+	if result.Error != nil {
+		return models.Boat{}
+	}
+
+	return boat
+}
+
 // // Delete implements TagsRepository
 // func (t *BoatRepositoryImplementation) Delete(tagsId int) {
 // 	var tags modelsBoat
