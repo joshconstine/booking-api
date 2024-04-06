@@ -8,7 +8,7 @@ import (
 
 type BookingDetails struct {
 	gorm.Model
-	BookingID        uint
+	BookingID        string
 	PaymentComplete  bool
 	PaymentDueDate   time.Time
 	DocumentsSigned  bool

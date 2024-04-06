@@ -72,9 +72,8 @@ func (controller *BookingPaymentController) Create(ctx *gin.Context) {
 
 func (controller *BookingPaymentController) FindByBookingId(ctx *gin.Context) {
 	bookingId := ctx.Param("bookingId")
-	id, _ := strconv.Atoi(bookingId)
 
-	bookingPayments := controller.bookingPaymentService.FindByBookingId(uint(id))
+	bookingPayments := controller.bookingPaymentService.FindByBookingId(bookingId)
 
 	webResponse := responses.Response{
 		Code:   200,
@@ -88,9 +87,8 @@ func (controller *BookingPaymentController) FindByBookingId(ctx *gin.Context) {
 
 func (controller *BookingPaymentController) FindTotalAmountByBookingId(ctx *gin.Context) {
 	bookingId := ctx.Param("bookingId")
-	id, _ := strconv.Atoi(bookingId)
 
-	totalAmount := controller.bookingPaymentService.FindTotalAmountByBookingId(uint(id))
+	totalAmount := controller.bookingPaymentService.FindTotalAmountByBookingId(bookingId)
 
 	webResponse := responses.Response{
 		Code:   200,

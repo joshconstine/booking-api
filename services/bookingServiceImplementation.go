@@ -42,7 +42,7 @@ func (t BookingServiceImplementation) FindAll() []response.BookingResponse {
 	return bookings
 }
 
-func (t BookingServiceImplementation) FindById(id uint) response.BookingResponse {
+func (t BookingServiceImplementation) FindById(id string) response.BookingResponse {
 	result := t.BookingRepository.FindById(id)
 
 	booking := response.BookingResponse{

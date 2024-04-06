@@ -22,9 +22,8 @@ func NewBookingCostItemController(service services.BookingCostItemService) *Book
 func (controller *BookingCostItemController) FindByBookingId(ctx *gin.Context) {
 
 	bookingId := ctx.Param("bookingId")
-	id, _ := strconv.Atoi(bookingId)
 
-	bookingCostItems := controller.BookingCostItemService.FindAllCostItemsForBooking(uint(id))
+	bookingCostItems := controller.BookingCostItemService.FindAllCostItemsForBooking(bookingId)
 
 	webResponse := response.Response{
 		Code:   200,
@@ -38,9 +37,8 @@ func (controller *BookingCostItemController) FindByBookingId(ctx *gin.Context) {
 
 func (controller *BookingCostItemController) TotalForBookingId(ctx *gin.Context) {
 	bookingId := ctx.Param("bookingId")
-	id, _ := strconv.Atoi(bookingId)
 
-	total := controller.BookingCostItemService.GetTotalCostItemsForBooking(uint(id))
+	total := controller.BookingCostItemService.GetTotalCostItemsForBooking(bookingId)
 
 	webResponse := response.Response{
 		Code:   200,

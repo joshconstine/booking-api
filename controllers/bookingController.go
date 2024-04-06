@@ -38,8 +38,7 @@ func convertStringToUint(s string) uint {
 	return uint(id)
 }
 func (t BookingController) FindById(ctx *gin.Context) {
-	bookingId := ctx.Param("bookingId")
-	id := convertStringToUint(bookingId)
+	id := ctx.Param("bookingId")
 
 	bookingResponse := t.bookingService.FindById(id)
 	webResponse := response.Response{

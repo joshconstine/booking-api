@@ -24,7 +24,7 @@ func (t *bookingRepositoryImplementation) FindAll() []models.Booking {
 	return bookings
 }
 
-func (t *bookingRepositoryImplementation) FindById(id uint) models.Booking {
+func (t *bookingRepositoryImplementation) FindById(id string) models.Booking {
 	var booking models.Booking
 	result := t.Db.Where("id = ?", id).First(&booking)
 	if result.Error != nil {

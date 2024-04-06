@@ -18,7 +18,7 @@ func (service BookingDetailsServiceImplementation) FindById(id uint) response.Bo
 	bookingDetails := service.bookingDetailsRepository.FindById(id)
 	return response.BookingDetailsResponse{
 		ID:               bookingDetails.ID,
-		BookingID:        uint(bookingDetails.BookingID),
+		BookingID:        bookingDetails.BookingID,
 		PaymentComplete:  bookingDetails.PaymentComplete,
 		PaymentDueDate:   bookingDetails.PaymentDueDate,
 		DocumentsSigned:  bookingDetails.DocumentsSigned,
@@ -31,7 +31,7 @@ func (service BookingDetailsServiceImplementation) Create(details models.Booking
 	bookingDetails := service.bookingDetailsRepository.Create(details)
 	return response.BookingDetailsResponse{
 		ID:               bookingDetails.ID,
-		BookingID:        uint(bookingDetails.BookingID),
+		BookingID:        bookingDetails.BookingID,
 		PaymentComplete:  bookingDetails.PaymentComplete,
 		PaymentDueDate:   bookingDetails.PaymentDueDate,
 		DocumentsSigned:  bookingDetails.DocumentsSigned,
@@ -45,7 +45,7 @@ func (service BookingDetailsServiceImplementation) Update(details models.Booking
 	bookingDetails := service.bookingDetailsRepository.Update(details)
 	return response.BookingDetailsResponse{
 		ID:               bookingDetails.ID,
-		BookingID:        uint(bookingDetails.BookingID),
+		BookingID:        bookingDetails.BookingID,
 		PaymentComplete:  bookingDetails.PaymentComplete,
 		PaymentDueDate:   bookingDetails.PaymentDueDate,
 		DocumentsSigned:  bookingDetails.DocumentsSigned,

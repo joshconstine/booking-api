@@ -43,13 +43,13 @@ func (t BookingPaymentServiceImplementation) FindById(id uint) response.BookingP
 	return result
 }
 
-func (t BookingPaymentServiceImplementation) FindByBookingId(id uint) []response.BookingPaymentResponse {
+func (t BookingPaymentServiceImplementation) FindByBookingId(id string) []response.BookingPaymentResponse {
 	result := t.bookingPaymentRepository.FindByBookingId(id)
 
 	return result
 }
 
-func (t BookingPaymentServiceImplementation) FindTotalAmountByBookingId(id uint) float64 {
+func (t BookingPaymentServiceImplementation) FindTotalAmountByBookingId(id string) float64 {
 	result := t.bookingPaymentRepository.FindTotalAmountByBookingId(id)
 
 	return result

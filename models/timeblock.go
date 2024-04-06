@@ -10,7 +10,7 @@ type Timeblock struct {
 	EndTime    string
 	EntityID   uint   `gorm:"primaryKey"`
 	EntityType string `gorm:"primaryKey"`
-	BookingID  *uint
+	BookingID  string
 }
 
 func (t *Timeblock) TableName() string {

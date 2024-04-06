@@ -31,13 +31,13 @@ func (t BookingCostItemServiceImplementation) Create(bookingCostItem request.Cre
 
 }
 
-func (t BookingCostItemServiceImplementation) FindAllCostItemsForBooking(bookingId uint) []response.BookingCostItemResponse {
+func (t BookingCostItemServiceImplementation) FindAllCostItemsForBooking(bookingId string) []response.BookingCostItemResponse {
 	result := t.bookingCostItemRepository.FindAllCostItemsForBooking(bookingId)
 
 	return result
 }
 
-func (t BookingCostItemServiceImplementation) GetTotalCostItemsForBooking(bookingId uint) float64 {
+func (t BookingCostItemServiceImplementation) GetTotalCostItemsForBooking(bookingId string) float64 {
 	result := t.bookingCostItemRepository.GetTotalCostItemsForBooking(bookingId)
 
 	return result

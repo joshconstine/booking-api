@@ -6,7 +6,7 @@ import (
 
 type BookingPayment struct {
 	gorm.Model
-	BookingID       uint
+	BookingID       string
 	PaymentMethodID uint
 	PaypalReference *string
 	PaymentAmount   float64

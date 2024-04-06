@@ -6,7 +6,7 @@ import (
 
 type BookingCostItem struct {
 	gorm.Model
-	BookingID         uint
+	BookingID         string
 	BookingCostTypeID uint
 	Amount            float64
 	Booking           Booking

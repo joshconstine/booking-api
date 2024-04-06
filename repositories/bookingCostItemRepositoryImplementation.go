@@ -16,7 +16,7 @@ func NewBookingCostItemRepositoryImplementation(db *gorm.DB) BookingCostItemRepo
 	return &BookingCostItemRepositoryImplementation{Db: db}
 }
 
-func (t *BookingCostItemRepositoryImplementation) FindAllCostItemsForBooking(bookingId uint) []response.BookingCostItemResponse {
+func (t *BookingCostItemRepositoryImplementation) FindAllCostItemsForBooking(bookingId string) []response.BookingCostItemResponse {
 	var bookingCostItems []models.BookingCostItem
 	result := t.Db.Where("booking_id = ?", bookingId).Find(&bookingCostItems)
 	if result.Error != nil {
@@ -61,7 +61,7 @@ func (t *BookingCostItemRepositoryImplementation) Create(bookingCostItem request
 
 }
 
-func (t *BookingCostItemRepositoryImplementation) GetTotalCostItemsForBooking(bookingId uint) float64 {
+func (t *BookingCostItemRepositoryImplementation) GetTotalCostItemsForBooking(bookingId string) float64 {
 	var total float64
 	var bookingCostItems []models.BookingCostItem
 	result := t.Db.Where("booking_id = ?", bookingId).Find(&bookingCostItems)

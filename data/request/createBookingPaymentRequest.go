@@ -1,7 +1,7 @@
 package request
 
 type CreateBookingPaymentRequest struct {
-	BookingID       uint    `json:"bookingId"`
+	BookingID       string  `json:"bookingId"`
 	PaymentAmount   float64 `json:"paymentAmount"`
 	PaymentMethodID uint    `json:"paymentMethodId"`
 	PaypalReference *string `json:"paypalReference"`

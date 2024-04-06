@@ -41,10 +41,6 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetBoatBookingsForBooking(w, r, db)
 	}).Methods("GET")
 
-	r.HandleFunc("/bookings/{id}/events", func(w http.ResponseWriter, r *http.Request) {
-		GetEventsForBooking(w, r, db)
-	}).Methods("GET")
-
 	r.HandleFunc("/bookings/{id}/rentalBookings/{rentalBookingId}/details", func(w http.ResponseWriter, r *http.Request) {
 		GetRentalBookingDetails(w, r, db)
 	}).Methods("GET")
@@ -53,32 +49,8 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetBoatBookingDetails(w, r, db)
 	}).Methods("GET")
 
-	r.HandleFunc("/bookings/{id}/events/{eventId}/details", func(w http.ResponseWriter, r *http.Request) {
-		GetEventDetails(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/bookings/{id}/costItems", func(w http.ResponseWriter, r *http.Request) {
-		GetBookingCostItems(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/bookings/{id}/costItems", func(w http.ResponseWriter, r *http.Request) {
-		CreateBookingCostItem(w, r, db)
-	}).Methods("POST")
-
-	r.HandleFunc("/bookings/{id}/costItems", func(w http.ResponseWriter, r *http.Request) {
-		UpdateBookingCostItem(w, r, db)
-	}).Methods("PUT")
-
-	r.HandleFunc("/bookings/{id}/costItems", func(w http.ResponseWriter, r *http.Request) {
-		DeleteBookingCostItem(w, r, db)
-	}).Methods("DELETE")
-
 	r.HandleFunc("/bookings/{id}/info", func(w http.ResponseWriter, r *http.Request) {
 		GetBookingInformation(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/bookings/{id}/payments", func(w http.ResponseWriter, r *http.Request) {
-		GetBookingPaymentsForBooking(w, r, db)
 	}).Methods("GET")
 
 	r.HandleFunc("/bookings/{id}/invoice", func(w http.ResponseWriter, r *http.Request) {
@@ -89,17 +61,8 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetBookingSnapshots(w, r, db)
 	}).Methods("GET")
 
-	//Rentals
-	r.HandleFunc("/rentals", func(w http.ResponseWriter, r *http.Request) {
-		GetRentals(w, r, db)
-	}).Methods("GET")
-
 	r.HandleFunc("/rentals/info", func(w http.ResponseWriter, r *http.Request) {
 		GetRentalInformation(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/rentals/{id}", func(w http.ResponseWriter, r *http.Request) {
-		GetSingleRentalByID(w, r, db)
 	}).Methods("GET")
 
 	r.HandleFunc("/rentals/{id}/defaultSettings", func(w http.ResponseWriter, r *http.Request) {
@@ -150,17 +113,9 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		UpdateStatusForRental(w, r, db)
 	}).Methods("PUT")
 
-	r.HandleFunc("/rentals/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
-		GetRentalPhotos(w, r, db)
-	}).Methods("GET")
-
 	r.HandleFunc("/rentals/{id}/photos/{photoID}", func(w http.ResponseWriter, r *http.Request) {
 		DeleteRentalPhoto(w, r, db)
 	}).Methods("DELETE")
-
-	r.HandleFunc("/rentals/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
-		CreateRentalPhoto(w, r, db)
-	}).Methods("POST")
 
 	r.HandleFunc("/rentals/{id}/thumbnail", func(w http.ResponseWriter, r *http.Request) {
 		GetRentalThumbnailByRental(w, r, db)
@@ -214,10 +169,6 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetBoatBookingsForBoat(w, r, db)
 	}).Methods("GET")
 
-	r.HandleFunc("/boats/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
-		GetBoatPhotos(w, r, db)
-	}).Methods("GET")
-
 	r.HandleFunc("/boats/{id}/photos/{photoID}", func(w http.ResponseWriter, r *http.Request) {
 		DeleteBoatPhoto(w, r, db)
 	}).Methods("DELETE")
@@ -240,80 +191,10 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 		GetRefundStatus(w, r, db)
 	}).Methods("GET")
 
-	//Event Types
-	r.HandleFunc("/eventTypes", func(w http.ResponseWriter, r *http.Request) {
-		GetEventTypes(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/eventTypes", func(w http.ResponseWriter, r *http.Request) {
-		CreateEventType(w, r, db)
-	}).Methods("POST")
-
-	//venues
-	r.HandleFunc("/venues", func(w http.ResponseWriter, r *http.Request) {
-		GetVenues(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/venues/{id}", func(w http.ResponseWriter, r *http.Request) {
-		GetSingleVenueByID(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/venues/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
-		GetVenuePhotos(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/venues/{id}/photos/{photoID}", func(w http.ResponseWriter, r *http.Request) {
-		DeleteVenuePhoto(w, r, db)
-	}).Methods("DELETE")
-
-	r.HandleFunc("/venues/{id}/photos", func(w http.ResponseWriter, r *http.Request) {
-		CreateVenuePhoto(w, r, db)
-	}).Methods("POST")
-
-	r.HandleFunc("/venues/{id}/eventTypes", func(w http.ResponseWriter, r *http.Request) {
-		GetVenueEventTypesForVenue(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/venues/{id}/timeblocks", func(w http.ResponseWriter, r *http.Request) {
-		GetVenueTimeblocks(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/venues/{id}/timeblocks", func(w http.ResponseWriter, r *http.Request) {
-		CreateVenueTimeblock(w, r, db)
-	}).Methods("POST")
-
 	//Booking Cost Types
-	r.HandleFunc("/bookingCostTypes", func(w http.ResponseWriter, r *http.Request) {
-		GetBookingCostTypes(w, r, db)
-	}).Methods("GET")
-
 	r.HandleFunc("/bookingCostTypes", func(w http.ResponseWriter, r *http.Request) {
 		CreateBookingCostType(w, r, db)
 	}).Methods("POST")
-
-	//Locations
-	r.HandleFunc("/locations", func(w http.ResponseWriter, r *http.Request) {
-		GetLocations(w, r, db)
-	}).Methods("GET")
-
-	//Payment Methods
-	r.HandleFunc("/paymentMethods", func(w http.ResponseWriter, r *http.Request) {
-		GetPaymentMethods(w, r, db)
-	}).Methods("GET")
-
-	//Venue Event Types
-	r.HandleFunc("/venueEventTypes", func(w http.ResponseWriter, r *http.Request) {
-		GetVenueEventTypes(w, r, db)
-	}).Methods("GET")
-
-	//Venue Event Type Default Settings
-	r.HandleFunc("/venueEventTypes/{id}/defaultSettings", func(w http.ResponseWriter, r *http.Request) {
-		GetDefaultSettingsForVenueEventType(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/venueEventTypes/{id}/defaultSettings", func(w http.ResponseWriter, r *http.Request) {
-		UpdateDefaultSettingsForVenueEventType(w, r, db)
-	}).Methods("PUT")
 
 	//rental booking
 	r.HandleFunc("/rentalBooking", func(w http.ResponseWriter, r *http.Request) {
@@ -367,45 +248,6 @@ func InitRoutes(r *mux.Router, db *sql.DB) {
 	}).Methods("POST")
 
 	//Booking Payments
-
-	r.HandleFunc("/bookingPayments", func(w http.ResponseWriter, r *http.Request) {
-		GetBookingPayments(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/bookingPayments", func(w http.ResponseWriter, r *http.Request) {
-		CreateBookingPayment(w, r, db)
-	}).Methods("POST")
-
-	//Events
-	r.HandleFunc("/events", func(w http.ResponseWriter, r *http.Request) {
-		GetEvents(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/events", func(w http.ResponseWriter, r *http.Request) {
-		CreateEvent(w, r, db)
-	}).Methods("POST")
-
-	//Amenities
-
-	r.HandleFunc("/amenities", func(w http.ResponseWriter, r *http.Request) {
-		GetAmenities(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/amenities", func(w http.ResponseWriter, r *http.Request) {
-		CreateAmenity(w, r, db)
-	}).Methods("POST")
-
-	//Amenity Types
-
-	r.HandleFunc("/amenityTypes", func(w http.ResponseWriter, r *http.Request) {
-		GetAmenityTypes(w, r, db)
-	}).Methods("GET")
-
-	r.HandleFunc("/amenityTypes", func(w http.ResponseWriter, r *http.Request) {
-		CreateAmenityType(w, r, db)
-	}).Methods("POST")
-
-	//Rental Amenities
 
 	r.HandleFunc("/rentalAmenity", func(w http.ResponseWriter, r *http.Request) {
 		CreateRentalAmenity(w, r, db)

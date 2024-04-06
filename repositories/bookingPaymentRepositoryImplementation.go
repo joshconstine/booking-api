@@ -78,7 +78,7 @@ func (t *BookingPaymentRepositoryImplementation) Create(bookingPayment requests.
 		PaymentDate:   bookingPaymentModel.Model.CreatedAt,
 	}
 }
-func (t *BookingPaymentRepositoryImplementation) FindByBookingId(id uint) []response.BookingPaymentResponse {
+func (t *BookingPaymentRepositoryImplementation) FindByBookingId(id string) []response.BookingPaymentResponse {
 	var bookingPayments []models.BookingPayment
 	var response []response.BookingPaymentResponse
 
@@ -101,7 +101,7 @@ func (t *BookingPaymentRepositoryImplementation) FindByBookingId(id uint) []resp
 	return response
 }
 
-func (t *BookingPaymentRepositoryImplementation) FindTotalAmountByBookingId(id uint) float64 {
+func (t *BookingPaymentRepositoryImplementation) FindTotalAmountByBookingId(id string) float64 {
 	var totalAmount float64
 	var bookingPayments []models.BookingPayment
 
