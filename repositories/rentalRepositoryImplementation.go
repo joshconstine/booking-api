@@ -18,7 +18,7 @@ func NewRentalRepositoryImplementation(db *gorm.DB, timeblockRepository Timebloc
 
 func (r *RentalRepositoryImplementation) FindAll() []models.Rental {
 	var rentals []models.Rental
-	result := r.Db.Find(&rentals)
+	result := r.Db.Model(&models.Rental{}).Preload("Location").Preload("RentalStatus").Preload("RentalRooms").Preload("Photos").Find(&rentals)
 	if result.Error != nil {
 		return []models.Rental{}
 	}

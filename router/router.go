@@ -144,7 +144,7 @@ func NewRouter(
 			secured.GET("/ping", controllers.Ping)
 			// secured.POST("/boats", controllers.CreateBoat)
 			// secured.POST("/boats/:id/photos", controllers.CreateBoatPhoto)
-			secured.DELETE("/boatPhoto/:id", controllers.DeleteBoatPhoto)
+			// secured.DELETE("/boatPhoto/:id", controllers.DeleteBoatPhoto)
 
 		}
 	}

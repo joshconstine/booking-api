@@ -172,19 +172,10 @@ func SeedBookingCostTypes(db *gorm.DB) {
 }
 
 func SeedLocations(db *gorm.DB) {
-	locations := []models.Location{
-		{
-			Model: gorm.Model{
-				ID: 1,
-			},
-			Name: "The Everett Resort",
-		},
-		{
-			Model: gorm.Model{
-				ID: 2,
-			},
-			Name: "Deer Run Resort",
-		},
+	locations := []string{
+		"The Everett Resort",
+
+		"Deer Run Resort",
 	}
 
 	locationRepository := repositories.NewLocationRepositoryImplementation(db)
@@ -393,11 +384,39 @@ func SeedAmenities(db *gorm.DB) {
 
 }
 
+func SeedRoomTypes(db *gorm.DB) {
+	roomTypes := []string{
+
+		"Bedroom",
+		"Bathroom",
+
+		"Kitchen",
+
+		"Living Room",
+
+		"Dining Room",
+
+		"Patio",
+
+		"Balcony",
+
+		"Theater Room",
+	}
+
+	roomTypeRepository := repositories.NewRoomTypeRepositoryImplementation(db)
+
+	for _, roomType := range roomTypes {
+		roomTypeRepository.Create(roomType)
+
+	}
+
+}
+
 func SeedRentals(db *gorm.DB) {
 	rentals := []models.Rental{
 		{
 			Model: gorm.Model{
-				ID: 3,
+				ID: 7,
 			},
 			Name:        "The Lodge",
 			LocationID:  1,
@@ -408,11 +427,38 @@ func SeedRentals(db *gorm.DB) {
 			RentalStatus: models.RentalStatus{
 				IsClean: true,
 			},
-			// Timeblocks:  []models.Timeblock{},
+			RentalRooms: []models.RentalRoom{
+				{
+					Name:        "Main bedroom",
+					Description: "Master bedroom",
+					Floor:       1,
+					RoomTypeID:  1,
+					Beds: []models.BedType{
+						{
+							Model: gorm.Model{
+								ID: 1,
+							},
+						},
+						{
+							Model: gorm.Model{
+								ID: 2,
+							},
+						},
+					},
+					Photos: []models.EntityPhoto{
+						{
+							Photo: models.Photo{
+								URL: "rental_photos/3/078c6a16-2076-4d1b-88b7-b6e466763aff.PNG",
+							},
+						},
+					},
+				},
+			},
 		},
+
 		{
 			Model: gorm.Model{
-				ID: 4,
+				ID: 8,
 			},
 			Name:        "The Morey",
 			LocationID:  1,
@@ -423,7 +469,22 @@ func SeedRentals(db *gorm.DB) {
 			RentalStatus: models.RentalStatus{
 				IsClean: true,
 			},
-			// Timeblocks:  []models.Timeblock{},
+			RentalRooms: []models.RentalRoom{
+				{
+					Name:        "Main bedroom",
+					Description: "Master bedroom",
+					Floor:       1,
+					RoomTypeID:  1,
+					Beds:        []models.BedType{},
+					Photos: []models.EntityPhoto{
+						{
+							Model: gorm.Model{
+								ID: 1,
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 
@@ -456,6 +517,7 @@ func main() {
 
 	// SeedBookingStatus(database.Instance)
 	// SeedBookingCostTypes(database.Instance)
+	SeedRoomTypes(database.Instance)
 	SeedRentals(database.Instance)
 	// SeedAmenityTypes(database.Instance)
 	// SeedLocations(database.Instance)
