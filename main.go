@@ -102,7 +102,7 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	roomTypeRepository := repositories.NewRoomTypeRepositoryImplementation(database.Instance)
 	rentalRoomRepository := repositories.NewRentalRoomRepositoryImplementation(database.Instance)
 	entityBookingDurationRuleRepository := repositories.NewEntityBookingDurationRuleRepositoryImplementation(database.Instance)
-
+	entityBookingRepository := repositories.NewEntityBookingRepositoryImplementation(database.Instance)
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
 	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
@@ -124,6 +124,7 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	roomTypeService := services.NewRoomTypeServiceImplementation(roomTypeRepository)
 	rentalRoomService := services.NewRentalRoomServiceImplementation(rentalRoomRepository, validate)
 	entityBookingDurationRuleService := services.NewEntityBookingDurationRuleServiceImplementation(entityBookingDurationRuleRepository)
+	entityBookingService := services.NewEntityBookingServiceImplementation(entityBookingRepository)
 
 	//Init controller
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
@@ -144,10 +145,11 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	roomTypeController := controllers.NewRoomTypeController(roomTypeService)
 	rentalRoomController := controllers.NewRentalRoomController(rentalRoomService)
 	entityBookingDurationRuleController := controllers.NewEntityBookingDurationRuleController(entityBookingDurationRuleService)
+	entityBookingController := controllers.NewEntityBookingController(entityBookingService)
 
 	//Router
 	router := router.NewRouter(boatController, bookingController, userController,
-		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController)
+		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController, entityBookingController)
 
 	// ginRouter := router.InitRouter(routes)
 

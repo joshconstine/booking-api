@@ -1,13 +1,15 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
 type Timeblock struct {
 	gorm.Model
-	StartTime  string
-	EndTime    string
+	StartTime  time.Time
+	EndTime    time.Time
 	EntityID   uint   `gorm:"primaryKey"`
 	EntityType string `gorm:"primaryKey"`
 	BookingID  string

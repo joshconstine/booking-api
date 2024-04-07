@@ -28,6 +28,8 @@ func NewRouter(
 	rentalRoomController *controllers.RentalRoomController,
 	roomTypeController *controllers.RoomTypeController,
 	entityBookingDurationRuleController *controllers.EntityBookingDurationRuleController,
+	entityBookingController *controllers.EntityBookingController,
+
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -89,6 +91,10 @@ func NewRouter(
 		rentalRoomRouter.GET("/:rentalRoomId", rentalRoomController.FindById)
 
 		/************************ BOOKINGS ************************/
+
+		entityBookingRouter := api.Group("/entityBookings")
+		entityBookingRouter.POST("", entityBookingController.CreateEntityBooking)
+
 		bookingRouter := api.Group("/bookings")
 		bookingRouter.GET("", bookingController.FindAll)
 		bookingRouter.GET("/:bookingId/details", bookingController.GetDetailsForBookingID)
@@ -151,7 +157,7 @@ func NewRouter(
 		rentalStatusRouter.GET("", rentalStatusController.FindAll)
 		rentalStatusRouter.PUT("", rentalStatusController.UpdateStatusForRentalId)
 
-		/************************ ENTITY  RULES ************************/
+		/************************ ENTITY ************************/
 
 		entityBookingDurationRuleRouter := api.Group("/entityBookingDurationRules")
 		entityBookingDurationRuleRouter.GET("/:entityId/:entityType", entityBookingDurationRuleController.FindByID)

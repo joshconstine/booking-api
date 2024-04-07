@@ -61,6 +61,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.RentalRoom{})
 	Instance.AutoMigrate(&models.RoomType{})
 	Instance.AutoMigrate(&models.EntityBookingDurationRule{})
+	Instance.AutoMigrate(&models.EntityBooking{})
 
 	log.Println("Database Migration Completed!")
 }
