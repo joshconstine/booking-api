@@ -62,6 +62,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.RoomType{})
 	Instance.AutoMigrate(&models.EntityBookingDurationRule{})
 	Instance.AutoMigrate(&models.EntityBooking{})
+	Instance.AutoMigrate(&models.EntityBookingCost{})
 
 	Instance.AutoMigrate(&models.TaxRate{})
 

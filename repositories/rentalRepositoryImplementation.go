@@ -18,7 +18,7 @@ func NewRentalRepositoryImplementation(db *gorm.DB, timeblockRepository Timebloc
 
 func (r *RentalRepositoryImplementation) FindAll() []models.Rental {
 	var rentals []models.Rental
-	result := r.Db.Model(&models.Rental{}).Preload("Location").Preload("RentalStatus").Preload("RentalRooms").Preload("Photos").Find(&rentals)
+	result := r.Db.Model(&models.Rental{}).Preload("Location").Preload("RentalStatus").Preload("RentalRooms").Preload("Photos").Preload("BookingDurationRule").Preload("Bookings").Preload("BookingCostItems").Find(&rentals)
 	if result.Error != nil {
 		return []models.Rental{}
 	}
@@ -28,7 +28,7 @@ func (r *RentalRepositoryImplementation) FindAll() []models.Rental {
 
 func (r *RentalRepositoryImplementation) FindById(id uint) models.Rental {
 	var rental models.Rental
-	result := r.Db.Where("id = ?", id).First(&rental)
+	result := r.Db.Model(&models.Rental{}).Where("id = ?", id).Preload("Location").Preload("RentalStatus").Preload("RentalRooms").Preload("Photos").Preload("BookingDurationRule").Preload("Bookings").Preload("BookingCostItems").First(&rental)
 	if result.Error != nil {
 		return models.Rental{}
 	}

@@ -1,7 +1,6 @@
 package services
 
 import (
-	responses "booking-api/data/response"
 	"booking-api/models"
 	"booking-api/repositories"
 
@@ -24,6 +23,6 @@ func (t *RentalServiceImplementation) FindAll() []models.Rental {
 	return t.RentalRepository.FindAll()
 }
 
-func (t *RentalServiceImplementation) FindById(id uint) responses.RentalInformationResponse {
-	return t.RentalRepository.GetInformationForRental(id)
+func (t *RentalServiceImplementation) FindById(id uint) models.Rental {
+	return t.RentalRepository.FindById(id)
 }

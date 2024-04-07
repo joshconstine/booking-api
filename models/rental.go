@@ -18,6 +18,7 @@ type Rental struct {
 	Photos              []EntityPhoto             `gorm:"polymorphic:Entity"`
 	RentalRooms         []RentalRoom              `gorm:"foreignKey:RentalID"`
 	Bookings            []EntityBooking           `gorm:"polymorphic:Entity"`
+	BookingCostItems    []EntityBookingCost       `gorm:"polymorphic:Entity"`
 	BookingDurationRule EntityBookingDurationRule `gorm:"polymorphic:Entity"`
 }
 

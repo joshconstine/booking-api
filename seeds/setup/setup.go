@@ -505,9 +505,9 @@ func SeedRentals(db *gorm.DB) {
 	fivePM := time.Date(2021, 1, 1, 17, 0, 0, 0, time.UTC)
 	rentals := []models.Rental{
 		{
-			Model: gorm.Model{
-				ID: 9,
-			},
+			// Model: gorm.Model{
+			// 	ID: 13,
+			// },
 			Name:        "The Lodge",
 			LocationID:  1,
 			Bedrooms:    13,
@@ -551,12 +551,32 @@ func SeedRentals(db *gorm.DB) {
 				StartTime:       nineAM,
 				EndTime:         threePM,
 			},
+			BookingCostItems: []models.EntityBookingCost{
+				{
+					BookingCostType: models.BookingCostType{
+						Model: gorm.Model{
+							ID: 3,
+						},
+					},
+					TaxRateID: 1,
+					Amount:    1000,
+				},
+				{
+					BookingCostType: models.BookingCostType{
+						Model: gorm.Model{
+							ID: 2,
+						},
+					},
+					TaxRateID: 2,
+					Amount:    100,
+				},
+			},
 		},
 
 		{
-			Model: gorm.Model{
-				ID: 10,
-			},
+			// Model: gorm.Model{
+			// 	ID: 12,
+			// },
 			Name:        "The Morey",
 			LocationID:  1,
 			Bedrooms:    2,
@@ -588,6 +608,26 @@ func SeedRentals(db *gorm.DB) {
 				BookingBuffer:   3,
 				StartTime:       elevenAM,
 				EndTime:         fivePM,
+			},
+			BookingCostItems: []models.EntityBookingCost{
+				{
+					BookingCostType: models.BookingCostType{
+						Model: gorm.Model{
+							ID: 3,
+						},
+					},
+					TaxRateID: 1,
+					Amount:    1000,
+				},
+				{
+					BookingCostType: models.BookingCostType{
+						Model: gorm.Model{
+							ID: 2,
+						},
+					},
+					TaxRateID: 2,
+					Amount:    100,
+				},
 			},
 		},
 	}
@@ -622,9 +662,9 @@ func main() {
 	// SeedBookingStatus(database.Instance)
 	// SeedBookingCostTypes(database.Instance)
 	// SeedRoomTypes(database.Instance)
-	// SeedRentals(database.Instance)
+	SeedRentals(database.Instance)
 	// SeedBoats(database.Instance)
-	SeedTaxRates(database.Instance)
+	// SeedTaxRates(database.Instance)
 	// SeedAmenityTypes(database.Instance)
 	// SeedLocations(database.Instance)
 	// SeedAmenities(database.Instance)
