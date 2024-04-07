@@ -61,6 +61,27 @@ func SeedBookingStatus(db *gorm.DB) {
 	}
 
 }
+
+func SeedTaxRates(db *gorm.DB) {
+	taxRatesToSeed := []requests.CreateTaxRateRequest{
+		{
+			Percentage: 0.10,
+			Name:       "Short Term Rental Tax",
+		},
+		{
+			Percentage: 0.06,
+			Name:       "Sales Tax",
+		},
+	}
+
+	taxRateRepository := repositories.NewTaxRateRepositoryImplementation(db)
+
+	for _, taxRate := range taxRatesToSeed {
+		taxRateRepository.Create(taxRate)
+	}
+
+}
+
 func SeedPaymentMethods(db *gorm.DB) {
 	paymentMethods := []requests.CreatePaymentMethodRequest{
 		{
@@ -601,8 +622,9 @@ func main() {
 	// SeedBookingStatus(database.Instance)
 	// SeedBookingCostTypes(database.Instance)
 	// SeedRoomTypes(database.Instance)
-	SeedRentals(database.Instance)
-	SeedBoats(database.Instance)
+	// SeedRentals(database.Instance)
+	// SeedBoats(database.Instance)
+	SeedTaxRates(database.Instance)
 	// SeedAmenityTypes(database.Instance)
 	// SeedLocations(database.Instance)
 	// SeedAmenities(database.Instance)
