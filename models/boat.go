@@ -11,6 +11,7 @@ type Boat struct {
 	MaxWeight           int
 	Timeblocks          []Timeblock               `gorm:"polymorphic:Entity"`
 	Photos              []EntityPhoto             `gorm:"polymorphic:Entity"`
+	Bookings            []EntityBooking           `gorm:"polymorphic:Entity"`
 	BookingDurationRule EntityBookingDurationRule `gorm:"polymorphic:Entity"`
 }
 

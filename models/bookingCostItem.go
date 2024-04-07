@@ -11,6 +11,7 @@ type BookingCostItem struct {
 	Amount            float64
 	Booking           Booking
 	BookingCostType   BookingCostType
+	EntityBookingID   uint
 }
 
 func (b *BookingCostItem) TableName() string {
