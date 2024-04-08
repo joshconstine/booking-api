@@ -489,10 +489,15 @@ func SeedBoats(db *gorm.DB) {
 			// Model: gorm.Model{
 			// 	ID: 2,
 			// },
-			Name:       "The Little Dipper",
-			Occupancy:  4,
-			MaxWeight:  1000,
-			Timeblocks: []models.Timeblock{},
+			Name:      "The Little Dipper",
+			Occupancy: 4,
+			MaxWeight: 1000,
+			Timeblocks: []models.Timeblock{
+				{
+					StartTime: elevenAM,
+					EndTime:   fivePM,
+				},
+			},
 			Photos: []models.EntityPhoto{
 				{
 					Photo: models.Photo{
@@ -565,6 +570,12 @@ func SeedRentals(db *gorm.DB) {
 					Model: gorm.Model{
 						ID: 40,
 					},
+				},
+			},
+			Timeblocks: []models.Timeblock{
+				{
+					StartTime: nineAM,
+					EndTime:   threePM,
 				},
 			},
 
@@ -683,7 +694,7 @@ func main() {
 	// SeedRoomTypes(database.Instance)
 	//SeedAmenities(database.Instance)
 	SeedRentals(database.Instance)
-	// SeedBoats(database.Instance)
+	SeedBoats(database.Instance)
 	//SeedDocuments(objectStorage.Client, database.Instance)
 	// SeedTaxRates(database.Instance)
 	// SeedAmenityTypes(database.Instance)

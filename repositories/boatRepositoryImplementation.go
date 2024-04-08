@@ -32,7 +32,7 @@ func (t *BoatRepositoryImplementation) FindAll() []response.BoatResponse {
 
 func (t *BoatRepositoryImplementation) FindById(id int) response.BoatResponse {
 	var boat models.Boat
-	result := t.Db.Model(&models.Boat{}).Where("id = ?", id).Preload("Timeblocks").Preload("Photos").Preload("Bookings").Preload("BookingCostItems").Preload("BookingDurationRule").First(&boat)
+	result := t.Db.Model(&models.Boat{}).Where("id = ?", id).Preload("Timeblocks").Preload("Photos").Preload("Bookings").Preload("BookingCostItems").Preload("BookingDurationRule").Preload("BookingCostItems.BookingCostType").Preload("BookingCostItems.TaxRate").Find(&boat)
 	if result.Error != nil {
 		return response.BoatResponse{}
 	}
