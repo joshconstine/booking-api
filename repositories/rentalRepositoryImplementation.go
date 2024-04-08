@@ -48,6 +48,7 @@ func (r *RentalRepositoryImplementation) FindById(id uint) response.RentalInform
 		Preload("RentalRooms.Beds").
 		Preload("RentalRooms.RoomType").
 		Preload("RentalRooms.Photos").
+		Preload("RentalRooms.Photos.Photo").
 		Preload("BookingCostItems.BookingCostType").
 		Preload("BookingCostItems.TaxRate").
 		Preload("BookingDurationRule").
