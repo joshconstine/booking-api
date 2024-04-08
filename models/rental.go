@@ -17,7 +17,7 @@ type Rental struct {
 	RentalStatus        RentalStatus
 	Amenities           []Amenity                 `gorm:"many2many:rental_amenities;"`
 	Timeblocks          []Timeblock               `gorm:"polymorphic:Entity"`
-	Photos              []EntityPhoto             `gorm:"polymorphic:Entity"`
+	EntityPhotos        []EntityPhoto             `gorm:"polymorphic:Entity"`
 	RentalRooms         []RentalRoom              `gorm:"foreignKey:RentalID"`
 	Bookings            []EntityBooking           `gorm:"polymorphic:Entity"`
 	BookingCostItems    []EntityBookingCost       `gorm:"polymorphic:Entity"`
@@ -41,6 +41,7 @@ func (r *Rental) MapRentalsToResponse() response.RentalResponse {
 
 func (r *Rental) MapRentalToInformationResponse() response.RentalInformationResponse {
 	var response response.RentalInformationResponse
+	// Enable detailed log of operations
 
 	response.ID = r.ID
 	response.Name = r.Name
@@ -54,7 +55,7 @@ func (r *Rental) MapRentalToInformationResponse() response.RentalInformationResp
 		response.Amenities = append(response.Amenities, amenity.MapAmenityToResponse())
 	}
 
-	for _, photo := range r.Photos {
+	for _, photo := range r.EntityPhotos {
 		response.Photos = append(response.Photos, photo.MapEntityPhotoToResponse())
 	}
 
@@ -68,6 +69,9 @@ func (r *Rental) MapRentalToInformationResponse() response.RentalInformationResp
 
 	for _, bookingCostItem := range r.BookingCostItems {
 		response.BookingCostItems = append(response.BookingCostItems, bookingCostItem.MapEntityBookingCostToResponse())
+	}
+	for _, timeblock := range r.Timeblocks {
+		response.Timeblocks = append(response.Timeblocks, timeblock.MapTimeblockToResponse())
 	}
 
 	response.BookingDurationRule = r.BookingDurationRule.MapEntityBookingDurationRuleToResponse()

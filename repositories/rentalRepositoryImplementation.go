@@ -33,13 +33,30 @@ func (r *RentalRepositoryImplementation) FindAll() []response.RentalResponse {
 
 func (r *RentalRepositoryImplementation) FindById(id uint) response.RentalInformationResponse {
 	var rental models.Rental
-	result := r.Db.Model(&models.Rental{}).Preload("Location").Preload("Amenities").Preload("Photos").Preload("RentalRooms").Preload("BookingCostItems").Preload("BookingDurationRule").Preload("Timeblocks").Find(&rental)
+
+	// Adjusting the Joins method to correctly reference the intermediary table and both sides of the many-to-many relationship
+	result := r.Db.Model(&models.Rental{}).
+		Joins("JOIN rental_amenities on rental_amenities.rental_id = rentals.id").
+		Joins("JOIN amenities on amenities.id = rental_amenities.amenity_id").
+		Where("rentals.id = ?", id).
+		Preload("Location").
+		Preload("RentalStatus").
+		Preload("Amenities"). // This might still be necessary to preload the related Amenities correctly
+		Preload("EntityPhotos").
+		Preload("RentalRooms.Beds").
+		Preload("RentalRooms.RoomType").
+		Preload("RentalRooms.Photos").
+		Preload("BookingCostItems.BookingCostType").
+		Preload("BookingCostItems.TaxRate").
+		Preload("BookingDurationRule").
+		Preload("Timeblocks").
+		First(&rental)
+
 	if result.Error != nil {
 		return response.RentalInformationResponse{}
 	}
 
 	return rental.MapRentalToInformationResponse()
-
 }
 
 func (r *RentalRepositoryImplementation) Create(rental models.Rental) models.Rental {

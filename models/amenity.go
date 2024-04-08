@@ -8,8 +8,8 @@ import (
 
 type Amenity struct {
 	gorm.Model
-	Name          string
-	AmenityTypeID uint
+	Name          string `gorm:"index:idx_entity,unique"`
+	AmenityTypeID uint   `gorm:"index:idx_entity,unique"`
 	AmenityType   AmenityType
 }
 

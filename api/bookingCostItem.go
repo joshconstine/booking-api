@@ -15,6 +15,7 @@ type BookingCostItem struct {
 	BookingID         int
 	BookingCostTypeID int
 	Amount            float64
+	BoookingCostType  BookingCostType
 }
 
 func GetTotalCostItemsForBookingID(bookingID int, db *sql.DB) (float64, error) {

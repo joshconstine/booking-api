@@ -6,6 +6,6 @@ type RentalRoomResponse struct {
 	Description string                `json:"description"`
 	Floor       int                   `json:"floor"`
 	RoomType    RoomTypeResponse      `json:"room_type"`
-	Photos      []EntityPhotoResponse `json:"photos"`
 	Beds        []BedTypeResponse     `json:"beds"`
+	Photos      []EntityPhotoResponse `json:"photos"`
 }

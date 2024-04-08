@@ -11,6 +11,7 @@ type EntityPhoto struct {
 	PhotoID    uint
 	EntityID   uint   `gorm:"primaryKey"`
 	EntityType string `gorm:"primaryKey"`
+	PhotoId    uint
 	Photo      Photo
 }
 
