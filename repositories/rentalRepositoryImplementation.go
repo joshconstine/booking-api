@@ -53,6 +53,7 @@ func (r *RentalRepositoryImplementation) FindById(id uint) response.RentalInform
 		Preload("BookingCostItems.TaxRate").
 		Preload("BookingDurationRule").
 		Preload("Timeblocks").
+		Preload("Bookings").
 		First(&rental)
 
 	if result.Error != nil {

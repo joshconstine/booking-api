@@ -31,9 +31,5 @@ func (e *EntityBooking) MapEntityBookingToResponse() response.EntityBookingRespo
 		BookingStatusID: e.BookingStatusID,
 	}
 
-	for _, costItem := range e.BookingCostItems {
-		response.BookingCostItems = append(response.BookingCostItems, costItem.MapBookingCostItemToResponse())
-	}
-
 	return response
 }

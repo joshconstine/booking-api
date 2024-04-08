@@ -28,13 +28,13 @@ func (e *EntityBookingRepositoryImplementation) FindAllForEntity(entityType stri
 }
 
 func (e *EntityBookingRepositoryImplementation) FindById(id uint) response.EntityBookingResponse {
-	var entityBooking response.EntityBookingResponse
+	var entityBooking models.EntityBooking
 	result := e.Db.Model(&models.EntityBooking{}).Where("id = ?", id).First(&entityBooking)
 	if result.Error != nil {
 		return response.EntityBookingResponse{}
 	}
 
-	return entityBooking
+	return entityBooking.MapEntityBookingToResponse()
 }
 
 func (e *EntityBookingRepositoryImplementation) FindAllForBooking(bookingID string) []response.EntityBookingResponse {
@@ -49,10 +49,16 @@ func (e *EntityBookingRepositoryImplementation) FindAllForBooking(bookingID stri
 
 func (e *EntityBookingRepositoryImplementation) Create(entityBooking request.CreateEntityBookingRequest) response.EntityBookingResponse {
 	entityBookingModel := models.EntityBooking{
-		BookingID:        entityBooking.BookingID,
-		EntityID:         entityBooking.EntityID,
-		EntityType:       entityBooking.EntityType,
-		TimeblockID:      0,
+		BookingID:  entityBooking.BookingID,
+		EntityID:   entityBooking.EntityID,
+		EntityType: entityBooking.EntityType,
+		Timeblock: models.Timeblock{
+			StartTime:  entityBooking.StartTime,
+			EndTime:    entityBooking.EndTime,
+			EntityID:   entityBooking.EntityID,
+			EntityType: entityBooking.EntityType,
+			BookingID:  entityBooking.BookingID,
+		},
 		BookingStatusID:  0,
 		BookingCostItems: []models.BookingCostItem{},
 	}
@@ -61,13 +67,7 @@ func (e *EntityBookingRepositoryImplementation) Create(entityBooking request.Cre
 		return response.EntityBookingResponse{}
 	}
 
-	return response.EntityBookingResponse{
-		ID:          entityBookingModel.ID,
-		BookingID:   entityBookingModel.BookingID,
-		EntityID:    entityBookingModel.EntityID,
-		EntityType:  entityBookingModel.EntityType,
-		TimeblockID: entityBookingModel.TimeblockID,
-	}
+	return entityBookingModel.MapEntityBookingToResponse()
 
 }
 
@@ -85,13 +85,7 @@ func (e *EntityBookingRepositoryImplementation) Update(entityBooking request.Upd
 		return response.EntityBookingResponse{}
 	}
 
-	return response.EntityBookingResponse{
-		ID:          entityBookingModel.ID,
-		BookingID:   entityBookingModel.BookingID,
-		EntityID:    entityBookingModel.EntityID,
-		EntityType:  entityBookingModel.EntityType,
-		TimeblockID: entityBookingModel.TimeblockID,
-	}
+	return entityBookingModel.MapEntityBookingToResponse()
 }
 
 func (e *EntityBookingRepositoryImplementation) FindAllForEntityForRange(entityType string, entityID uint, startTime *time.Time, endTime *time.Time) []response.EntityBookingResponse {
@@ -104,13 +98,7 @@ func (e *EntityBookingRepositoryImplementation) FindAllForEntityForRange(entityT
 
 	for _, booking := range entityBookings {
 		if booking.Timeblock.StartTime.After(*startTime) && booking.Timeblock.EndTime.Before(*endTime) {
-			bookingsMatchingRange = append(bookingsMatchingRange, response.EntityBookingResponse{
-				ID:          booking.ID,
-				BookingID:   booking.BookingID,
-				EntityID:    booking.EntityID,
-				EntityType:  booking.EntityType,
-				TimeblockID: booking.TimeblockID,
-			})
+			bookingsMatchingRange = append(bookingsMatchingRange, booking.MapEntityBookingToResponse())
 
 		}
 
