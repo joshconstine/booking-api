@@ -9,18 +9,18 @@ import (
 )
 
 type Booking struct {
-	ID        string `gorm:"primaryKey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	UserID    uint
-	StatusID  uint
-	User      User
-	Status    BookingStatus
-	Details   BookingDetails
-	CostItems []BookingCostItem
-	Payments  []BookingPayment
-	Documents []BookingDocument
+	ID              string `gorm:"primaryKey"`
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	DeletedAt       gorm.DeletedAt `gorm:"index"`
+	UserID          uint
+	BookingStatusID uint
+	User            User
+	BookingStatus   BookingStatus
+	Details         BookingDetails
+	CostItems       []BookingCostItem
+	Payments        []BookingPayment
+	Documents       []BookingDocument
 }
 
 func (b *Booking) TableName() string {
@@ -83,7 +83,7 @@ func (b *Booking) MapBookingToInformationResponse() response.BookingInformationR
 		ID: b.ID,
 	}
 
-	response.Status = b.Status.MapBookingStatusToResponse()
+	response.Status = b.BookingStatus.MapBookingStatusToResponse()
 	response.Details = b.Details.MapBookingDetailsToResponse()
 
 	for _, costItem := range b.CostItems {
