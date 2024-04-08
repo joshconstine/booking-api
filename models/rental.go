@@ -1,6 +1,8 @@
 package models
 
 import (
+	"booking-api/data/response"
+
 	"gorm.io/gorm"
 )
 
@@ -24,4 +26,15 @@ type Rental struct {
 
 func (r *Rental) TableName() string {
 	return "rentals"
+}
+
+func (r *Rental) MapRentalsToResponse() response.RentalResponse {
+	return response.RentalResponse{
+		ID:          r.ID,
+		Name:        r.Name,
+		Location:    r.Location.MapLocationToResponse(),
+		Bedrooms:    r.Bedrooms,
+		Bathrooms:   r.Bathrooms,
+		Description: r.Description,
+	}
 }

@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"booking-api/data/response"
 	"booking-api/models"
 
 	"gorm.io/gorm"
@@ -15,14 +16,19 @@ func NewRentalRepositoryImplementation(db *gorm.DB, timeblockRepository Timebloc
 	return &RentalRepositoryImplementation{Db: db, TimeblockRepository: timeblockRepository}
 }
 
-func (r *RentalRepositoryImplementation) FindAll() []models.Rental {
+func (r *RentalRepositoryImplementation) FindAll() []response.RentalResponse {
 	var rentals []models.Rental
-	result := r.Db.Model(&models.Rental{}).Preload("Location").Preload("RentalStatus").Preload("RentalRooms").Preload("Photos").Preload("BookingDurationRule").Preload("Bookings").Preload("BookingCostItems").Find(&rentals)
+	result := r.Db.Model(&models.Rental{}).Preload("Location").Find(&rentals)
 	if result.Error != nil {
-		return []models.Rental{}
+		return []response.RentalResponse{}
 	}
 
-	return rentals
+	var rentalResponses []response.RentalResponse
+	for _, rental := range rentals {
+		rentalResponses = append(rentalResponses, rental.MapRentalsToResponse())
+	}
+
+	return rentalResponses
 }
 
 func (r *RentalRepositoryImplementation) FindById(id uint) models.Rental {
