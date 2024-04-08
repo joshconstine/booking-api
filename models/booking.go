@@ -1,6 +1,7 @@
 package models
 
 import (
+	"booking-api/data/response"
 	"math/rand"
 	"time"
 
@@ -8,19 +9,18 @@ import (
 )
 
 type Booking struct {
-	ID               string `gorm:"primaryKey"`
-	CreatedAt        time.Time
-	UpdatedAt        time.Time
-	DeletedAt        gorm.DeletedAt `gorm:"index"`
-	UserID           uint
-	BookingStatusID  uint
-	BookingDetailsID uint
-	User             User
-	BookingStatus    BookingStatus
-	BookingDetails   BookingDetails
-	BookingCostItems []BookingCostItem
-	BookingPayments  []BookingPayment
-	BookingDocuments []BookingDocument
+	ID        string `gorm:"primaryKey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+	UserID    uint
+	StatusID  uint
+	User      User
+	Status    BookingStatus
+	Details   BookingDetails
+	CostItems []BookingCostItem
+	Payments  []BookingPayment
+	Documents []BookingDocument
 }
 
 func (b *Booking) TableName() string {
@@ -50,4 +50,29 @@ func (b *Booking) BeforeCreate(db *gorm.DB) error {
 
 	return nil
 
+}
+
+func (b *Booking) MapBookingToResponse() response.BookingResponse {
+
+	response := response.BookingResponse{
+		ID: b.ID,
+		// UserID:    b.UserID,
+		// StatusID:  b.StatusID,
+		// CreatedAt: b.CreatedAt,
+		// UpdatedAt: b.UpdatedAt,
+	}
+
+	// for _, costItem := range b.CostItems {
+	// 	response.CostItems = append(response.CostItems, costItem.MapBookingCostItemToResponse())
+	// }
+
+	// for _, payment := range b.Payments {
+	// 	response.Payments = append(response.Payments, payment.MapBookingPaymentToResponse())
+	// }
+
+	// for _, document := range b.Documents {
+	// 	response.Documents = append(response.Documents, document.MapBookingDocumentToResponse())
+	// }
+
+	return response
 }

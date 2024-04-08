@@ -12,8 +12,10 @@ type BookingDocument struct {
 	RequiresSignature bool
 	Signed            bool
 	Note              string
+	DocumentID        uint
 	Document          Document
 	Booking           Booking
+	EntityBookingID   uint
 }
 
 func (b *BookingDocument) TableName() string {

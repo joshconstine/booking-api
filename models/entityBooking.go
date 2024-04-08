@@ -15,6 +15,7 @@ type EntityBooking struct {
 	BookingStatusID  uint
 	BookingCostItems []BookingCostItem `gorm:"foreignKey:EntityBookingID"`
 	Timeblock        Timeblock
+	Documents        []BookingDocument `gorm:"foreignKey:EntityBookingID"`
 }
 
 func (e *EntityBooking) TableName() string {
