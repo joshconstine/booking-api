@@ -636,6 +636,13 @@ func SeedRentals(db *gorm.DB) {
 					Amount:    100,
 				},
 			},
+			EntityPhotos: []models.EntityPhoto{
+				{
+					Photo: models.Photo{
+						URL: "boat_photos/1/https://bookingapp.us-ord-1.linodeobjects.com/boat_photos/1/5a1ab150-1ef3-4959-8b5b-085263d9b831.jpeg",
+					},
+				},
+			},
 		},
 	}
 
@@ -694,7 +701,7 @@ func main() {
 	// SeedRoomTypes(database.Instance)
 	//SeedAmenities(database.Instance)
 	SeedRentals(database.Instance)
-	SeedBoats(database.Instance)
+	//SeedBoats(database.Instance)
 	//SeedDocuments(objectStorage.Client, database.Instance)
 	// SeedTaxRates(database.Instance)
 	// SeedAmenityTypes(database.Instance)

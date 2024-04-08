@@ -44,6 +44,7 @@ func (r *RentalRepositoryImplementation) FindById(id uint) response.RentalInform
 		Preload("Amenities"). // This might still be necessary to preload the related Amenities correctly
 		Preload("Amenities.AmenityType").
 		Preload("EntityPhotos").
+		Preload("EntityPhotos.Photo").
 		Preload("RentalRooms.Beds").
 		Preload("RentalRooms.RoomType").
 		Preload("RentalRooms.Photos").
