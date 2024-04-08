@@ -441,9 +441,9 @@ func SeedBoats(db *gorm.DB) {
 	fivePM := time.Date(2021, 1, 1, 17, 0, 0, 0, time.UTC)
 	boats := []models.Boat{
 		{
-			Model: gorm.Model{
-				ID: 1,
-			},
+			// Model: gorm.Model{
+			// 	ID: 1,
+			// },
 			Name:       "The Big Kahuna",
 			Occupancy:  10,
 			MaxWeight:  2000,
@@ -462,11 +462,31 @@ func SeedBoats(db *gorm.DB) {
 				StartTime:       nineAM,
 				EndTime:         threePM,
 			},
+			BookingCostItems: []models.EntityBookingCost{
+				{
+					BookingCostType: models.BookingCostType{
+						Model: gorm.Model{
+							ID: 4,
+						},
+					},
+					TaxRateID: 2,
+					Amount:    250,
+				},
+				{
+					BookingCostType: models.BookingCostType{
+						Model: gorm.Model{
+							ID: 2,
+						},
+					},
+					TaxRateID: 2,
+					Amount:    80,
+				},
+			},
 		},
 		{
-			Model: gorm.Model{
-				ID: 2,
-			},
+			// Model: gorm.Model{
+			// 	ID: 2,
+			// },
 			Name:       "The Little Dipper",
 			Occupancy:  4,
 			MaxWeight:  1000,
@@ -485,6 +505,26 @@ func SeedBoats(db *gorm.DB) {
 				BookingBuffer:   3,
 				StartTime:       elevenAM,
 				EndTime:         fivePM,
+			},
+			BookingCostItems: []models.EntityBookingCost{
+				{
+					BookingCostType: models.BookingCostType{
+						Model: gorm.Model{
+							ID: 4,
+						},
+					},
+					TaxRateID: 2,
+					Amount:    150,
+				},
+				{
+					BookingCostType: models.BookingCostType{
+						Model: gorm.Model{
+							ID: 2,
+						},
+					},
+					TaxRateID: 2,
+					Amount:    130,
+				},
 			},
 		},
 	}
@@ -662,8 +702,8 @@ func main() {
 	// SeedBookingStatus(database.Instance)
 	// SeedBookingCostTypes(database.Instance)
 	// SeedRoomTypes(database.Instance)
-	SeedRentals(database.Instance)
-	// SeedBoats(database.Instance)
+	// SeedRentals(database.Instance)
+	SeedBoats(database.Instance)
 	// SeedTaxRates(database.Instance)
 	// SeedAmenityTypes(database.Instance)
 	// SeedLocations(database.Instance)

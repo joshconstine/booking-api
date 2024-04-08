@@ -1,6 +1,7 @@
 package models
 
 import (
+	"booking-api/data/response"
 	"time"
 
 	"gorm.io/gorm"
@@ -17,4 +18,13 @@ type Timeblock struct {
 
 func (t *Timeblock) TableName() string {
 	return "timeblocks"
+}
+
+func (t *Timeblock) MapTimeblockToResponse() response.TimeblockResponse {
+	return response.TimeblockResponse{
+		ID:        t.ID,
+		StartTime: t.StartTime,
+		EndTime:   t.EndTime,
+		BookingID: t.BookingID,
+	}
 }

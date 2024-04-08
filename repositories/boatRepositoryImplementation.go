@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"booking-api/data/response"
 	"booking-api/models"
 
 	"gorm.io/gorm"
@@ -14,27 +15,33 @@ func NewBoatRepositoryImplementation(Db *gorm.DB) BoatRepository {
 	return &BoatRepositoryImplementation{Db: Db}
 }
 
-func (t *BoatRepositoryImplementation) FindAll() []models.Boat {
+func (t *BoatRepositoryImplementation) FindAll() []response.BoatResponse {
 	var boats []models.Boat
-	result := t.Db.Find(&boats)
+	result := t.Db.Model(&models.Boat{}).Preload("Timeblocks").Preload("Photos").Preload("Bookings").Preload("BookingCostItems").Preload("BookingDurationRule").Find(&boats)
 	if result.Error != nil {
-		return []models.Boat{}
+		return []response.BoatResponse{}
 	}
 
-	return boats
+	var boatResponses []response.BoatResponse
+	for _, boat := range boats {
+		boatResponses = append(boatResponses, boat.MapBoatToResponse())
+	}
+
+	return boatResponses
 }
 
-func (t *BoatRepositoryImplementation) FindById(id int) models.Boat {
+func (t *BoatRepositoryImplementation) FindById(id int) response.BoatResponse {
 	var boat models.Boat
-	result := t.Db.Where("id = ?", id).First(&boat)
+	result := t.Db.Model(&models.Boat{}).Where("id = ?", id).Preload("Timeblocks").Preload("Photos").Preload("Bookings").Preload("BookingCostItems").Preload("BookingDurationRule").First(&boat)
 	if result.Error != nil {
-		return models.Boat{}
+		return response.BoatResponse{}
 	}
 
-	return boat
-}
+	return boat.MapBoatToResponse()
 
+}
 func (t *BoatRepositoryImplementation) Create(boat models.Boat) models.Boat {
+
 	result := t.Db.Create(&boat)
 	if result.Error != nil {
 		return models.Boat{}

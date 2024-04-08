@@ -24,13 +24,13 @@ func (e *EntityBookingDurationRuleRepositoryImplementation) FindById(entity_id u
 	}
 
 	return response.EntityBookingDurationRuleResponse{
-		ID:          entityBookingDurationRule.ID,
-		EntityID:    entityBookingDurationRule.EntityID,
-		EntityType:  entityBookingDurationRule.EntityType,
-		MinDuration: entityBookingDurationRule.MinimumDuration,
-		MaxDuration: entityBookingDurationRule.MaximumDuration,
-		StartTime:   entityBookingDurationRule.StartTime,
-		EndTime:     entityBookingDurationRule.EndTime,
+		ID:              entityBookingDurationRule.ID,
+		EntityID:        entityBookingDurationRule.EntityID,
+		EntityType:      entityBookingDurationRule.EntityType,
+		MinimumDuration: entityBookingDurationRule.MinimumDuration,
+		MaximumDuration: entityBookingDurationRule.MaximumDuration,
+		StartTime:       entityBookingDurationRule.StartTime,
+		EndTime:         entityBookingDurationRule.EndTime,
 	}
 }
 
@@ -55,11 +55,11 @@ func (e *EntityBookingDurationRuleRepositoryImplementation) Update(entityBooking
 
 	return response.EntityBookingDurationRuleResponse{
 
-		EntityID:    entityBookingDurationRule.EntityID,
-		EntityType:  entityBookingDurationRule.EntityType,
-		MinDuration: entityBookingDurationRule.MinDuration,
-		MaxDuration: entityBookingDurationRule.MaxDuration,
-		StartTime:   entityBookingDurationRule.StartTime,
-		EndTime:     entityBookingDurationRule.EndTime,
+		EntityID:        entityBookingDurationRule.EntityID,
+		EntityType:      entityBookingDurationRule.EntityType,
+		MinimumDuration: entityBookingDurationRule.MinDuration,
+		MaximumDuration: entityBookingDurationRule.MaxDuration,
+		StartTime:       entityBookingDurationRule.StartTime,
+		EndTime:         entityBookingDurationRule.EndTime,
 	}
 }

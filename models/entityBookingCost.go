@@ -1,6 +1,8 @@
 package models
 
 import (
+	"booking-api/data/response"
+
 	"gorm.io/gorm"
 )
 
@@ -17,4 +19,18 @@ type EntityBookingCost struct {
 
 func (e *EntityBookingCost) TableName() string {
 	return "entity_booking_costs"
+}
+
+func (e *EntityBookingCost) MapEntityBookingCostToResponse() response.EntityBookingCostResponse {
+
+	result := response.EntityBookingCostResponse{
+		ID:     e.ID,
+		Amount: e.Amount,
+	}
+
+	result.BookingCostType = e.BookingCostType.MapBookingCostTypeToResponse()
+	result.TaxRate = e.TaxRate.MapTaxRateToResponse()
+
+	return result
+
 }

@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	resposes "booking-api/data/response"
 	"booking-api/models"
 
 	"gorm.io/gorm"
@@ -43,23 +42,4 @@ func (r *RentalRepositoryImplementation) Create(rental models.Rental) models.Ren
 	}
 
 	return rental
-}
-
-func (r *RentalRepositoryImplementation) GetInformationForRental(id uint) (rentalInformation resposes.RentalInformationResponse) {
-	var timeblocks []models.Timeblock
-
-	rental := r.FindById(id)
-
-	rentalInformation.RentalID = rental.ID
-	rentalInformation.Name = rental.Name
-	rentalInformation.LocationID = rental.LocationID
-	rentalInformation.LocationName = rental.Location.Name
-	rentalInformation.RentalIsClean = false
-	rentalInformation.Thumbnail = "https://via.placeholder.com/150"
-
-	timeblocks = r.TimeblockRepository.FindByEntity("rentals", id)
-
-	rentalInformation.Timeblocks = timeblocks
-
-	return
 }

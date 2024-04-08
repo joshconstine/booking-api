@@ -1,11 +1,12 @@
 package repositories
 
 import (
+	"booking-api/data/response"
 	"booking-api/models"
 )
 
 type BoatRepository interface {
-	FindAll() []models.Boat
-	FindById(id int) models.Boat
+	FindAll() []response.BoatResponse
+	FindById(id int) response.BoatResponse
 	Create(boat models.Boat) models.Boat
 }
