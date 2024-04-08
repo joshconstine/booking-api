@@ -5,4 +5,5 @@ type BookingCostItemResponse struct {
 	BookingID       string                  `json:"bookingId"`
 	Amount          float64                 `json:"amount"`
 	BookingCostType BookingCostTypeResponse `json:"bookingCostType"`
+	TaxRate         TaxRateResponse         `json:"taxRate"`
 }

@@ -76,3 +76,27 @@ func (b *Booking) MapBookingToResponse() response.BookingResponse {
 
 	return response
 }
+
+func (b *Booking) MapBookingToInformationResponse() response.BookingInformationResponse {
+
+	response := response.BookingInformationResponse{
+		ID: b.ID,
+	}
+
+	response.Status = b.Status.MapBookingStatusToResponse()
+	response.Details = b.Details.MapBookingDetailsToResponse()
+
+	for _, costItem := range b.CostItems {
+		response.CostItems = append(response.CostItems, costItem.MapBookingCostItemToResponse())
+	}
+
+	for _, payment := range b.Payments {
+		response.Payments = append(response.Payments, payment.MapBookingPaymentToResponse())
+	}
+
+	for _, document := range b.Documents {
+		response.Documents = append(response.Documents, document.MapBookingDocumentToResponse())
+	}
+
+	return response
+}

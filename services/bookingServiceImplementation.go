@@ -5,7 +5,6 @@ import (
 	"booking-api/data/response"
 	"booking-api/models"
 	"booking-api/repositories"
-	"time"
 
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -29,28 +28,13 @@ func NewBookingServiceImplementation(bookingRepository repositories.BookingRepos
 
 func (t BookingServiceImplementation) FindAll() []response.BookingResponse {
 	result := t.BookingRepository.FindAll()
-
-	var bookings []response.BookingResponse
-	for _, value := range result {
-		booking := response.BookingResponse{
-			ID:               value.ID,
-			BookingStatusID:  value.BookingStatusID,
-			BookingDetailsID: value.BookingDetailsID,
-		}
-		bookings = append(bookings, booking)
-	}
-	return bookings
+	return result
 }
 
-func (t BookingServiceImplementation) FindById(id string) response.BookingResponse {
+func (t BookingServiceImplementation) FindById(id string) response.BookingInformationResponse {
 	result := t.BookingRepository.FindById(id)
 
-	booking := response.BookingResponse{
-		ID:               result.ID,
-		BookingStatusID:  result.BookingStatusID,
-		BookingDetailsID: result.BookingDetailsID,
-	}
-	return booking
+	return result
 }
 
 func (t BookingServiceImplementation) Create(request requests.CreateUserRequest) response.BookingResponse {
@@ -85,36 +69,10 @@ func (t BookingServiceImplementation) Create(request requests.CreateUserRequest)
 		Email: request.Email,
 	}
 
-	bookingToCreate.BookingStatusID = 1
-
 	// create booking
 	booking := t.BookingRepository.Create(bookingToCreate)
 
-	var oneYearFromNow time.Time
+	bookingResponse := booking.MapBookingToResponse()
 
-	oneYearFromNow = time.Now().AddDate(1, 0, 0)
-	//create booking details
-	var bookingDetailsToCreate = models.BookingDetails{
-		BookingID:        booking.ID,
-		PaymentComplete:  false,
-		PaymentDueDate:   oneYearFromNow,
-		DocumentsSigned:  false,
-		BookingStartDate: oneYearFromNow,
-		InvoiceID:        nil,
-	}
-
-	bookingDetails := t.BookingDetailsService.Create(bookingDetailsToCreate)
-
-	// update booking with booking details
-	booking.BookingDetailsID = bookingDetails.ID
-	t.BookingRepository.Update(booking)
-
-	// return response
-	bookingResponse := response.BookingResponse{
-		ID:               booking.ID,
-		UserID:           booking.UserID,
-		BookingStatusID:  booking.BookingStatusID,
-		BookingDetailsID: booking.BookingDetailsID,
-	}
 	return bookingResponse
 }

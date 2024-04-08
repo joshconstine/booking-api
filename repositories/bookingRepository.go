@@ -1,12 +1,13 @@
 package repositories
 
 import (
+	"booking-api/data/response"
 	"booking-api/models"
 )
 
 type BookingRepository interface {
-	FindAll() []models.Booking
-	FindById(id string) models.Booking
+	FindAll() []response.BookingResponse
+	FindById(id string) response.BookingInformationResponse
 	Create(booking models.Booking) models.Booking
 	Update(booking models.Booking) models.Booking
 }

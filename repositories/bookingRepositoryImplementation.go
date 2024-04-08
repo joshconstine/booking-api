@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"booking-api/data/response"
 	"booking-api/models"
 
 	"gorm.io/gorm"
@@ -14,24 +15,33 @@ func NewBookingRepositoryImplementation(Db *gorm.DB) BookingRepository {
 	return &bookingRepositoryImplementation{Db: Db}
 }
 
-func (t *bookingRepositoryImplementation) FindAll() []models.Booking {
+func (t *bookingRepositoryImplementation) FindAll() []response.BookingResponse {
 	var bookings []models.Booking
 	result := t.Db.Find(&bookings)
 	if result.Error != nil {
-		return []models.Booking{}
+		return []response.BookingResponse{}
 	}
 
-	return bookings
+	var response []response.BookingResponse
+	for _, booking := range bookings {
+		response = append(response, booking.MapBookingToResponse())
+	}
+
+	return response
+
 }
 
-func (t *bookingRepositoryImplementation) FindById(id string) models.Booking {
+func (t *bookingRepositoryImplementation) FindById(id string) response.BookingInformationResponse {
 	var booking models.Booking
-	result := t.Db.Where("id = ?", id).First(&booking)
+	result := t.Db.Model(&models.Booking{}).Where(
+		"id = ?", id).Preload("Payments.PaymentMethod").Preload("Status").Preload("Details").Preload("CostItems").Preload("Documents").First(&booking)
+
 	if result.Error != nil {
-		return models.Booking{}
+		return response.BookingInformationResponse{}
 	}
 
-	return booking
+	return booking.MapBookingToInformationResponse()
+
 }
 
 func (t *bookingRepositoryImplementation) Create(booking models.Booking) models.Booking {

@@ -7,6 +7,6 @@ import (
 
 type BookingService interface {
 	FindAll() []responses.BookingResponse
-	FindById(id string) responses.BookingResponse
+	FindById(id string) responses.BookingInformationResponse
 	Create(request requests.CreateUserRequest) responses.BookingResponse
 }
