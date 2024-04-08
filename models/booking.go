@@ -21,6 +21,7 @@ type Booking struct {
 	CostItems       []BookingCostItem
 	Payments        []BookingPayment
 	Documents       []BookingDocument
+	Entities        []EntityBooking
 }
 
 func (b *Booking) TableName() string {
@@ -96,6 +97,10 @@ func (b *Booking) MapBookingToInformationResponse() response.BookingInformationR
 
 	for _, document := range b.Documents {
 		response.Documents = append(response.Documents, document.MapBookingDocumentToResponse())
+	}
+
+	for _, entity := range b.Entities {
+		response.Entities = append(response.Entities, entity.MapEntityBookingToResponse())
 	}
 
 	return response
