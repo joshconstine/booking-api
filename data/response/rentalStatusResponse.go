@@ -1,6 +1,5 @@
 package response
 
 type RentalStatusResponse struct {
-	RentalID uint `json:"rentalId"`
-	IsClean  bool `json:"isClean"`
+	IsClean bool `json:"isClean"`
 }

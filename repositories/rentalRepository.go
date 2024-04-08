@@ -7,6 +7,6 @@ import (
 
 type RentalRepository interface {
 	FindAll() []response.RentalResponse
-	FindById(id uint) models.Rental
+	FindById(id uint) response.RentalInformationResponse
 	Create(rental models.Rental) models.Rental
 }

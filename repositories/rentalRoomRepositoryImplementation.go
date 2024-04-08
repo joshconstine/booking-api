@@ -24,34 +24,9 @@ func (r *RentalRoomRepositoryImplementation) FindAll() []response.RentalRoomResp
 	}
 
 	var rentalRoomResponses []response.RentalRoomResponse
-	var photos []response.PhotoResponse
-	var beds []response.BedTypeResponse
+
 	for _, rentalRoom := range rentalRooms {
-
-		for _, photo := range rentalRoom.Photos {
-			photos = append(photos, response.PhotoResponse{
-				ID:  photo.ID,
-				URL: photo.Photo.URL,
-			})
-
-		}
-
-		for _, bed := range rentalRoom.Beds {
-			beds = append(beds, response.BedTypeResponse{
-				ID:   bed.ID,
-				Name: bed.Name,
-			})
-		}
-
-		rentalRoomResponses = append(rentalRoomResponses, response.RentalRoomResponse{
-			ID:       rentalRoom.ID,
-			Name:     rentalRoom.Name,
-			RentalID: rentalRoom.RentalID,
-			Photos:   photos,
-			Beds:     beds,
-		})
-		photos = nil
-		beds = nil
+		rentalRoomResponses = append(rentalRoomResponses, rentalRoom.MapRentalRoomToResponse())
 	}
 
 	return rentalRoomResponses
@@ -63,31 +38,7 @@ func (r *RentalRoomRepositoryImplementation) FindById(id uint) response.RentalRo
 	if result.Error != nil {
 		return response.RentalRoomResponse{}
 	}
-
-	var photos []response.PhotoResponse
-	var beds []response.BedTypeResponse
-
-	for _, photo := range rentalRoom.Photos {
-		photos = append(photos, response.PhotoResponse{
-			ID:  photo.ID,
-			URL: photo.Photo.URL,
-		})
-	}
-
-	for _, bed := range rentalRoom.Beds {
-		beds = append(beds, response.BedTypeResponse{
-			ID:   bed.ID,
-			Name: bed.Name,
-		})
-	}
-
-	return response.RentalRoomResponse{
-		ID:       rentalRoom.ID,
-		Name:     rentalRoom.Name,
-		RentalID: rentalRoom.RentalID,
-		Photos:   photos,
-		Beds:     beds,
-	}
+	return rentalRoom.MapRentalRoomToResponse()
 }
 
 func (r *RentalRoomRepositoryImplementation) Create(rentalRoom request.RentalRoomCreateRequest) response.RentalRoomResponse {
@@ -119,9 +70,5 @@ func (r *RentalRoomRepositoryImplementation) Create(rentalRoom request.RentalRoo
 		return response.RentalRoomResponse{}
 	}
 
-	return response.RentalRoomResponse{
-		ID:       rentalRoomModel.ID,
-		Name:     rentalRoomModel.Name,
-		RentalID: rentalRoomModel.RentalID,
-	}
+	return rentalRoomModel.MapRentalRoomToResponse()
 }

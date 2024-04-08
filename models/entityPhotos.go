@@ -18,9 +18,12 @@ func (e *EntityPhoto) TableName() string {
 	return "entity_photos"
 }
 
-func (e *EntityPhoto) MapEntityPhotoToResponse() response.PhotoResponse {
-	return response.PhotoResponse{
-		ID:  e.ID,
-		URL: e.Photo.URL,
+func (e *EntityPhoto) MapEntityPhotoToResponse() response.EntityPhotoResponse {
+	response := response.EntityPhotoResponse{
+		ID: e.ID,
 	}
+
+	response.Photo = e.Photo.MapPhotoToResponse()
+
+	return response
 }

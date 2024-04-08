@@ -38,3 +38,39 @@ func (r *Rental) MapRentalsToResponse() response.RentalResponse {
 		Description: r.Description,
 	}
 }
+
+func (r *Rental) MapRentalToInformationResponse() response.RentalInformationResponse {
+	var response response.RentalInformationResponse
+
+	response.ID = r.ID
+	response.Name = r.Name
+	response.Bedrooms = r.Bedrooms
+	response.Bathrooms = r.Bathrooms
+	response.Description = r.Description
+	response.Location = r.Location.MapLocationToResponse()
+	response.RentalStatus = r.RentalStatus.MapRentalStatusToResponse()
+
+	for _, amenity := range r.Amenities {
+		response.Amenities = append(response.Amenities, amenity.MapAmenityToResponse())
+	}
+
+	for _, photo := range r.Photos {
+		response.Photos = append(response.Photos, photo.MapEntityPhotoToResponse())
+	}
+
+	for _, rentalRoom := range r.RentalRooms {
+		response.RentalRooms = append(response.RentalRooms, rentalRoom.MapRentalRoomToResponse())
+	}
+
+	for _, booking := range r.Bookings {
+		response.Bookings = append(response.Bookings, booking.MapEntityBookingToResponse())
+	}
+
+	for _, bookingCostItem := range r.BookingCostItems {
+		response.BookingCostItems = append(response.BookingCostItems, bookingCostItem.MapEntityBookingCostToResponse())
+	}
+
+	response.BookingDurationRule = r.BookingDurationRule.MapEntityBookingDurationRuleToResponse()
+
+	return response
+}

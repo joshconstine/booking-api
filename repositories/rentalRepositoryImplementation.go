@@ -31,14 +31,15 @@ func (r *RentalRepositoryImplementation) FindAll() []response.RentalResponse {
 	return rentalResponses
 }
 
-func (r *RentalRepositoryImplementation) FindById(id uint) models.Rental {
+func (r *RentalRepositoryImplementation) FindById(id uint) response.RentalInformationResponse {
 	var rental models.Rental
-	result := r.Db.Model(&models.Rental{}).Where("id = ?", id).Preload("Location").Preload("RentalStatus").Preload("RentalRooms").Preload("Photos").Preload("BookingDurationRule").Preload("Bookings").Preload("BookingCostItems").First(&rental)
+	result := r.Db.Model(&models.Rental{}).Preload("Location").Preload("Amenities").Preload("Photos").Preload("RentalRooms").Preload("BookingCostItems").Preload("BookingDurationRule").Preload("Timeblocks").Find(&rental)
 	if result.Error != nil {
-		return models.Rental{}
+		return response.RentalInformationResponse{}
 	}
 
-	return rental
+	return rental.MapRentalToInformationResponse()
+
 }
 
 func (r *RentalRepositoryImplementation) Create(rental models.Rental) models.Rental {

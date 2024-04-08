@@ -25,10 +25,7 @@ func (r *RentalStatusRepositoryImplementation) FindAll() []responses.RentalStatu
 	}
 
 	for _, rentalStatus := range rentalStatuses {
-		rentalStatusResponses = append(rentalStatusResponses, responses.RentalStatusResponse{
-			RentalID: rentalStatus.RentalID,
-			IsClean:  rentalStatus.IsClean,
-		})
+		rentalStatusResponses = append(rentalStatusResponses, rentalStatus.MapRentalStatusToResponse())
 	}
 
 	return rentalStatusResponses
@@ -36,22 +33,17 @@ func (r *RentalStatusRepositoryImplementation) FindAll() []responses.RentalStatu
 
 func (r *RentalStatusRepositoryImplementation) FindByRentalId(rentalId uint) responses.RentalStatusResponse {
 	var rentalStatus models.RentalStatus
-	var rentalStatusResponse responses.RentalStatusResponse
 
 	result := r.Db.Where("rental_id = ?", rentalId).First(&rentalStatus)
 	if result.Error != nil {
 		return responses.RentalStatusResponse{}
 	}
 
-	rentalStatusResponse.RentalID = rentalStatus.RentalID
-	rentalStatusResponse.IsClean = rentalStatus.IsClean
-
-	return rentalStatusResponse
+	return rentalStatus.MapRentalStatusToResponse()
 }
 
 func (r *RentalStatusRepositoryImplementation) UpdateStatusForRentalId(rentalId uint, isClean bool) responses.RentalStatusResponse {
 	var rentalStatus models.RentalStatus
-	var rentalStatusResponse responses.RentalStatusResponse
 
 	result := r.Db.Where("rental_id = ?", rentalId).First(&rentalStatus)
 	if result.Error != nil {
@@ -64,8 +56,5 @@ func (r *RentalStatusRepositoryImplementation) UpdateStatusForRentalId(rentalId 
 		return responses.RentalStatusResponse{}
 	}
 
-	rentalStatusResponse.RentalID = rentalStatus.RentalID
-	rentalStatusResponse.IsClean = rentalStatus.IsClean
-
-	return rentalStatusResponse
+	return rentalStatus.MapRentalStatusToResponse()
 }

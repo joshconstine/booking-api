@@ -2,7 +2,6 @@ package services
 
 import (
 	"booking-api/data/response"
-	"booking-api/models"
 	"booking-api/repositories"
 
 	"github.com/go-playground/validator/v10"
@@ -24,6 +23,6 @@ func (t *RentalServiceImplementation) FindAll() []response.RentalResponse {
 	return t.RentalRepository.FindAll()
 }
 
-func (t *RentalServiceImplementation) FindById(id uint) models.Rental {
+func (t *RentalServiceImplementation) FindById(id uint) response.RentalInformationResponse {
 	return t.RentalRepository.FindById(id)
 }

@@ -6,7 +6,7 @@ type BoatResponse struct {
 	Occupancy           int                               `json:"occupancy"`
 	MaxWeight           int                               `json:"maxWeight"`
 	Timeblocks          []TimeblockResponse               `json:"timeblocks"`
-	Photos              []PhotoResponse                   `json:"photos"`
+	Photos              []EntityPhotoResponse             `json:"photos"`
 	Bookings            []EntityBookingResponse           `json:"bookings"`
 	BookingCostItems    []EntityBookingCostResponse       `json:"bookingCostItems"`
 	BookingDurationRule EntityBookingDurationRuleResponse `json:"bookingDurationRule"`
