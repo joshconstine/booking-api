@@ -34,37 +34,40 @@ func Connect(connectionString string) {
 	log.Println("Connected to Database!")
 }
 func Migrate() {
+	//**************Helpers**************
 	Instance.AutoMigrate(&models.User{})
-	Instance.AutoMigrate(&models.Booking{})
-	Instance.AutoMigrate(&models.BookingDetails{})
 	Instance.AutoMigrate(&models.BookingStatus{})
 	Instance.AutoMigrate(&models.BookingCostItem{})
 	Instance.AutoMigrate(&models.Location{})
+	Instance.AutoMigrate(&models.Photo{})
+
+	Instance.AutoMigrate(&models.Document{})
+
+	Instance.AutoMigrate(&models.BookingDocument{})
 
 	Instance.AutoMigrate(&models.PaymentMethod{})
 	Instance.AutoMigrate(&models.BookingCostType{})
-
-	Instance.AutoMigrate(&models.AmenityType{})
 	Instance.AutoMigrate(&models.Amenity{})
-
+	Instance.AutoMigrate(&models.TaxRate{})
 	Instance.AutoMigrate(&models.BedType{})
+	Instance.AutoMigrate(&models.RoomType{})
+
+	Instance.AutoMigrate(&models.Booking{})
+	Instance.AutoMigrate(&models.EntityBooking{})
+	Instance.AutoMigrate(&models.BookingDetails{})
+	Instance.AutoMigrate(&models.BookingPayment{})
 
 	Instance.AutoMigrate(&models.Boat{})
 
-	Instance.AutoMigrate(&models.Timeblock{})
 	Instance.AutoMigrate(&models.Rental{})
-	Instance.AutoMigrate(&models.BookingPayment{})
 	Instance.AutoMigrate(&models.RentalStatus{})
-	Instance.AutoMigrate(&models.Photo{})
 	Instance.AutoMigrate(&models.EntityPhoto{})
-
 	Instance.AutoMigrate(&models.RentalRoom{})
-	Instance.AutoMigrate(&models.RoomType{})
-	Instance.AutoMigrate(&models.EntityBookingDurationRule{})
-	Instance.AutoMigrate(&models.EntityBooking{})
-	Instance.AutoMigrate(&models.EntityBookingCost{})
 
-	Instance.AutoMigrate(&models.TaxRate{})
+	Instance.AutoMigrate(&models.EntityBookingCost{})
+	Instance.AutoMigrate(&models.EntityBookingDurationRule{})
+
+	Instance.AutoMigrate(&models.Timeblock{})
 
 	log.Println("Database Migration Completed!")
 }

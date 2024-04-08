@@ -5,6 +5,7 @@ import (
 	requests "booking-api/data/request"
 	"booking-api/database"
 	"booking-api/models"
+	"booking-api/objectStorage"
 	"booking-api/repositories"
 	"fmt"
 	"log"
@@ -680,6 +681,26 @@ func SeedRentals(db *gorm.DB) {
 	}
 
 }
+func SeedDocuments(client *objectStorage.S3Client, db *gorm.DB) {
+	documents := []models.Document{
+		{
+			Name: "Boat Rental Agreement",
+			URL:  "documents/boatRentalAgreement.docx",
+		},
+		{
+			Name: "Everett Rental Agreement",
+			URL:  "documents/rentalContract.docx",
+		},
+	}
+
+	documentRepository := repositories.NewDocumentRepositoryImplementation(client, db)
+
+	for _, document := range documents {
+		documentRepository.AddDocumentWithUrl(document.URL, document.Name)
+
+	}
+
+}
 
 func main() {
 
@@ -697,13 +718,17 @@ func main() {
 
 	database.Connect(env.DSN)
 
+	// create object storage client
+	objectStorage.CreateSession()
+
 	// database.Migrate()
 
 	// SeedBookingStatus(database.Instance)
 	// SeedBookingCostTypes(database.Instance)
 	// SeedRoomTypes(database.Instance)
 	// SeedRentals(database.Instance)
-	SeedBoats(database.Instance)
+	// SeedBoats(database.Instance)
+	SeedDocuments(objectStorage.Client, database.Instance)
 	// SeedTaxRates(database.Instance)
 	// SeedAmenityTypes(database.Instance)
 	// SeedLocations(database.Instance)
