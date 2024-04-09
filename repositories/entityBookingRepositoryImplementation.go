@@ -48,6 +48,7 @@ func (e *EntityBookingRepositoryImplementation) FindAllForBooking(bookingID stri
 }
 
 func (e *EntityBookingRepositoryImplementation) Create(entityBooking request.CreateEntityBookingRequest) response.EntityBookingResponse {
+
 	entityBookingModel := models.EntityBooking{
 		BookingID:  entityBooking.BookingID,
 		EntityID:   entityBooking.EntityID,
@@ -61,8 +62,48 @@ func (e *EntityBookingRepositoryImplementation) Create(entityBooking request.Cre
 		},
 		BookingStatusID:  0,
 		BookingCostItems: []models.BookingCostItem{},
+		Documents:        []models.BookingDocument{},
 	}
+
 	result := e.Db.Create(&entityBookingModel)
+	if result.Error != nil {
+		return response.EntityBookingResponse{}
+	}
+	//Get the cost items for the entity
+	var entityCostItems []models.EntityBookingCost
+
+	result = e.Db.Model(&models.EntityBookingCost{}).Where("entity_id = ? AND entity_type = ?", entityBooking.EntityID, entityBooking.EntityType).Find(&entityCostItems)
+	if result.Error != nil {
+		return response.EntityBookingResponse{}
+	}
+
+	//Get The documents for the entity
+
+	var entityDocuments []models.EntityBookingDocument
+	result = e.Db.Model(&models.EntityBookingDocument{}).Where("entity_id = ? AND entity_type = ?", entityBooking.EntityID, entityBooking.EntityType).Find(&entityDocuments)
+	if result.Error != nil {
+		return response.EntityBookingResponse{}
+	}
+
+	var bookingDocuments []models.BookingDocument
+	var bookingDocument models.BookingDocument
+	for _, document := range entityDocuments {
+		bookingDocument = document.MapEntityBookingDocumentToBookingDocument(entityBookingModel.BookingID, entityBookingModel.ID)
+		bookingDocuments = append(bookingDocuments, bookingDocument)
+
+	}
+
+	var bookingCostItems []models.BookingCostItem
+	var bookingCostItem models.BookingCostItem
+	for _, costItem := range entityCostItems {
+		bookingCostItem = costItem.MapEntityBookingCostToBookingCostItem(entityBooking.BookingID, entityBookingModel.ID)
+		bookingCostItems = append(bookingCostItems, bookingCostItem)
+	}
+
+	entityBookingModel.BookingCostItems = bookingCostItems
+	entityBookingModel.Documents = bookingDocuments
+
+	result = e.Db.Save(&entityBookingModel)
 	if result.Error != nil {
 		return response.EntityBookingResponse{}
 	}

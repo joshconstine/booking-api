@@ -8,7 +8,7 @@ import (
 
 type BookingDocument struct {
 	gorm.Model
-	BookingID         uint
+	BookingID         string
 	RequiresSignature bool
 	Signed            bool
 	Note              string

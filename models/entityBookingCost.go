@@ -34,3 +34,29 @@ func (e *EntityBookingCost) MapEntityBookingCostToResponse() response.EntityBook
 	return result
 
 }
+
+//When an entity is booked ie a Rental. This function maps the entity booking cost to a booking cost item
+// from here we can calculate the total cost of the booking
+
+func (e *EntityBookingCost) MapEntityBookingCostToBookingCostItem(bookingID string, entityBookingId uint) BookingCostItem {
+
+	result := BookingCostItem{
+		EntityBookingID:   entityBookingId,
+		BookingID:         bookingID,
+		Amount:            e.Amount,
+		TaxRateID:         e.TaxRateID,
+		BookingCostTypeID: e.BookingCostTypeID,
+		TaxRate: TaxRate{
+			Model: gorm.Model{
+				ID: e.TaxRate.ID,
+			},
+		},
+		BookingCostType: BookingCostType{
+			Model: gorm.Model{
+				ID: e.BookingCostType.ID,
+			},
+		},
+	}
+
+	return result
+}
