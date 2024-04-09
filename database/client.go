@@ -40,6 +40,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.BookingCostItem{})
 	Instance.AutoMigrate(&models.Location{})
 	Instance.AutoMigrate(&models.Photo{})
+	Instance.AutoMigrate(&models.UserRole{})
 
 	Instance.AutoMigrate(&models.Document{})
 

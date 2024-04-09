@@ -434,6 +434,21 @@ func SeedRoomTypes(db *gorm.DB) {
 	}
 
 }
+
+func SeedUserRoles(db *gorm.DB) {
+	userRoles := []string{
+		"Admin",
+		"Cleaner",
+		"Account Owner"}
+
+	userRoleRepository := repositories.NewUserRoleRepositoryImplementation(db)
+
+	for _, userRole := range userRoles {
+		userRoleRepository.Create(userRole)
+	}
+
+}
+
 func SeedBoats(db *gorm.DB) {
 	nineAM := time.Date(2021, 1, 1, 9, 0, 0, 0, time.UTC)
 	//elevenAM := time.Date(2021, 1, 1, 11, 0, 0, 0, time.UTC)
@@ -732,14 +747,18 @@ func main() {
 	// SeedBookingCostTypes(database.Instance)
 	// SeedRoomTypes(database.Instance)
 	//SeedAmenities(database.Instance)
-	SeedRentals(database.Instance)
-	SeedBoats(database.Instance)
+	//SeedRentals(database.Instance)
+	//SeedBoats(database.Instance)
 	//SeedDocuments(objectStorage.Client, database.Instance)
 	// SeedTaxRates(database.Instance)
 	// SeedAmenityTypes(database.Instance)
 	// SeedLocations(database.Instance)
 	// SeedBedTypes(database.Instance)
 	// SeedPaymentMethods(database.Instance)
+
+	//*****users rbac
+
+	SeedUserRoles(database.Instance)
 
 	log.Println("Database seeding Completed!")
 
