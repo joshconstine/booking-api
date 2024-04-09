@@ -21,20 +21,14 @@ func (t *BookingPaymentRepositoryImplementation) FindAll() []response.BookingPay
 	var bookingPayments []models.BookingPayment
 	var response []response.BookingPaymentResponse
 
-	result := t.Db.Find(&bookingPayments)
+	result := t.Db.Preload("PaymentMethod").Find(&bookingPayments)
 	if result.Error != nil {
 		return []responses.BookingPaymentResponse{}
 	}
 
-	var item responses.BookingPaymentResponse
 	for _, bookingPayment := range bookingPayments {
-		item.ID = bookingPayment.ID
-		item.BookingID = bookingPayment.BookingID
-		item.PaymentMethod.ID = bookingPayment.PaymentMethodID
-		item.PaymentMethod.Name = bookingPayment.PaymentMethod.Name
-		item.PaymentAmount = bookingPayment.PaymentAmount
 
-		response = append(response, item)
+		response = append(response, bookingPayment.MapBookingPaymentToResponse())
 
 	}
 	return response
@@ -42,21 +36,14 @@ func (t *BookingPaymentRepositoryImplementation) FindAll() []response.BookingPay
 
 func (t *BookingPaymentRepositoryImplementation) FindById(id uint) response.BookingPaymentResponse {
 	var bookingPayment models.BookingPayment
-	var response response.BookingPaymentResponse
 
-	result := t.Db.First(&bookingPayment, id)
+	result := t.Db.Model(&models.BookingPayment{}).Preload("PaymentMethod").First(&bookingPayment, id)
 	if result.Error != nil {
 
-		return response
+		return response.BookingPaymentResponse{}
 	}
 
-	response.ID = bookingPayment.ID
-	response.BookingID = bookingPayment.BookingID
-	response.PaymentMethod.ID = bookingPayment.PaymentMethodID
-	response.PaymentMethod.Name = bookingPayment.PaymentMethod.Name
-	response.PaymentAmount = bookingPayment.PaymentAmount
-
-	return response
+	return bookingPayment.MapBookingPaymentToResponse()
 }
 
 func (t *BookingPaymentRepositoryImplementation) Create(bookingPayment requests.CreateBookingPaymentRequest) response.BookingPaymentResponse {
@@ -70,33 +57,19 @@ func (t *BookingPaymentRepositoryImplementation) Create(bookingPayment requests.
 		return response.BookingPaymentResponse{}
 	}
 
-	return response.BookingPaymentResponse{
-		ID:            bookingPaymentModel.ID,
-		BookingID:     bookingPaymentModel.BookingID,
-		PaymentMethod: response.PaymentMethodResponse{ID: bookingPaymentModel.PaymentMethodID, Name: bookingPaymentModel.PaymentMethod.Name},
-		PaymentAmount: bookingPaymentModel.PaymentAmount,
-		PaymentDate:   bookingPaymentModel.Model.CreatedAt,
-	}
+	return bookingPaymentModel.MapBookingPaymentToResponse()
 }
 func (t *BookingPaymentRepositoryImplementation) FindByBookingId(id string) []response.BookingPaymentResponse {
 	var bookingPayments []models.BookingPayment
-	var response []response.BookingPaymentResponse
 
-	result := t.Db.Where("booking_id = ?", id).Find(&bookingPayments)
+	result := t.Db.Model(&models.BookingPayment{}).Where("booking_id = ?", id).Preload("PaymentMethod").Find(&bookingPayments)
 	if result.Error != nil {
 		return []responses.BookingPaymentResponse{}
 	}
 
-	var item responses.BookingPaymentResponse
+	var response []response.BookingPaymentResponse
 	for _, bookingPayment := range bookingPayments {
-		item.ID = bookingPayment.ID
-		item.BookingID = bookingPayment.BookingID
-		item.PaymentMethod.ID = bookingPayment.PaymentMethodID
-		item.PaymentMethod.Name = bookingPayment.PaymentMethod.Name
-		item.PaymentAmount = bookingPayment.PaymentAmount
-
-		response = append(response, item)
-
+		response = append(response, bookingPayment.MapBookingPaymentToResponse())
 	}
 	return response
 }

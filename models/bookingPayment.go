@@ -9,10 +9,10 @@ import (
 type BookingPayment struct {
 	gorm.Model
 	BookingID       string
-	PaymentMethodID uint
 	PaypalReference *string
 	PaymentAmount   float64
 	Booking         Booking
+	PaymentMethodID uint
 	PaymentMethod   PaymentMethod
 }
 

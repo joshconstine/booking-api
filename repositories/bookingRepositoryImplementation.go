@@ -34,7 +34,14 @@ func (t *bookingRepositoryImplementation) FindAll() []response.BookingResponse {
 func (t *bookingRepositoryImplementation) FindById(id string) response.BookingInformationResponse {
 	var booking models.Booking
 	result := t.Db.Model(&models.Booking{}).Where(
-		"id = ?", id).Preload("Payments.PaymentMethod").Preload("Details").Preload("CostItems").Preload("Documents").Preload("BookingStatus").Preload("Entities").First(&booking)
+		"id = ?", id).
+		Preload("Payments.PaymentMethod").
+		Preload("Details").
+		Preload("CostItems").
+		Preload("Documents").
+		Preload("BookingStatus").
+		Preload("Entities").
+		First(&booking)
 
 	if result.Error != nil {
 		return response.BookingInformationResponse{}
