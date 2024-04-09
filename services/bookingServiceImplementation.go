@@ -5,24 +5,23 @@ import (
 	"booking-api/data/response"
 	"booking-api/models"
 	"booking-api/repositories"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 )
 
 type BookingServiceImplementation struct {
-	BookingRepository     repositories.BookingRepository
-	UserService           UserService
-	BookingDetailsService BookingDetailsService
-	Validate              *validator.Validate
+	BookingRepository repositories.BookingRepository
+	UserService       UserService
+	Validate          *validator.Validate
 }
 
-func NewBookingServiceImplementation(bookingRepository repositories.BookingRepository, validate *validator.Validate, userService UserService, bookingDetailsService BookingDetailsService) BookingService {
+func NewBookingServiceImplementation(bookingRepository repositories.BookingRepository, validate *validator.Validate, userService UserService) BookingService {
 	return &BookingServiceImplementation{
-		BookingRepository:     bookingRepository,
-		Validate:              validate,
-		UserService:           userService,
-		BookingDetailsService: bookingDetailsService,
+		BookingRepository: bookingRepository,
+		Validate:          validate,
+		UserService:       userService,
 	}
 }
 
@@ -37,19 +36,35 @@ func (t BookingServiceImplementation) FindById(id string) response.BookingInform
 	return result
 }
 
-func (t BookingServiceImplementation) Create(request requests.CreateUserRequest) response.BookingResponse {
+func (t BookingServiceImplementation) Create(request requests.CreateUserRequest) (response.BookingResponse, error) {
 	// validate request
 	err := t.Validate.Struct(request)
-	if err != nil {
-		panic(err)
-	}
-
-	var bookingToCreate = models.Booking{}
-
-	//
 
 	//check if this user already exists
 	user := t.UserService.FindByEmail(request.Email)
+
+	bookingToCreate := models.Booking{
+		BookingStatus: models.BookingStatus{
+			Model: gorm.Model{
+				ID: 1,
+			},
+		},
+		Details: models.BookingDetails{
+			PaymentComplete:  false,
+			DocumentsSigned:  false,
+			DepositPaid:      false,
+			BookingStartDate: time.Now(),
+			PaymentDueDate:   time.Now().AddDate(0, 0, 7),
+			LocationID:       1,
+		},
+		User: models.User{
+			Model: gorm.Model{
+				ID: 0,
+			},
+			Email: request.Email,
+		},
+	}
+
 	if user.Email != request.Email {
 		//if not create a new user
 		createdUser := t.UserService.CreateUser(request)
@@ -58,21 +73,17 @@ func (t BookingServiceImplementation) Create(request requests.CreateUserRequest)
 	} else {
 		bookingToCreate.UserID = user.ID
 	}
-	bookingToCreate.User = models.User{
-		Email: user.Email,
+	if err != nil {
+		return response.BookingResponse{}, err
 	}
-
-	bookingToCreate.User = models.User{
-		Model: gorm.Model{
-			ID: bookingToCreate.UserID,
-		},
-		Email: request.Email,
-	}
-
 	// create booking
 	booking := t.BookingRepository.Create(bookingToCreate)
 
+	bookingToCreate.Details.BookingID = bookingToCreate.ID
+
+	booking = t.BookingRepository.Update(bookingToCreate)
+
 	bookingResponse := booking.MapBookingToResponse()
 
-	return bookingResponse
+	return bookingResponse, nil
 }

@@ -55,7 +55,20 @@ func (t BookingController) CreateBookingWithUserInformation(ctx *gin.Context) {
 	var request request.CreateUserRequest
 	ctx.BindJSON(&request)
 
-	bookingResponse := t.bookingService.Create(request)
+	bookingResponse, err := t.bookingService.Create(request)
+
+	if err != nil {
+		webResponse := response.Response{
+			Code:   http.StatusBadRequest,
+			Status: http.StatusText(http.StatusBadRequest),
+			Data:   err.Error(),
+		}
+
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(http.StatusBadRequest, webResponse)
+		return
+	}
+
 	webResponse := response.Response{
 		Code:   http.StatusCreated,
 		Status: http.StatusText(http.StatusCreated),
