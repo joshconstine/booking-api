@@ -103,5 +103,7 @@ func (b *Booking) MapBookingToInformationResponse() response.BookingInformationR
 		response.Entities = append(response.Entities, entity.MapEntityBookingToResponse())
 	}
 
+	response.Customer = b.User.MapUserToResponse()
+
 	return response
 }

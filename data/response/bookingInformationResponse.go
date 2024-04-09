@@ -1,8 +1,8 @@
 package response
 
 type BookingInformationResponse struct {
-	ID string `json:"id"`
-	// User UserResponse `json:"user"`
+	ID        string                    `json:"id"`
+	Customer  UserResponse              `json:"customer"`
 	Status    BookingStatusResponse     `json:"status"`
 	Details   BookingDetailsResponse    `json:"details"`
 	CostItems []BookingCostItemResponse `json:"costItems"`

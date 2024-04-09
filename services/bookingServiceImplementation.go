@@ -72,6 +72,12 @@ func (t BookingServiceImplementation) Create(request requests.CreateUserRequest)
 		bookingToCreate.UserID = createdUser.ID
 	} else {
 		bookingToCreate.UserID = user.ID
+		bookingToCreate.User = models.User{
+			Model: gorm.Model{
+				ID: user.ID,
+			},
+			Email: user.Email,
+		}
 	}
 	if err != nil {
 		return response.BookingResponse{}, err

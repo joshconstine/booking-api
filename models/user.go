@@ -1,6 +1,8 @@
 package models
 
 import (
+	"booking-api/data/response"
+
 	"gorm.io/gorm"
 )
 
@@ -28,4 +30,14 @@ func (user *User) HashPassword(password string) error {
 	}
 
 	return nil
+}
+
+func (user *User) MapUserToResponse() response.UserResponse {
+	response := response.UserResponse{
+		ID:       user.ID,
+		Username: user.Username,
+
+		Email: user.Email,
+	}
+	return response
 }
