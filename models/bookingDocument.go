@@ -9,13 +9,13 @@ import (
 type BookingDocument struct {
 	gorm.Model
 	BookingID         string
+	EntityBookingID   uint
 	RequiresSignature bool
 	Signed            bool
 	Note              string
 	DocumentID        uint
 	Document          Document
 	Booking           Booking
-	EntityBookingID   uint
 }
 
 func (b *BookingDocument) TableName() string {
@@ -25,12 +25,12 @@ func (b *BookingDocument) TableName() string {
 func (b *BookingDocument) MapBookingDocumentToResponse() response.BookingDocumentResponse {
 
 	documentResponse := response.BookingDocumentResponse{
-		ID:        b.ID,
-		BookingID: b.BookingID,
-
+		ID:                b.ID,
 		RequiresSignature: b.RequiresSignature,
 		Note:              b.Note,
 	}
+
+	documentResponse.Document = b.Document.MapDocumentToResponse()
 
 	return documentResponse
 

@@ -38,7 +38,9 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 		Preload("Payments.PaymentMethod").
 		Preload("Details").
 		Preload("CostItems").
-		Preload("Documents").
+		Preload("CostItems.BookingCostType").
+		Preload("CostItems.TaxRate").
+		Preload("Documents.Document").
 		Preload("BookingStatus").
 		Preload("Entities").
 		First(&booking)

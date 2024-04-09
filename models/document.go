@@ -8,9 +8,8 @@ import (
 
 type Document struct {
 	gorm.Model
-	Name              string
-	URL               string
-	BookingDocumentID uint
+	Name string
+	URL  string
 }
 
 func (d *Document) TableName() string {
