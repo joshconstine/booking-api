@@ -15,6 +15,81 @@ import (
 	"gorm.io/gorm"
 )
 
+func SeedAccounts(db *gorm.DB) {
+	accountOwnerEmail := "l@gmail.com"
+	accounts := []models.Account{
+		{
+			Model: gorm.Model{
+				ID: 1,
+			},
+			Name: "The Everett Resort",
+			Members: []models.Membership{
+				{
+					User: models.User{
+						Email: accountOwnerEmail,
+					},
+					Role: models.UserRole{
+						Model: gorm.Model{
+							ID: 3,
+						},
+					},
+					PhoneNumber: "1234567890",
+					Email:       accountOwnerEmail,
+				},
+			},
+			Settings: models.AccountSettings{
+				PlanLevel: models.ServicePlan{
+					Name: "Basic Sas Plan",
+					Fees: []models.ServiceFee{
+						{
+							FeePercentage:         0.05,
+							AppliesToAllCostTypes: true,
+						},
+					},
+				},
+			},
+		},
+		{
+			Model: gorm.Model{
+				ID: 2,
+			},
+			Name: "St Germain Boat Rentals",
+			Members: []models.Membership{
+				{
+					User: models.User{
+						Email: accountOwnerEmail,
+					},
+					Role: models.UserRole{
+						Model: gorm.Model{
+							ID: 3,
+						},
+					},
+					PhoneNumber: "1234567890",
+					Email:       accountOwnerEmail,
+				},
+			},
+			Settings: models.AccountSettings{
+				PlanLevel: models.ServicePlan{
+					Name: "Basic Sas Plan",
+					Fees: []models.ServiceFee{
+						{
+							FeePercentage:         0.05,
+							AppliesToAllCostTypes: true,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	accountRepository := repositories.NewAccountRepositoryImplementation(db)
+
+	for _, account := range accounts {
+		accountRepository.Create(account)
+	}
+
+}
+
 func SeedBookingStatus(db *gorm.DB) {
 	bookingStauses := []models.BookingStatus{
 		{
@@ -742,14 +817,15 @@ func main() {
 	objectStorage.CreateSession()
 
 	// database.Migrate()
+	SeedAccounts(database.Instance)
 
 	// SeedBookingStatus(database.Instance)
+	//SeedDocuments(objectStorage.Client, database.Instance)
 	// SeedBookingCostTypes(database.Instance)
 	// SeedRoomTypes(database.Instance)
 	//SeedAmenities(database.Instance)
 	//SeedRentals(database.Instance)
 	//SeedBoats(database.Instance)
-	//SeedDocuments(objectStorage.Client, database.Instance)
 	// SeedTaxRates(database.Instance)
 	// SeedAmenityTypes(database.Instance)
 	// SeedLocations(database.Instance)
@@ -758,7 +834,7 @@ func main() {
 
 	//*****users rbac
 
-	SeedUserRoles(database.Instance)
+	// SeedUserRoles(database.Instance)
 
 	log.Println("Database seeding Completed!")
 

@@ -30,6 +30,7 @@ func NewRouter(
 	entityBookingDurationRuleController *controllers.EntityBookingDurationRuleController,
 	entityBookingController *controllers.EntityBookingController,
 	userRoleController *controllers.UserRoleController,
+	accountController *controllers.AccountController,
 
 ) *gin.Engine {
 
@@ -54,6 +55,11 @@ func NewRouter(
 		userRoleControllerRouter.GET("", userRoleController.FindAll)
 		userRoleControllerRouter.GET("/:userRoleID", userRoleController.FindByID)
 		userRoleControllerRouter.POST("", userRoleController.Create)
+
+		/************************ ACCOUNT ************************/
+
+		accountRouter := api.Group("/accounts")
+		accountRouter.GET(":id", accountController.FindByID)
 
 		/************************ HELPERS ************************/
 

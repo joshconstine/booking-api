@@ -73,5 +73,12 @@ func Migrate() {
 
 	Instance.AutoMigrate(&models.Login{})
 
+	//***SAS***
+	Instance.AutoMigrate(&models.Account{})
+	Instance.AutoMigrate(&models.Membership{})
+	Instance.AutoMigrate(&models.AccountSettings{})
+	Instance.AutoMigrate(&models.ServicePlan{})
+	Instance.AutoMigrate(&models.ServiceFee{})
+
 	log.Println("Database Migration Completed!")
 }
