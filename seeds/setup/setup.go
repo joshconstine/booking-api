@@ -17,11 +17,10 @@ import (
 
 func SeedAccounts(db *gorm.DB) {
 	accountOwnerEmail := "l@gmail.com"
+	cleanerEmail := "k@gmail.com"
 	accounts := []models.Account{
 		{
-			Model: gorm.Model{
-				ID: 1,
-			},
+
 			Name: "The Everett Resort",
 			Members: []models.Membership{
 				{
@@ -36,10 +35,30 @@ func SeedAccounts(db *gorm.DB) {
 					PhoneNumber: "1234567890",
 					Email:       accountOwnerEmail,
 				},
+				{
+					User: models.User{
+						Email: cleanerEmail,
+					},
+					Role: models.UserRole{
+						Model: gorm.Model{
+							ID: 2,
+						},
+					},
+					PhoneNumber: "92026533333",
+					Email:       accountOwnerEmail,
+				},
 			},
-			Settings: models.AccountSettings{
-				PlanLevel: models.ServicePlan{
-					Name: "Basic Sas Plan",
+			AccountSettings: models.AccountSettings{
+				AccountOwner: models.Membership{
+					User: models.User{
+						Email: accountOwnerEmail,
+					},
+				},
+
+				ServicePlan: models.ServicePlan{
+					Model: gorm.Model{
+						ID: 1,
+					},
 					Fees: []models.ServiceFee{
 						{
 							FeePercentage:         0.05,
@@ -50,9 +69,7 @@ func SeedAccounts(db *gorm.DB) {
 			},
 		},
 		{
-			Model: gorm.Model{
-				ID: 2,
-			},
+
 			Name: "St Germain Boat Rentals",
 			Members: []models.Membership{
 				{
@@ -68,9 +85,11 @@ func SeedAccounts(db *gorm.DB) {
 					Email:       accountOwnerEmail,
 				},
 			},
-			Settings: models.AccountSettings{
-				PlanLevel: models.ServicePlan{
-					Name: "Basic Sas Plan",
+			AccountSettings: models.AccountSettings{
+				ServicePlan: models.ServicePlan{
+					Model: gorm.Model{
+						ID: 1,
+					},
 					Fees: []models.ServiceFee{
 						{
 							FeePercentage:         0.05,
@@ -86,6 +105,7 @@ func SeedAccounts(db *gorm.DB) {
 
 	for _, account := range accounts {
 		accountRepository.Create(account)
+
 	}
 
 }
@@ -816,7 +836,7 @@ func main() {
 	// create object storage client
 	objectStorage.CreateSession()
 
-	// database.Migrate()
+	database.Migrate()
 	SeedAccounts(database.Instance)
 
 	// SeedBookingStatus(database.Instance)

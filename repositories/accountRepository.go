@@ -1,8 +1,12 @@
 package repositories
 
-import "booking-api/models"
+import (
+	"booking-api/data/response"
+	"booking-api/models"
+)
 
 type AccountRepository interface {
 	Create(account models.Account) error
-	GetByID(id uint) (models.Account, error)
+	Update(account models.Account) error
+	GetByID(id uint) (response.AccountResponse, error)
 }
