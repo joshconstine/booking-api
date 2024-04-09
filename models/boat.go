@@ -15,6 +15,7 @@ type Boat struct {
 	Photos              []EntityPhoto             `gorm:"polymorphic:Entity"`
 	Bookings            []EntityBooking           `gorm:"polymorphic:Entity"`
 	BookingCostItems    []EntityBookingCost       `gorm:"polymorphic:Entity"`
+	BookingDocuments    []EntityBookingDocument   `gorm:"polymorphic:Entity"`
 	BookingDurationRule EntityBookingDurationRule `gorm:"polymorphic:Entity"`
 }
 
@@ -44,6 +45,10 @@ func (b *Boat) MapBoatToResponse() response.BoatResponse {
 
 	for _, bookingCostItem := range b.BookingCostItems {
 		result.BookingCostItems = append(result.BookingCostItems, bookingCostItem.MapEntityBookingCostToResponse())
+	}
+
+	for _, bookingDocument := range b.BookingDocuments {
+		result.BookingDocuments = append(result.BookingDocuments, bookingDocument.MapEntityBookingDocumentToResponse())
 	}
 
 	result.BookingDurationRule = b.BookingDurationRule.MapEntityBookingDurationRuleToResponse()

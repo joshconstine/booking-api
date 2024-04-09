@@ -14,5 +14,6 @@ type RentalInformationResponse struct {
 	RentalRooms         []RentalRoomResponse              `json:"rentalRooms"`
 	Bookings            []EntityBookingResponse           `json:"bookings"`
 	BookingCostItems    []EntityBookingCostResponse       `json:"bookingCostItems"`
+	BookingDocuments    []EntityBookingDocumentResponse   `json:"bookingDocuments"`
 	BookingDurationRule EntityBookingDurationRuleResponse `json:"bookingDurationRule"`
 }

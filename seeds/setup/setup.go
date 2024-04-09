@@ -436,10 +436,10 @@ func SeedRoomTypes(db *gorm.DB) {
 }
 func SeedBoats(db *gorm.DB) {
 	nineAM := time.Date(2021, 1, 1, 9, 0, 0, 0, time.UTC)
-	elevenAM := time.Date(2021, 1, 1, 11, 0, 0, 0, time.UTC)
+	//elevenAM := time.Date(2021, 1, 1, 11, 0, 0, 0, time.UTC)
 	threePM := time.Date(2021, 1, 1, 15, 0, 0, 0, time.UTC)
 
-	fivePM := time.Date(2021, 1, 1, 17, 0, 0, 0, time.UTC)
+	//fivePM := time.Date(2021, 1, 1, 17, 0, 0, 0, time.UTC)
 	boats := []models.Boat{
 		{
 			// Model: gorm.Model{
@@ -464,6 +464,16 @@ func SeedBoats(db *gorm.DB) {
 				StartTime:       nineAM,
 				EndTime:         threePM,
 			},
+			BookingDocuments: []models.EntityBookingDocument{
+				{
+					Document: models.Document{
+						Model: gorm.Model{
+							ID: 2,
+						},
+					},
+					RequiresSignature: true,
+				},
+			},
 			BookingCostItems: []models.EntityBookingCost{
 				{
 					BookingCostType: models.BookingCostType{
@@ -485,55 +495,55 @@ func SeedBoats(db *gorm.DB) {
 				},
 			},
 		},
-		{
-			// Model: gorm.Model{
-			// 	ID: 2,
-			// },
-			Name:      "The Little Dipper",
-			Occupancy: 4,
-			MaxWeight: 1000,
-			Timeblocks: []models.Timeblock{
-				{
-					StartTime: elevenAM,
-					EndTime:   fivePM,
-				},
-			},
-			Photos: []models.EntityPhoto{
-				{
-					Photo: models.Photo{
+		// {
+		// 	// Model: gorm.Model{
+		// 	// 	ID: 2,
+		// 	// },
+		// 	Name:      "The Little Dipper",
+		// 	Occupancy: 4,
+		// 	MaxWeight: 1000,
+		// 	Timeblocks: []models.Timeblock{
+		// 		{
+		// 			StartTime: elevenAM,
+		// 			EndTime:   fivePM,
+		// 		},
+		// 	},
+		// 	Photos: []models.EntityPhoto{
+		// 		{
+		// 			Photo: models.Photo{
 
-						URL: "boat_photos/2/https://bookingapp.us-ord-1.linodeobjects.com/boat_photos/2/5a1ab150-1ef3-4959-8b5b-085263d9b831.jpeg",
-					},
-				},
-			},
-			BookingDurationRule: models.EntityBookingDurationRule{
-				MinimumDuration: 3,
-				MaximumDuration: 18,
-				BookingBuffer:   3,
-				StartTime:       elevenAM,
-				EndTime:         fivePM,
-			},
-			BookingCostItems: []models.EntityBookingCost{
-				{
-					BookingCostType: models.BookingCostType{
-						Model: gorm.Model{
-							ID: 4,
-						},
-					},
-					TaxRateID: 2,
-					Amount:    150,
-				},
-				{
-					BookingCostType: models.BookingCostType{
-						Model: gorm.Model{
-							ID: 2,
-						},
-					},
-					TaxRateID: 2,
-					Amount:    130,
-				},
-			},
-		},
+		// 				URL: "boat_photos/2/https://bookingapp.us-ord-1.linodeobjects.com/boat_photos/2/5a1ab150-1ef3-4959-8b5b-085263d9b831.jpeg",
+		// 			},
+		// 		},
+		// 	},
+		// 	BookingDurationRule: models.EntityBookingDurationRule{
+		// 		MinimumDuration: 3,
+		// 		MaximumDuration: 18,
+		// 		BookingBuffer:   3,
+		// 		StartTime:       elevenAM,
+		// 		EndTime:         fivePM,
+		// 	},
+		// 	BookingCostItems: []models.EntityBookingCost{
+		// 		{
+		// 			BookingCostType: models.BookingCostType{
+		// 				Model: gorm.Model{
+		// 					ID: 4,
+		// 				},
+		// 			},
+		// 			TaxRateID: 2,
+		// 			Amount:    150,
+		// 		},
+		// 		{
+		// 			BookingCostType: models.BookingCostType{
+		// 				Model: gorm.Model{
+		// 					ID: 2,
+		// 				},
+		// 			},
+		// 			TaxRateID: 2,
+		// 			Amount:    130,
+		// 		},
+		// 	},
+		// },
 	}
 
 	boatRepository := repositories.NewBoatRepositoryImplementation(db)
@@ -615,6 +625,16 @@ func SeedRentals(db *gorm.DB) {
 				BookingBuffer:   2,
 				StartTime:       nineAM,
 				EndTime:         threePM,
+			},
+			BookingDocuments: []models.EntityBookingDocument{
+				{
+					Document: models.Document{
+						Model: gorm.Model{
+							ID: 2,
+						},
+					},
+					RequiresSignature: true,
+				},
 			},
 			BookingCostItems: []models.EntityBookingCost{
 				{
@@ -701,7 +721,7 @@ func main() {
 	// SeedRoomTypes(database.Instance)
 	//SeedAmenities(database.Instance)
 	SeedRentals(database.Instance)
-	//SeedBoats(database.Instance)
+	SeedBoats(database.Instance)
 	//SeedDocuments(objectStorage.Client, database.Instance)
 	// SeedTaxRates(database.Instance)
 	// SeedAmenityTypes(database.Instance)

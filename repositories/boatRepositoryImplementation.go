@@ -17,7 +17,14 @@ func NewBoatRepositoryImplementation(Db *gorm.DB) BoatRepository {
 
 func (t *BoatRepositoryImplementation) FindAll() []response.BoatResponse {
 	var boats []models.Boat
-	result := t.Db.Model(&models.Boat{}).Preload("Timeblocks").Preload("Photos").Preload("Bookings").Preload("BookingCostItems").Preload("BookingDurationRule").Find(&boats)
+	result := t.Db.Model(&models.Boat{}).
+		Preload("Timeblocks").
+		Preload("Photos").
+		Preload("Bookings").
+		Preload("BookingCostItems").
+		Preload("BookingDurationRule").
+		Preload("BookingDocuments.Document").
+		Find(&boats)
 	if result.Error != nil {
 		return []response.BoatResponse{}
 	}
@@ -32,7 +39,16 @@ func (t *BoatRepositoryImplementation) FindAll() []response.BoatResponse {
 
 func (t *BoatRepositoryImplementation) FindById(id int) response.BoatResponse {
 	var boat models.Boat
-	result := t.Db.Model(&models.Boat{}).Where("id = ?", id).Preload("Timeblocks").Preload("Photos").Preload("Bookings").Preload("BookingCostItems").Preload("BookingDurationRule").Preload("BookingCostItems.BookingCostType").Preload("BookingCostItems.TaxRate").Find(&boat)
+	result := t.Db.Model(&models.Boat{}).Where("id = ?", id).
+		Preload("Timeblocks").
+		Preload("Photos").
+		Preload("Bookings").
+		Preload("BookingCostItems").
+		Preload("BookingDurationRule").
+		Preload("BookingCostItems.BookingCostType").
+		Preload("BookingCostItems.TaxRate").
+		Preload("BookingDocuments.Document").
+		Find(&boat)
 	if result.Error != nil {
 		return response.BoatResponse{}
 	}

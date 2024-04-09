@@ -54,6 +54,7 @@ func (r *RentalRepositoryImplementation) FindById(id uint) response.RentalInform
 		Preload("BookingDurationRule").
 		Preload("Timeblocks").
 		Preload("Bookings").
+		Preload("BookingDocuments.Document").
 		First(&rental)
 
 	if result.Error != nil {

@@ -21,6 +21,7 @@ type Rental struct {
 	RentalRooms         []RentalRoom              `gorm:"foreignKey:RentalID"`
 	Bookings            []EntityBooking           `gorm:"polymorphic:Entity"`
 	BookingCostItems    []EntityBookingCost       `gorm:"polymorphic:Entity"`
+	BookingDocuments    []EntityBookingDocument   `gorm:"polymorphic:Entity"`
 	BookingDurationRule EntityBookingDurationRule `gorm:"polymorphic:Entity"`
 }
 
@@ -72,6 +73,10 @@ func (r *Rental) MapRentalToInformationResponse() response.RentalInformationResp
 	}
 	for _, timeblock := range r.Timeblocks {
 		response.Timeblocks = append(response.Timeblocks, timeblock.MapTimeblockToResponse())
+	}
+
+	for _, document := range r.BookingDocuments {
+		response.BookingDocuments = append(response.BookingDocuments, document.MapEntityBookingDocumentToResponse())
 	}
 
 	response.BookingDurationRule = r.BookingDurationRule.MapEntityBookingDurationRuleToResponse()

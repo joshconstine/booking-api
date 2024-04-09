@@ -9,5 +9,6 @@ type BoatResponse struct {
 	Photos              []EntityPhotoResponse             `json:"photos"`
 	Bookings            []EntityBookingResponse           `json:"bookings"`
 	BookingCostItems    []EntityBookingCostResponse       `json:"bookingCostItems"`
+	BookingDocuments    []EntityBookingDocumentResponse   `json:"bookingDocuments"`
 	BookingDurationRule EntityBookingDurationRuleResponse `json:"bookingDurationRule"`
 }
