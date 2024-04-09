@@ -71,5 +71,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.EntityBookingDocument{})
 	Instance.AutoMigrate(&models.Timeblock{})
 
+	Instance.AutoMigrate(&models.Login{})
+
 	log.Println("Database Migration Completed!")
 }
