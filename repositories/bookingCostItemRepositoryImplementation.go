@@ -25,15 +25,7 @@ func (t *BookingCostItemRepositoryImplementation) FindAllCostItemsForBooking(boo
 
 	var bookingCostItemResponses []response.BookingCostItemResponse
 	for _, bookingCostItem := range bookingCostItems {
-		bookingCostItemResponses = append(bookingCostItemResponses, response.BookingCostItemResponse{
-			ID:        bookingCostItem.ID,
-			BookingID: bookingCostItem.BookingID,
-			Amount:    bookingCostItem.Amount,
-			BookingCostType: response.BookingCostTypeResponse{
-				ID:   bookingCostItem.BookingCostType.ID,
-				Name: bookingCostItem.BookingCostType.Name,
-			},
-		})
+		bookingCostItemResponses = append(bookingCostItemResponses, bookingCostItem.MapBookingCostItemToResponse())
 	}
 	return bookingCostItemResponses
 }
@@ -49,15 +41,7 @@ func (t *BookingCostItemRepositoryImplementation) Create(bookingCostItem request
 		return response.BookingCostItemResponse{}
 	}
 
-	return response.BookingCostItemResponse{
-		ID:        bookingCostItemModel.ID,
-		BookingID: bookingCostItemModel.BookingID,
-		Amount:    bookingCostItemModel.Amount,
-		BookingCostType: response.BookingCostTypeResponse{
-			ID:   bookingCostItemModel.BookingCostType.ID,
-			Name: bookingCostItemModel.BookingCostType.Name,
-		},
-	}
+	return bookingCostItemModel.MapBookingCostItemToResponse()
 
 }
 
@@ -90,15 +74,7 @@ func (t *BookingCostItemRepositoryImplementation) Update(updateRequest request.U
 		return response.BookingCostItemResponse{}
 	}
 
-	return response.BookingCostItemResponse{
-		ID:        bookingCostItem.ID,
-		BookingID: bookingCostItem.BookingID,
-		Amount:    bookingCostItem.Amount,
-		BookingCostType: response.BookingCostTypeResponse{
-			ID:   bookingCostItem.BookingCostType.ID,
-			Name: bookingCostItem.BookingCostType.Name,
-		},
-	}
+	return bookingCostItem.MapBookingCostItemToResponse()
 }
 
 func (t *BookingCostItemRepositoryImplementation) Delete(bookingCostItemId uint) bool {

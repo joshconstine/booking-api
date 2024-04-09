@@ -25,9 +25,8 @@ func (b *BookingCostItem) TableName() string {
 func (b *BookingCostItem) MapBookingCostItemToResponse() response.BookingCostItemResponse {
 
 	result := response.BookingCostItemResponse{
-		ID:        b.ID,
-		BookingID: b.BookingID,
-		Amount:    b.Amount,
+		ID:     b.ID,
+		Amount: b.Amount,
 	}
 
 	result.BookingCostType = b.BookingCostType.MapBookingCostTypeToResponse()
