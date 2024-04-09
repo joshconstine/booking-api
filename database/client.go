@@ -66,8 +66,8 @@ func Migrate() {
 
 	Instance.AutoMigrate(&models.EntityBookingCost{})
 	Instance.AutoMigrate(&models.EntityBookingDurationRule{})
+	Instance.AutoMigrate(&models.EntityBookingRule{})
 	Instance.AutoMigrate(&models.EntityBookingDocument{})
-
 	Instance.AutoMigrate(&models.Timeblock{})
 
 	log.Println("Database Migration Completed!")

@@ -23,6 +23,7 @@ func (t *BoatRepositoryImplementation) FindAll() []response.BoatResponse {
 		Preload("Bookings").
 		Preload("BookingCostItems").
 		Preload("BookingDurationRule").
+		Preload("BookingRule").
 		Preload("BookingDocuments.Document").
 		Find(&boats)
 	if result.Error != nil {
@@ -45,6 +46,7 @@ func (t *BoatRepositoryImplementation) FindById(id int) response.BoatResponse {
 		Preload("Bookings").
 		Preload("BookingCostItems").
 		Preload("BookingDurationRule").
+		Preload("BookingRule").
 		Preload("BookingCostItems.BookingCostType").
 		Preload("BookingCostItems.TaxRate").
 		Preload("BookingDocuments.Document").

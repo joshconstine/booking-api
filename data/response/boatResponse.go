@@ -11,4 +11,5 @@ type BoatResponse struct {
 	BookingCostItems    []EntityBookingCostResponse       `json:"bookingCostItems"`
 	BookingDocuments    []EntityBookingDocumentResponse   `json:"bookingDocuments"`
 	BookingDurationRule EntityBookingDurationRuleResponse `json:"bookingDurationRule"`
+	BookingRule         EntityBookingRuleResponse         `json:"bookingRule"`
 }

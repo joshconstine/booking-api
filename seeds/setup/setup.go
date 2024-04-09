@@ -494,6 +494,12 @@ func SeedBoats(db *gorm.DB) {
 					Amount:    80,
 				},
 			},
+			BookingRule: models.EntityBookingRule{
+				AdvertiseAtAllLocations: true,
+				AllowPets:               false,
+				AllowInstantBooking:     true,
+				OfferEarlyCheckIn:       true,
+			},
 		},
 		// {
 		// 	// Model: gorm.Model{
@@ -625,6 +631,12 @@ func SeedRentals(db *gorm.DB) {
 				BookingBuffer:   2,
 				StartTime:       nineAM,
 				EndTime:         threePM,
+			},
+			BookingRule: models.EntityBookingRule{
+				AdvertiseAtAllLocations: true,
+				AllowPets:               false,
+				AllowInstantBooking:     true,
+				OfferEarlyCheckIn:       true,
 			},
 			BookingDocuments: []models.EntityBookingDocument{
 				{
