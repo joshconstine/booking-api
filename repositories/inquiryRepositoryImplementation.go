@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"booking-api/data/response"
 	"booking-api/models"
 
 	"gorm.io/gorm"
@@ -24,14 +25,15 @@ func (iri *InquiryRepositoryImplementation) Create(inquiry models.Inquiry) (mode
 	return inquiry, nil
 }
 
-func (iri *InquiryRepositoryImplementation) GetByID(inquiryID uint) (models.Inquiry, error) {
-
+func (iri *InquiryRepositoryImplementation) GetByID(inquiryID uint) (response.InquiryResponse, error) {
 	var inquiry models.Inquiry
-	result := iri.Db.Preload("EntityInquiries").
+	result := iri.Db.
+		Preload("EntityInquiries.InquiryStatus").
+		Preload("EntityInquiries").
 		Preload("User").
 		First(&inquiry, inquiryID)
 	if result.Error != nil {
-		return models.Inquiry{}, result.Error
+		return response.InquiryResponse{}, result.Error
 	}
-	return inquiry, nil
+	return inquiry.MapInquiryToResponse(), nil
 }

@@ -17,4 +17,5 @@ type RentalInformationResponse struct {
 	BookingDocuments    []EntityBookingDocumentResponse   `json:"bookingDocuments"`
 	BookingDurationRule EntityBookingDurationRuleResponse `json:"bookingDurationRule"`
 	BookingRule         EntityBookingRuleResponse         `json:"bookingRule"`
+	Inquiries           []EntityInquiryResponse           `json:"inquiries"`
 }

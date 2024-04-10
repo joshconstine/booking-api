@@ -1,6 +1,7 @@
 package models
 
 import (
+	"booking-api/data/response"
 	"time"
 
 	"gorm.io/gorm"
@@ -14,4 +15,17 @@ type EntityInquiry struct {
 	EntityType      string `gorm:"primaryKey"`
 	StartTime       time.Time
 	EndTime         time.Time
+	InquiryStatus   InquiryStatus
+}
+
+func (entityInquiry *EntityInquiry) MapEntityInquiryToResponse() response.EntityInquiryResponse {
+	return response.EntityInquiryResponse{
+		ID:            entityInquiry.ID,
+		InquiryID:     entityInquiry.InquiryID,
+		EntityID:      entityInquiry.EntityID,
+		EntityType:    entityInquiry.EntityType,
+		StartTime:     entityInquiry.StartTime,
+		EndTime:       entityInquiry.EndTime,
+		InquiryStatus: entityInquiry.InquiryStatus.MapInquiryStatusToResponse(),
+	}
 }

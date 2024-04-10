@@ -14,6 +14,9 @@ type User struct {
 	Email       string `json:"email" gorm:"unique"`
 	PhoneNumber string `json:"phoneNumber"`
 	Login       Login
+
+	Bookings  []Booking `gorm:"foreignKey:UserID"`
+	Inquiries []Inquiry `gorm:"foreignKey:UserID"`
 }
 
 func (user *User) CheckPassword(providedPassword string) error {
