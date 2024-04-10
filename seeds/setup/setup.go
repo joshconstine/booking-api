@@ -712,6 +712,11 @@ func SeedBoats(db *gorm.DB) {
 					EndDate:   seventyDaysFromNow,
 				},
 			},
+			Status: models.BoatStatus{
+				IsClean:    true,
+				LocationID: 1,
+			},
+
 			BookingRule: models.EntityBookingRule{
 				AdvertiseAtAllLocations: true,
 				AllowPets:               false,

@@ -42,7 +42,7 @@ func (t *BoatRepositoryImplementation) FindById(id int) response.BoatInformation
 	var boat models.Boat
 	result := t.Db.Model(&models.Boat{}).Where("id = ?", id).
 		Preload("Timeblocks").
-		Preload("Photos").
+		Preload("Photos.Photo").
 		Preload("Bookings").
 		Preload("BookingCostItems").
 		Preload("BookingDurationRule").
@@ -53,6 +53,7 @@ func (t *BoatRepositoryImplementation) FindById(id int) response.BoatInformation
 		Preload("BookingRequests.InquiryStatus").
 		Preload("BookingCostItemAdjustments.BookingCostType").
 		Preload("BookingCostItemAdjustments.TaxRate").
+		Preload("Status").
 		Find(&boat)
 	if result.Error != nil {
 		return response.BoatInformationResponse{}

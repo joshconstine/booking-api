@@ -8,11 +8,11 @@ import (
 
 type Boat struct {
 	gorm.Model
-	Name       string
-	Occupancy  uint       `gorm:"not null"`
-	MaxWeight  uint       `gorm:"not null"`
-	AccountID  uint       `gorm:"not null"`
-	BoatStatus BoatStatus `gorm:"not null"`
+	Name      string
+	Occupancy uint       `gorm:"not null"`
+	MaxWeight uint       `gorm:"not null"`
+	AccountID uint       `gorm:"not null"`
+	Status    BoatStatus `gorm:"not null"`
 
 	Timeblocks                 []EntityTimeblock             `gorm:"polymorphic:Entity"`
 	Photos                     []EntityPhoto                 `gorm:"polymorphic:Entity"`
@@ -87,6 +87,7 @@ func (b *Boat) MapBoatToInformationResponse() response.BoatInformationResponse {
 		result.BookingRequests = append(result.BookingRequests, bookingRequest.MapEntityBookingRequestToResponse())
 	}
 
+	result.Status = b.Status.MapBoatStatusToResponse()
 	result.BookingDurationRule = b.BookingDurationRule.MapEntityBookingDurationRuleToResponse()
 	result.BookingRule = b.BookingRule.MapEntityBookingRuleToResponse()
 	return result
