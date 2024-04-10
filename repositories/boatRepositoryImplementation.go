@@ -38,7 +38,7 @@ func (t *BoatRepositoryImplementation) FindAll() []response.BoatResponse {
 	return boatResponses
 }
 
-func (t *BoatRepositoryImplementation) FindById(id int) response.BoatResponse {
+func (t *BoatRepositoryImplementation) FindById(id int) response.BoatInformationResponse {
 	var boat models.Boat
 	result := t.Db.Model(&models.Boat{}).Where("id = ?", id).
 		Preload("Timeblocks").
@@ -51,12 +51,14 @@ func (t *BoatRepositoryImplementation) FindById(id int) response.BoatResponse {
 		Preload("BookingCostItems.TaxRate").
 		Preload("BookingDocuments.Document").
 		Preload("BookingRequests.InquiryStatus").
+		Preload("BookingCostItemAdjustments.BookingCostType").
+		Preload("BookingCostItemAdjustments.TaxRate").
 		Find(&boat)
 	if result.Error != nil {
-		return response.BoatResponse{}
+		return response.BoatInformationResponse{}
 	}
 
-	return boat.MapBoatToResponse()
+	return boat.MapBoatToInformationResponse()
 
 }
 func (t *BoatRepositoryImplementation) Create(boat models.Boat) models.Boat {

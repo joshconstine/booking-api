@@ -1,15 +1,11 @@
 package response
 
-type RentalInformationResponse struct {
-	ID           uint                 `json:"id"`
-	Name         string               `json:"name"`
-	Bedrooms     int                  `json:"bedrooms"`
-	Bathrooms    int                  `json:"bathrooms"`
-	Description  string               `json:"description"`
-	Location     LocationResponse     `json:"location"`
-	RentalStatus RentalStatusResponse `json:"rentalStatus"`
-	RentalRooms  []RentalRoomResponse `json:"rentalRooms"`
-	Amenities    []AmenityResponse    `json:"amenities"`
+type BoatInformationResponse struct {
+	ID        uint               `json:"id"`
+	Name      string             `json:"name"`
+	Occupancy uint               `json:"occupancy"`
+	MaxWeight uint               `json:"maxWeight"`
+	Status    BoatStatusResponse `json:"status"`
 
 	Timeblocks                 []EntityTimeblockResponse             `json:"timeblocks"`
 	Photos                     []EntityPhotoResponse                 `json:"photos"`

@@ -59,6 +59,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.BookingPayment{})
 
 	Instance.AutoMigrate(&models.Boat{})
+	Instance.AutoMigrate(&models.BoatStatus{})
 
 	Instance.AutoMigrate(&models.Rental{})
 	Instance.AutoMigrate(&models.RentalStatus{})
@@ -66,6 +67,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.RentalRoom{})
 
 	Instance.AutoMigrate(&models.EntityBookingCost{})
+	Instance.AutoMigrate(&models.EntityBookingCostAdjustment{})
 	Instance.AutoMigrate(&models.EntityBookingDurationRule{})
 	Instance.AutoMigrate(&models.EntityBookingRule{})
 	Instance.AutoMigrate(&models.EntityBookingDocument{})

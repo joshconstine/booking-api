@@ -57,6 +57,8 @@ func (r *RentalRepositoryImplementation) FindById(id uint) response.RentalInform
 		Preload("Bookings").
 		Preload("BookingDocuments.Document").
 		Preload("BookingRequests.InquiryStatus").
+		Preload("BookingCostItemAdjustments.BookingCostType").
+		Preload("BookingCostItemAdjustments.TaxRate").
 		First(&rental)
 
 	if result.Error != nil {

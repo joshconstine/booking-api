@@ -18,15 +18,16 @@ type Rental struct {
 	Location     Location
 	RentalStatus RentalStatus
 
-	Amenities           []Amenity                 `gorm:"many2many:rental_amenities;"`
-	Timeblocks          []EntityTimeblock         `gorm:"polymorphic:Entity"`
-	EntityPhotos        []EntityPhoto             `gorm:"polymorphic:Entity"`
-	RentalRooms         []RentalRoom              `gorm:"foreignKey:RentalID"`
-	Bookings            []EntityBooking           `gorm:"polymorphic:Entity"`
-	BookingCostItems    []EntityBookingCost       `gorm:"polymorphic:Entity"`
-	BookingDocuments    []EntityBookingDocument   `gorm:"polymorphic:Entity"`
-	BookingDurationRule EntityBookingDurationRule `gorm:"polymorphic:Entity"`
-	BookingRule         EntityBookingRule         `gorm:"polymorphic:Entity"`
+	Amenities                  []Amenity                     `gorm:"many2many:rental_amenities;"`
+	Timeblocks                 []EntityTimeblock             `gorm:"polymorphic:Entity"`
+	EntityPhotos               []EntityPhoto                 `gorm:"polymorphic:Entity"`
+	RentalRooms                []RentalRoom                  `gorm:"foreignKey:RentalID"`
+	Bookings                   []EntityBooking               `gorm:"polymorphic:Entity"`
+	BookingCostItems           []EntityBookingCost           `gorm:"polymorphic:Entity"`
+	BookingCostItemAdjustments []EntityBookingCostAdjustment `gorm:"polymorphic:Entity"`
+	BookingDocuments           []EntityBookingDocument       `gorm:"polymorphic:Entity"`
+	BookingDurationRule        EntityBookingDurationRule     `gorm:"polymorphic:Entity"`
+	BookingRule                EntityBookingRule             `gorm:"polymorphic:Entity"`
 
 	BookingRequests []EntityBookingRequest `gorm:"polymorphic:Entity"`
 }
@@ -77,6 +78,11 @@ func (r *Rental) MapRentalToInformationResponse() response.RentalInformationResp
 	for _, bookingCostItem := range r.BookingCostItems {
 		response.BookingCostItems = append(response.BookingCostItems, bookingCostItem.MapEntityBookingCostToResponse())
 	}
+
+	for _, bookingCostItemAdjustment := range r.BookingCostItemAdjustments {
+		response.BookingCostItemAdjustments = append(response.BookingCostItemAdjustments, bookingCostItemAdjustment.MapEntityBookingCostAdjustmentToResponse())
+	}
+
 	for _, timeblock := range r.Timeblocks {
 		response.Timeblocks = append(response.Timeblocks, timeblock.MapTimeblockToResponse())
 	}

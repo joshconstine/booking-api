@@ -9,11 +9,20 @@ import (
 	"booking-api/repositories"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"time"
 
 	"gorm.io/gorm"
 )
+
+func GetRandomDateRangeWithenTheNextYear(minLength int, maxLength int) (time.Time, time.Time) {
+	min := time.Now()
+	max := time.Now().AddDate(0, 0, 365)
+	delta := max.Unix() - min.Unix()
+	sec := min.Unix() + int64(rand.Intn(int(delta)))
+	return time.Unix(sec, 0), time.Unix(sec, 0).AddDate(0, 0, rand.Intn(maxLength-minLength)+minLength)
+}
 
 func SeedInquiryStatuses(db *gorm.DB) {
 	inquiryStatuses := []models.InquiryStatus{
@@ -625,7 +634,11 @@ func SeedBoats(db *gorm.DB) {
 	nineAM := time.Date(2021, 1, 1, 9, 0, 0, 0, time.UTC)
 	//elevenAM := time.Date(2021, 1, 1, 11, 0, 0, 0, time.UTC)
 	threePM := time.Date(2021, 1, 1, 15, 0, 0, 0, time.UTC)
+	twoWeeksFromNow := time.Now().AddDate(0, 0, 14)
+	threeWeeksFromNow := time.Now().AddDate(0, 0, 21)
 
+	sixWeeksFromNow := time.Now().AddDate(0, 0, 42)
+	seventyDaysFromNow := time.Now().AddDate(0, 0, 70)
 	//fivePM := time.Date(2021, 1, 1, 17, 0, 0, 0, time.UTC)
 	boats := []models.Boat{
 		{
@@ -679,6 +692,24 @@ func SeedBoats(db *gorm.DB) {
 					},
 					TaxRateID: 2,
 					Amount:    80,
+				},
+			},
+			BookingCostItemAdjustments: []models.EntityBookingCostAdjustment{
+				{
+					Amount:            1500,
+					BookingCostTypeID: 4,
+					TaxRateID:         1,
+
+					StartDate: twoWeeksFromNow,
+					EndDate:   threeWeeksFromNow,
+				},
+				{
+					Amount:            2000,
+					BookingCostTypeID: 4,
+					TaxRateID:         1,
+
+					StartDate: sixWeeksFromNow,
+					EndDate:   seventyDaysFromNow,
 				},
 			},
 			BookingRule: models.EntityBookingRule{
@@ -751,6 +782,14 @@ func SeedRentals(db *gorm.DB) {
 	nineAM := time.Date(2021, 1, 1, 9, 0, 0, 0, time.UTC)
 	//elevenAM := time.Date(2021, 1, 1, 11, 0, 0, 0, time.UTC)
 	threePM := time.Date(2021, 1, 1, 15, 0, 0, 0, time.UTC)
+
+	twoWeeksFromNow := time.Now().AddDate(0, 0, 14)
+	threeWeeksFromNow := time.Now().AddDate(0, 0, 21)
+
+	sixWeeksFromNow := time.Now().AddDate(0, 0, 42)
+	seventyDaysFromNow := time.Now().AddDate(0, 0, 70)
+
+	// startDate, endDate := GetRandomDateRangeWithenTheNextYear(2, 14)
 
 	//fivePM := time.Date(2021, 1, 1, 17, 0, 0, 0, time.UTC)
 	rentals := []models.Rental{
@@ -855,6 +894,24 @@ func SeedRentals(db *gorm.DB) {
 					Amount:    100,
 				},
 			},
+			BookingCostItemAdjustments: []models.EntityBookingCostAdjustment{
+				{
+					Amount:            1500,
+					BookingCostTypeID: 3,
+					TaxRateID:         1,
+
+					StartDate: twoWeeksFromNow,
+					EndDate:   threeWeeksFromNow,
+				},
+				{
+					Amount:            2000,
+					BookingCostTypeID: 3,
+					TaxRateID:         1,
+
+					StartDate: sixWeeksFromNow,
+					EndDate:   seventyDaysFromNow,
+				},
+			},
 			EntityPhotos: []models.EntityPhoto{
 				{
 					Photo: models.Photo{
@@ -913,24 +970,24 @@ func main() {
 	// create object storage client
 	objectStorage.CreateSession()
 
-	// database.Migrate()
-	SeedAmenityTypes(database.Instance)
-	SeedBedTypes(database.Instance)
-	SeedBookingCostTypes(database.Instance)
-	SeedUserRoles(database.Instance)
-	SeedBookingStatus(database.Instance)
-	SeedDocuments(objectStorage.Client, database.Instance)
-	SeedRoomTypes(database.Instance)
-	SeedAmenities(database.Instance)
-	SeedPaymentMethods(database.Instance)
-	SeedTaxRates(database.Instance)
-	SeedLocations(database.Instance)
+	//database.Migrate()
+	// SeedAmenityTypes(database.Instance)
+	// SeedBedTypes(database.Instance)
+	// SeedBookingCostTypes(database.Instance)
+	// SeedUserRoles(database.Instance)
+	// SeedBookingStatus(database.Instance)
+	// SeedDocuments(objectStorage.Client, database.Instance)
+	// SeedRoomTypes(database.Instance)
+	// SeedAmenities(database.Instance)
+	// SeedPaymentMethods(database.Instance)
+	// SeedTaxRates(database.Instance)
+	// SeedLocations(database.Instance)
 
-	SeedInquiryStatuses(database.Instance)
-	SeedAccounts(database.Instance)
-	SeedInquiries(database.Instance)
+	// SeedInquiryStatuses(database.Instance)
+	// SeedAccounts(database.Instance)
+	// SeedInquiries(database.Instance)
 
-	SeedRentals(database.Instance)
+	// SeedRentals(database.Instance)
 	SeedBoats(database.Instance)
 
 	//*****users rbac

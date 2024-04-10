@@ -8,10 +8,6 @@ type BoatResponse struct {
 
 	Timeblocks          []EntityTimeblockResponse         `json:"timeblocks"`
 	Photos              []EntityPhotoResponse             `json:"photos"`
-	Bookings            []EntityBookingResponse           `json:"bookings"`
-	BookingCostItems    []EntityBookingCostResponse       `json:"bookingCostItems"`
-	BookingDocuments    []EntityBookingDocumentResponse   `json:"bookingDocuments"`
 	BookingRule         EntityBookingRuleResponse         `json:"bookingRule"`
 	BookingDurationRule EntityBookingDurationRuleResponse `json:"bookingDurationRule"`
-	BookingRequests     []EntityBookingRequestResponse    `json:"bookingRequests"`
 }
