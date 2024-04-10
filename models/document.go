@@ -9,7 +9,7 @@ import (
 type Document struct {
 	gorm.Model
 	Name string
-	URL  string
+	URL  string `gorm:"not null"`
 }
 
 func (d *Document) TableName() string {

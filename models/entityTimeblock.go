@@ -9,11 +9,11 @@ import (
 
 type EntityTimeblock struct {
 	gorm.Model
-	StartTime  time.Time
-	EndTime    time.Time
-	EntityID   uint   `gorm:"primaryKey"`
-	EntityType string `gorm:"primaryKey"`
-	BookingID  string
+	StartTime       time.Time `gorm:"not null"`
+	EndTime         time.Time `gorm:"not null"`
+	EntityID        uint      `gorm:"primaryKey"`
+	EntityType      string    `gorm:"primaryKey"`
+	EntityBookingID uint
 }
 
 func (t *EntityTimeblock) TableName() string {
@@ -22,9 +22,9 @@ func (t *EntityTimeblock) TableName() string {
 
 func (t *EntityTimeblock) MapTimeblockToResponse() response.EntityTimeblockResponse {
 	return response.EntityTimeblockResponse{
-		ID:        t.ID,
-		StartTime: t.StartTime,
-		EndTime:   t.EndTime,
-		BookingID: t.BookingID,
+		ID:              t.ID,
+		StartTime:       t.StartTime,
+		EndTime:         t.EndTime,
+		EntityBookingID: t.EntityBookingID,
 	}
 }

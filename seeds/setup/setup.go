@@ -913,27 +913,27 @@ func main() {
 	// create object storage client
 	objectStorage.CreateSession()
 
-	//database.Migrate()
-	//SeedInquiryStatuses(database.Instance)
-	SeedInquiries(database.Instance)
-	//SeedAccounts(database.Instance)
+	// database.Migrate()
+	SeedAmenityTypes(database.Instance)
+	SeedBedTypes(database.Instance)
+	SeedBookingCostTypes(database.Instance)
+	SeedUserRoles(database.Instance)
+	SeedBookingStatus(database.Instance)
+	SeedDocuments(objectStorage.Client, database.Instance)
+	SeedRoomTypes(database.Instance)
+	SeedAmenities(database.Instance)
+	SeedPaymentMethods(database.Instance)
+	SeedTaxRates(database.Instance)
+	SeedLocations(database.Instance)
 
-	//SeedBookingStatus(database.Instance)
-	//SeedDocuments(objectStorage.Client, database.Instance)
-	// SeedBookingCostTypes(database.Instance)
-	// SeedRoomTypes(database.Instance)
-	//SeedAmenities(database.Instance)
-	//SeedRentals(database.Instance)
-	//SeedBoats(database.Instance)
-	// SeedTaxRates(database.Instance)
-	// SeedAmenityTypes(database.Instance)
-	// SeedLocations(database.Instance)
-	// SeedBedTypes(database.Instance)
-	// SeedPaymentMethods(database.Instance)
+	SeedInquiryStatuses(database.Instance)
+	SeedAccounts(database.Instance)
+	SeedInquiries(database.Instance)
+
+	SeedRentals(database.Instance)
+	SeedBoats(database.Instance)
 
 	//*****users rbac
-
-	// SeedUserRoles(database.Instance)
 
 	log.Println("Database seeding Completed!")
 

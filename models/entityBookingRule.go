@@ -8,11 +8,11 @@ import (
 
 type EntityBookingRule struct {
 	gorm.Model
-	EntityID                uint
-	EntityType              string
-	AdvertiseAtAllLocations bool
-	AllowPets               bool
-	AllowInstantBooking     bool
+	EntityID                uint   `gorm:"index:idx_entity,unique"`
+	EntityType              string `gorm:"index:idx_entity,unique"`
+	AdvertiseAtAllLocations bool   `gorm:"default: false"`
+	AllowPets               bool   `gorm:"default: false"`
+	AllowInstantBooking     bool   `gorm:"default: false"`
 	OfferEarlyCheckIn       bool
 }
 

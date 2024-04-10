@@ -8,7 +8,7 @@ import (
 
 type BookingCostType struct {
 	gorm.Model
-	Name string `json:"name"`
+	Name string `gorm:"not null; unique"`
 }
 
 func (b *BookingCostType) TableName() string {

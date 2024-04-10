@@ -10,11 +10,11 @@ type EntityBooking struct {
 	gorm.Model
 	EntityID         uint   `gorm:"primaryKey"`
 	EntityType       string `gorm:"primaryKey"`
-	BookingID        string
-	TimeblockID      uint
-	BookingStatusID  uint
-	BookingCostItems []BookingCostItem `gorm:"foreignKey:EntityBookingID"`
+	BookingID        string `gorm:"not null"`
+	TimeblockID      uint   `gorm:"not null"`
+	BookingStatusID  uint   `gorm:"not null:default:1"`
 	Timeblock        EntityTimeblock
+	BookingCostItems []BookingCostItem `gorm:"foreignKey:EntityBookingID"`
 	Documents        []BookingDocument `gorm:"foreignKey:EntityBookingID"`
 }
 

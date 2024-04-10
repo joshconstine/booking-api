@@ -44,11 +44,6 @@ func (t BookingServiceImplementation) Create(request requests.CreateUserRequest)
 	user := t.UserService.FindByEmail(request.Email)
 
 	bookingToCreate := models.Booking{
-		BookingStatus: models.BookingStatus{
-			Model: gorm.Model{
-				ID: 1,
-			},
-		},
 		Details: models.BookingDetails{
 			PaymentComplete:  false,
 			DocumentsSigned:  false,

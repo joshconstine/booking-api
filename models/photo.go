@@ -8,7 +8,7 @@ import (
 
 type Photo struct {
 	gorm.Model
-	URL string
+	URL string `gorm:"not null"`
 }
 
 func (p *Photo) TableName() string {

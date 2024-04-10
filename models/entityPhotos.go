@@ -10,7 +10,7 @@ type EntityPhoto struct {
 	gorm.Model
 	EntityID   uint   `gorm:"primaryKey"`
 	EntityType string `gorm:"primaryKey"`
-	PhotoID    uint
+	PhotoID    uint   `gorm:"not null"`
 	Photo      Photo
 }
 

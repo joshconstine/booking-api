@@ -8,12 +8,12 @@ import (
 
 type BookingDocument struct {
 	gorm.Model
-	BookingID         string
+	BookingID         string `gorm:"not null"`
 	EntityBookingID   uint
 	RequiresSignature bool
 	Signed            bool
 	Note              string
-	DocumentID        uint
+	DocumentID        uint `gorm:"not null"`
 	Document          Document
 	Booking           Booking
 }

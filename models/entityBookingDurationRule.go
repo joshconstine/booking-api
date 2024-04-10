@@ -9,13 +9,13 @@ import (
 
 type EntityBookingDurationRule struct {
 	gorm.Model
-	EntityID        uint   `gorm:"index:idx_entity,unique"`
-	EntityType      string `gorm:"index:idx_entity,unique"`
-	MinimumDuration int
-	MaximumDuration int
-	BookingBuffer   int
-	StartTime       time.Time // the time of day that the booking can start
-	EndTime         time.Time // the time of day that the booking will end
+	EntityID        uint      `gorm:"index:idx_entity,unique; mot null"`
+	EntityType      string    `gorm:"index:idx_entity,unique; mot null"`
+	MinimumDuration int       `gorm:"not null: default: 1"`
+	MaximumDuration int       `gorm:"not null: default: 15"`
+	BookingBuffer   int       `gorm:"not null: default: 1"`
+	StartTime       time.Time `gorm:"not null: default: Time.Now()"`
+	EndTime         time.Time `gorm:"not null: default: Time.Now()"`
 }
 
 func (e *EntityBookingDurationRule) TableName() string {

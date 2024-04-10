@@ -3,8 +3,8 @@ package response
 type BoatResponse struct {
 	ID        uint   `json:"id"`
 	Name      string `json:"name"`
-	Occupancy int    `json:"occupancy"`
-	MaxWeight int    `json:"maxWeight"`
+	Occupancy uint   `json:"occupancy"`
+	MaxWeight uint   `json:"maxWeight"`
 
 	Timeblocks          []EntityTimeblockResponse         `json:"timeblocks"`
 	Photos              []EntityPhotoResponse             `json:"photos"`

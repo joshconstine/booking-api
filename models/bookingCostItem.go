@@ -8,13 +8,13 @@ import (
 
 type BookingCostItem struct {
 	gorm.Model
-	BookingID         string
-	BookingCostTypeID uint
-	Amount            float64
-	Booking           Booking
+	BookingID         string  `gorm:"not null"`
+	BookingCostTypeID uint    `gorm:"not null"`
+	Amount            float64 `gorm:"not null"`
 	EntityBookingID   uint
-	TaxRateID         uint
+	TaxRateID         uint `gorm:"not null"`
 	BookingCostType   BookingCostType
+	Booking           Booking
 	TaxRate           TaxRate
 }
 

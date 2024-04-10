@@ -8,14 +8,15 @@ import (
 
 type Rental struct {
 	gorm.Model
-	Name         string
-	LocationID   uint
-	Bedrooms     int
-	Bathrooms    int
+	Name       string `gorm:"not null"`
+	LocationID uint   `gorm:"not null"`
+	Bedrooms   int    `gorm:"not null"`
+	Bathrooms  int    `gorm:"not null"`
+	AccountID  uint   `gorm:"not null"`
+
 	Description  string
 	Location     Location
 	RentalStatus RentalStatus
-	AccountID    uint `gorm:"not null"`
 
 	Amenities           []Amenity                 `gorm:"many2many:rental_amenities;"`
 	Timeblocks          []EntityTimeblock         `gorm:"polymorphic:Entity"`

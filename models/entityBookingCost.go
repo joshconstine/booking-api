@@ -8,11 +8,11 @@ import (
 
 type EntityBookingCost struct {
 	gorm.Model
-	EntityID          uint   `gorm:"index:idx_entity_cost_type,unique"`
-	EntityType        string `gorm:"index:idx_entity_cost_type,unique"`
-	BookingCostTypeID uint   `gorm:"index:idx_entity_cost_type,unique"`
-	Amount            float64
-	TaxRateID         uint
+	EntityID          uint    `gorm:"index:idx_entity_cost_type,unique;"`
+	EntityType        string  `gorm:"index:idx_entity_cost_type,unique;"`
+	BookingCostTypeID uint    `gorm:"index:idx_entity_cost_type,unique;"`
+	Amount            float64 `gorm:"not null"`
+	TaxRateID         uint    `gorm:"not null"`
 	BookingCostType   BookingCostType
 	TaxRate           TaxRate
 }

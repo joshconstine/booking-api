@@ -19,7 +19,7 @@ type Booking struct {
 	Inquiry         Inquiry
 	User            User
 	BookingStatus   BookingStatus
-	Details         BookingDetails
+	Details         BookingDetails `gorm:"not null"`
 	CostItems       []BookingCostItem
 	Payments        []BookingPayment
 	Documents       []BookingDocument

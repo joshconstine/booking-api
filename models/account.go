@@ -8,11 +8,11 @@ import (
 
 type Account struct {
 	gorm.Model
-	Name            string `gorm:"not null"`
+	Name            string          `gorm:"not null; unique"`
+	AccountSettings AccountSettings `gorm:"not null"`
 	Members         []Membership
 	Rentals         []Rental
 	Boats           []Boat
-	AccountSettings AccountSettings `gorm:"not null"`
 }
 
 func (a *Account) TableName() string {

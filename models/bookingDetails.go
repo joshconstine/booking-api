@@ -9,14 +9,14 @@ import (
 
 type BookingDetails struct {
 	gorm.Model
-	BookingID        string
+	BookingID        string `gorm:"unique; not null"`
 	PaymentComplete  bool
 	DepositPaid      bool
 	PaymentDueDate   time.Time
 	DocumentsSigned  bool
 	BookingStartDate time.Time
 	GuestCount       int
-	LocationID       uint
+	LocationID       uint   `gorm:"not null"`
 	InvoiceID        string `gorm:"type:varchar(255);unique"`
 }
 

@@ -58,9 +58,7 @@ func (e *EntityBookingRepositoryImplementation) Create(entityBooking request.Cre
 			EndTime:    entityBooking.EndTime,
 			EntityID:   entityBooking.EntityID,
 			EntityType: entityBooking.EntityType,
-			BookingID:  entityBooking.BookingID,
 		},
-		BookingStatusID:  0,
 		BookingCostItems: []models.BookingCostItem{},
 		Documents:        []models.BookingDocument{},
 	}
