@@ -29,7 +29,7 @@ func (repository *AccountRepositoryImplementation) GetByID(id uint) (response.Ac
 		Preload("Members.Role").
 		Preload("Members.User").
 		Preload("AccountSettings.AccountOwner").
-		Preload("AccountSettings.PlanLevel.Fees").
+		Preload("AccountSettings.ServicePlan.Fees").
 		First(&account, id)
 	return account.MapAccountToResponse(), result.Error
 }
