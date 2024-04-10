@@ -15,6 +15,85 @@ import (
 	"gorm.io/gorm"
 )
 
+func SeedInquiryStatuses(db *gorm.DB) {
+	inquiryStatuses := []models.InquiryStatus{
+		{
+			Model: gorm.Model{
+				ID: 1,
+			},
+			Name: "New",
+		},
+		{
+			Model: gorm.Model{
+				ID: 2,
+			},
+			Name: "Approved",
+		},
+		{
+			Model: gorm.Model{
+				ID: 3,
+			},
+			Name: "Approval Expired",
+		},
+		{
+			Model: gorm.Model{
+				ID: 4,
+			},
+			Name: "Declined",
+		},
+		{
+			Model: gorm.Model{
+				ID: 5,
+			},
+			Name: "Cancelled",
+		},
+	}
+
+	inquiryStatusRepository := repositories.NewInquiryStatusRepositoryImplementation(db)
+
+	for _, inquiryStatus := range inquiryStatuses {
+		inquiryStatusRepository.Create(inquiryStatus)
+	}
+
+}
+
+func SeedInquiries(db *gorm.DB) {
+	userId := uint(24)
+	entityId := uint(29)
+	boatEntityId := uint(13)
+	inquiries := []models.Inquiry{
+		{
+			Model: gorm.Model{
+				ID: 1,
+			},
+			UserID:    userId,
+			Note:      "Do you have a toaster?",
+			NumGuests: 2,
+			EntityInquiries: []models.EntityInquiry{
+				{
+					EntityID:   entityId,
+					EntityType: "rentals",
+					StartTime:  time.Now(),
+					EndTime:    time.Now().AddDate(0, 0, 1),
+				},
+				{
+					EntityID:   boatEntityId,
+					EntityType: "boats",
+					StartTime:  time.Now(),
+					EndTime:    time.Now().AddDate(0, 0, 1),
+				},
+			},
+		},
+	}
+
+	inquiryRepository := repositories.NewInquiryRepositoryImplementation(db)
+
+	for _, inquiry := range inquiries {
+		inquiryRepository.Create(inquiry)
+	}
+
+}
+
 func SeedAccounts(db *gorm.DB) {
 	accountOwnerEmail := "l@gmail.com"
 	cleanerEmail := "k@gmail.com"
@@ -836,8 +915,10 @@ func main() {
 	// create object storage client
 	objectStorage.CreateSession()
 
-	database.Migrate()
-	SeedAccounts(database.Instance)
+	//database.Migrate()
+	SeedInquiryStatuses(database.Instance)
+	SeedInquiries(database.Instance)
+	//SeedAccounts(database.Instance)
 
 	// SeedBookingStatus(database.Instance)
 	//SeedDocuments(objectStorage.Client, database.Instance)
