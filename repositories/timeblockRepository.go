@@ -5,7 +5,7 @@ import (
 )
 
 type TimeblockRepository interface {
-	FindAll() []models.Timeblock
-	FindByEntity(entityType string, entityId uint) []models.Timeblock
-	Create(timeblock models.Timeblock) models.Timeblock
+	FindAll() []models.EntityTimeblock
+	FindByEntity(entityType string, entityId uint) []models.EntityTimeblock
+	Create(timeblock models.EntityTimeblock) models.EntityTimeblock
 }

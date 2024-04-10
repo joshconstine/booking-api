@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type EntityInquiry struct {
+type EntityBookingRequest struct {
 	gorm.Model
 	InquiryID       uint   `gorm:"not null"`
 	InquiryStatusID uint   `gorm:"not null; default:1"`
@@ -18,8 +18,8 @@ type EntityInquiry struct {
 	InquiryStatus   InquiryStatus
 }
 
-func (entityInquiry *EntityInquiry) MapEntityInquiryToResponse() response.EntityInquiryResponse {
-	return response.EntityInquiryResponse{
+func (entityInquiry *EntityBookingRequest) MapEntityBookingRequestToResponse() response.EntityBookingRequestResponse {
+	return response.EntityBookingRequestResponse{
 		ID:            entityInquiry.ID,
 		InquiryID:     entityInquiry.InquiryID,
 		EntityID:      entityInquiry.EntityID,

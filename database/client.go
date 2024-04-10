@@ -69,7 +69,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.EntityBookingDurationRule{})
 	Instance.AutoMigrate(&models.EntityBookingRule{})
 	Instance.AutoMigrate(&models.EntityBookingDocument{})
-	Instance.AutoMigrate(&models.Timeblock{})
+	Instance.AutoMigrate(&models.EntityTimeblock{})
 
 	Instance.AutoMigrate(&models.Login{})
 
@@ -80,7 +80,7 @@ func Migrate() {
 	Instance.AutoMigrate(&models.ServicePlan{})
 	Instance.AutoMigrate(&models.ServiceFee{})
 
-	Instance.AutoMigrate(&models.EntityInquiry{})
+	Instance.AutoMigrate(&models.EntityBookingRequest{})
 	Instance.AutoMigrate(&models.Inquiry{})
 	Instance.AutoMigrate(&models.InquiryStatus{})
 

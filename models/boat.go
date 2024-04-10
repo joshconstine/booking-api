@@ -11,13 +11,16 @@ type Boat struct {
 	Name                string
 	Occupancy           int
 	MaxWeight           int
-	Timeblocks          []Timeblock               `gorm:"polymorphic:Entity"`
+	AccountID           uint                      `gorm:"not null"`
+	Timeblocks          []EntityTimeblock         `gorm:"polymorphic:Entity"`
 	Photos              []EntityPhoto             `gorm:"polymorphic:Entity"`
 	Bookings            []EntityBooking           `gorm:"polymorphic:Entity"`
 	BookingCostItems    []EntityBookingCost       `gorm:"polymorphic:Entity"`
 	BookingDocuments    []EntityBookingDocument   `gorm:"polymorphic:Entity"`
 	BookingDurationRule EntityBookingDurationRule `gorm:"polymorphic:Entity"`
 	BookingRule         EntityBookingRule         `gorm:"polymorphic:Entity"`
+
+	BookingRequests []EntityBookingRequest `gorm:"polymorphic:Entity"`
 }
 
 func (b *Boat) TableName() string {
@@ -50,6 +53,10 @@ func (b *Boat) MapBoatToResponse() response.BoatResponse {
 
 	for _, bookingDocument := range b.BookingDocuments {
 		result.BookingDocuments = append(result.BookingDocuments, bookingDocument.MapEntityBookingDocumentToResponse())
+	}
+
+	for _, bookingRequest := range b.BookingRequests {
+		result.BookingRequests = append(result.BookingRequests, bookingRequest.MapEntityBookingRequestToResponse())
 	}
 
 	result.BookingDurationRule = b.BookingDurationRule.MapEntityBookingDurationRuleToResponse()

@@ -53,7 +53,7 @@ func (e *EntityBookingRepositoryImplementation) Create(entityBooking request.Cre
 		BookingID:  entityBooking.BookingID,
 		EntityID:   entityBooking.EntityID,
 		EntityType: entityBooking.EntityType,
-		Timeblock: models.Timeblock{
+		Timeblock: models.EntityTimeblock{
 			StartTime:  entityBooking.StartTime,
 			EndTime:    entityBooking.EndTime,
 			EntityID:   entityBooking.EntityID,

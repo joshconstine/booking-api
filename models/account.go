@@ -10,7 +10,9 @@ type Account struct {
 	gorm.Model
 	Name            string `gorm:"not null"`
 	Members         []Membership
-	AccountSettings AccountSettings
+	Rentals         []Rental
+	Boats           []Boat
+	AccountSettings AccountSettings `gorm:"not null"`
 }
 
 func (a *Account) TableName() string {

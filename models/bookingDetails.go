@@ -15,6 +15,7 @@ type BookingDetails struct {
 	PaymentDueDate   time.Time
 	DocumentsSigned  bool
 	BookingStartDate time.Time
+	GuestCount       int
 	LocationID       uint
 	InvoiceID        string `gorm:"type:varchar(255);unique"`
 }

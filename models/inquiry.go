@@ -9,10 +9,11 @@ import (
 type Inquiry struct {
 	gorm.Model
 	UserID          uint `gorm:"not null"`
+	BookingID       string
 	Note            string
 	NumGuests       int
 	User            User
-	EntityInquiries []EntityInquiry
+	BookingRequests []EntityBookingRequest
 }
 
 func (inquiry *Inquiry) TableName() string {
@@ -27,8 +28,8 @@ func (inquiry *Inquiry) MapInquiryToResponse() response.InquiryResponse {
 		User:      inquiry.User.MapUserToResponse(),
 	}
 
-	for _, entityInquiry := range inquiry.EntityInquiries {
-		inquiryResponse.EntityInquiries = append(inquiryResponse.EntityInquiries, entityInquiry.MapEntityInquiryToResponse())
+	for _, entityInquiry := range inquiry.BookingRequests {
+		inquiryResponse.BookingRequests = append(inquiryResponse.BookingRequests, entityInquiry.MapEntityBookingRequestToResponse())
 	}
 
 	return inquiryResponse

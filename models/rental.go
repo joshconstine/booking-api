@@ -8,15 +8,17 @@ import (
 
 type Rental struct {
 	gorm.Model
-	Name                string
-	LocationID          uint
-	Bedrooms            int
-	Bathrooms           int
-	Description         string
-	Location            Location
-	RentalStatus        RentalStatus
+	Name         string
+	LocationID   uint
+	Bedrooms     int
+	Bathrooms    int
+	Description  string
+	Location     Location
+	RentalStatus RentalStatus
+	AccountID    uint `gorm:"not null"`
+
 	Amenities           []Amenity                 `gorm:"many2many:rental_amenities;"`
-	Timeblocks          []Timeblock               `gorm:"polymorphic:Entity"`
+	Timeblocks          []EntityTimeblock         `gorm:"polymorphic:Entity"`
 	EntityPhotos        []EntityPhoto             `gorm:"polymorphic:Entity"`
 	RentalRooms         []RentalRoom              `gorm:"foreignKey:RentalID"`
 	Bookings            []EntityBooking           `gorm:"polymorphic:Entity"`
@@ -25,7 +27,7 @@ type Rental struct {
 	BookingDurationRule EntityBookingDurationRule `gorm:"polymorphic:Entity"`
 	BookingRule         EntityBookingRule         `gorm:"polymorphic:Entity"`
 
-	Inquiries []EntityInquiry `gorm:"polymorphic:Entity"`
+	BookingRequests []EntityBookingRequest `gorm:"polymorphic:Entity"`
 }
 
 func (r *Rental) TableName() string {
@@ -82,8 +84,8 @@ func (r *Rental) MapRentalToInformationResponse() response.RentalInformationResp
 		response.BookingDocuments = append(response.BookingDocuments, document.MapEntityBookingDocumentToResponse())
 	}
 
-	for _, inquiry := range r.Inquiries {
-		response.Inquiries = append(response.Inquiries, inquiry.MapEntityInquiryToResponse())
+	for _, inquiry := range r.BookingRequests {
+		response.BookingRequests = append(response.BookingRequests, inquiry.MapEntityBookingRequestToResponse())
 	}
 
 	response.BookingDurationRule = r.BookingDurationRule.MapEntityBookingDurationRuleToResponse()

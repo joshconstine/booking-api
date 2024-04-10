@@ -63,13 +63,11 @@ func SeedInquiries(db *gorm.DB) {
 	boatEntityId := uint(13)
 	inquiries := []models.Inquiry{
 		{
-			Model: gorm.Model{
-				ID: 1,
-			},
+
 			UserID:    userId,
 			Note:      "Do you have a toaster?",
 			NumGuests: 2,
-			EntityInquiries: []models.EntityInquiry{
+			BookingRequests: []models.EntityBookingRequest{
 				{
 					EntityID:   entityId,
 					EntityType: "rentals",
@@ -638,7 +636,7 @@ func SeedBoats(db *gorm.DB) {
 			Name:       "The Big Kahuna",
 			Occupancy:  10,
 			MaxWeight:  2000,
-			Timeblocks: []models.Timeblock{},
+			Timeblocks: []models.EntityTimeblock{},
 			Photos: []models.EntityPhoto{
 				{
 					Photo: models.Photo{
@@ -777,7 +775,7 @@ func SeedRentals(db *gorm.DB) {
 					},
 				},
 			},
-			Timeblocks: []models.Timeblock{
+			Timeblocks: []models.EntityTimeblock{
 				{
 					StartTime: nineAM,
 					EndTime:   threePM,
@@ -916,11 +914,11 @@ func main() {
 	objectStorage.CreateSession()
 
 	//database.Migrate()
-	SeedInquiryStatuses(database.Instance)
+	//SeedInquiryStatuses(database.Instance)
 	SeedInquiries(database.Instance)
 	//SeedAccounts(database.Instance)
 
-	// SeedBookingStatus(database.Instance)
+	//SeedBookingStatus(database.Instance)
 	//SeedDocuments(objectStorage.Client, database.Instance)
 	// SeedBookingCostTypes(database.Instance)
 	// SeedRoomTypes(database.Instance)

@@ -50,6 +50,7 @@ func (t *BoatRepositoryImplementation) FindById(id int) response.BoatResponse {
 		Preload("BookingCostItems.BookingCostType").
 		Preload("BookingCostItems.TaxRate").
 		Preload("BookingDocuments.Document").
+		Preload("BookingRequests.InquiryStatus").
 		Find(&boat)
 	if result.Error != nil {
 		return response.BoatResponse{}

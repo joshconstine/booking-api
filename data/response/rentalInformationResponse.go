@@ -1,21 +1,22 @@
 package response
 
 type RentalInformationResponse struct {
-	ID                  uint                              `json:"id"`
-	Name                string                            `json:"name"`
-	Bedrooms            int                               `json:"bedrooms"`
-	Bathrooms           int                               `json:"bathrooms"`
-	Description         string                            `json:"description"`
-	Location            LocationResponse                  `json:"location"`
-	Timeblocks          []TimeblockResponse               `json:"timeblocks"`
-	RentalStatus        RentalStatusResponse              `json:"rentalStatus"`
-	Amenities           []AmenityResponse                 `json:"amenities"`
+	ID           uint                 `json:"id"`
+	Name         string               `json:"name"`
+	Bedrooms     int                  `json:"bedrooms"`
+	Bathrooms    int                  `json:"bathrooms"`
+	Description  string               `json:"description"`
+	Location     LocationResponse     `json:"location"`
+	RentalStatus RentalStatusResponse `json:"rentalStatus"`
+	RentalRooms  []RentalRoomResponse `json:"rentalRooms"`
+	Amenities    []AmenityResponse    `json:"amenities"`
+
+	Timeblocks          []EntityTimeblockResponse         `json:"timeblocks"`
 	Photos              []EntityPhotoResponse             `json:"photos"`
-	RentalRooms         []RentalRoomResponse              `json:"rentalRooms"`
 	Bookings            []EntityBookingResponse           `json:"bookings"`
 	BookingCostItems    []EntityBookingCostResponse       `json:"bookingCostItems"`
 	BookingDocuments    []EntityBookingDocumentResponse   `json:"bookingDocuments"`
-	BookingDurationRule EntityBookingDurationRuleResponse `json:"bookingDurationRule"`
 	BookingRule         EntityBookingRuleResponse         `json:"bookingRule"`
-	Inquiries           []EntityInquiryResponse           `json:"inquiries"`
+	BookingDurationRule EntityBookingDurationRuleResponse `json:"bookingDurationRule"`
+	BookingRequests     []EntityBookingRequestResponse    `json:"bookingRequests"`
 }

@@ -2,7 +2,7 @@ package response
 
 import "time"
 
-type EntityInquiryResponse struct {
+type EntityBookingRequestResponse struct {
 	ID            uint                  `json:"id"`
 	InquiryID     uint                  `json:"inquiryID"`
 	EntityID      uint                  `json:"entityID"`

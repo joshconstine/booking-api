@@ -14,7 +14,7 @@ type EntityBooking struct {
 	TimeblockID      uint
 	BookingStatusID  uint
 	BookingCostItems []BookingCostItem `gorm:"foreignKey:EntityBookingID"`
-	Timeblock        Timeblock
+	Timeblock        EntityTimeblock
 	Documents        []BookingDocument `gorm:"foreignKey:EntityBookingID"`
 }
 

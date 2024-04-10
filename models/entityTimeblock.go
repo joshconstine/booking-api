@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Timeblock struct {
+type EntityTimeblock struct {
 	gorm.Model
 	StartTime  time.Time
 	EndTime    time.Time
@@ -16,12 +16,12 @@ type Timeblock struct {
 	BookingID  string
 }
 
-func (t *Timeblock) TableName() string {
-	return "timeblocks"
+func (t *EntityTimeblock) TableName() string {
+	return "entity_timeblocks"
 }
 
-func (t *Timeblock) MapTimeblockToResponse() response.TimeblockResponse {
-	return response.TimeblockResponse{
+func (t *EntityTimeblock) MapTimeblockToResponse() response.EntityTimeblockResponse {
+	return response.EntityTimeblockResponse{
 		ID:        t.ID,
 		StartTime: t.StartTime,
 		EndTime:   t.EndTime,

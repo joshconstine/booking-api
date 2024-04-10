@@ -28,8 +28,8 @@ func (iri *InquiryRepositoryImplementation) Create(inquiry models.Inquiry) (mode
 func (iri *InquiryRepositoryImplementation) GetByID(inquiryID uint) (response.InquiryResponse, error) {
 	var inquiry models.Inquiry
 	result := iri.Db.
-		Preload("EntityInquiries.InquiryStatus").
-		Preload("EntityInquiries").
+		Preload("BookingRequests.InquiryStatus").
+		Preload("BookingRequests").
 		Preload("User").
 		First(&inquiry, inquiryID)
 	if result.Error != nil {
