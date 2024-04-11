@@ -23,22 +23,14 @@ func (e *EntityBookingDurationRuleRepositoryImplementation) FindById(entity_id u
 		return response.EntityBookingDurationRuleResponse{}
 	}
 
-	return response.EntityBookingDurationRuleResponse{
-		ID:              entityBookingDurationRule.ID,
-		EntityID:        entityBookingDurationRule.EntityID,
-		EntityType:      entityBookingDurationRule.EntityType,
-		MinimumDuration: entityBookingDurationRule.MinimumDuration,
-		MaximumDuration: entityBookingDurationRule.MaximumDuration,
-		StartTime:       entityBookingDurationRule.StartTime,
-		EndTime:         entityBookingDurationRule.EndTime,
-	}
+	return entityBookingDurationRule.MapEntityBookingDurationRuleToResponse()
 }
 
-func (e *EntityBookingDurationRuleRepositoryImplementation) Update(entityBookingDurationRule requests.UpdateEntityBookingDurationRuleRequest) response.EntityBookingDurationRuleResponse {
+func (e *EntityBookingDurationRuleRepositoryImplementation) Update(entityBookingDurationRule requests.UpdateEntityBookingDurationRuleRequest) (response.EntityBookingDurationRuleResponse, error) {
 	var entityBookingDurationRuleToInsert models.EntityBookingDurationRule
 	result := e.Db.Where("entity_id = ? AND entity_type = ?", entityBookingDurationRule.EntityID, entityBookingDurationRule.EntityType).First(&entityBookingDurationRuleToInsert)
 	if result.Error != nil {
-		return response.EntityBookingDurationRuleResponse{}
+		return response.EntityBookingDurationRuleResponse{}, result.Error
 	}
 
 	entityBookingDurationRuleToInsert.EntityID = entityBookingDurationRule.EntityID
@@ -50,16 +42,9 @@ func (e *EntityBookingDurationRuleRepositoryImplementation) Update(entityBooking
 
 	result = e.Db.Save(&entityBookingDurationRuleToInsert)
 	if result.Error != nil {
-		return response.EntityBookingDurationRuleResponse{}
+		return response.EntityBookingDurationRuleResponse{}, result.Error
 	}
 
-	return response.EntityBookingDurationRuleResponse{
+	return entityBookingDurationRuleToInsert.MapEntityBookingDurationRuleToResponse(), nil
 
-		EntityID:        entityBookingDurationRule.EntityID,
-		EntityType:      entityBookingDurationRule.EntityType,
-		MinimumDuration: entityBookingDurationRule.MinDuration,
-		MaximumDuration: entityBookingDurationRule.MaxDuration,
-		StartTime:       entityBookingDurationRule.StartTime,
-		EndTime:         entityBookingDurationRule.EndTime,
-	}
 }

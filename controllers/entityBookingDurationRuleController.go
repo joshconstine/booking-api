@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	requests "booking-api/data/request"
-	responses "booking-api/data/response"
 
 	"net/http"
 
@@ -30,13 +29,8 @@ func (e *EntityBookingDurationRuleController) FindByID(ctx *gin.Context) {
 
 	response := e.EntityBookingDurationRuleService.FindByID(uint(entityIdInt), entityType)
 
-	webresponse := responses.Response{
-		Code:   http.StatusOK,
-		Status: "OK",
-		Data:   response,
-	}
 	ctx.Header("Content-Type", "application/json")
-	ctx.JSON(http.StatusOK, webresponse)
+	ctx.JSON(http.StatusOK, response)
 
 }
 
@@ -44,13 +38,14 @@ func (e *EntityBookingDurationRuleController) Update(ctx *gin.Context) {
 	var request requests.UpdateEntityBookingDurationRuleRequest
 	ctx.BindJSON(&request)
 
-	response := e.EntityBookingDurationRuleService.Update(request)
+	response, err := e.EntityBookingDurationRuleService.Update(request)
 
-	webresponse := responses.Response{
-		Code:   http.StatusOK,
-		Status: "OK",
-		Data:   response,
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+
+		return
 	}
+
 	ctx.Header("Content-Type", "application/json")
-	ctx.JSON(http.StatusOK, webresponse)
+	ctx.JSON(http.StatusOK, response)
 }

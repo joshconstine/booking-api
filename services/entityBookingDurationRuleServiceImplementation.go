@@ -20,6 +20,6 @@ func (t *EntityBookingDurationRuleServiceImplementation) FindByID(entityID uint,
 	return t.EntityBookingDurationRuleRepository.FindById(entityID, entityType)
 }
 
-func (t *EntityBookingDurationRuleServiceImplementation) Update(updatedRule request.UpdateEntityBookingDurationRuleRequest) response.EntityBookingDurationRuleResponse {
+func (t *EntityBookingDurationRuleServiceImplementation) Update(updatedRule request.UpdateEntityBookingDurationRuleRequest) (response.EntityBookingDurationRuleResponse, error) {
 	return t.EntityBookingDurationRuleRepository.Update(updatedRule)
 }
