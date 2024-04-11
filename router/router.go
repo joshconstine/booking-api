@@ -34,7 +34,7 @@ func NewRouter(
 	inquiryController *controllers.InquiryController,
 	entityBookingDocumentController *controllers.EntityBookingDocumentController,
 	entityBookingRuleController *controllers.EntityBookingRuleController,
-
+	entityBookingCostController *controllers.EntityBookingCostController,
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -190,6 +190,12 @@ func NewRouter(
 		entityBookingDocumentRouter := api.Group("/entityBookingDocuments")
 		entityBookingDocumentRouter.GET("/:entityId/:entityType", entityBookingDocumentController.FindEntityBookingDocumentsForEntity)
 		entityBookingDocumentRouter.POST("", entityBookingDocumentController.CreateEntityBookingDocument)
+
+		entityBookingCostRouter := api.Group("/entityBookingCosts")
+		entityBookingCostRouter.GET("/:entityId/:entityType", entityBookingCostController.FindAllForEntity)
+		entityBookingCostRouter.POST("", entityBookingCostController.Create)
+		entityBookingCostRouter.PUT("", entityBookingCostController.Update)
+		entityBookingCostRouter.DELETE("/:entityId/:entityType/:bookingCostTypeId", entityBookingCostController.Delete)
 
 		secured := api.Group("/secured").Use(middlewares.Auth())
 		{
