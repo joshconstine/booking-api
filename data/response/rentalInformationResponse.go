@@ -3,8 +3,8 @@ package response
 type RentalInformationResponse struct {
 	ID           uint                 `json:"id"`
 	Name         string               `json:"name"`
-	Bedrooms     int                  `json:"bedrooms"`
-	Bathrooms    int                  `json:"bathrooms"`
+	Bedrooms     uint                 `json:"bedrooms"`
+	Bathrooms    uint                 `json:"bathrooms"`
 	Description  string               `json:"description"`
 	Location     LocationResponse     `json:"location"`
 	RentalStatus RentalStatusResponse `json:"rentalStatus"`

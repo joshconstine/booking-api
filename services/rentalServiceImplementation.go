@@ -1,6 +1,7 @@
 package services
 
 import (
+	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/repositories"
 
@@ -25,4 +26,14 @@ func (t *RentalServiceImplementation) FindAll() []response.RentalResponse {
 
 func (t *RentalServiceImplementation) FindById(id uint) response.RentalInformationResponse {
 	return t.RentalRepository.FindById(id)
+}
+
+func (t *RentalServiceImplementation) Create(rental request.CreateRentalRequest) (response.RentalResponse, error) {
+	err := t.Validate.Struct(rental)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return t.RentalRepository.Create(rental)
 }

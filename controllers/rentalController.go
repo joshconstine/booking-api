@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/services"
 	"net/http"
@@ -45,4 +46,19 @@ func (controller *RentalController) FindById(ctx *gin.Context) {
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, webResponse)
+}
+
+func (controller *RentalController) Create(ctx *gin.Context) {
+	var request request.CreateRentalRequest
+	ctx.BindJSON(&request)
+
+	rental, err := controller.rentalService.Create(request)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusCreated, rental)
 }

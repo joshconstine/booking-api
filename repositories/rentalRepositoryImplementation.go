@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
 
@@ -36,8 +37,8 @@ func (r *RentalRepositoryImplementation) FindById(id uint) response.RentalInform
 
 	// Adjusting the Joins method to correctly reference the intermediary table and both sides of the many-to-many relationship
 	result := r.Db.Model(&models.Rental{}).
-		Joins("JOIN rental_amenities on rental_amenities.rental_id = rentals.id").
-		Joins("JOIN amenities on amenities.id = rental_amenities.amenity_id").
+		Joins("LEFT JOIN rental_amenities on rental_amenities.rental_id = rentals.id").
+		Joins("LEFT JOIN amenities on amenities.id = rental_amenities.amenity_id").
 		Where("rentals.id = ?", id).
 		Preload("Location").
 		Preload("RentalStatus").
@@ -68,11 +69,38 @@ func (r *RentalRepositoryImplementation) FindById(id uint) response.RentalInform
 	return rental.MapRentalToInformationResponse()
 }
 
-func (r *RentalRepositoryImplementation) Create(rental models.Rental) models.Rental {
-	result := r.Db.Create(&rental)
-	if result.Error != nil {
-		return models.Rental{}
+func (r *RentalRepositoryImplementation) Create(rental request.CreateRentalRequest) (response.RentalResponse, error) {
+	rentalModel := models.Rental{
+		Name:         rental.Name,
+		LocationID:   rental.LocationID,
+		Bedrooms:     rental.Bedrooms,
+		Bathrooms:    rental.Bathrooms,
+		AccountID:    rental.AccountID,
+		Description:  rental.Description,
+		RentalStatus: models.RentalStatus{},
+		BookingCostItems: []models.EntityBookingCost{
+			{
+				Amount:            rental.NightlyRate,
+				TaxRateID:         1,
+				BookingCostTypeID: 1,
+			},
+		},
+		BookingDurationRule:        models.EntityBookingDurationRule{},
+		Amenities:                  []models.Amenity{},
+		RentalRooms:                []models.RentalRoom{},
+		BookingRule:                models.EntityBookingRule{},
+		BookingCostItemAdjustments: []models.EntityBookingCostAdjustment{},
+		BookingDocuments:           []models.EntityBookingDocument{},
+		BookingRequests:            []models.EntityBookingRequest{},
+		Timeblocks:                 []models.EntityTimeblock{},
+		Bookings:                   []models.EntityBooking{},
+		EntityPhotos:               []models.EntityPhoto{},
 	}
 
-	return rental
+	result := r.Db.Create(&rentalModel)
+	if result.Error != nil {
+		return response.RentalResponse{}, result.Error
+	}
+
+	return rentalModel.MapRentalsToResponse(), nil
 }
