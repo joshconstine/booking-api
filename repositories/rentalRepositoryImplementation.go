@@ -4,6 +4,7 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -70,6 +71,10 @@ func (r *RentalRepositoryImplementation) FindById(id uint) response.RentalInform
 }
 
 func (r *RentalRepositoryImplementation) Create(rental request.CreateRentalRequest) (response.RentalResponse, error) {
+	fivePm := time.Date(2024, 0, 0, 17, 0, 0, 0, time.UTC)
+
+	elevenAm := time.Date(2025, 0, 0, 11, 0, 0, 0, time.UTC)
+
 	rentalModel := models.Rental{
 		Name:         rental.Name,
 		LocationID:   rental.LocationID,
@@ -85,10 +90,21 @@ func (r *RentalRepositoryImplementation) Create(rental request.CreateRentalReque
 				BookingCostTypeID: 1,
 			},
 		},
-		BookingDurationRule:        models.EntityBookingDurationRule{},
+		BookingDurationRule: models.EntityBookingDurationRule{
+			MinimumDuration: 1,
+			MaximumDuration: 30,
+			BookingBuffer:   1,
+			StartTime:       fivePm,
+			EndTime:         elevenAm,
+		},
+		BookingRule: models.EntityBookingRule{
+			AdvertiseAtAllLocations: true,
+			AllowPets:               true,
+			AllowInstantBooking:     false,
+			OfferEarlyCheckIn:       false,
+		},
 		Amenities:                  []models.Amenity{},
 		RentalRooms:                []models.RentalRoom{},
-		BookingRule:                models.EntityBookingRule{},
 		BookingCostItemAdjustments: []models.EntityBookingCostAdjustment{},
 		BookingDocuments:           []models.EntityBookingDocument{},
 		BookingRequests:            []models.EntityBookingRequest{},
