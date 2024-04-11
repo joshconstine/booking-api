@@ -18,7 +18,10 @@ func NewBookingCostItemRepositoryImplementation(db *gorm.DB) BookingCostItemRepo
 
 func (t *BookingCostItemRepositoryImplementation) FindAllCostItemsForBooking(bookingId string) []response.BookingCostItemResponse {
 	var bookingCostItems []models.BookingCostItem
-	result := t.Db.Where("booking_id = ?", bookingId).Find(&bookingCostItems)
+	result := t.Db.Where("booking_id = ?", bookingId).
+		Preload("BookingCostType").
+		Preload("TaxRate").
+		Find(&bookingCostItems)
 	if result.Error != nil {
 		return []response.BookingCostItemResponse{}
 	}
