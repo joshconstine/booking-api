@@ -4,7 +4,6 @@ import (
 	"booking-api/config"
 	"booking-api/controllers"
 	"booking-api/database"
-	"booking-api/jobs"
 	"booking-api/objectStorage"
 	"booking-api/repositories"
 	"booking-api/router"
@@ -42,7 +41,8 @@ func main() {
 	cleanup, err := run(env)
 
 	// Run jobs
-	jobs.VerifyBookingStatuses() // Call the function to run the jobs
+	// jobs.VerifyBookingStatuses() // Call the function to run the jobs
+
 	// run the cleanup after the server is terminated
 	defer cleanup()
 	if err != nil {
@@ -80,7 +80,18 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 
 	validate := validator.New()
 
-	//Init Repositories
+	//******************************* Init Repositories ************************************
+	//Boats
+
+	//Rentals
+
+	//Entities
+
+	//Bookings
+
+	//Users
+
+	//SAS
 	bookingRepository := repositories.NewBookingRepositoryImplementation(database.Instance)
 	boatRepository := repositories.NewBoatRepositoryImplementation(database.Instance)
 	userRepository := repositories.NewUserRepositoryImplementation(database.Instance)
@@ -106,6 +117,8 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	userRoleRepository := repositories.NewUserRoleRepositoryImplementation(database.Instance)
 	accountRepository := repositories.NewAccountRepositoryImplementation(database.Instance)
 	inquiryRepository := repositories.NewInquiryRepositoryImplementation(database.Instance)
+	entityBookingDocumentRepository := repositories.NewEntityBookingDocumentRepositoryImplementation(database.Instance)
+	entityBookingRuleRepository := repositories.NewEntityBookingRuleRepositoryImplementation(database.Instance)
 
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
@@ -130,6 +143,8 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	entityBookingDurationRuleService := services.NewEntityBookingDurationRuleServiceImplementation(entityBookingDurationRuleRepository)
 	entityBookingService := services.NewEntityBookingServiceImplementation(entityBookingRepository)
 	userRoleService := services.NewUserRoleServiceImplementation(userRoleRepository)
+	entityBookingDocumentService := services.NewEntityBookingDocumentServiceImplementation(entityBookingDocumentRepository)
+	entityBookingRuleService := services.NewEntityBookingRuleServiceImplementation(entityBookingRuleRepository)
 
 	//Init controller
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
@@ -154,10 +169,12 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	userRoleController := controllers.NewUserRoleController(userRoleService)
 	accountController := controllers.NewAccountController(accountRepository)
 	inquiryController := controllers.NewInquiryController(inquiryRepository)
+	entityBookingDocumentController := controllers.NewEntityBookingDocumentController(entityBookingDocumentService)
+	entityBookingRuleController := controllers.NewEntityBookingRuleController(entityBookingRuleService)
 
 	//Router
 	router := router.NewRouter(boatController, bookingController, userController,
-		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController, entityBookingController, userRoleController, accountController, inquiryController)
+		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController, entityBookingController, userRoleController, accountController, inquiryController, entityBookingDocumentController, entityBookingRuleController)
 
 	// ginRouter := router.InitRouter(routes)
 

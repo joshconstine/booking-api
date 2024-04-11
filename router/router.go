@@ -33,6 +33,7 @@ func NewRouter(
 	accountController *controllers.AccountController,
 	inquiryController *controllers.InquiryController,
 	entityBookingDocumentController *controllers.EntityBookingDocumentController,
+	entityBookingRuleController *controllers.EntityBookingRuleController,
 
 ) *gin.Engine {
 
@@ -178,6 +179,9 @@ func NewRouter(
 		rentalStatusRouter.PUT("", rentalStatusController.UpdateStatusForRentalId)
 
 		/************************ ENTITY ************************/
+		entityBookingRuleRouter := api.Group("/entityBookingRules")
+		entityBookingRuleRouter.GET("/:entityId/:entityType", entityBookingRuleController.FindByID)
+		entityBookingRuleRouter.PUT("", entityBookingRuleController.Update)
 
 		entityBookingDurationRuleRouter := api.Group("/entityBookingDurationRules")
 		entityBookingDurationRuleRouter.GET("/:entityId/:entityType", entityBookingDurationRuleController.FindByID)
