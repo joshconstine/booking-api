@@ -37,3 +37,13 @@ func (t *RentalServiceImplementation) Create(rental request.CreateRentalRequest)
 
 	return t.RentalRepository.Create(rental)
 }
+
+func (t *RentalServiceImplementation) Update(rental request.UpdateRentalRequest) (response.RentalResponse, error) {
+	err := t.Validate.Struct(rental)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return t.RentalRepository.Update(rental)
+}

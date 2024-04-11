@@ -62,3 +62,18 @@ func (controller *RentalController) Create(ctx *gin.Context) {
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusCreated, rental)
 }
+
+func (controller *RentalController) Update(ctx *gin.Context) {
+	var request request.UpdateRentalRequest
+	ctx.BindJSON(&request)
+
+	rental, err := controller.rentalService.Update(request)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, rental)
+}

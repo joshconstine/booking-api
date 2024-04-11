@@ -163,6 +163,7 @@ func NewRouter(
 		rentalRouter := api.Group("/rentals")
 		rentalRouter.GET("", rentalController.FindAll)
 		rentalRouter.POST("", rentalController.Create)
+		rentalRouter.PUT("", rentalController.Update)
 		rentalRouter.GET("/info", rentalRoomController.FindAll)
 		rentalRouter.GET("/:rentalId", rentalController.FindById)
 		rentalRouter.GET("/:rentalId/status", rentalStatusController.FindByRentalId)

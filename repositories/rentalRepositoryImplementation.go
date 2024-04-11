@@ -120,3 +120,23 @@ func (r *RentalRepositoryImplementation) Create(rental request.CreateRentalReque
 
 	return rentalModel.MapRentalsToResponse(), nil
 }
+
+func (r *RentalRepositoryImplementation) Update(rental request.UpdateRentalRequest) (response.RentalResponse, error) {
+	var rentalToUpdate models.Rental
+	result := r.Db.Where("id = ?", rental.ID).First(&rentalToUpdate)
+	if result.Error != nil {
+		return response.RentalResponse{}, result.Error
+	}
+
+	rentalToUpdate.Name = rental.Name
+	rentalToUpdate.Bedrooms = rental.Bedrooms
+	rentalToUpdate.Bathrooms = rental.Bathrooms
+	rentalToUpdate.Description = rental.Description
+
+	result = r.Db.Save(&rentalToUpdate)
+	if result.Error != nil {
+		return response.RentalResponse{}, result.Error
+	}
+
+	return rentalToUpdate.MapRentalsToResponse(), nil
+}
