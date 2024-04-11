@@ -32,6 +32,7 @@ func NewRouter(
 	userRoleController *controllers.UserRoleController,
 	accountController *controllers.AccountController,
 	inquiryController *controllers.InquiryController,
+	entityBookingDocumentController *controllers.EntityBookingDocumentController,
 
 ) *gin.Engine {
 
@@ -158,6 +159,7 @@ func NewRouter(
 		/************************ RENTALS ************************/
 		rentalRouter := api.Group("/rentals")
 		rentalRouter.GET("", rentalController.FindAll)
+		rentalRouter.GET("/info", rentalRoomController.FindAll)
 		rentalRouter.GET("/:rentalId", rentalController.FindById)
 		rentalRouter.GET("/:rentalId/status", rentalStatusController.FindByRentalId)
 
@@ -180,6 +182,10 @@ func NewRouter(
 		entityBookingDurationRuleRouter := api.Group("/entityBookingDurationRules")
 		entityBookingDurationRuleRouter.GET("/:entityId/:entityType", entityBookingDurationRuleController.FindByID)
 		entityBookingDurationRuleRouter.PUT("", entityBookingDurationRuleController.Update)
+
+		entityBookingDocumentRouter := api.Group("/entityBookingDocuments")
+		entityBookingDocumentRouter.GET("/:entityId/:entityType", entityBookingDocumentController.FindEntityBookingDocumentsForEntity)
+		entityBookingDocumentRouter.POST("", entityBookingDocumentController.CreateEntityBookingDocument)
 
 		secured := api.Group("/secured").Use(middlewares.Auth())
 		{

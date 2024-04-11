@@ -8,9 +8,9 @@ import (
 
 type EntityBookingDocument struct {
 	gorm.Model
-	EntityID          uint   `gorm:"index:idx_entity_document_type,unique"`
-	EntityType        string `gorm:"index:idx_entity_document_type,unique"`
-	DocumentID        uint   `gorm:"index:idx_entity_document_type,unique"`
+	EntityID          uint   `gorm:"primaryKey"`
+	EntityType        string `gorm:"primaryKey"`
+	DocumentID        uint   `gorm:"not null"`
 	RequiresSignature bool
 	Document          Document
 }
