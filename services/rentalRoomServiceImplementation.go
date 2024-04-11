@@ -40,3 +40,15 @@ func (r *RentalRoomServiceImplementation) Create(rentalRoom request.RentalRoomCr
 	return r.RentalRoomRepository.Create(rentalRoom), nil
 
 }
+
+func (r *RentalRoomServiceImplementation) Update(rentalRoom request.UpdateRentalRoomRequest) (response.RentalRoomResponse, error) {
+
+	err := r.Validate.Struct(rentalRoom)
+
+	if err != nil {
+		return response.RentalRoomResponse{}, err
+	}
+
+	return r.RentalRoomRepository.Update(rentalRoom), nil
+
+}

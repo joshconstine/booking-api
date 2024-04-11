@@ -88,3 +88,44 @@ func (controller *RentalRoomController) Create(ctx *gin.Context) {
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, webResponse)
 }
+
+func (controller *RentalRoomController) Update(ctx *gin.Context) {
+	var updateRentalRoomRequest request.UpdateRentalRoomRequest
+
+	err := ctx.ShouldBindJSON(&updateRentalRoomRequest)
+
+	if err != nil {
+		webResponse := response.Response{
+			Code:   400,
+			Status: "Bad Request",
+			Data:   err.Error(),
+		}
+
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(http.StatusBadRequest, webResponse)
+		return
+	}
+
+	rentalRoom, err := controller.rentalRoomService.Update(updateRentalRoomRequest)
+
+	if err != nil {
+		webResponse := response.Response{
+			Code:   500,
+			Status: "Internal Server Error",
+			Data:   err.Error(),
+		}
+
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(http.StatusBadRequest, webResponse)
+		return
+	}
+
+	webResponse := response.Response{
+		Code:   http.StatusOK,
+		Status: "Ok",
+		Data:   rentalRoom,
+	}
+
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusOK, webResponse)
+}

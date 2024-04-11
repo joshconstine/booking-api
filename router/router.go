@@ -107,11 +107,6 @@ func NewRouter(
 		roomTypeRouter.GET("", roomTypeController.FindAll)
 		roomTypeRouter.GET("/:roomTypeId", roomTypeController.FindById)
 
-		/************************ RENTAL ROOMS ************************/
-		rentalRoomRouter := api.Group("/rentalRooms")
-		rentalRoomRouter.GET("", rentalRoomController.FindAll)
-		rentalRoomRouter.GET("/:rentalRoomId", rentalRoomController.FindById)
-
 		/************************ BOOKINGS ************************/
 
 		entityBookingRouter := api.Group("/entityBookings")
@@ -181,6 +176,11 @@ func NewRouter(
 		rentalStatusRouter := api.Group("/rentalStatus")
 		rentalStatusRouter.GET("", rentalStatusController.FindAll)
 		rentalStatusRouter.PUT("", rentalStatusController.UpdateStatusForRentalId)
+
+		rentalRoomRouter := api.Group("/rentalRooms")
+		rentalRoomRouter.GET("", rentalRoomController.FindAll)
+		rentalRoomRouter.GET("/:rentalRoomId", rentalRoomController.FindById)
+		rentalRoomRouter.PUT("", rentalRoomController.Update)
 
 		/************************ ENTITY ************************/
 		entityBookingRuleRouter := api.Group("/entityBookingRules")
