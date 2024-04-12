@@ -68,8 +68,8 @@ func SeedInquiryStatuses(db *gorm.DB) {
 
 func SeedInquiries(db *gorm.DB) {
 	userId := uint(24)
-	entityId := uint(29)
-	boatEntityId := uint(13)
+	entityId := uint(3)
+	boatEntityId := uint(3)
 	inquiries := []models.Inquiry{
 		{
 
@@ -990,10 +990,10 @@ func main() {
 
 	// SeedInquiryStatuses(database.Instance)
 	// SeedAccounts(database.Instance)
-	// SeedInquiries(database.Instance)
+	//SeedInquiries(database.Instance)
 
-	// SeedRentals(database.Instance)
-	SeedBoats(database.Instance)
+	SeedRentals(database.Instance)
+	// SeedBoats(database.Instance)
 
 	//*****users rbac
 

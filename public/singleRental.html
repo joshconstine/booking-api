@@ -38,6 +38,7 @@
 
             </label>
             <a href="/admin" class="text-2xl font-bold">Home</a>
+            <a href="/admin/rentals" class="text-2xl font-bold">Rentals</a>
         </div>
 
         <div>
@@ -48,17 +49,16 @@
     </div>
 
     <div>
-        <h1>rental list</h1>
-        {{range .Rentals}}
+
         <div>
-            <span>
-                <a href="/admin/rentals/{{.ID}}">{{.Name}}</a>
+            <h1>{{.Rental.Name}}</h1>
+            <span>{{.Rental.Bedrooms}}</span>
+            <span>{{.Rental.Bathrooms}}</span>
+            <span>{{.Rental.Description}}</span>
 
-
-            </span>
         </div>
 
-        {{end}}
+
     </div>
 </body>
 

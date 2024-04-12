@@ -229,6 +229,8 @@ func NewRouter(
 
 		admin.GET("/rentals", rentalController.GetRentalListTemplate)
 
+		admin.GET("/rentals/:rentalId", rentalController.GetRentalTemplate)
 	}
+
 	return router
 }

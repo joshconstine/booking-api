@@ -19,6 +19,10 @@ type RentalListTemplateData struct {
 	PageTitle string
 	Rentals   []response.RentalResponse
 }
+type RentalTemplateData struct {
+	PageTitle string
+	Rental    response.RentalInformationResponse
+}
 
 func NewRentalController(rentalService services.RentalService) *RentalController {
 	return &RentalController{rentalService: rentalService}
@@ -92,6 +96,23 @@ func (controller *RentalController) GetRentalListTemplate(ctx *gin.Context) {
 	data := RentalListTemplateData{
 		PageTitle: "Rental List template page",
 		Rentals:   rentals,
+	}
+
+	tmpl.Execute(ctx.Writer, data)
+
+}
+
+func (controller *RentalController) GetRentalTemplate(ctx *gin.Context) {
+	tmpl := template.Must(template.ParseFiles("public/singleRental.html"))
+
+	rentalId := ctx.Param("rentalId")
+	id, _ := strconv.Atoi(rentalId)
+
+	rental := controller.rentalService.FindById(uint(id))
+
+	data := RentalTemplateData{
+		PageTitle: rental.Name,
+		Rental:    rental,
 	}
 
 	tmpl.Execute(ctx.Writer, data)
