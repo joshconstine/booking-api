@@ -1,0 +1,16 @@
+package home 
+
+import (
+	"booking-api/view/layout"
+	"booking-api/data/response"
+)
+
+templ RentalInformationResponse(rental response.RentalInformationResponse) {
+	@layout.App(true) {
+		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
+			<h2 class="text-xl font-semibold mb-6 red-400">{rental.Name}</h2>
+			
+			
+		</div>
+	}
+}

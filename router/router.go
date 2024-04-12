@@ -228,9 +228,9 @@ func NewRouter(
 			home.Index().Render(ctx.Request.Context(), ctx.Writer)
 		})
 
-		admin.GET("/rentals", rentalController.GetRentalListTemplate)
+		// admin.GET("/rentals", rentalController.GetRentalListTemplate)
 
-		admin.GET("/rentals/:rentalId", rentalController.GetRentalTemplate)
+		// admin.GET("/rentals/:rentalId", rentalController.GetRentalTemplate)
 	}
 
 	return router

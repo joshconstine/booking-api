@@ -24,5 +24,9 @@ func NewChiRouter(rentalsController *controllers.RentalController) *chi.Mux {
 		rentalsController.HandleHomeIndex(w, r)
 	})
 
+	router.Get("/rentals/{rentalId}", func(w http.ResponseWriter, r *http.Request) {
+		rentalsController.HandleRentalDetail(w, r)
+	})
+
 	return router
 }

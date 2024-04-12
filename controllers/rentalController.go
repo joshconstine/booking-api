@@ -3,9 +3,7 @@ package controllers
 import (
 	"booking-api/data/request"
 	"booking-api/data/response"
-	"booking-api/models"
 	"booking-api/services"
-	"context"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -13,6 +11,7 @@ import (
 	rentals "booking-api/view/rentals"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi/v5"
 )
 
 type RentalController struct {
@@ -108,6 +107,19 @@ func (controller *RentalController) GetRentalTemplate(ctx *gin.Context) {
 	tmpl.Execute(ctx.Writer, data)
 
 }
+
+func (controller *RentalController) HandleRentalDetail(w http.ResponseWriter, r *http.Request) error {
+
+	// dateParam := chi.URLParam(r, "date")
+
+	rentalId := chi.URLParam(r, "rentalId")
+	id, _ := strconv.Atoi(rentalId)
+
+	rental := controller.rentalService.FindById(uint(id))
+
+	return rentals.RentalInformationResponse(rental).Render(r.Context(), w)
+}
+
 func (controller *RentalController) HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {
 	// user := view.getAuthenticatedUser(r)
 	// account, err := db.GetAccountByUserID(user.ID)
@@ -118,7 +130,5 @@ func (controller *RentalController) HandleHomeIndex(w http.ResponseWriter, r *ht
 
 	rentalData := controller.rentalService.FindAll()
 
-	ctx := context.WithValue(r.Context(), models.RentalsContextKey, rentalData)
-
-	return rentals.Index(rentalData).Render(ctx, w)
+	return rentals.Index(rentalData).Render(r.Context(), w)
 }

@@ -3,7 +3,17 @@ package home
 import (
 	"booking-api/view/layout"
 	"booking-api/data/response"
+	"strconv"
+	
 )
+
+
+func GetPath(id int) string {
+	path := "/rentals/"
+	path += strconv.Itoa(id)
+	return path
+	
+}
 
 templ Index(rentals []response.RentalResponse) {
 	@layout.App(true) {
@@ -12,7 +22,9 @@ templ Index(rentals []response.RentalResponse) {
 			<ul class="text-left">
 
 			for _, rental := range rentals {
+				<a href={templ.SafeURL(GetPath(int(rental.ID)))}>
     		<li>{ rental.Name }</li>
+				</a>
   			}
 			</ul>
 			
