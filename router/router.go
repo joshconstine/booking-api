@@ -4,7 +4,7 @@ import (
 	"booking-api/constants"
 	"booking-api/controllers"
 	"booking-api/middlewares"
-	"net/http"
+	"booking-api/view/home"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -224,7 +224,7 @@ func NewRouter(
 	admin := router.Group("/admin")
 	{
 		admin.GET("/", func(ctx *gin.Context) {
-			http.ServeFile(ctx.Writer, ctx.Request, "public/index.html")
+			home.Index().Render(ctx.Request.Context(), ctx.Writer)
 		})
 
 		admin.GET("/rentals", rentalController.GetRentalListTemplate)

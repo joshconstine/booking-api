@@ -10,6 +10,7 @@ import (
 	"booking-api/services"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -181,6 +182,8 @@ func buildServer(env config.EnvVars) (*gin.Engine, func(), error) {
 	//Router
 	router := router.NewRouter(boatController, bookingController, userController,
 		bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController, entityBookingController, userRoleController, accountController, inquiryController, entityBookingDocumentController, entityBookingRuleController, entityBookingCostController, entityBookingCostAdjustmentController)
+
+	router.StaticFS("/public", http.Dir("public"))
 
 	// ginRouter := router.InitRouter(routes)
 

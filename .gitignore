@@ -4,3 +4,5 @@ env
 app.env
 ~.env
 .env
+bin
+*_templ.go*
