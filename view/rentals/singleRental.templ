@@ -1,16 +1,106 @@
-package home 
+package home
 
 import (
-	"booking-api/view/layout"
-	"booking-api/data/response"
+    "booking-api/view/layout"
+    "booking-api/data/response"
+	"strconv"
+	"fmt"
+	
 )
 
+// RentalInformationResponse renders a page with detailed information about a specific rental
 templ RentalInformationResponse(rental response.RentalInformationResponse) {
-	@layout.App(true) {
-		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
-			<h2 class="text-xl font-semibold mb-6 red-400">{rental.Name}</h2>
-			
-			
-		</div>
+    @layout.App(true) {
+        <div class="w-full max-w-screen-xl mx-auto py-12">
+            <h1 class="text-3xl font-bold text-center mb-8">{rental.Name}</h1>
+            <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Overview</h2>
+                <p>{rental.Description}</p>
+                <p><strong>Location:</strong> {rental.Location.Name}</p>
+                <p><strong>Bedrooms:</strong> {strconv.Itoa((int(rental.Bedrooms)))}</p>
+                <p><strong>Bathrooms:</strong> {strconv.Itoa((int(rental.Bathrooms)))}</p>
+                <p><strong>Status:</strong> 
+					if rental.RentalStatus.IsClean {
+						<span class="text-green"> clean </span>
+					} else {
+						<span class="text-red">dirty </span>
+					}
+				</p>
+
+				
+					
+				
+            </div>
+            <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Rooms</h2>
+				<div>
+
+                for _, room := range rental.RentalRooms {
+                    <div class="mb-3">
+                        <h3 class="text-xl font-semibold">{room.Name} - {room.RoomType.Name}</h3>
+                        <p>{room.Description}</p>
+                        <p><strong>Floor:</strong> {strconv.Itoa((room.Floor))}</p>
+                        
+						<div>
+						<strong>Beds:</strong>
+						 
+							for _, bed := range room.Beds {
+								<p>{bed.Name} </p>
+							
+							}
+						</div>
+                    </div>
+					<div>
+
+                    for _, photo := range room.Photos {
+						<div>
+                        <img src={photo.Photo.URL} alt="Photo of {room.Name}" class="rounded-md mb-2"/>
+						</div>
+                    }
+					</div>
+                }
+            </div>
+            </div>
+            <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Amenities</h2>
+                for _, amenity := range rental.Amenities {
+                    <p>{amenity.Name} - {amenity.AmenityType.Name}</p>
+                }
+            </div>
+            <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Photos</h2>
+				<div>
+<div>
+
+                for _, photo := range rental.Photos {
+                    <img src={photo.Photo.URL} alt="General photo of {rental.Name}" class="rounded-md mb-2"/>
+                }
+            </div>
+            </div>
+            </div>
+            <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Booking Information</h2>
+                <p><strong>Costs:</strong> <div>
+				
+					for _, item := range rental.BookingCostItems {
+						<div>
+						<p>{item.BookingCostType.Name}: ${fmt.Sprintf("%.2f", item.Amount)}</p>
+						</div>
 	}
-}
+					</div>
+					</p>
+
+                <p><strong>Adjustments:</strong> 
+				// <div>
+
+				// 	for _, adj := range rental.BookingCostItemAdjustments {
+				// 	adj.BookingCostType.Name + ": $" + fmt.Sprintf("%.2f", adj.Amount) + " from " + adj.StartDate + " to " + adj.EndDate + " "}
+				// 	</div>
+				</p>
+            </div>
+        </div>
+
+
+    }
+	}
+
