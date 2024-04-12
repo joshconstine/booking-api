@@ -43,7 +43,7 @@ func NewRouter(
 	router := gin.Default()
 	//allow cors
 	router.Use(middlewares.CORSMiddleware())
-	router.Use(middlewares.WithUser())
+	// router.Use(middlewares.WithUser())
 
 	api := router.Group("/api")
 	{

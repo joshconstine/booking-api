@@ -3,10 +3,14 @@ package controllers
 import (
 	"booking-api/data/request"
 	"booking-api/data/response"
+	"booking-api/models"
 	"booking-api/services"
+	"context"
 	"html/template"
 	"net/http"
 	"strconv"
+
+	rentals "booking-api/view/rentals"
 
 	"github.com/gin-gonic/gin"
 )
@@ -88,20 +92,6 @@ func (controller *RentalController) Update(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rental)
 }
 
-func (controller *RentalController) GetRentalListTemplate(ctx *gin.Context) {
-	tmpl := template.Must(template.ParseFiles("public/rentalList.html"))
-
-	rentals := controller.rentalService.FindAll()
-
-	data := RentalListTemplateData{
-		PageTitle: "Rental List template page",
-		Rentals:   rentals,
-	}
-
-	tmpl.Execute(ctx.Writer, data)
-
-}
-
 func (controller *RentalController) GetRentalTemplate(ctx *gin.Context) {
 	tmpl := template.Must(template.ParseFiles("public/singleRental.html"))
 
@@ -117,4 +107,18 @@ func (controller *RentalController) GetRentalTemplate(ctx *gin.Context) {
 
 	tmpl.Execute(ctx.Writer, data)
 
+}
+func (controller *RentalController) HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {
+	// user := view.getAuthenticatedUser(r)
+	// account, err := db.GetAccountByUserID(user.ID)
+	// if err != nil {
+	// 	return err
+	// }
+	// fmt.Printf("%+v\n", user.Account)
+
+	rentalData := controller.rentalService.FindAll()
+
+	ctx := context.WithValue(r.Context(), models.RentalsContextKey, rentalData)
+
+	return rentals.Index(rentalData).Render(ctx, w)
 }

@@ -1,0 +1,21 @@
+package home 
+
+import (
+	"booking-api/view/layout"
+	"booking-api/data/response"
+)
+
+templ Index(rentals []response.RentalResponse) {
+	@layout.App(true) {
+		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
+			<h2 class="text-xl font-semibold mb-6 red-400">Rentals</h2>
+			<ul class="text-left">
+
+			for _, rental := range rentals {
+    		<li>{ rental.Name }</li>
+  			}
+			</ul>
+			
+		</div>
+	}
+}

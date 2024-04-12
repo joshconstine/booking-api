@@ -4,6 +4,7 @@ go 1.21.5
 
 require (
 	github.com/a-h/templ v0.2.663
+	github.com/go-chi/chi/v5 v5.0.12
 	github.com/go-playground/validator/v10 v10.14.0
 	golang.org/x/crypto v0.21.0
 )
