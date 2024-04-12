@@ -15,10 +15,6 @@ func AuthenticatedUser(ctx context.Context) models.AuthenticatedUser {
 
 	// }
 
-	fmt.Println("from the AuthenticatedUser")
-
-	fmt.Printf("User: %+v\n", user)
-
 	return user
 }
 

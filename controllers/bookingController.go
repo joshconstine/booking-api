@@ -4,6 +4,7 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/services"
+	bookings "booking-api/view/bookings"
 	"net/http"
 	"strconv"
 
@@ -90,4 +91,16 @@ func (t BookingController) GetDetailsForBookingID(ctx *gin.Context) {
 	}
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, webResponse)
+}
+func (controller *BookingController) HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {
+	// user := view.getAuthenticatedUser(r)
+	// account, err := db.GetAccountByUserID(user.ID)
+	// if err != nil {
+	// 	return err
+	// }
+	// fmt.Printf("%+v\n", user.Account)
+
+	bookingData := controller.bookingService.FindAll()
+
+	return bookings.Index(bookingData).Render(r.Context(), w)
 }

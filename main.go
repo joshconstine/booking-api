@@ -94,10 +94,10 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	//Users
 
 	//SAS
-	// bookingRepository := repositories.NewBookingRepositoryImplementation(database.Instance)
+	bookingRepository := repositories.NewBookingRepositoryImplementation(database.Instance)
 	// boatRepository := repositories.NewBoatRepositoryImplementation(database.Instance)
-	// userRepository := repositories.NewUserRepositoryImplementation(database.Instance)
-	// bookingDetailsRepository := repositories.NewBookingDetailsRepositoryImplementation(database.Instance)
+	userRepository := repositories.NewUserRepositoryImplementation(database.Instance)
+	bookingDetailsRepository := repositories.NewBookingDetailsRepositoryImplementation(database.Instance)
 	// bookingStatusRepository := repositories.NewBookingStatusRepositoryImplementation(database.Instance)
 	// bookingCostTypeRepository := repositories.NewBookingCostTypeRepositoryImplementation(database.Instance)
 	timeblockRepository := repositories.NewTimeblockRepositoryImplementation(database.Instance)
@@ -125,9 +125,9 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingCostAdjustmentRepository := repositories.NewEntityBookingCostAdjustmentRepositoryImplementation(database.Instance)
 
 	//Init Service
-	// userService := services.NewUserServiceImplementation(userRepository, validate)
-	// bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
-	// bookingService := services.NewBookingServiceImplementation(bookingRepository, validate, userService)
+	userService := services.NewUserServiceImplementation(userRepository, validate)
+	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
+	bookingService := services.NewBookingServiceImplementation(bookingRepository, validate, userService)
 	// boatService := services.NewBoatServiceImplementation(boatRepository, validate)
 	// bookingStatusService := services.NewBookingStatusService(bookingStatusRepository, validate)
 	// bookingCostTypeService := services.NewBookingCostTypeServiceImplementation(bookingCostTypeRepository, validate)
@@ -153,7 +153,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingCostAdjustmentService := services.NewEntityBookingCostAdjustmentServiceImplementation(entityBookingCostAdjustmentRepository)
 
 	//Init controller
-	// bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
+	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
 	// boatController := controllers.NewBoatController(boatService)
 	// userController := controllers.NewUserController(userService)
 	// bookingStatusController := controllers.NewBookingStatusController(bookingStatusService)
@@ -185,7 +185,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// 	bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController, entityBookingController, userRoleController, accountController, inquiryController, entityBookingDocumentController, entityBookingRuleController, entityBookingCostController, entityBookingCostAdjustmentController)
 	// router.StaticFS("/public", http.Dir("public"))
 
-	router := router.NewChiRouter(rentalController)
+	router := router.NewChiRouter(rentalController, bookingController)
 
 	// ginRouter := router.InitRouter(routes)
 

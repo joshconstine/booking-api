@@ -10,7 +10,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func NewChiRouter(rentalsController *controllers.RentalController) *chi.Mux {
+func NewChiRouter(rentalsController *controllers.RentalController, bookingController *controllers.BookingController) *chi.Mux {
 
 	router := chi.NewMux()
 	router.Use(middlewares.WithUser)
@@ -26,6 +26,10 @@ func NewChiRouter(rentalsController *controllers.RentalController) *chi.Mux {
 
 	router.Get("/rentals/{rentalId}", func(w http.ResponseWriter, r *http.Request) {
 		rentalsController.HandleRentalDetail(w, r)
+	})
+
+	router.Get("/bookings", func(w http.ResponseWriter, r *http.Request) {
+		bookingController.HandleHomeIndex(w, r)
 	})
 
 	return router

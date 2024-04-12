@@ -4,7 +4,6 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/services"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -89,23 +88,6 @@ func (controller *RentalController) Update(ctx *gin.Context) {
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, rental)
-}
-
-func (controller *RentalController) GetRentalTemplate(ctx *gin.Context) {
-	tmpl := template.Must(template.ParseFiles("public/singleRental.html"))
-
-	rentalId := ctx.Param("rentalId")
-	id, _ := strconv.Atoi(rentalId)
-
-	rental := controller.rentalService.FindById(uint(id))
-
-	data := RentalTemplateData{
-		PageTitle: rental.Name,
-		Rental:    rental,
-	}
-
-	tmpl.Execute(ctx.Writer, data)
-
 }
 
 func (controller *RentalController) HandleRentalDetail(w http.ResponseWriter, r *http.Request) error {
