@@ -4,6 +4,7 @@ import (
 	"booking-api/constants"
 	"booking-api/controllers"
 	"booking-api/middlewares"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -216,6 +217,18 @@ func NewRouter(
 			// secured.DELETE("/boatPhoto/:id", controllers.DeleteBoatPhoto)
 
 		}
+
+		/************************ Admin Dashboard ************************/
+
+	}
+	admin := router.Group("/admin")
+	{
+		admin.GET("/", func(ctx *gin.Context) {
+			http.ServeFile(ctx.Writer, ctx.Request, "public/index.html")
+		})
+
+		admin.GET("/rentals", rentalController.GetRentalListTemplate)
+
 	}
 	return router
 }

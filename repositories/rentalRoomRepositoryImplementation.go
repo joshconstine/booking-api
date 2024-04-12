@@ -72,3 +72,23 @@ func (r *RentalRoomRepositoryImplementation) Create(rentalRoom request.RentalRoo
 
 	return rentalRoomModel.MapRentalRoomToResponse()
 }
+
+func (r *RentalRoomRepositoryImplementation) Update(rentalRoom request.UpdateRentalRoomRequest) response.RentalRoomResponse {
+	var rentalRoomModel models.RentalRoom
+	result := r.Db.Where("id = ?", rentalRoom.ID).First(&rentalRoomModel)
+	if result.Error != nil {
+		return response.RentalRoomResponse{}
+	}
+
+	rentalRoomModel.Name = rentalRoom.Name
+	rentalRoomModel.Description = rentalRoom.Description
+	rentalRoomModel.Floor = rentalRoom.Floor
+	rentalRoomModel.RoomTypeID = rentalRoom.RoomTypeID
+
+	result = r.Db.Save(&rentalRoomModel)
+	if result.Error != nil {
+		return response.RentalRoomResponse{}
+	}
+
+	return rentalRoomModel.MapRentalRoomToResponse()
+}

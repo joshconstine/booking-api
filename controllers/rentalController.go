@@ -4,6 +4,7 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/services"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -12,6 +13,11 @@ import (
 
 type RentalController struct {
 	rentalService services.RentalService
+}
+
+type RentalListTemplateData struct {
+	PageTitle string
+	Rentals   []response.RentalResponse
 }
 
 func NewRentalController(rentalService services.RentalService) *RentalController {
@@ -76,4 +82,18 @@ func (controller *RentalController) Update(ctx *gin.Context) {
 
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, rental)
+}
+
+func (controller *RentalController) GetRentalListTemplate(ctx *gin.Context) {
+	tmpl := template.Must(template.ParseFiles("public/rentalList.html"))
+
+	rentals := controller.rentalService.FindAll()
+
+	data := RentalListTemplateData{
+		PageTitle: "Rental List template page",
+		Rentals:   rentals,
+	}
+
+	tmpl.Execute(ctx.Writer, data)
+
 }
