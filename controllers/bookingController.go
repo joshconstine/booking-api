@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi/v5"
 )
 
 type BookingController struct {
@@ -103,4 +104,13 @@ func (controller *BookingController) HandleHomeIndex(w http.ResponseWriter, r *h
 	bookingData := controller.bookingService.FindAll()
 
 	return bookings.Index(bookingData).Render(r.Context(), w)
+}
+
+func (controller *BookingController) HandleBookingInformation(w http.ResponseWriter, r *http.Request) error {
+
+	bookingId := chi.URLParam(r, "bookingId")
+
+	booking := controller.bookingService.FindById(bookingId)
+
+	return bookings.BookingInformationTemplate(booking).Render(r.Context(), w)
 }

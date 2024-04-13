@@ -1,0 +1,25 @@
+package home
+
+import (
+    "booking-api/view/layout"
+    "booking-api/data/response"
+	
+	
+	"booking-api/view/ui"
+)
+
+// RentalInformationResponse renders a page with detailed information about a specific rental
+templ BookingInformationTemplate(booking response.BookingInformationResponse) {
+    @layout.App(true) {
+                <div>
+                    <span>
+                        {booking.ID}
+                    </span>
+                    <span>
+                        {booking.Status.Name}
+                    </span>        
+                    @ui.CustomerTile(booking.Customer)
+                </div>
+         }
+	}
+

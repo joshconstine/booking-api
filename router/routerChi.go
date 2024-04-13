@@ -32,5 +32,9 @@ func NewChiRouter(rentalsController *controllers.RentalController, bookingContro
 		bookingController.HandleHomeIndex(w, r)
 	})
 
+	router.Get("/bookings/{bookingId}", func(w http.ResponseWriter, r *http.Request) {
+		bookingController.HandleBookingInformation(w, r)
+	})
+
 	return router
 }

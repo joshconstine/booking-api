@@ -1,0 +1,12 @@
+package ui
+
+import (
+	"booking-api/data/response"
+)
+
+templ CustomerTile(user response.UserResponse) {
+	<div class="navbar bg-base-100 border-b border-gray-700">
+		<span>{user.Username}</span>
+        <span>{user.Email}</span>
+	</div>
+}
