@@ -4,8 +4,8 @@ import (
     "booking-api/view/layout"
     "booking-api/data/response"
 	"strconv"
-	"fmt"
 	
+    "booking-api/view/ui"
 )
 
 // RentalInformationResponse renders a page with detailed information about a specific rental
@@ -81,13 +81,8 @@ templ RentalInformationResponse(rental response.RentalInformationResponse) {
             <div class="mb-4 p-4 shadow-lg rounded-lg">
                 <h2 class="text-2xl font-semibold mb-4">Booking Information</h2>
                 <p><strong>Costs:</strong> <div>
-				
-					for _, item := range rental.BookingCostItems {
-						<div>
-						<p>{item.BookingCostType.Name}: ${fmt.Sprintf("%.2f", item.Amount)}</p>
-						</div>
-	}
-					</div>
+                    @ui.EntityBookingCostList(rental.BookingCostItems)
+			</div>
 					</p>
 
                 <p><strong>Adjustments:</strong> 

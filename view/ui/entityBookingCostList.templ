@@ -1,0 +1,30 @@
+package ui
+
+import (
+	"booking-api/data/response"
+    "fmt"
+)
+
+templ EntityBookingCostList(costItems []response.EntityBookingCostResponse) {
+    <div>
+        for _, costItem := range costItems {
+        <div>
+            <div>
+            <span>Cost item Amount</span>
+                <span>{ fmt.Sprintf("%f", costItem.Amount) }</span>
+            </div>
+            <div>
+                <span>Tax Rate</span>
+                <span>{ costItem.TaxRate.Name }</span>
+                <span>{ fmt.Sprintf("%f", costItem.TaxRate.Percentage) }</span>
+                <div>
+                    <span>Type</span>
+                    <span>{ costItem.BookingCostType.Name }</span>
+                </div>
+                </div>
+                </div>
+    }
+	</div>
+}
+
+
