@@ -3,6 +3,7 @@ package router
 import (
 	"booking-api/controllers"
 	"booking-api/middlewares"
+	"os"
 
 	"booking-api/view/home"
 
@@ -16,7 +17,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 	router := chi.NewMux()
 	router.Use(middlewares.WithUser)
 
-	router.Handle("/*", http.FileServer(http.Dir("public")))
+	router.Handle("/*", http.StripPrefix("/public/", http.FileServerFS(os.DirFS("public"))))
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		home.Index().Render(r.Context(), w)
 	})
