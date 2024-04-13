@@ -67,7 +67,7 @@ func (ac *AuthController) HandleSignupIndex(w http.ResponseWriter, r *http.Reque
 func (ac *AuthController) HandleLoginWithGoogle(w http.ResponseWriter, r *http.Request) error {
 	resp, err := sb.ClientInstance.Auth.SignInWithProvider(supabase.ProviderSignInOptions{
 		Provider:   "google",
-		RedirectTo: "http://localhost:3000/auth/callback",
+		RedirectTo: "http://localhost:8080/auth/callback",
 	})
 	if err != nil {
 		return err

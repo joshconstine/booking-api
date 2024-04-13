@@ -2,7 +2,7 @@ package main
 
 import (
 	"booking-api/config"
-	"booking-api/database"
+	"booking-api/pkg/database"
 	"database/sql"
 	"fmt"
 	"log"

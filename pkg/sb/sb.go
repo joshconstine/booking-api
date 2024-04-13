@@ -1,7 +1,7 @@
 package sb
 
 import (
-	"os"
+	"booking-api/config"
 
 	"github.com/nedpals/supabase-go"
 )
@@ -13,9 +13,9 @@ const ResetPasswordEndpoint = "auth/v1/recover"
 
 var ClientInstance *supabase.Client
 
-func CreateAuthClient() error {
-	sbHost := os.Getenv("SUPABASE_URL")
-	sbSecret := os.Getenv("SUPABASE_SECRET")
+func CreateAuthClient(env config.EnvVars) error {
+	sbHost := env.SUPABASE_URL
+	sbSecret := env.SUPABASE_SECRET
 	ClientInstance = supabase.CreateClient(sbHost, sbSecret)
 	return nil
 }

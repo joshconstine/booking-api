@@ -38,11 +38,11 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 	})
 
 	router.Get("/login", controllers.Make(authController.HandleLoginIndex))
-	// router.Get("/login/provider/google", handler.Make(handler.HandleLoginWithGoogle))
-	// router.Get("/signup", handler.Make(handler.HandleSignupIndex))
-	// router.Post("/logout", handler.Make(handler.HandleLogoutCreate))
-	// router.Post("/login", handler.Make(handler.HandleLoginCreate))
-	// router.Get("/auth/callback", handler.Make(handler.HandleAuthCallback))
+	router.Get("/login/provider/google", controllers.Make(authController.HandleLoginWithGoogle))
+	router.Get("/signup", controllers.Make(authController.HandleSignupIndex))
+	router.Post("/logout", controllers.Make(authController.HandleLogoutCreate))
+	router.Post("/login", controllers.Make(authController.HandleLoginCreate))
+	router.Get("/auth/callback", controllers.Make(authController.HandleAuthCallback))
 
 	return router
 }

@@ -65,7 +65,7 @@ func run(env config.EnvVars) (func(), error) {
 
 	// Creates a new Supabase client
 	// accessable via sb.ClientInstance
-	sb.CreateAuthClient()
+	sb.CreateAuthClient(env)
 
 	app, cleanup, err := buildServer(env)
 	if err != nil {

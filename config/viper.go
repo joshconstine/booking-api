@@ -18,6 +18,8 @@ type EnvVars struct {
 	SEND_GRID_KEY             string `mapstructure:"SEND_GRID_KEY"`
 	PAYPAL_CLIENT_ID          string `mapstructure:"PAYPAL_CLIENT_ID"`
 	PAYPAL_CLIENT_SECRET      string `mapstructure:"PAYPAL_CLIENT_SECRET"`
+	SUPABASE_URL              string `mapstructure:"SUPABASE_URL"`
+	SUPABASE_SECRET           string `mapstructure:"SUPABASE_SECRET"`
 }
 
 func LoadConfig(configPath string) (config EnvVars, err error) {
@@ -40,8 +42,10 @@ func LoadConfig(configPath string) (config EnvVars, err error) {
 		config.SEND_GRID_KEY = os.Getenv("SEND_GRID_KEY")
 		config.PAYPAL_CLIENT_ID = os.Getenv("PAYPAL_CLIENT_ID")
 		config.PAYPAL_CLIENT_SECRET = os.Getenv("PAYPAL_CLIENT_SECRET")
+		config.SUPABASE_URL = os.Getenv("SUPABASE_URL")
+		config.SUPABASE_SECRET = os.Getenv("SUPABASE_SECRET")
 
-		if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" || config.SEND_GRID_KEY == "" || config.PAYPAL_CLIENT_ID == "" || config.PAYPAL_CLIENT_SECRET == "" {
+		if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" || config.SEND_GRID_KEY == "" || config.PAYPAL_CLIENT_ID == "" || config.PAYPAL_CLIENT_SECRET == "" || config.SUPABASE_URL == "" || config.SUPABASE_SECRET == "" {
 			return config, fmt.Errorf("error loading config, %v", err)
 		}
 		return config, nil
@@ -88,6 +92,14 @@ func LoadConfig(configPath string) (config EnvVars, err error) {
 
 	if config.PAYPAL_CLIENT_SECRET == "" {
 		err = errors.New("PAYPAL_CLIENT_SECRET is required")
+	}
+
+	if config.SUPABASE_URL == "" {
+		err = errors.New("SUPABASE_URL is required")
+	}
+
+	if config.SUPABASE_SECRET == "" {
+		err = errors.New("SUPABASE_SECRET is required")
 	}
 
 	return
