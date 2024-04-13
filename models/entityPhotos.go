@@ -20,10 +20,9 @@ func (e *EntityPhoto) TableName() string {
 
 func (e *EntityPhoto) MapEntityPhotoToResponse() response.EntityPhotoResponse {
 	response := response.EntityPhotoResponse{
-		ID: e.ID,
+		ID:    e.ID,
+		Photo: e.Photo.MapPhotoToResponse(),
 	}
-
-	response.Photo = e.Photo.MapPhotoToResponse()
 
 	return response
 }

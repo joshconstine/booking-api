@@ -1977,8 +1977,32 @@ html {
   display: table;
 }
 
+.h-16 {
+  height: 4rem;
+}
+
+.h-8 {
+  height: 2rem;
+}
+
+.max-h-8 {
+  max-height: 2rem;
+}
+
+.w-16 {
+  width: 4rem;
+}
+
+.w-32 {
+  width: 8rem;
+}
+
 .w-full {
   width: 100%;
+}
+
+.max-w-16 {
+  max-width: 4rem;
 }
 
 .max-w-md {
