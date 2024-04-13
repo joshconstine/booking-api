@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"booking-api/config"
 	"booking-api/data/request"
 	"booking-api/pkg/sb"
 	"booking-api/services"
@@ -45,9 +46,9 @@ func (ac *AuthController) HandleAccountSetupCreate(w http.ResponseWriter, r *htt
 	// if !ok {
 	// 	return render(r, w, auth.AccountSetupForm(params, errors))
 	// }
-	user := getAuthenticatedUser(r)
+	user := GetAuthenticatedUser(r)
 	account := request.CreateUserRequest{
-		UserID:   user.UserID,
+		UserID:   user.User.UserID,
 		Username: params.Username,
 	}
 	if err := ac.UserService.CreateUser(&account); err != nil {
@@ -112,7 +113,12 @@ func (ac *AuthController) HandleLogoutCreate(w http.ResponseWriter, r *http.Requ
 }
 
 func (ac *AuthController) setAuthSession(w http.ResponseWriter, r *http.Request, accessToken string) error {
-	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+	// load config
+	env, err := config.LoadConfig(".")
+	if err != nil {
+		return err
+	}
+	store := sessions.NewCookieStore([]byte(env.SESSION_SECRET))
 	session, _ := store.Get(r, sessionUserKey)
 	session.Values[sessionAccessTokenKey] = accessToken
 	return session.Save(r, w)

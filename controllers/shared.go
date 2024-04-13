@@ -22,7 +22,7 @@ func hxRedirect(w http.ResponseWriter, r *http.Request, to string) error {
 	return nil
 }
 
-func getAuthenticatedUser(r *http.Request) models.AuthenticatedUser {
+func GetAuthenticatedUser(r *http.Request) models.AuthenticatedUser {
 	user, ok := r.Context().Value(models.UserContextKey).(models.AuthenticatedUser)
 	if !ok {
 		return models.AuthenticatedUser{}

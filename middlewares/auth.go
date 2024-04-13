@@ -2,6 +2,9 @@ package middlewares
 
 import (
 	"booking-api/auth"
+	"booking-api/controllers"
+	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,4 +25,21 @@ func Auth() gin.HandlerFunc {
 		}
 		context.Next()
 	}
+}
+
+func WithAuth(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		if strings.Contains(r.URL.Path, "/public") {
+			next.ServeHTTP(w, r)
+			return
+		}
+		user := controllers.GetAuthenticatedUser(r)
+		if !user.LoggedIn {
+			path := r.URL.Path
+			http.Redirect(w, r, "/login?to="+path, http.StatusSeeOther)
+			return
+		}
+		next.ServeHTTP(w, r)
+	}
+	return http.HandlerFunc(fn)
 }

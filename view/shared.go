@@ -9,11 +9,11 @@ import (
 
 func AuthenticatedUser(ctx context.Context) models.AuthenticatedUser {
 	fmt.Println("in authenticatedUser")
-	user, _ := ctx.Value(models.UserContextKey).(models.AuthenticatedUser)
-	// if !ok {
-	// 	// return models.AuthenticatedUser{}
+	user, ok := ctx.Value(models.UserContextKey).(models.AuthenticatedUser)
+	if !ok {
+		return models.AuthenticatedUser{}
 
-	// }
+	}
 
 	return user
 }

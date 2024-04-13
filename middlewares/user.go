@@ -1,10 +1,21 @@
 package middlewares
 
 import (
+	"booking-api/config"
 	"booking-api/models"
+	sb "booking-api/pkg/sb"
 	"context"
 	"net/http"
+
 	"strings"
+
+	"github.com/google/uuid"
+	"github.com/gorilla/sessions"
+)
+
+const (
+	sessionUserKey        = "user"
+	sessionAccessTokenKey = "accessToken"
 )
 
 // func WithUser() gin.HandlerFunc {
@@ -50,54 +61,60 @@ import (
 // 	return http.HandlerFunc(fn)
 // }
 
+// func WithUser(next http.Handler) http.Handler {
+// 	fn := func(w http.ResponseWriter, r *http.Request) {
+// 		if strings.Contains(r.URL.Path, "/public") {
+// 			next.ServeHTTP(w, r)
+// 			return
+// 		}
+// 		// store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+
+// 		// user := models.AuthenticatedUser{
+// 		// 	LoggedIn: true,
+// 		// 	User: models.User{
+// 		// 		Email: "nerd",
+// 		// 	},
+// 		// }
+// 		ctx := context.WithValue(r.Context(), models.UserContextKey, nil)
+// 		next.ServeHTTP(w, r.WithContext(ctx))
+// 	}
+// 	return http.HandlerFunc(fn)
+// }
+
 func WithUser(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "/public") {
 			next.ServeHTTP(w, r)
 			return
 		}
-		// store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
-
-		// user := models.AuthenticatedUser{
-		// 	LoggedIn: true,
-		// 	User: models.User{
-		// 		Email: "nerd",
-		// 	},
-		// }
-		ctx := context.WithValue(r.Context(), models.UserContextKey, nil)
+		// load config
+		env, _ := config.LoadConfig(".")
+		store := sessions.NewCookieStore([]byte(env.SESSION_SECRET))
+		session, err := store.Get(r, sessionUserKey)
+		if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+		accessToken := session.Values[sessionAccessTokenKey]
+		if accessToken == nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+		resp, err := sb.ClientInstance.Auth.User(r.Context(), accessToken.(string))
+		if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+		user := models.AuthenticatedUser{
+			User: models.User{
+				UserID: uuid.MustParse(resp.ID),
+				Email:  resp.Email,
+			},
+			LoggedIn:    true,
+			AccessToken: accessToken.(string),
+		}
+		ctx := context.WithValue(r.Context(), models.UserContextKey, user)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 	return http.HandlerFunc(fn)
 }
-
-// func WithUserWrapper() gin.HandlerFunc {
-// 	return func(context *gin.Context) {
-
-// 		//get http.Handler from gin.HandlerFunc
-
-// 		handler := WithUser()
-// 		handler.ServeHTTP(context.Writer, context.Request)
-// 	}
-
-// }
-
-// func WithUserWrapper() gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		// Apply the WithUser middleware logic directly here.
-// 		if strings.Contains(c.Request.URL.Path, "/public") {
-// 			c.Next()
-// 			return
-// 		}
-
-// 		user := models.AuthenticatedUser{
-// 			LoggedIn: true,
-// 			User: models.User{
-// 				Email: "joshua@gmail.com",
-// 			},
-// 		}
-
-// 		c.Set(models.UserContextKey, user)
-// 		fmt.Println("from the middleware WithUser")
-// 		c.Next()
-// 	}
-// }
