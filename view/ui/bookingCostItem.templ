@@ -1,0 +1,25 @@
+package ui
+
+import (
+	"booking-api/data/response"
+    "fmt"
+)
+
+templ BookingCostItem(costItem response.BookingCostItemResponse) {
+	<div class="navbar bg-base-100 border-b border-gray-700">
+    <div>
+        <span>Cost item Amount</span>
+		<span>{ fmt.Sprintf("%f", costItem.Amount) }</span>
+    </div>
+    <div>
+        <span>Tax Rate</span>
+        <span>{ costItem.TaxRate.Name }</span>
+        <span>{ fmt.Sprintf("%f", costItem.TaxRate.Percentage) }</span>
+    </div>
+        <div>
+            <span>Type</span>
+            <span>{ costItem.BookingCostType.Name }</span>
+        </div>
+	</div>
+}
+

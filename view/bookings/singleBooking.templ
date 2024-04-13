@@ -12,13 +12,24 @@ import (
 templ BookingInformationTemplate(booking response.BookingInformationResponse) {
     @layout.App(true) {
                 <div>
-                    <span>
+                <div>
+                    <h1>
                         {booking.ID}
-                    </span>
+                    </h1>
                     <span>
                         {booking.Status.Name}
                     </span>        
+                </div>
                     @ui.CustomerTile(booking.Customer)
+                    @ui.BookingDetails(booking.Details)
+                    <div>
+                        <span>Booking Cost Items</span>
+                        <ul>
+                            for _, item := range booking.CostItems {
+                                @ui.BookingCostItem(item)
+                            }
+                        </ul>
+                    </div>
                 </div>
          }
 	}

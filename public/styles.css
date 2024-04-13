@@ -1567,6 +1567,10 @@ html {
   margin-bottom: 2rem;
 }
 
+.flex {
+  display: flex;
+}
+
 .table {
   display: table;
 }
@@ -1585,6 +1589,10 @@ html {
 
 .flex-none {
   flex: none;
+}
+
+.gap-2 {
+  gap: 0.5rem;
 }
 
 .rounded {
