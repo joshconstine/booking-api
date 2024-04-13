@@ -3,8 +3,9 @@ package main
 import (
 	"booking-api/config"
 	"booking-api/controllers"
-	"booking-api/database"
 	"booking-api/objectStorage"
+	"booking-api/pkg/database"
+	"booking-api/pkg/sb"
 	"booking-api/repositories"
 	"booking-api/router"
 	"booking-api/services"
@@ -59,7 +60,13 @@ func run(env config.EnvVars) (func(), error) {
 
 	database.Connect(env.DSN)
 	//database.Migrate()
+
 	objectStorage.CreateSession()
+
+	// Creates a new Supabase client
+	// accessable via sb.ClientInstance
+	sb.CreateAuthClient()
+
 	app, cleanup, err := buildServer(env)
 	if err != nil {
 		return nil, err
@@ -153,6 +160,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingCostAdjustmentService := services.NewEntityBookingCostAdjustmentServiceImplementation(entityBookingCostAdjustmentRepository)
 
 	//Init controller
+	authController := controllers.NewAuthController(userService, sb.ClientInstance)
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
 	// boatController := controllers.NewBoatController(boatService)
 	// userController := controllers.NewUserController(userService)
@@ -185,7 +193,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// 	bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController, entityBookingController, userRoleController, accountController, inquiryController, entityBookingDocumentController, entityBookingRuleController, entityBookingCostController, entityBookingCostAdjustmentController)
 	// router.StaticFS("/public", http.Dir("public"))
 
-	router := router.NewChiRouter(rentalController, bookingController)
+	router := router.NewChiRouter(authController, rentalController, bookingController)
 
 	// ginRouter := router.InitRouter(routes)
 

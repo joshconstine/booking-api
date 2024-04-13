@@ -62,9 +62,14 @@ func (t BookingServiceImplementation) Create(request requests.CreateUserRequest)
 
 	if user.Email != request.Email {
 		//if not create a new user
-		createdUser := t.UserService.CreateUser(request)
 
-		bookingToCreate.UserID = createdUser.ID
+		//break tx here
+		err := t.UserService.CreateUser(&request)
+		if err != nil {
+			return response.BookingResponse{}, err
+		}
+
+		// bookingToCreate.UserID = createdUser.UserID
 	} else {
 		bookingToCreate.UserID = user.ID
 		bookingToCreate.User = models.User{

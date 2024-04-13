@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"booking-api/data/response"
-	"booking-api/database"
 	"booking-api/models"
+	"booking-api/pkg/database"
 	"booking-api/services"
 	"net/http"
 

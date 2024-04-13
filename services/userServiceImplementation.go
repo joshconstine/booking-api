@@ -55,16 +55,14 @@ func (t *userServiceImplementation) FindByEmail(email string) responses.UserResp
 	return user
 }
 
-func (t *userServiceImplementation) CreateUser(user requests.CreateUserRequest) responses.UserResponse {
+func (t *userServiceImplementation) CreateUser(user *requests.CreateUserRequest) error {
 	// validate request
 	err := t.Validate.Struct(user)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	result := t.userRepository.Create(user)
 
-	createdUser := t.FindById(uint(result))
-
-	return createdUser
+	return result
 }

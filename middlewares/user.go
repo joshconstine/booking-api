@@ -58,13 +58,13 @@ func WithUser(next http.Handler) http.Handler {
 		}
 		// store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 
-		user := models.AuthenticatedUser{
-			LoggedIn: true,
-			User: models.User{
-				Email: "nerd",
-			},
-		}
-		ctx := context.WithValue(r.Context(), models.UserContextKey, user)
+		// user := models.AuthenticatedUser{
+		// 	LoggedIn: true,
+		// 	User: models.User{
+		// 		Email: "nerd",
+		// 	},
+		// }
+		ctx := context.WithValue(r.Context(), models.UserContextKey, nil)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 	return http.HandlerFunc(fn)

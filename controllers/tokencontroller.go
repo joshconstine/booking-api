@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"booking-api/auth"
-	"booking-api/database"
 	"booking-api/models"
+	"booking-api/pkg/database"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

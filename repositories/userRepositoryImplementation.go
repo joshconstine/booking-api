@@ -46,16 +46,16 @@ func (t *userRepositoryImplementation) FindByEmail(email string) models.User {
 	return user
 }
 
-func (t *userRepositoryImplementation) Create(user request.CreateUserRequest) int {
+func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) error {
 	result := t.Db.Create(&user)
 	if result.Error != nil {
-		return 0
+		return result.Error
 	}
 
 	//log the result
 	log.Println(result)
 
-	return 1
+	return nil
 }
 
 func (t *userRepositoryImplementation) Update(user models.User) models.User {

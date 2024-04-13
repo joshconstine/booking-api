@@ -3,16 +3,18 @@ package models
 import (
 	"booking-api/data/response"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type User struct {
 	gorm.Model
-	Username    string `json:"username" gorm:"unique"`
-	FirstName   string `json:"firstName"`
-	LastName    string `json:"lastName"`
-	Email       string `json:"email" gorm:"unique"`
-	PhoneNumber string `json:"phoneNumber"`
+	UserID      uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
+	Username    string    `json:"username" gorm:"unique"`
+	FirstName   string    `json:"firstName"`
+	LastName    string    `json:"lastName"`
+	Email       string    `json:"email" gorm:"unique"`
+	PhoneNumber string    `json:"phoneNumber"`
 	Login       Login
 
 	Bookings  []Booking `gorm:"foreignKey:UserID"`

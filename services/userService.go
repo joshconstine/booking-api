@@ -8,5 +8,5 @@ import (
 type UserService interface {
 	FindAll() []responses.UserResponse
 	FindByEmail(email string) responses.UserResponse
-	CreateUser(request requests.CreateUserRequest) responses.UserResponse
+	CreateUser(request *requests.CreateUserRequest) error
 }
