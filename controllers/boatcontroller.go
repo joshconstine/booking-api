@@ -2,12 +2,14 @@ package controllers
 
 import (
 	"booking-api/services"
+	boats "booking-api/view/boats"
 	"net/http"
 
 	"booking-api/data/response"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi/v5"
 )
 
 type BoatController struct {
@@ -101,4 +103,29 @@ func (controller *BoatController) FindAll(ctx *gin.Context) {
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusOK, webResponse)
 
+}
+
+func (controller *BoatController) HandleBoatDetail(w http.ResponseWriter, r *http.Request) error {
+
+	// dateParam := chi.URLParam(r, "date")
+
+	boatId := chi.URLParam(r, "boatId")
+	id, _ := strconv.Atoi(boatId)
+
+	boat := controller.boatService.FindById(id)
+
+	return boats.BoatInformationResponse(boat).Render(r.Context(), w)
+}
+
+func (controller *BoatController) HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {
+	// user := view.getAuthenticatedUser(r)
+	// account, err := db.GetAccountByUserID(user.ID)
+	// if err != nil {
+	// 	return err
+	// }
+	// fmt.Printf("%+v\n", user.Account)
+
+	boatData := controller.boatService.FindAll()
+
+	return boats.Index(boatData).Render(r.Context(), w)
 }

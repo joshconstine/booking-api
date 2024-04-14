@@ -783,158 +783,158 @@ func SeedBoats(db *gorm.DB) {
 
 }
 
-func SeedRentals(db *gorm.DB) {
-	nineAM := time.Date(2021, 1, 1, 9, 0, 0, 0, time.UTC)
-	//elevenAM := time.Date(2021, 1, 1, 11, 0, 0, 0, time.UTC)
-	threePM := time.Date(2021, 1, 1, 15, 0, 0, 0, time.UTC)
+// func SeedRentals(db *gorm.DB) {
+// 	nineAM := time.Date(2021, 1, 1, 9, 0, 0, 0, time.UTC)
+// 	//elevenAM := time.Date(2021, 1, 1, 11, 0, 0, 0, time.UTC)
+// 	threePM := time.Date(2021, 1, 1, 15, 0, 0, 0, time.UTC)
 
-	twoWeeksFromNow := time.Now().AddDate(0, 0, 14)
-	threeWeeksFromNow := time.Now().AddDate(0, 0, 21)
+// 	twoWeeksFromNow := time.Now().AddDate(0, 0, 14)
+// 	threeWeeksFromNow := time.Now().AddDate(0, 0, 21)
 
-	sixWeeksFromNow := time.Now().AddDate(0, 0, 42)
-	seventyDaysFromNow := time.Now().AddDate(0, 0, 70)
+// 	sixWeeksFromNow := time.Now().AddDate(0, 0, 42)
+// 	seventyDaysFromNow := time.Now().AddDate(0, 0, 70)
 
-	// startDate, endDate := GetRandomDateRangeWithenTheNextYear(2, 14)
+// 	// startDate, endDate := GetRandomDateRangeWithenTheNextYear(2, 14)
 
-	//fivePM := time.Date(2021, 1, 1, 17, 0, 0, 0, time.UTC)
-	rentals := []models.Rental{
-		{
-			// Model: gorm.Model{
-			// 	ID: 13,
-			// },
-			Name:        "The Lodge",
-			LocationID:  1,
-			Bedrooms:    13,
-			Bathrooms:   5,
-			Description: "cozy up north cabin",
-			Amenities: []models.Amenity{
-				{
-					Model: gorm.Model{
-						ID: 1,
-					},
-				},
-				{
-					Model: gorm.Model{
-						ID: 40,
-					},
-				},
-			},
-			Timeblocks: []models.EntityTimeblock{
-				{
-					StartTime: nineAM,
-					EndTime:   threePM,
-				},
-			},
+// 	//fivePM := time.Date(2021, 1, 1, 17, 0, 0, 0, time.UTC)
+// 	// rentals := []models.Rental{
+// 	// 	{
+// 	// 		// Model: gorm.Model{
+// 	// 		// 	ID: 13,
+// 	// 		// },
+// 	// 		Name:        "The Lodge",
+// 	// 		LocationID:  1,
+// 	// 		Bedrooms:    13,
+// 	// 		Bathrooms:   5,
+// 	// 		Description: "cozy up north cabin",
+// 	// 		Amenities: []models.Amenity{
+// 	// 			{
+// 	// 				Model: gorm.Model{
+// 	// 					ID: 1,
+// 	// 				},
+// 	// 			},
+// 	// 			{
+// 	// 				Model: gorm.Model{
+// 	// 					ID: 40,
+// 	// 				},
+// 	// 			},
+// 	// 		},
+// 	// 		Timeblocks: []models.EntityTimeblock{
+// 	// 			{
+// 	// 				StartTime: nineAM,
+// 	// 				EndTime:   threePM,
+// 	// 			},
+// 	// 		},
 
-			RentalStatus: models.RentalStatus{
-				IsClean: true,
-			},
-			RentalRooms: []models.RentalRoom{
-				{
-					Name:        "Main bedroom",
-					Description: "Master bedroom",
-					Floor:       1,
-					RoomTypeID:  1,
-					Beds: []models.BedType{
-						{
-							Model: gorm.Model{
-								ID: 1,
-							},
-						},
-						{
-							Model: gorm.Model{
-								ID: 2,
-							},
-						},
-					},
-					Photos: []models.EntityPhoto{
-						{
-							Photo: models.Photo{
-								URL: "rental_photos/3/078c6a16-2076-4d1b-88b7-b6e466763aff.PNG",
-							},
-						},
-					},
-				},
-			},
-			BookingDurationRule: models.EntityBookingDurationRule{
-				MinimumDuration: 2,
-				MaximumDuration: 14,
-				BookingBuffer:   2,
-				StartTime:       nineAM,
-				EndTime:         threePM,
-			},
-			BookingRule: models.EntityBookingRule{
-				AdvertiseAtAllLocations: true,
-				AllowPets:               false,
-				AllowInstantBooking:     true,
-				OfferEarlyCheckIn:       true,
-			},
-			BookingDocuments: []models.EntityBookingDocument{
-				{
-					Document: models.Document{
-						Model: gorm.Model{
-							ID: 2,
-						},
-					},
-					RequiresSignature: true,
-				},
-			},
-			BookingCostItems: []models.EntityBookingCost{
-				{
-					BookingCostType: models.BookingCostType{
-						Model: gorm.Model{
-							ID: 3,
-						},
-					},
-					TaxRateID: 1,
-					Amount:    1000,
-				},
-				{
-					BookingCostType: models.BookingCostType{
-						Model: gorm.Model{
-							ID: 2,
-						},
-					},
-					TaxRateID: 2,
-					Amount:    100,
-				},
-			},
-			BookingCostItemAdjustments: []models.EntityBookingCostAdjustment{
-				{
-					Amount:            1500,
-					BookingCostTypeID: 3,
-					TaxRateID:         1,
+// 	// 		RentalStatus: models.RentalStatus{
+// 	// 			IsClean: true,
+// 	// 		},
+// 	// 		RentalRooms: []models.RentalRoom{
+// 	// 			{
+// 	// 				Name:        "Main bedroom",
+// 	// 				Description: "Master bedroom",
+// 	// 				Floor:       1,
+// 	// 				RoomTypeID:  1,
+// 	// 				Beds: []models.BedType{
+// 	// 					{
+// 	// 						Model: gorm.Model{
+// 	// 							ID: 1,
+// 	// 						},
+// 	// 					},
+// 	// 					{
+// 	// 						Model: gorm.Model{
+// 	// 							ID: 2,
+// 	// 						},
+// 	// 					},
+// 	// 				},
+// 	// 				Photos: []models.EntityPhoto{
+// 	// 					{
+// 	// 						Photo: models.Photo{
+// 	// 							URL: "rental_photos/3/078c6a16-2076-4d1b-88b7-b6e466763aff.PNG",
+// 	// 						},
+// 	// 					},
+// 	// 				},
+// 	// 			},
+// 	// 		},
+// 	// 		BookingDurationRule: models.EntityBookingDurationRule{
+// 	// 			MinimumDuration: 2,
+// 	// 			MaximumDuration: 14,
+// 	// 			BookingBuffer:   2,
+// 	// 			StartTime:       nineAM,
+// 	// 			EndTime:         threePM,
+// 	// 		},
+// 	// 		BookingRule: models.EntityBookingRule{
+// 	// 			AdvertiseAtAllLocations: true,
+// 	// 			AllowPets:               false,
+// 	// 			AllowInstantBooking:     true,
+// 	// 			OfferEarlyCheckIn:       true,
+// 	// 		},
+// 	// 		BookingDocuments: []models.EntityBookingDocument{
+// 	// 			{
+// 	// 				Document: models.Document{
+// 	// 					Model: gorm.Model{
+// 	// 						ID: 2,
+// 	// 					},
+// 	// 				},
+// 	// 				RequiresSignature: true,
+// 	// 			},
+// 	// 		},
+// 	// 		BookingCostItems: []models.EntityBookingCost{
+// 	// 			{
+// 	// 				BookingCostType: models.BookingCostType{
+// 	// 					Model: gorm.Model{
+// 	// 						ID: 3,
+// 	// 					},
+// 	// 				},
+// 	// 				TaxRateID: 1,
+// 	// 				Amount:    1000,
+// 	// 			},
+// 	// 			{
+// 	// 				BookingCostType: models.BookingCostType{
+// 	// 					Model: gorm.Model{
+// 	// 						ID: 2,
+// 	// 					},
+// 	// 				},
+// 	// 				TaxRateID: 2,
+// 	// 				Amount:    100,
+// 	// 			},
+// 	// 		},
+// 	// 		BookingCostItemAdjustments: []models.EntityBookingCostAdjustment{
+// 	// 			{
+// 	// 				Amount:            1500,
+// 	// 				BookingCostTypeID: 3,
+// 	// 				TaxRateID:         1,
 
-					StartDate: twoWeeksFromNow,
-					EndDate:   threeWeeksFromNow,
-				},
-				{
-					Amount:            2000,
-					BookingCostTypeID: 3,
-					TaxRateID:         1,
+// 	// 				StartDate: twoWeeksFromNow,
+// 	// 				EndDate:   threeWeeksFromNow,
+// 	// 			},
+// 	// 			{
+// 	// 				Amount:            2000,
+// 	// 				BookingCostTypeID: 3,
+// 	// 				TaxRateID:         1,
 
-					StartDate: sixWeeksFromNow,
-					EndDate:   seventyDaysFromNow,
-				},
-			},
-			EntityPhotos: []models.EntityPhoto{
-				{
-					Photo: models.Photo{
-						URL: "boat_photos/1/https://bookingapp.us-ord-1.linodeobjects.com/boat_photos/1/5a1ab150-1ef3-4959-8b5b-085263d9b831.jpeg",
-					},
-				},
-			},
-		},
-	}
+// 	// 				StartDate: sixWeeksFromNow,
+// 	// 				EndDate:   seventyDaysFromNow,
+// 	// 			},
+// 	// 		},
+// 	// 		EntityPhotos: []models.EntityPhoto{
+// 	// 			{
+// 	// 				Photo: models.Photo{
+// 	// 					URL: "boat_photos/1/https://bookingapp.us-ord-1.linodeobjects.com/boat_photos/1/5a1ab150-1ef3-4959-8b5b-085263d9b831.jpeg",
+// 	// 				},
+// 	// 			},
+// 	// 		},
+// 	// 	},
+// 	// }
 
-	timeblockRepository := repositories.NewTimeblockRepositoryImplementation(db)
-	rentalRepository := repositories.NewRentalRepositoryImplementation(db, timeblockRepository)
+// 	timeblockRepository := repositories.NewTimeblockRepositoryImplementation(db)
+// 	rentalRepository := repositories.NewRentalRepositoryImplementation(db, timeblockRepository)
 
-	for _, rental := range rentals {
-		rentalRepository.Create(rental)
-	}
+// 	for _, rental := range rentals {
+// 		rentalRepository.Create(rental)
+// 	}
 
-}
+// }
 func SeedDocuments(client *objectStorage.S3Client, db *gorm.DB) {
 	documents := []models.Document{
 		{
@@ -975,7 +975,7 @@ func main() {
 	// create object storage client
 	objectStorage.CreateSession()
 
-	//database.Migrate()
+	database.Migrate()
 	// SeedAmenityTypes(database.Instance)
 	// SeedBedTypes(database.Instance)
 	// SeedBookingCostTypes(database.Instance)
@@ -992,7 +992,7 @@ func main() {
 	// SeedAccounts(database.Instance)
 	//SeedInquiries(database.Instance)
 
-	SeedRentals(database.Instance)
+	// SeedRentals(database.Instance)
 	// SeedBoats(database.Instance)
 
 	//*****users rbac

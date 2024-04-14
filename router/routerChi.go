@@ -12,7 +12,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController) *chi.Mux {
+func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController) *chi.Mux {
 
 	router := chi.NewMux()
 	router.Use(middlewares.WithUser)
@@ -28,6 +28,13 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 
 	router.Get("/rentals/{rentalId}", func(w http.ResponseWriter, r *http.Request) {
 		rentalsController.HandleRentalDetail(w, r)
+	})
+	router.Get("/boats", func(w http.ResponseWriter, r *http.Request) {
+		boatsController.HandleHomeIndex(w, r)
+	})
+
+	router.Get("/boats/{boatId}", func(w http.ResponseWriter, r *http.Request) {
+		boatsController.HandleBoatDetail(w, r)
 	})
 
 	router.Get("/bookings", func(w http.ResponseWriter, r *http.Request) {

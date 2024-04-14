@@ -82,7 +82,7 @@ func (ac *AuthController) HandleLoginCreate(w http.ResponseWriter, r *http.Reque
 		Email: r.FormValue("email"),
 	}
 	err := sb.ClientInstance.Auth.SendMagicLink(r.Context(), credentials.Email)
-	if err != nil {
+	if err != nil && err.Error() != "" {
 		slog.Error("login error", "err", err)
 		return render(r, w, auth.LoginForm(credentials, auth.LoginErrors{
 			InvalidCredentials: err.Error(),
