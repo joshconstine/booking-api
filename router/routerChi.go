@@ -3,9 +3,8 @@ package router
 import (
 	"booking-api/controllers"
 	"booking-api/middlewares"
+	home "booking-api/view/home"
 	"os"
-
-	"booking-api/view/home"
 
 	"net/http"
 

@@ -17,7 +17,7 @@ templ:
 	@templ generate --watch --proxy=http://localhost:3000
 
 build:
-	@/home/joshua/.nvm/versions/node/v18.12.1/bin/tailwindcss -i view/css/app.css -o public/styles.css
+	@tailwindcss -i view/css/app.css -o public/styles.css
 	@templ generate view
 	@go build -tags dev -o bin/booking-api main.go 
 

@@ -4,7 +4,7 @@ import (
 	"booking-api/constants"
 	"booking-api/controllers"
 	"booking-api/middlewares"
-	"booking-api/view/home"
+	home "booking-api/view/home"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

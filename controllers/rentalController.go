@@ -4,10 +4,9 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/services"
+	rentals "booking-api/view/rentals"
 	"net/http"
 	"strconv"
-
-	rentals "booking-api/view/rentals"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-chi/chi/v5"

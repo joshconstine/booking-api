@@ -3,9 +3,9 @@ package main
 import (
 	"booking-api/config"
 	requests "booking-api/data/request"
-	"booking-api/database"
 	"booking-api/models"
 	"booking-api/objectStorage"
+	"booking-api/pkg/database"
 	"booking-api/repositories"
 	"fmt"
 	"log"

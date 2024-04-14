@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"booking-api/services"
-	boats "booking-api/view/boats"
 	"net/http"
 
 	"booking-api/data/response"
+	boats "booking-api/view/boats"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

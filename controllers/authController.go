@@ -5,7 +5,7 @@ import (
 	"booking-api/data/request"
 	"booking-api/pkg/sb"
 	"booking-api/services"
-	"booking-api/view/auth"
+	auth "booking-api/view/auth"
 	"log/slog"
 	"net/http"
 	"os"
