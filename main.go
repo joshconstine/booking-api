@@ -20,6 +20,8 @@ import (
 func main() {
 
 	// setup exit code for graceful shutdown
+	// setup exit code for graceful shutdown
+
 	var exitCode int
 	defer func() {
 		os.Exit(exitCode)
