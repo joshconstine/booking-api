@@ -47,6 +47,7 @@ func (ac *AuthController) HandleAccountSetupCreate(w http.ResponseWriter, r *htt
 	account := request.CreateUserRequest{
 		UserID:   user.User.UserID,
 		Username: params.Username,
+		Email:    user.User.Email,
 	}
 	if err := ac.UserService.CreateUser(&account); err != nil {
 		return err
@@ -62,7 +63,7 @@ func (ac *AuthController) HandleSignupIndex(w http.ResponseWriter, r *http.Reque
 	return render(r, w, auth.Signup())
 }
 
-func HandleAccountSetupIndex(w http.ResponseWriter, r *http.Request) error {
+func (ac *AuthController) HandleAccountSetupIndex(w http.ResponseWriter, r *http.Request) error {
 	return render(r, w, auth.AccountSetup())
 }
 

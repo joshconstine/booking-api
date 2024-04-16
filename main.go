@@ -188,13 +188,13 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingRuleController := controllers.NewEntityBookingRuleController(entityBookingRuleService)
 	// entityBookingCostController := controllers.NewEntityBookingCostController(entityBookingCostService)
 	// entityBookingCostAdjustmentController := controllers.NewEntityBookingCostAdjustmentController(entityBookingCostAdjustmentService)
-
+	userSettingsController := controllers.NewUserSettingsController(userService)
 	//Router
 	// router := router.NewRouter(boatController, bookingController, userController,
 	// 	bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController, entityBookingController, userRoleController, accountController, inquiryController, entityBookingDocumentController, entityBookingRuleController, entityBookingCostController, entityBookingCostAdjustmentController)
 	// router.StaticFS("/public", http.Dir("public"))
 
-	router := router.NewChiRouter(authController, rentalController, bookingController, boatController)
+	router := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController)
 
 	// ginRouter := router.InitRouter(routes)
 
