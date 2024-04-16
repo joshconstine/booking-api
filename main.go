@@ -73,8 +73,9 @@ func run(env config.EnvVars) (func(), error) {
 	}
 
 	go func() {
-		http.ListenAndServe(":8080", app)
-		log.Println("server started")
+		port := env.PORT
+		log.Println("application running", "port", port)
+		http.ListenAndServe(port, app)
 	}()
 
 	return func() {
