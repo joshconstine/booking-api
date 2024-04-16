@@ -11,9 +11,10 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController) *chi.Mux {
+func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController, userSettingsController *controllers.UserSettingsController) *chi.Mux {
 
 	router := chi.NewMux()
+	// router.Use(middlewares.WithLogger)
 	router.Use(middlewares.WithUser)
 
 	router.Handle("/*", http.StripPrefix("/public/", http.FileServerFS(os.DirFS("public"))))
@@ -50,6 +51,21 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 	router.Post("/logout", controllers.Make(authController.HandleLogoutCreate))
 	router.Post("/login", controllers.Make(authController.HandleLoginCreate))
 	router.Get("/auth/callback", controllers.Make(authController.HandleAuthCallback))
+
+	router.Group(func(auth chi.Router) {
+		auth.Use(middlewares.WithAuth)
+		auth.Get("/account/setup", controllers.Make(authController.HandleAccountSetupIndex))
+		auth.Post("/account/setup", controllers.Make(authController.HandleAccountSetupCreate))
+	})
+
+	router.Group(func(auth chi.Router) {
+		auth.Use(middlewares.WithAuth, middlewares.WithAccountSetup)
+		auth.Get("/settings", controllers.Make(userSettingsController.HandleSettingsIndex))
+		// router.Get("/settings", func(w http.ResponseWriter, r *http.Request) {
+		// 	userSettingsController.HandleSettingsIndex(w, r)
+		// })
+		// auth.Put("/settings/account/profile", handler.Make(handler.HandleSettingsUsernameUpdate))
+	})
 
 	return router
 }
