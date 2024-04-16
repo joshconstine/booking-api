@@ -3,6 +3,7 @@ package controllers
 import (
 	"booking-api/config"
 	"booking-api/data/request"
+	validate "booking-api/pkg/kit"
 	"booking-api/pkg/sb"
 	"booking-api/services"
 	auth "booking-api/view/auth"
@@ -31,21 +32,17 @@ func NewAuthController(userService services.UserService, sb *supabase.Client) *A
 	}
 }
 
-func HandleAccountSetupIndex(w http.ResponseWriter, r *http.Request) error {
-	return render(r, w, auth.AccountSetup())
-}
-
 func (ac *AuthController) HandleAccountSetupCreate(w http.ResponseWriter, r *http.Request) error {
 	params := auth.AccountSetupParams{
 		Username: r.FormValue("username"),
 	}
-	// var errors auth.AccountSetupErrors
-	// ok := validate.New(&params, validate.Fields{
-	// 	"Username": validate.Rules(validate.Min(2), validate.Max(50)),
-	// }).Validate(&errors)
-	// if !ok {
-	// 	return render(r, w, auth.AccountSetupForm(params, errors))
-	// }
+	var errors auth.AccountSetupErrors
+	ok := validate.New(&params, validate.Fields{
+		"Username": validate.Rules(validate.Min(2), validate.Max(50)),
+	}).Validate(&errors)
+	if !ok {
+		return render(r, w, auth.AccountSetupForm(params, errors))
+	}
 	user := GetAuthenticatedUser(r)
 	account := request.CreateUserRequest{
 		UserID:   user.User.UserID,
@@ -63,6 +60,10 @@ func (ac *AuthController) HandleLoginIndex(w http.ResponseWriter, r *http.Reques
 
 func (ac *AuthController) HandleSignupIndex(w http.ResponseWriter, r *http.Request) error {
 	return render(r, w, auth.Signup())
+}
+
+func HandleAccountSetupIndex(w http.ResponseWriter, r *http.Request) error {
+	return render(r, w, auth.AccountSetup())
 }
 
 func (ac *AuthController) HandleLoginWithGoogle(w http.ResponseWriter, r *http.Request) error {
