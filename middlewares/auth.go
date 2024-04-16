@@ -3,6 +3,9 @@ package middlewares
 import (
 	"booking-api/auth"
 	"booking-api/controllers"
+	"booking-api/models"
+	"context"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -27,6 +30,27 @@ func Auth() gin.HandlerFunc {
 	}
 }
 
+func WithAccountSetup(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		user := controllers.GetAuthenticatedUser(r)
+		// account, err := db.GetAccountByUserID(user.ID)
+		// The user has not setup his account yet.
+		// Hence, redirect him to /account/setup
+		// if err != nil {
+		// 	if errors.Is(err, sql.ErrNoRows) {
+		// 		http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
+		// 		return
+		// 	}
+		// 	next.ServeHTTP(w, r)
+		// 	return
+		// }
+		fmt.Println("in here!!!!!")
+		// user.Account = account
+		ctx := context.WithValue(r.Context(), models.UserContextKey, user)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	}
+	return http.HandlerFunc(fn)
+}
 func WithAuth(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "/public") {
