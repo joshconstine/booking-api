@@ -17,7 +17,8 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 
 	router := chi.NewMux()
 	// router.Use(middlewares.WithLogger)
-	router.Use(middlewares.WithUser)
+	userMiddleware := middlewares.NewWithUserMiddleWare(*userService)
+	router.Use(userMiddleware)
 	withAccountSetupMiddleware := middlewares.NewWithAccountSetupMiddleWare(*userService)
 
 	router.Handle("/*", http.StripPrefix("/public/", http.FileServerFS(os.DirFS("public"))))
