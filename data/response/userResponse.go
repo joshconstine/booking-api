@@ -1,7 +1,9 @@
 package response
 
+import "github.com/google/uuid"
+
 type UserResponse struct {
-	ID       uint   `json:"id"`
-	Email    string `json:"email"`
-	Username string `json:"username"`
+	UserID   uuid.UUID `json:"userId"`
+	Email    string    `json:"email"`
+	Username string    `json:"username"`
 }

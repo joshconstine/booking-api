@@ -4,14 +4,14 @@ import (
 	"booking-api/auth"
 	"booking-api/controllers"
 	"booking-api/models"
-	"booking-api/pkg/database"
+	"booking-api/services"
 	"context"
-	"database/sql"
 	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func Auth() gin.HandlerFunc {
@@ -32,29 +32,53 @@ func Auth() gin.HandlerFunc {
 	}
 }
 
-func WithAccountSetup(next http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		authenticatedUser := controllers.GetAuthenticatedUser(r)
-		user := models.User{}
+// func WithAccountSetup(next http.Handler) http.Handler {
+// 	fn := func(w http.ResponseWriter, r *http.Request) {
+// 		authenticatedUser := controllers.GetAuthenticatedUser(r)
+// 		user := models.User{}
 
-		result := database.Instance.Where("user_id = ?", authenticatedUser.User.UserID).First(&user)
-		// The user has not setup his account yet.
-		// Hence, redirect him to /account/setup
-		if result.Error == sql.ErrNoRows || result.RowsAffected == 0 {
-			http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
-			return
-		}
+// 		result := database.Instance.Where("user_id = ?", authenticatedUser.User.UserID).First(&user)
+// 		// The user has not setup his account yet.
+// 		// Hence, redirect him to /account/setup
+// 		if result.Error == sql.ErrNoRows || result.RowsAffected == 0 {
+// 			http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
+// 			return
+// 		}
 
-		fmt.Println("in here!!!!!")
-		// user.User = account
-		ctx := context.WithValue(r.Context(), models.UserContextKey, user)
+// 		fmt.Println("in here!!!!!")
+// 		// user.User = account
+// 		ctx := context.WithValue(r.Context(), models.UserContextKey, user)
 
-		authenticatedUser.User = user
+// 		authenticatedUser.User = user
 
-		next.ServeHTTP(w, r.WithContext(ctx))
+// 		next.ServeHTTP(w, r.WithContext(ctx))
+// 	}
+// 	return http.HandlerFunc(fn)
+// }
+
+func NewWithAccountSetupMiddleWare(userService services.UserService) func(http.Handler) http.Handler {
+	withAccountSetup := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			authenticatedUser := controllers.GetAuthenticatedUser(r)
+			user := userService.FindByUserID(authenticatedUser.User.UserID)
+			if user.UserID == uuid.Nil {
+				http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
+				return
+			}
+			fmt.Println("in here!!!!!")
+			ctx := context.WithValue(r.Context(), models.UserContextKey, user)
+			authenticatedUser.User = models.User{
+				UserID:   user.UserID,
+				Username: user.Username,
+				Email:    user.Email,
+			}
+
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
 	}
-	return http.HandlerFunc(fn)
+	return withAccountSetup
 }
+
 func WithAuth(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "/public") {

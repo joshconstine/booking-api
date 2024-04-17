@@ -39,7 +39,7 @@ func (user *User) HashPassword(password string) error {
 
 func (user *User) MapUserToResponse() response.UserResponse {
 	response := response.UserResponse{
-		ID:       user.ID,
+		UserID:   user.UserID,
 		Username: user.Username,
 
 		Email: user.Email,

@@ -194,7 +194,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// 	bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController, entityBookingController, userRoleController, accountController, inquiryController, entityBookingDocumentController, entityBookingRuleController, entityBookingCostController, entityBookingCostAdjustmentController)
 	// router.StaticFS("/public", http.Dir("public"))
 
-	router := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController)
+	router := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService)
 
 	// ginRouter := router.InitRouter(routes)
 

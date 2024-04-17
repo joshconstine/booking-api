@@ -6,6 +6,7 @@ import (
 	"booking-api/repositories"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 )
 
 type userServiceImplementation struct {
@@ -25,20 +26,31 @@ func (t *userServiceImplementation) FindAll() []responses.UserResponse {
 	var users []responses.UserResponse
 	for _, value := range result {
 		user := responses.UserResponse{
-			ID:    value.ID,
-			Email: value.Email,
+			UserID: value.UserID,
+			Email:  value.Email,
 		}
 		users = append(users, user)
 	}
 	return users
 }
 
+func (t *userServiceImplementation) FindByUserID(userID uuid.UUID) responses.UserResponse {
+	result := t.userRepository.FindByUserID(userID)
+
+	user := responses.UserResponse{
+		UserID: result.UserID,
+		Email:  result.Email,
+	}
+
+	return user
+}
+
 func (t *userServiceImplementation) FindById(id uint) responses.UserResponse {
 	result := t.userRepository.FindById(id)
 
 	user := responses.UserResponse{
-		ID:    result.ID,
-		Email: result.Email,
+		UserID: result.UserID,
+		Email:  result.Email,
 	}
 
 	return user
@@ -48,8 +60,8 @@ func (t *userServiceImplementation) FindByEmail(email string) responses.UserResp
 	result := t.userRepository.FindByEmail(email)
 
 	user := responses.UserResponse{
-		ID:    result.ID,
-		Email: result.Email,
+		UserID: result.UserID,
+		Email:  result.Email,
 	}
 
 	return user

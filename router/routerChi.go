@@ -3,6 +3,7 @@ package router
 import (
 	"booking-api/controllers"
 	"booking-api/middlewares"
+	"booking-api/services"
 	home "booking-api/view/home"
 	"os"
 
@@ -11,11 +12,13 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController, userSettingsController *controllers.UserSettingsController) *chi.Mux {
+func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController, userSettingsController *controllers.UserSettingsController,
+	userService *services.UserService) *chi.Mux {
 
 	router := chi.NewMux()
 	// router.Use(middlewares.WithLogger)
 	router.Use(middlewares.WithUser)
+	withAccountSetupMiddleware := middlewares.NewWithAccountSetupMiddleWare(*userService)
 
 	router.Handle("/*", http.StripPrefix("/public/", http.FileServerFS(os.DirFS("public"))))
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +62,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 	})
 
 	router.Group(func(auth chi.Router) {
-		auth.Use(middlewares.WithAuth, middlewares.WithAccountSetup)
+		auth.Use(middlewares.WithAuth, withAccountSetupMiddleware)
 		auth.Get("/settings", controllers.Make(userSettingsController.HandleSettingsIndex))
 		// router.Get("/settings", func(w http.ResponseWriter, r *http.Request) {
 		// 	userSettingsController.HandleSettingsIndex(w, r)

@@ -973,7 +973,7 @@ func main() {
 	database.Connect(env.DSN)
 
 	// create object storage client
-	objectStorage.CreateSession()
+	// objectStorage.CreateSession()
 
 	database.Migrate()
 	// SeedAmenityTypes(database.Instance)
