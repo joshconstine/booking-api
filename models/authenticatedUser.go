@@ -1,9 +1,11 @@
 package models
 
+import "booking-api/data/response"
+
 const UserContextKey = "user"
 
 type AuthenticatedUser struct {
-	User        User
+	User        response.UserResponse
 	LoggedIn    bool
 	AccessToken string
 }

@@ -78,3 +78,15 @@ func (t *userServiceImplementation) CreateUser(user *requests.CreateUserRequest)
 
 	return result
 }
+
+func (t *userServiceImplementation) UpdateUser(user *requests.UpdateUserRequest) error {
+	// validate request
+	err := t.Validate.Struct(user)
+	if err != nil {
+		return err
+	}
+
+	result := t.userRepository.Update(user)
+
+	return result
+}

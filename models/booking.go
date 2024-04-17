@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -13,7 +14,7 @@ type Booking struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       gorm.DeletedAt `gorm:"index"`
-	UserID          uint           `gorm:"not null"`
+	UserID          uuid.UUID      `gorm:"not null"`
 	BookingStatusID uint           `gorm:"not null; default:1"`
 	InquiryID       uint
 	Inquiry         Inquiry

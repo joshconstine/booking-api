@@ -12,4 +12,5 @@ type UserService interface {
 	FindByEmail(email string) responses.UserResponse
 	FindByUserID(userID uuid.UUID) responses.UserResponse
 	CreateUser(request *requests.CreateUserRequest) error
+	UpdateUser(user *requests.UpdateUserRequest) error
 }

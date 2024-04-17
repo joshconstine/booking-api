@@ -3,6 +3,7 @@ package middlewares
 import (
 	"booking-api/auth"
 	"booking-api/controllers"
+	"booking-api/data/response"
 	"booking-api/models"
 	"booking-api/services"
 	"context"
@@ -31,31 +32,6 @@ func Auth() gin.HandlerFunc {
 		context.Next()
 	}
 }
-
-// func WithAccountSetup(next http.Handler) http.Handler {
-// 	fn := func(w http.ResponseWriter, r *http.Request) {
-// 		authenticatedUser := controllers.GetAuthenticatedUser(r)
-// 		user := models.User{}
-
-// 		result := database.Instance.Where("user_id = ?", authenticatedUser.User.UserID).First(&user)
-// 		// The user has not setup his account yet.
-// 		// Hence, redirect him to /account/setup
-// 		if result.Error == sql.ErrNoRows || result.RowsAffected == 0 {
-// 			http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
-// 			return
-// 		}
-
-// 		fmt.Println("in here!!!!!")
-// 		// user.User = account
-// 		ctx := context.WithValue(r.Context(), models.UserContextKey, user)
-
-// 		authenticatedUser.User = user
-
-// 		next.ServeHTTP(w, r.WithContext(ctx))
-// 	}
-// 	return http.HandlerFunc(fn)
-// }
-
 func NewWithAccountSetupMiddleWare(userService services.UserService) func(http.Handler) http.Handler {
 	withAccountSetup := func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -66,13 +42,13 @@ func NewWithAccountSetupMiddleWare(userService services.UserService) func(http.H
 				return
 			}
 			fmt.Println("in here!!!!!")
-			ctx := context.WithValue(r.Context(), models.UserContextKey, user)
-			authenticatedUser.User = models.User{
+			authenticatedUser.User = response.UserResponse{
 				UserID:   user.UserID,
 				Username: user.Username,
 				Email:    user.Email,
 			}
 
+			ctx := context.WithValue(r.Context(), models.UserContextKey, authenticatedUser)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}

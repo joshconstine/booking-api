@@ -67,7 +67,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		// router.Get("/settings", func(w http.ResponseWriter, r *http.Request) {
 		// 	userSettingsController.HandleSettingsIndex(w, r)
 		// })
-		// auth.Put("/settings/account/profile", handler.Make(handler.HandleSettingsUsernameUpdate))
+		auth.Put("/settings/account/profile", controllers.Make(userSettingsController.HandleSettingsUsernameUpdate))
 	})
 
 	return router

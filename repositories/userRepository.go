@@ -13,5 +13,5 @@ type UserRepository interface {
 	FindByUserID(userID uuid.UUID) models.User
 	FindByEmail(email string) models.User
 	Create(user *request.CreateUserRequest) error
-	Update(user models.User) models.User
+	Update(user *request.UpdateUserRequest) error
 }

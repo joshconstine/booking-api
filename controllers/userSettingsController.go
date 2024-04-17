@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"booking-api/data/request"
 	validate "booking-api/pkg/kit"
 	"booking-api/services"
 	"booking-api/view/settings"
@@ -17,6 +18,7 @@ func NewUserSettingsController(service services.UserService) *UserSettingsContro
 
 func (usc *UserSettingsController) HandleSettingsIndex(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
+	// user.User = usc.userService.FindByUserID(user.User.UserID)
 	return render(r, w, settings.Index(user))
 }
 
@@ -33,9 +35,21 @@ func (usc *UserSettingsController) HandleSettingsUsernameUpdate(w http.ResponseW
 	}
 	user := GetAuthenticatedUser(r)
 	user.User.Username = params.Username
+
+	updateUserRequest := request.UpdateUserRequest{
+		UserID:   user.User.UserID,
+		Username: user.User.Username,
+	}
+
 	// if err := db.UpdateY(&user.User); err != nil {
 	// 	return err
 	// }
+
+	err := usc.userService.UpdateUser(&updateUserRequest)
+	if err != nil {
+		return err
+	}
+
 	params.Success = true
 	return render(r, w, settings.ProfileForm(params, settings.ProfileErrors{}))
 }

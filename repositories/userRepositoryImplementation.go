@@ -76,13 +76,13 @@ func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) e
 	return nil
 }
 
-func (t *userRepositoryImplementation) Update(user models.User) models.User {
-	result := t.Db.Save(&user)
+func (t *userRepositoryImplementation) Update(user *request.UpdateUserRequest) error {
+	result := t.Db.Model(&models.User{}).Where("user_id = ?", user.UserID).Updates(models.User{Username: user.Username})
 	if result.Error != nil {
-		return models.User{}
+		return result.Error
 	}
 
-	return user
+	return nil
 }
 
 func (t *userRepositoryImplementation) Delete(user models.User) models.User {

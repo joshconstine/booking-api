@@ -5,6 +5,7 @@ import (
 	"booking-api/models"
 
     "booking-api/view/layout"
+	"booking-api/view"
     "booking-api/view/ui"
 )
 
@@ -13,8 +14,11 @@ templ Index(user models.AuthenticatedUser) {
 		<div class="max-w-2xl w-full mx-auto mt-8">
 			<div>
 				<h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Profile</h1>
+			<dt>{view.AuthenticatedUser(ctx).User.Username}</dt>
+			<dt>{view.AuthenticatedUser(ctx).User.Email}</dt>
+			<dt>hello world</dt>
 				@ProfileForm(ProfileParams{
-					Username: user.User.Username,
+					Username: view.AuthenticatedUser(ctx).User.Username,
 				}, ProfileErrors{})
 			</div>
 			// <div class="mt-10">
