@@ -46,8 +46,25 @@ func (t *userRepositoryImplementation) FindByEmail(email string) models.User {
 	return user
 }
 
+func (t *userRepositoryImplementation) FindByUserID(userID string) models.User {
+	var user models.User
+	result := t.Db.Where("user_id = ?", userID).First(&user)
+	if result.Error != nil {
+		return models.User{}
+	}
+
+	return user
+
+}
+
 func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) error {
-	result := t.Db.Create(&user)
+	userToInsert := models.User{
+		UserID:   user.UserID,
+		Username: user.Username,
+		Email:    user.Email,
+	}
+
+	result := t.Db.Model(&models.User{}).Create(&userToInsert)
 	if result.Error != nil {
 		return result.Error
 	}
