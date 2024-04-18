@@ -20,6 +20,10 @@ type AccountSetupErrors struct {
 
 type AccountSetupParams struct {
 	Username string
+	FirstName string
+	LastName string
+	PhoneNumber string
+	
 }
 
 templ AccountSetupForm(parmas AccountSetupParams, errors AccountSetupErrors) {
@@ -37,7 +41,29 @@ templ AccountSetupForm(parmas AccountSetupParams, errors AccountSetupErrors) {
 					<span class="label-text text-error">{ errors.Username }</span>
 				}
 			</div>
+
 		</label>
+		<label class="form-control w-full max-w-xs">
+			<div class="label">
+				<span class="label-text">Enter your first name</span>
+			</div>
+			<input class="input input-bordered" type="text" name="firstName"/>
+		</label>
+		<label class="form-control w-full max-w-xs">
+			<div class="label">
+				<span class="label-text">Enter your last name</span>
+			</div>
+			<input class="input input-bordered" type="text" name="lastName"/>
+		</label>
+
+		<label class="form-control w-full max-w-xs">
+			<div class="label">
+				<span class="label-text">Enter your phone number</span>
+			</div>
+			<input class="input input-bordered" type="text" name="phoneNumber"/>
+		</label>
+
+		
 		<button class="btn btn-primary">setup account <i class="fa-solid fa-arrow-right"></i></button>
 	</form>
 }

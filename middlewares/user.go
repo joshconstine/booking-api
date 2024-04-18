@@ -87,12 +87,20 @@ func NewWithUserMiddleWare(userService services.UserService) func(http.Handler) 
 			}
 			userData := userService.FindByUserID(uuid.MustParse(resp.ID))
 			// if userData.UserID == uuid.Nil {
-			// 	http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
+			// 	// http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
 			// 	return
 			// }
 
 			user := models.AuthenticatedUser{
-				User:        userData,
+
+				User: response.UserResponse{
+					UserID:    uuid.MustParse(resp.ID), //userData.UserID,
+					Email:     resp.Email,
+					FirstName: userData.FirstName,
+					LastName:  userData.LastName,
+
+					//TODO ADD user service to get username here
+				},
 				LoggedIn:    true,
 				AccessToken: accessToken.(string),
 			}

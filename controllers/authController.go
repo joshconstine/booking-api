@@ -34,7 +34,10 @@ func NewAuthController(userService services.UserService, sb *supabase.Client) *A
 
 func (ac *AuthController) HandleAccountSetupCreate(w http.ResponseWriter, r *http.Request) error {
 	params := auth.AccountSetupParams{
-		Username: r.FormValue("username"),
+		Username:    r.FormValue("username"),
+		FirstName:   r.FormValue("firstName"),
+		LastName:    r.FormValue("lastName"),
+		PhoneNumber: r.FormValue("phoneNumber"),
 	}
 	var errors auth.AccountSetupErrors
 	ok := validate.New(&params, validate.Fields{
@@ -45,9 +48,12 @@ func (ac *AuthController) HandleAccountSetupCreate(w http.ResponseWriter, r *htt
 	}
 	user := GetAuthenticatedUser(r)
 	account := request.CreateUserRequest{
-		UserID:   user.User.UserID,
-		Username: params.Username,
-		Email:    user.User.Email,
+		UserID:      user.User.UserID,
+		Username:    params.Username,
+		Email:       user.User.Email,
+		FirstName:   params.FirstName,
+		LastName:    params.LastName,
+		PhoneNumber: params.PhoneNumber,
 	}
 	if err := ac.UserService.CreateUser(&account); err != nil {
 		return err

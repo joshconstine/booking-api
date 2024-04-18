@@ -61,9 +61,12 @@ func (t *userRepositoryImplementation) FindByUserID(userID uuid.UUID) response.U
 
 func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) error {
 	userToInsert := models.User{
-		UserID:   user.UserID,
-		Username: user.Username,
-		Email:    user.Email,
+		UserID:      user.UserID,
+		Username:    user.Username,
+		Email:       user.Email,
+		FirstName:   user.FirstName,
+		LastName:    user.LastName,
+		PhoneNumber: user.PhoneNumber,
 	}
 
 	result := t.Db.Model(&models.User{}).Create(&userToInsert)
