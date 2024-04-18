@@ -14,32 +14,34 @@ templ Index(user models.AuthenticatedUser) {
 		<div class="max-w-2xl w-full mx-auto mt-8">
 			<div>
 				<h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Profile</h1>
+			<dt>{view.AuthenticatedUser(ctx).User.FirstName}</dt>
+			<dt>{view.AuthenticatedUser(ctx).User.LastName}</dt>
 			<dt>{view.AuthenticatedUser(ctx).User.Username}</dt>
 			<dt>{view.AuthenticatedUser(ctx).User.Email}</dt>
+			<dt>{view.AuthenticatedUser(ctx).User.PhoneNumber}</dt>
 			<dt>hello world</dt>
 				@ProfileForm(ProfileParams{
 					Username: view.AuthenticatedUser(ctx).User.Username,
+					FirstName: view.AuthenticatedUser(ctx).User.FirstName,
+					LastName: view.AuthenticatedUser(ctx).User.LastName,
+					Email: view.AuthenticatedUser(ctx).User.Email,
+					PhoneNumber: view.AuthenticatedUser(ctx).User.PhoneNumber,
+
 				}, ProfileErrors{})
 			</div>
-			// <div class="mt-10">
-			// 	// <h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Credits</h1>
-			// 	<div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 items-center mt-8">
-			// 		// <dt class="">Credits</dt>
-			// 		// <dd class="sm:col-span-1 sm:mt-0">
-			// 		// 	<span>{ view.String(user.User.Credits) }</span>
-			// 		// </dd>
-			// 		// <dd class="sm:col-span-1 sm:mt-0">
-			// 		// 	<a href="/buy-credits" class="btn btn-outline"><i class="fa-solid fa-money-bill-transfer"></i> buy credits</a>
-			// 		// </dd>
-			// 	</div>
-			// </div>
 		</div>
 	}
 }
 
 type ProfileParams struct {
+	FirstName string
+	LastName string
 	Username string
+	Email string
+	PhoneNumber string
+
 	Success  bool
+
 }
 
 type ProfileErrors struct {
@@ -66,6 +68,39 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 					<div class="text-sm text-error mt-1">{ errors.Username }</div>
 				}
 			</dd>
+			<dt>First Name</dt>
+			<dd class="sm:col-span-2 sm:mt-0">
+				<input
+					class="input input-bordered w-full max-w-sm"
+					value={ params.FirstName }
+					name="first_name"
+				/>
+			</dd>
+			<dt>Last Name</dt>
+			<dd class="sm:col-span-2 sm:mt-0">
+				<input
+					class="input input-bordered w-full max-w-sm"
+					value={ params.LastName }
+					name="last_name"
+				/>
+			</dd>
+			<dt>Email</dt>
+			<dd class="sm:col-span-2 sm:mt-0">
+				<input
+					class="input input-bordered w- max-w-sm"
+					value={ params.Email }
+					name="email"
+				/>
+			</dd>
+			<dt>Phone Number</dt>
+			<dd class="sm:col-span-2 sm:mt-0">
+				<input
+					class="input input-bordered w-full max-w-sm"
+					value={ params.PhoneNumber }
+					name="phone_number"
+				/>
+			</dd>
+
 			<dt></dt>
 			<dd class="sm:col-span-2 sm:mt-0">
 				<button class="btn btn-primary">save</button>

@@ -3,7 +3,6 @@ package middlewares
 import (
 	"booking-api/auth"
 	"booking-api/controllers"
-	"booking-api/data/response"
 	"booking-api/models"
 	"booking-api/services"
 	"context"
@@ -42,12 +41,7 @@ func NewWithAccountSetupMiddleWare(userService services.UserService) func(http.H
 				return
 			}
 			fmt.Println("in here!!!!!")
-			authenticatedUser.User = response.UserResponse{
-				UserID:   user.UserID,
-				Username: user.Username,
-				Email:    user.Email,
-			}
-
+			authenticatedUser.User = user
 			ctx := context.WithValue(r.Context(), models.UserContextKey, authenticatedUser)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})

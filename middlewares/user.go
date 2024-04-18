@@ -92,12 +92,7 @@ func NewWithUserMiddleWare(userService services.UserService) func(http.Handler) 
 			// }
 
 			user := models.AuthenticatedUser{
-				User: response.UserResponse{
-					UserID: uuid.MustParse(resp.ID),
-					Email:  resp.Email,
-					//TODO ADD user service to get username here
-					Username: userData.Username,
-				},
+				User:        userData,
 				LoggedIn:    true,
 				AccessToken: accessToken.(string),
 			}

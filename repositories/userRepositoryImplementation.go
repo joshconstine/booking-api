@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"booking-api/data/request"
+	"booking-api/data/response"
 	"booking-api/models"
 	"log"
 
@@ -47,14 +48,14 @@ func (t *userRepositoryImplementation) FindByEmail(email string) models.User {
 	return user
 }
 
-func (t *userRepositoryImplementation) FindByUserID(userID uuid.UUID) models.User {
+func (t *userRepositoryImplementation) FindByUserID(userID uuid.UUID) response.UserResponse {
 	var user models.User
 	result := t.Db.Where("user_id = ?", userID).First(&user)
 	if result.Error != nil {
-		return models.User{}
+		return response.UserResponse{}
 	}
 
-	return user
+	return user.MapUserToResponse()
 
 }
 

@@ -37,7 +37,7 @@ func (t *userServiceImplementation) FindAll() []responses.UserResponse {
 func (t *userServiceImplementation) FindByUserID(userID uuid.UUID) responses.UserResponse {
 	result := t.userRepository.FindByUserID(userID)
 
-	return result.MapUserToResponse()
+	return result
 }
 
 func (t *userServiceImplementation) FindById(id uint) responses.UserResponse {
