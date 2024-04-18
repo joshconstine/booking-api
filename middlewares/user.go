@@ -48,6 +48,7 @@ func WithUser(next http.Handler) http.Handler {
 			User: response.UserResponse{
 				UserID: uuid.MustParse(resp.ID),
 				Email:  resp.Email,
+
 				//TODO ADD user service to get username here
 			},
 			LoggedIn:    true,

@@ -81,7 +81,19 @@ func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) e
 }
 
 func (t *userRepositoryImplementation) Update(user *request.UpdateUserRequest) error {
-	result := t.Db.Model(&models.User{}).Where("user_id = ?", user.UserID).Updates(models.User{Username: user.Username})
+	var userToUpdate models.User
+	result := t.Db.Model(&models.User{}).Where("user_id = ?", user.UserID).First(&userToUpdate)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	userToUpdate.Username = user.Username
+	userToUpdate.FirstName = user.FirstName
+	userToUpdate.LastName = user.LastName
+	userToUpdate.PhoneNumber = user.PhoneNumber
+
+	result = t.Db.Save(&userToUpdate)
 	if result.Error != nil {
 		return result.Error
 	}

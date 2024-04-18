@@ -73,7 +73,7 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 				<input
 					class="input input-bordered w-full max-w-sm"
 					value={ params.FirstName }
-					name="first_name"
+					name="firstName"
 				/>
 			</dd>
 			<dt>Last Name</dt>
@@ -81,23 +81,17 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 				<input
 					class="input input-bordered w-full max-w-sm"
 					value={ params.LastName }
-					name="last_name"
+					name="lastName"
 				/>
 			</dd>
-			<dt>Email</dt>
-			<dd class="sm:col-span-2 sm:mt-0">
-				<input
-					class="input input-bordered w- max-w-sm"
-					value={ params.Email }
-					name="email"
-				/>
-			</dd>
+			
+			
 			<dt>Phone Number</dt>
 			<dd class="sm:col-span-2 sm:mt-0">
 				<input
 					class="input input-bordered w-full max-w-sm"
 					value={ params.PhoneNumber }
-					name="phone_number"
+					name="phoneNumber"
 				/>
 			</dd>
 
