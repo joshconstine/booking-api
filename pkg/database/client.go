@@ -80,11 +80,11 @@ func Migrate() {
 	Instance.AutoMigrate(&models.Membership{})
 	Instance.AutoMigrate(&models.AccountSettings{})
 	Instance.AutoMigrate(&models.ServicePlan{})
-	Instance.AutoMigrate(&models.ServiceFee{})
 
 	Instance.AutoMigrate(&models.EntityBookingRequest{})
 	Instance.AutoMigrate(&models.Inquiry{})
 	Instance.AutoMigrate(&models.InquiryStatus{})
+	Instance.AutoMigrate(&models.ServiceFee{})
 
 	log.Println("Database Migration Completed!")
 }

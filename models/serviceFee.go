@@ -8,7 +8,7 @@ import (
 
 type ServiceFee struct {
 	gorm.Model
-	ServicePlanID         uint
+	ServicePlanID         uint    `gorm:"not null"`
 	FeePercentage         float64 `gorm:"not null"`
 	AppliesToAllCostTypes bool
 	BookingCostTypeID     uint

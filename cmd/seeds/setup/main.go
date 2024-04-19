@@ -227,66 +227,6 @@ func SeedBookingCostTypes(db *gorm.DB) {
 
 }
 
-func SeedAmenityTypes(db *gorm.DB) {
-	amenityTypes := []models.AmenityType{
-
-		{
-			Model: gorm.Model{
-				ID: 1,
-			},
-			Name: "Kitchen",
-		},
-		{
-			Model: gorm.Model{
-				ID: 2,
-			},
-			Name: "Bathroom",
-		},
-		{
-			Model: gorm.Model{
-				ID: 3,
-			},
-			Name: "Laundry",
-		},
-		{
-			Model: gorm.Model{
-				ID: 4,
-			},
-			Name: "Entertainment",
-		},
-		{
-			Model: gorm.Model{
-				ID: 5,
-			},
-			Name: "Outdoor",
-		},
-		{
-			Model: gorm.Model{
-				ID: 6,
-			},
-			Name: "Utilities",
-		},
-		{
-			Model: gorm.Model{
-				ID: 7,
-			},
-			Name: "Safety",
-		},
-		{
-			Model: gorm.Model{
-				ID: 8,
-			},
-			Name: "Miscellaneous",
-		},
-	}
-
-	amenityTypeRepository := repositories.NewAmenityTypeRepositoryImplementation(db)
-
-	for _, amenityType := range amenityTypes {
-		amenityTypeRepository.Create(amenityType)
-	}
-}
-
 func SeedBedTypes(db *gorm.DB) {
 	bedTypes := []models.BedType{
 
@@ -366,6 +306,66 @@ func SeedBedTypes(db *gorm.DB) {
 	}
 
 }
+func SeedAmenityTypes(db *gorm.DB) {
+	amenityTypes := []models.AmenityType{
+
+		{
+			Model: gorm.Model{
+				ID: 1,
+			},
+			Name: "Kitchen",
+		},
+		{
+			Model: gorm.Model{
+				ID: 2,
+			},
+			Name: "Bathroom",
+		},
+		{
+			Model: gorm.Model{
+				ID: 3,
+			},
+			Name: "Laundry",
+		},
+		{
+			Model: gorm.Model{
+				ID: 4,
+			},
+			Name: "Entertainment",
+		},
+		{
+			Model: gorm.Model{
+				ID: 5,
+			},
+			Name: "Outdoor",
+		},
+		{
+			Model: gorm.Model{
+				ID: 6,
+			},
+			Name: "Utilities",
+		},
+		{
+			Model: gorm.Model{
+				ID: 7,
+			},
+			Name: "Safety",
+		},
+		{
+			Model: gorm.Model{
+				ID: 8,
+			},
+			Name: "Miscellaneous",
+		},
+	}
+
+	amenityTypeRepository := repositories.NewAmenityTypeRepositoryImplementation(db)
+
+	for _, amenityType := range amenityTypes {
+		amenityTypeRepository.Create(amenityType)
+	}
+}
+
 func SeedAmenities(db *gorm.DB) {
 	amenitiesToSeed := []requests.CreateAmenityRequest{
 		{AmenityTypeId: 1, Name: "Refrigerator"},
@@ -464,6 +464,76 @@ func SeedUserRoles(db *gorm.DB) {
 
 }
 
+func SeedServicePlans(db *gorm.DB) {
+	servicePlans := []models.ServicePlan{
+		{
+			Model: gorm.Model{
+				ID: uint(constants.SERVICE_PLAN_BASIC_ID),
+			},
+			Name: constants.SERVICE_PLAN_BASIC_NAME,
+			Fees: []models.ServiceFee{{
+
+				FeePercentage:         5,
+				AppliesToAllCostTypes: true,
+			},
+				{
+					FeePercentage:         2,
+					AppliesToAllCostTypes: false,
+					BookingCostTypeID:     uint(constants.BOOKING_COST_TYPE_BOAT_RENTAL_COST_ID),
+				},
+			},
+		},
+		{
+			Model: gorm.Model{
+				ID: uint(constants.SERVICE_PLAN_PRO_HOST_ID),
+			},
+			Name: constants.SERVICE_PLAN_PRO_HOST_NAME,
+			Fees: []models.ServiceFee{{
+
+				FeePercentage:         3,
+				AppliesToAllCostTypes: true,
+			},
+			},
+		},
+		{
+			Model: gorm.Model{
+				ID: uint(constants.SERVICE_PLAN_FULLY_MANAGED_ID),
+			},
+			Name: constants.SERVICE_PLAN_FULLY_MANAGED_NAME,
+			Fees: []models.ServiceFee{{
+
+				FeePercentage:         15,
+				AppliesToAllCostTypes: true,
+			},
+				{
+					FeePercentage:         25,
+					AppliesToAllCostTypes: false,
+					BookingCostTypeID:     uint(constants.BOOKING_COST_TYPE_WEDDING_FEE_ID),
+				},
+			},
+		},
+		{
+			Model: gorm.Model{
+				ID: uint(constants.SERVICE_PLAN_ENTERPRISE_ID),
+			},
+			Name: constants.SERVICE_PLAN_ENTERPRISE_NAME,
+			Fees: []models.ServiceFee{{
+
+				FeePercentage:         1,
+				AppliesToAllCostTypes: true,
+			},
+			},
+		},
+	}
+
+	servicePlanRepository := repositories.NewServicePlanRepositoryImplementation(db)
+
+	for _, servicePlan := range servicePlans {
+		servicePlanRepository.Create(servicePlan)
+	}
+
+}
+
 func main() {
 
 	var exitCode int
@@ -493,8 +563,7 @@ func main() {
 	SeedPaymentMethods(database.Instance)
 	SeedInquiryStatuses(database.Instance)
 	SeedTaxRates(database.Instance)
-
-	//*****users rbac
+	SeedServicePlans(database.Instance)
 
 	log.Println("Database seeding Completed!")
 

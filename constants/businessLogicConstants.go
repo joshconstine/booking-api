@@ -69,3 +69,13 @@ var USER_ROLE_CLEANING_STAFF_NAME string = "Cleaning Staff"
 var USER_ROLE_MAINTENANCE_STAFF_NAME string = "Maintenance Staff"
 var USER_ROLE_ACCOUNT_OWNER_NAME string = "Account Owner"
 var USER_ROLE_ACCOUNT_MANAGER_NAME string = "Account Manager"
+
+// **************SAAS VALUES**************
+var SERVICE_PLAN_BASIC_ID int = 1
+var SERVICE_PLAN_BASIC_NAME string = "Basic"
+var SERVICE_PLAN_PRO_HOST_ID int = 2
+var SERVICE_PLAN_PRO_HOST_NAME string = "Pro Host"
+var SERVICE_PLAN_FULLY_MANAGED_ID int = 3
+var SERVICE_PLAN_FULLY_MANAGED_NAME string = "Fully Managed"
+var SERVICE_PLAN_ENTERPRISE_ID int = 4
+var SERVICE_PLAN_ENTERPRISE_NAME string = "Enterprise"
