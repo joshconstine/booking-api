@@ -2,6 +2,7 @@ package main
 
 import (
 	"booking-api/config"
+	"booking-api/constants"
 	requests "booking-api/data/request"
 	"booking-api/models"
 	"booking-api/objectStorage"
@@ -18,33 +19,33 @@ func SeedInquiryStatuses(db *gorm.DB) {
 	inquiryStatuses := []models.InquiryStatus{
 		{
 			Model: gorm.Model{
-				ID: 1,
+				ID: uint(constants.INQUIRY_STATUS_NEW_ID),
 			},
-			Name: "New",
+			Name: constants.INQUIRY_STATUS_NEW_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 2,
+				ID: uint(constants.INQUIRY_STATUS_APPROVED_ID),
 			},
-			Name: "Approved",
+			Name: constants.INQUIRY_STATUS_APPROVED_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 3,
+				ID: uint(constants.INQUIRY_STATUS_APPROVAL_EXPIRED_ID),
 			},
-			Name: "Approval Expired",
+			Name: constants.INQUIRY_STATUS_APPROVAL_EXPIRED_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 4,
+				ID: uint(constants.INQUIRY_STATUS_DECLINED_ID),
 			},
-			Name: "Declined",
+			Name: constants.INQUIRY_STATUS_DECLINED_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 5,
+				ID: uint(constants.INQUIRY_STATUS_CANCELLED_ID),
 			},
-			Name: "Cancelled",
+			Name: constants.INQUIRY_STATUS_CANCELLED_NAME,
 		},
 	}
 
@@ -59,39 +60,39 @@ func SeedBookingStatus(db *gorm.DB) {
 	bookingStauses := []models.BookingStatus{
 		{
 			Model: gorm.Model{
-				ID: 1,
+				ID: uint(constants.BOOKING_STATUS_DRAFTED_ID),
 			},
-			Name: "Drafted",
+			Name: constants.BOOKING_STATUS_DRAFTED_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 2,
+				ID: uint(constants.BOOKING_STATUS_REQUESTED_ID),
 			},
-			Name: "Requested",
+			Name: constants.BOOKING_STATUS_REQUESTED_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 3,
+				ID: uint(constants.BOOKING_STATUS_CONFIRMED_ID),
 			},
-			Name: "Confirmed",
+			Name: constants.BOOKING_STATUS_CONFIRMED_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 4,
+				ID: uint(constants.BOOKING_STATUS_IN_PROGRESS_ID),
 			},
-			Name: "In Progress",
+			Name: constants.BOOKING_STATUS_IN_PROGRESS_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 5,
+				ID: uint(constants.BOOKING_STATUS_COMPLETED_ID),
 			},
-			Name: "Completed",
+			Name: constants.BOOKING_STATUS_COMPLETED_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 6,
+				ID: uint(constants.BOOKING_STATUS_CANCELLED_ID),
 			},
-			Name: "Cancelled",
+			Name: constants.BOOKING_STATUS_CANCELLED_NAME,
 		},
 	}
 
@@ -148,81 +149,73 @@ func SeedBookingCostTypes(db *gorm.DB) {
 	bookingCostTypes := []models.BookingCostType{
 		{
 			Model: gorm.Model{
-				ID: 1,
+				ID: uint(constants.BOOKING_COST_TYPE_TAX_ID),
 			},
-			Name: "Tax",
+			Name: constants.BOOKING_COST_TYPE_TAX_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 2,
+				ID: uint(constants.BOOKING_COST_TYPE_CLEANING_FEE_ID),
 			},
-			Name: "Cleaning Fee",
+			Name: constants.BOOKING_COST_TYPE_CLEANING_FEE_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 3,
+				ID: uint(constants.BOOKING_COST_TYPE_RENTAL_COST_ID),
 			},
-			Name: "Cabin Rental Cost",
+			Name: constants.BOOKING_COST_TYPE_RENTAL_COST_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 4,
+				ID: uint(constants.BOOKING_COST_TYPE_BOAT_RENTAL_COST_ID),
 			},
-			Name: "Boat Rental Cost",
+			Name: constants.BOOKING_COST_TYPE_BOAT_RENTAL_COST_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 5,
+				ID: uint(constants.BOOKING_COST_TYPE_GAS_REFIL_FEE_ID),
 			},
-			Name: "Gas Refil fee",
+			Name: constants.BOOKING_COST_TYPE_GAS_REFIL_FEE_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 6,
+				ID: uint(constants.BOOKING_COST_TYPE_LABOR_FEE_ID),
 			},
-			Name: "Labor",
+			Name: constants.BOOKING_COST_TYPE_LABOR_FEE_NAME,
+		},
+		{
+
+			Model: gorm.Model{
+				ID: uint(constants.BOOKING_COST_TYPE_DAMAGE_FEE_ID),
+			},
+			Name: constants.BOOKING_COST_TYPE_DAMAGE_FEE_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 7,
+				ID: uint(constants.BOOKING_COST_TYPE_WEDDING_FEE_ID),
 			},
-			Name: "Damage Fee",
+
+			Name: constants.BOOKING_COST_TYPE_WEDDING_FEE_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 8,
+				ID: uint(constants.BOOKING_COST_TYPE_EVENT_FEE_ID),
 			},
-			Name: "Wedding Fee",
+			Name: constants.BOOKING_COST_TYPE_EVENT_FEE_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 9,
+
+				ID: uint(constants.BOOKING_COST_TYPE_OPEN_BAR_ID),
 			},
-			Name: "Event fee",
+
+			Name: constants.BOOKING_COST_TYPE_OPEN_BAR_NAME,
 		},
 		{
 			Model: gorm.Model{
-				ID: 10,
+				ID: uint(constants.BOOKING_COST_TYPE_CANCELLATION_FEE_ID),
 			},
-			Name: "Event Fee Flat",
-		},
-		{
-			Model: gorm.Model{
-				ID: 11,
-			},
-			Name: "Open Bar Fee",
-		},
-		{
-			Model: gorm.Model{
-				ID: 12,
-			},
-			Name: "Cancelation Fee",
-		},
-		{
-			Model: gorm.Model{
-				ID: 13,
-			},
-			Name: "Alcohol",
+			Name: constants.BOOKING_COST_TYPE_CANCELLATION_FEE_NAME,
 		},
 	}
 
@@ -435,21 +428,14 @@ func SeedAmenities(db *gorm.DB) {
 
 func SeedRoomTypes(db *gorm.DB) {
 	roomTypes := []string{
-
-		"Bedroom",
-		"Bathroom",
-
-		"Kitchen",
-
-		"Living Room",
-
-		"Dining Room",
-
-		"Patio",
-
-		"Balcony",
-
-		"Theater Room",
+		constants.ROOM_TYPE_BEDROOM_NAME,
+		constants.ROOM_TYPE_BATHROOM_NAME,
+		constants.ROOM_TYPE_KITCHEN_NAME,
+		constants.ROOM_TYPE_LIVING_ROOM_NAME,
+		constants.ROOM_TYPE_DINING_ROOM_NAME,
+		constants.ROOM_TYPE_GARAGE_NAME,
+		constants.ROOM_TYPE_PATIO_NAME,
+		constants.ROOM_TYPE_ENTERTAINMENT_ROOM_NAME,
 	}
 
 	roomTypeRepository := repositories.NewRoomTypeRepositoryImplementation(db)
@@ -463,9 +449,12 @@ func SeedRoomTypes(db *gorm.DB) {
 
 func SeedUserRoles(db *gorm.DB) {
 	userRoles := []string{
-		"Admin",
-		"Cleaner",
-		"Account Owner"}
+		constants.USER_ROLE_ADMIN_NAME,
+		constants.USER_ROLE_ACCOUNT_OWNER_NAME,
+		constants.USER_ROLE_ACCOUNT_MANAGER_NAME,
+		constants.USER_ROLE_CLEANING_STAFF_NAME,
+		constants.USER_ROLE_MAINTENANCE_STAFF_NAME,
+	}
 
 	userRoleRepository := repositories.NewUserRoleRepositoryImplementation(db)
 
