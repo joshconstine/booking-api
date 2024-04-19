@@ -6,10 +6,12 @@ import (
 	"gorm.io/gorm"
 )
 
+//tax rate has a unique name+percentage constraint
+
 type TaxRate struct {
 	gorm.Model
-	Percentage float64
-	Name       string
+	Percentage float64 `gorm:"index:tax_percent,unique;"`
+	Name       string  `gorm:"index:tax_percent,unique;"`
 }
 
 func (t *TaxRate) TableName() string {

@@ -33,5 +33,5 @@ down: ## Database migration down
 migration: ## Migrations against the database
 	@migrate create -ext sql -dir cmd/migrate/migrations $(filter-out $@,$(MAKECMDGOALS))
 
-seed:
-	@go run cmd/seed/main.go
+seed-setup:
+	@go run cmd/seeds/setup/main.go
