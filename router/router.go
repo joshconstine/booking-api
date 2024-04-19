@@ -52,7 +52,7 @@ func NewRouter(
 		userRouter := api.Group("/users")
 		userRouter.GET("", userController.FindAll)
 		userRouter.POST("/register", userController.RegisterUser)
-		api.POST("/token", controllers.GenerateToken)
+		// api.POST("/token", controllers.GenerateToken)
 		// api.GET("/boats", controllers.GetBoats)
 		// api.GET("/boats/:id", controllers.GetBoat)
 		// api.GET("/boats/:id/photos", controllers.GetBoatPhotosForBoat)
@@ -210,7 +210,7 @@ func NewRouter(
 		entityBookingCostAdjustmentRouter.PUT("", entityBookingCostAdjustmentController.Update)
 		entityBookingCostAdjustmentRouter.DELETE("/:adjustmentId", entityBookingCostAdjustmentController.Delete)
 
-		secured := api.Group("/secured").Use(middlewares.Auth())
+		secured := api.Group("/secured").Use()
 		{
 			secured.GET("/ping", controllers.Ping)
 			// secured.POST("/boats", controllers.CreateBoat)
