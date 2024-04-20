@@ -6,7 +6,6 @@ import (
 	"booking-api/repositories"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/google/uuid"
 )
 
 type userServiceImplementation struct {
@@ -34,7 +33,8 @@ func (t *userServiceImplementation) FindAll() []responses.UserResponse {
 	return users
 }
 
-func (t *userServiceImplementation) FindByUserID(userID uuid.UUID) responses.UserResponse {
+func (t *userServiceImplementation) FindByUserID(userID string) responses.UserResponse {
+
 	result := t.userRepository.FindByUserID(userID)
 
 	return result

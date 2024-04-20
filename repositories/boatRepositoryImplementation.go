@@ -72,6 +72,12 @@ func (t *BoatRepositoryImplementation) Create(boat models.Boat) models.Boat {
 	return boat
 }
 
+func (b *BoatRepositoryImplementation) FindAllIDs() []uint {
+	var boatIds []uint
+	b.Db.Model(&models.Boat{}).Pluck("id", &boatIds)
+	return boatIds
+}
+
 // // Delete implements TagsRepository
 // func (t *BoatRepositoryImplementation) Delete(tagsId int) {
 // 	var tags modelsBoat

@@ -7,6 +7,7 @@ import (
 
 type BoatRepository interface {
 	FindAll() []response.BoatResponse
+	FindAllIDs() []uint
 	FindById(id int) response.BoatInformationResponse
 	Create(boat models.Boat) models.Boat
 }

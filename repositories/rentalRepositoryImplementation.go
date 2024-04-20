@@ -10,10 +10,10 @@ import (
 
 type RentalRepositoryImplementation struct {
 	Db                  *gorm.DB
-	TimeblockRepository TimeblockRepository
+	TimeblockRepository EntityTimeblockRepository
 }
 
-func NewRentalRepositoryImplementation(db *gorm.DB, timeblockRepository TimeblockRepository) RentalRepository {
+func NewRentalRepositoryImplementation(db *gorm.DB, timeblockRepository EntityTimeblockRepository) RentalRepository {
 	return &RentalRepositoryImplementation{Db: db, TimeblockRepository: timeblockRepository}
 }
 
@@ -97,4 +97,14 @@ func (r *RentalRepositoryImplementation) Update(rental request.UpdateRentalReque
 	}
 
 	return rentalToUpdate.MapRentalsToResponse(), nil
+}
+
+func (r *RentalRepositoryImplementation) FindAllIDs() []uint {
+	var rentalIDs []uint
+	result := r.Db.Model(&models.Rental{}).Pluck("id", &rentalIDs)
+	if result.Error != nil {
+		return []uint{}
+	}
+
+	return rentalIDs
 }

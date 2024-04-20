@@ -6,7 +6,6 @@ import (
 	"booking-api/models"
 	"log"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -48,7 +47,7 @@ func (t *userRepositoryImplementation) FindByEmail(email string) models.User {
 	return user
 }
 
-func (t *userRepositoryImplementation) FindByUserID(userID uuid.UUID) response.UserResponse {
+func (t *userRepositoryImplementation) FindByUserID(userID string) response.UserResponse {
 	var user models.User
 	result := t.Db.Where("user_id = ?", userID).First(&user)
 	if result.Error != nil {

@@ -1,9 +1,7 @@
 package request
 
-import "github.com/google/uuid"
-
 type UpdateUserRequest struct {
-	UserID      uuid.UUID
+	UserID      string
 	Username    string
 	FirstName   string
 	LastName    string

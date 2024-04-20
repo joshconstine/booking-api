@@ -5,7 +5,6 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -14,17 +13,17 @@ type Booking struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       gorm.DeletedAt `gorm:"index"`
-	UserID          uuid.UUID      `gorm:"not null"`
+	UserID          string         ` gorm:"not null"`
 	BookingStatusID uint           `gorm:"not null; default:1"`
 	InquiryID       uint
 	Inquiry         Inquiry
-	User            User
-	BookingStatus   BookingStatus
-	Details         BookingDetails `gorm:"not null"`
-	CostItems       []BookingCostItem
-	Payments        []BookingPayment
-	Documents       []BookingDocument
-	Entities        []EntityBooking
+	// User            User `gorm:"not nill; foreignKey:UserID"`
+	BookingStatus BookingStatus
+	Details       BookingDetails `gorm:"not null"`
+	CostItems     []BookingCostItem
+	Payments      []BookingPayment
+	Documents     []BookingDocument
+	Entities      []EntityBooking
 }
 
 func (b *Booking) TableName() string {
@@ -85,6 +84,9 @@ func (b *Booking) MapBookingToInformationResponse() response.BookingInformationR
 
 	response := response.BookingInformationResponse{
 		ID: b.ID,
+		Customer: response.UserResponse{
+			UserID: b.UserID,
+		},
 	}
 
 	response.Status = b.BookingStatus.MapBookingStatusToResponse()
@@ -106,7 +108,7 @@ func (b *Booking) MapBookingToInformationResponse() response.BookingInformationR
 		response.Entities = append(response.Entities, entity.MapEntityBookingToResponse())
 	}
 
-	response.Customer = b.User.MapUserToResponse()
+	// response.Customer = b.User.MapUserToResponse()
 
 	return response
 }
