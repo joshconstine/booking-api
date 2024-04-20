@@ -35,3 +35,6 @@ migration: ## Migrations against the database
 
 seed-setup:
 	@go run cmd/seeds/setup/main.go
+
+seed-jim:
+	@go run cmd/seeds/customerData/everett/main.go
