@@ -1,6 +1,8 @@
 module booking-api
 
-go 1.21.5
+go 1.22
+
+toolchain go1.22.2
 
 require (
 	github.com/a-h/templ v0.2.663
@@ -12,6 +14,7 @@ require (
 )
 
 require (
+	github.com/brianvoe/gofakeit/v7 v7.0.2 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect

@@ -38,3 +38,6 @@ seed-setup:
 
 seed-jim:
 	@go run cmd/seeds/customerData/everett/main.go
+
+seed-dummy:
+	@go run cmd/seeds/dummyData/main.go
