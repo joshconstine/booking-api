@@ -2,12 +2,13 @@ package main
 
 import (
 	"booking-api/config"
+	"booking-api/constants"
 	"booking-api/data/request"
 	"booking-api/pkg/database"
 	"booking-api/repositories"
+	"booking-api/services"
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"time"
 
@@ -15,12 +16,92 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetRandomDateRangeWithenTheNextYear(minLength int, maxLength int) (time.Time, time.Time) {
-	min := time.Now()
-	max := time.Now().AddDate(0, 0, 365)
-	delta := max.Unix() - min.Unix()
-	sec := min.Unix() + int64(rand.Intn(int(delta)))
-	return time.Unix(sec, 0), time.Unix(sec, 0).AddDate(0, 0, rand.Intn(maxLength-minLength)+minLength)
+type FakeEntity struct {
+	Entity   string
+	EntityID uint
+}
+
+var entities = []string{
+	constants.BOAT_ENTITY,
+	constants.RENTAL_ENTITY,
+}
+
+func SelectRandomIndexFromSlice(slice []uint) uint {
+	return uint(gofakeit.Number(0, len(slice)-1))
+}
+
+func GetRandomIDForEntity(entity string, db *gorm.DB) uint {
+
+	switch entity {
+	case constants.BOAT_ENTITY:
+		boatRepository := repositories.NewBoatRepositoryImplementation(db)
+		boats := boatRepository.FindAllIDs()
+		return uint(boats[SelectRandomIndexFromSlice(boats)])
+	case constants.RENTAL_ENTITY:
+		timeblockRepository := repositories.NewTimeblockRepositoryImplementation(db)
+		rentalRepository := repositories.NewRentalRepositoryImplementation(db, timeblockRepository)
+		rentals := rentalRepository.FindAllIDs()
+		return uint(rentals[SelectRandomIndexFromSlice(rentals)])
+
+	default:
+		return 1
+	}
+}
+
+func GetRandomEntity(db *gorm.DB) FakeEntity {
+	entityType := gofakeit.RandomString(entities)
+	entityID := GetRandomIDForEntity(entityType, db)
+	return FakeEntity{Entity: entityType, EntityID: entityID}
+}
+
+func GenerateRandomAmmountOfEntityBookings(db *gorm.DB) []request.EntityBookingRequest {
+	var entityBookings []request.EntityBookingRequest
+
+	startDateOfEntityBookings := gofakeit.FutureDate()
+
+	var rangeForEntityBookingStart time.Time
+	var rangeForEntityBookingEnd time.Time
+	var randomEntity FakeEntity
+	var entityBooking request.EntityBookingRequest
+	for i := 0; i < gofakeit.Number(1, 5); i++ {
+
+		rangeForEntityBookingStart = gofakeit.DateRange(startDateOfEntityBookings, startDateOfEntityBookings.AddDate(0, 0, 2))
+		rangeForEntityBookingEnd = gofakeit.DateRange(rangeForEntityBookingStart.AddDate(0, 0, 3), rangeForEntityBookingStart.AddDate(0, 0, 18))
+		randomEntity = GetRandomEntity(db)
+
+		entityBooking = request.EntityBookingRequest{
+			EntityID:   randomEntity.EntityID,
+			EntityType: randomEntity.Entity,
+			StartDate:  rangeForEntityBookingStart,
+			EndDate:    rangeForEntityBookingEnd,
+		}
+		entityBookings = append(entityBookings, entityBooking)
+	}
+	return entityBookings
+
+}
+
+func SeedBoooking(db *gorm.DB) {
+	// create booking
+
+	person := gofakeit.Person()
+
+	bookingToCreate := request.CreateBookingRequest{
+		Email:          gofakeit.Email(),
+		FirstName:      person.FirstName,
+		LastName:       person.LastName,
+		PhoneNumber:    gofakeit.Phone(),
+		Guests:         gofakeit.Number(1, 5),
+		EntityRequests: GenerateRandomAmmountOfEntityBookings(db),
+	}
+
+	bookingRepository := repositories.NewBookingRepositoryImplementation(db)
+	userRepository := repositories.NewUserRepositoryImplementation(db)
+	userService := services.NewUserServiceImplementation(userRepository, nil)
+	bookingService := services.NewBookingServiceImplementation(bookingRepository, nil, userService)
+
+	bookingService.Create(&bookingToCreate)
+
 }
 
 func SeedUsers(db *gorm.DB) {
@@ -55,6 +136,8 @@ func main() {
 	// create object storage client
 	// objectStorage.CreateSession()
 	SeedUsers(database.Instance)
+	// SeedBookingUI(database.Instance)
+	SeedBoooking(database.Instance)
 
 	log.Println("Database seeding Completed!")
 

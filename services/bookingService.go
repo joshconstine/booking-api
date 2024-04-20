@@ -1,12 +1,12 @@
 package services
 
 import (
-	requests "booking-api/data/request"
+	"booking-api/data/request"
 	responses "booking-api/data/response"
 )
 
 type BookingService interface {
+	Create(request *request.CreateBookingRequest) error
 	FindAll() []responses.BookingResponse
 	FindById(id string) responses.BookingInformationResponse
-	Create(request requests.CreateUserRequest) (responses.BookingResponse, error)
 }

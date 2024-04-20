@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
 	"log/slog"
@@ -56,10 +55,9 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 
 }
 
-func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingRequest) error {
-	bookingToCreate := booking.MapCreateBookingRequestToBooking()
+func (t *bookingRepositoryImplementation) Create(booking *models.Booking) error {
 
-	result := t.Db.Model(&models.Booking{}).Create(&bookingToCreate)
+	result := t.Db.Model(&models.Booking{}).Create(&booking)
 	if result.Error != nil {
 		slog.Error(result.Error.Error())
 		return result.Error

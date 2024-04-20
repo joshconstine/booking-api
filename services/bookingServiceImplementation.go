@@ -1,14 +1,11 @@
 package services
 
 import (
-	requests "booking-api/data/request"
+	"booking-api/data/request"
 	"booking-api/data/response"
-	"booking-api/models"
 	"booking-api/repositories"
-	"time"
 
 	"github.com/go-playground/validator/v10"
-	"gorm.io/gorm"
 )
 
 type BookingServiceImplementation struct {
@@ -36,59 +33,11 @@ func (t BookingServiceImplementation) FindById(id string) response.BookingInform
 	return result
 }
 
-func (t BookingServiceImplementation) Create(request requests.CreateUserRequest) (response.BookingResponse, error) {
-	// validate request
-	err := t.Validate.Struct(request)
+func (t BookingServiceImplementation) Create(request *request.CreateBookingRequest) error {
 
-	//check if this user already exists
-	user := t.UserService.FindByEmail(request.Email)
+	bookingToCreate := request.MapCreateBookingRequestToBooking()
 
-	bookingToCreate := models.Booking{
-		Details: models.BookingDetails{
-			PaymentComplete:  false,
-			DocumentsSigned:  false,
-			DepositPaid:      false,
-			BookingStartDate: time.Now(),
-			PaymentDueDate:   time.Now().AddDate(0, 0, 7),
-			LocationID:       1,
-		},
-		User: models.User{
-			Model: gorm.Model{
-				ID: 0,
-			},
-			Email: request.Email,
-		},
-	}
+	t.BookingRepository.Create(&bookingToCreate)
 
-	if user.Email != request.Email {
-		//if not create a new user
-
-		//break tx here
-		err := t.UserService.CreateUser(&request)
-		if err != nil {
-			return response.BookingResponse{}, err
-		}
-
-		// bookingToCreate.UserID = createdUser.UserID
-	} else {
-		bookingToCreate.UserID = user.UserID
-
-		bookingToCreate.User = models.User{
-			UserID: user.UserID,
-			Email:  user.Email,
-		}
-	}
-	if err != nil {
-		return response.BookingResponse{}, err
-	}
-	// create booking
-	booking := t.BookingRepository.Create(bookingToCreate)
-
-	bookingToCreate.Details.BookingID = bookingToCreate.ID
-
-	booking = t.BookingRepository.Update(bookingToCreate)
-
-	bookingResponse := booking.MapBookingToResponse()
-
-	return bookingResponse, nil
+	return nil
 }

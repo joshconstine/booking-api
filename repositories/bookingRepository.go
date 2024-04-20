@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
 )
@@ -9,6 +8,6 @@ import (
 type BookingRepository interface {
 	FindAll() []response.BookingResponse
 	FindById(id string) response.BookingInformationResponse
-	Create(booking *request.CreateBookingRequest) error
+	Create(booking *models.Booking) error
 	Update(booking models.Booking) models.Booking
 }

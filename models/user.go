@@ -2,6 +2,7 @@ package models
 
 import (
 	"booking-api/data/response"
+	"fmt"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -9,16 +10,25 @@ import (
 
 type User struct {
 	gorm.Model
-	UserID      uuid.UUID `gorm:" primaryKey"`
-	Username    string    `json:"username" gorm:"unique"`
-	FirstName   string    `json:"firstName"`
-	LastName    string    `json:"lastName"`
-	Email       string    `json:"email" gorm:"unique"`
-	PhoneNumber string    `json:"phoneNumber"`
+	UserID      string `gorm:" primaryKey"`
+	Username    string `json:"username" gorm:"unique"`
+	FirstName   string `json:"firstName"`
+	LastName    string `json:"lastName"`
+	Email       string `json:"email" gorm:"unique"`
+	PhoneNumber string `json:"phoneNumber"`
 	Login       Login
 
 	Bookings  []Booking `gorm:"foreignKey:UserID"`
 	Inquiries []Inquiry `gorm:"foreignKey:UserID"`
+}
+
+func (user *User) BeforeCreate(scope *gorm.DB) error {
+	//TODO:VERIFY THIS IS probs wronf
+	user.UserID = uuid.New().String()
+
+	fmt.Println("BeforeCreate")
+	fmt.Println(user.UserID)
+	return nil
 }
 
 func (user *User) CheckPassword(providedPassword string) error {
