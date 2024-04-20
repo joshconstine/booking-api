@@ -71,7 +71,7 @@ func (c *CreateAccountRequest) MapAccountRequestToAccount() models.Account {
 
 var accountsToCreate = []CreateAccountRequest{
 	{
-		AccountName:   "The Everett Resort",
+		AccountName:   "The Everett Reort",
 		ServicePlanID: constants.SERVICE_PLAN_BASIC_ID,
 		Members: []MemberInput{
 			{
@@ -103,7 +103,7 @@ var accountsToCreate = []CreateAccountRequest{
 		boats: []request.CreateBoatRequest{},
 	},
 	{
-		AccountName:   "St Germain Boat Rentals",
+		AccountName:   "St Boat Rentals",
 		ServicePlanID: constants.SERVICE_PLAN_BASIC_ID,
 		Members: []MemberInput{
 			{
@@ -115,7 +115,13 @@ var accountsToCreate = []CreateAccountRequest{
 			},
 		},
 		Rentals: []request.CreateRentalRequest{},
-		boats:   []request.CreateBoatRequest{},
+		boats: []request.CreateBoatRequest{
+			{
+				Name:        " the party barge",
+				NightlyRate: 500,
+				Description: "be the king of the chain with this party barge",
+			},
+		},
 	},
 }
 
@@ -123,80 +129,6 @@ func SeedAccountsFromInput(db *gorm.DB) {
 	accountRepository := repositories.NewAccountRepositoryImplementation(db)
 	for _, accountInput := range accountsToCreate {
 		accountRepository.Create(accountInput.MapAccountRequestToAccount())
-
-	}
-
-}
-
-func SeedAccounts(db *gorm.DB) {
-	accounts := []models.Account{
-		{
-
-			Name: "The Everett Resort",
-			Members: []models.Membership{
-				{
-					User: models.User{
-						Email: accountOwnerEmail,
-					},
-					Role: models.UserRole{
-						Model: gorm.Model{
-							ID: 3,
-						},
-					},
-					PhoneNumber: "1234567890",
-					Email:       accountOwnerEmail,
-				},
-				{
-					User: models.User{
-						Email: cleanerEmail,
-					},
-					Role: models.UserRole{
-						Model: gorm.Model{
-							ID: 2,
-						},
-					},
-					PhoneNumber: "92026533333",
-					Email:       accountOwnerEmail,
-				},
-			},
-		},
-		{
-
-			Name: "St Germain Boat Rentals",
-			Members: []models.Membership{
-				{
-					User: models.User{
-						Email: accountOwnerEmail,
-					},
-					Role: models.UserRole{
-						Model: gorm.Model{
-							ID: 3,
-						},
-					},
-					PhoneNumber: "1234567890",
-					Email:       accountOwnerEmail,
-				},
-			},
-			AccountSettings: models.AccountSettings{
-				ServicePlan: models.ServicePlan{
-					Model: gorm.Model{
-						ID: 1,
-					},
-					Fees: []models.ServiceFee{
-						{
-							FeePercentage:         0.05,
-							AppliesToAllCostTypes: true,
-						},
-					},
-				},
-			},
-		},
-	}
-
-	accountRepository := repositories.NewAccountRepositoryImplementation(db)
-
-	for _, account := range accounts {
-		accountRepository.Create(account)
 
 	}
 
@@ -573,8 +505,8 @@ func main() {
 	// SeedLocations(database.Instance)
 
 	// SeedInquiryStatuses(database.Instance)
-	SeedAccounts(database.Instance)
 	//SeedInquiries(database.Instance)
+	SeedAccountsFromInput(database.Instance)
 
 	// SeedRentals(database.Instance)
 	// SeedBoats(database.Instance)
