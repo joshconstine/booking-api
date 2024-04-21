@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log/slog"
 	"strconv"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -59,9 +60,68 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 
 }
 
+func CalculateNightlyCost(amount float64, startTime time.Time, endTime time.Time) float64 {
+	// Ensure endTime is after startTime
+	if endTime.Before(startTime) {
+		return 0
+	}
+
+	// Calculate the number of whole nights between startTime and endTime
+	duration := endTime.Sub(startTime)
+	nights := int(duration.Hours() / 24)
+
+	return float64(nights) * amount
+}
+
+func CalculateCostAmmount(bookingCostTypeID uint, amount float64, startTime time.Time, endTime time.Time) float64 {
+
+	switch bookingCostTypeID {
+	case constants.BOOKING_COST_TYPE_BOAT_RENTAL_COST_ID, constants.BOOKING_COST_TYPE_RENTAL_COST_ID:
+		return CalculateNightlyCost(amount, startTime, endTime)
+	default:
+		return amount
+	}
+
+}
+
+func CalculateCostsForEntityBooking(entity models.EntityBooking, db *gorm.DB) []models.BookingCostItem {
+	var costsForEntity []models.BookingCostItem
+	var entityCosts []models.EntityBookingCost
+
+	result := db.Model(&models.EntityBookingCost{}).Where(
+		"entity_id = ? AND entity_type = ?",
+		entity.EntityID,
+		entity.EntityType,
+	).Find(&entityCosts)
+
+	if result.Error != nil {
+		return []models.BookingCostItem{}
+	}
+
+	for _, entityCost := range entityCosts {
+		costsForEntity = append(costsForEntity, models.BookingCostItem{
+			BookingCostTypeID: entityCost.BookingCostTypeID,
+			Amount:            CalculateCostAmmount(entityCost.BookingCostTypeID, entityCost.Amount, entity.Timeblock.StartTime, entity.Timeblock.EndTime),
+			TaxRateID:         entityCost.TaxRateID,
+			EntityBookingID:   entity.ID,
+		})
+	}
+
+	return costsForEntity
+}
+
 func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingRequest) error {
 
 	bookingToCreate := booking.MapCreateBookingRequestToBooking()
+
+	var costsForEntity []models.BookingCostItem
+	for _, entityBooking := range bookingToCreate.Entities {
+
+		costsForEntity = append(costsForEntity, CalculateCostsForEntityBooking(entityBooking, t.Db)...)
+	}
+
+	bookingToCreate.CostItems = costsForEntity
+
 	result := t.Db.Model(&models.Booking{}).Create(&bookingToCreate)
 	if result.Error != nil {
 		slog.Error(result.Error.Error())
