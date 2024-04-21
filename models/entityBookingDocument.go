@@ -32,14 +32,12 @@ func (e *EntityBookingDocument) MapEntityBookingDocumentToResponse() response.En
 
 }
 
-func (e *EntityBookingDocument) MapEntityBookingDocumentToBookingDocument(bookingID string, entityBookingID uint) BookingDocument {
+func (e *EntityBookingDocument) MapEntityBookingDocumentToBookingDocument() BookingDocument {
 
 	result := BookingDocument{
-		BookingID:         bookingID,
 		RequiresSignature: e.RequiresSignature,
 		Note:              "",
 		DocumentID:        e.DocumentID,
-		EntityBookingID:   entityBookingID,
 	}
 
 	return result

@@ -83,13 +83,13 @@ func (e *EntityBookingRepositoryImplementation) Create(entityBooking request.Cre
 		return response.EntityBookingResponse{}
 	}
 
-	var bookingDocuments []models.BookingDocument
-	var bookingDocument models.BookingDocument
-	for _, document := range entityDocuments {
-		bookingDocument = document.MapEntityBookingDocumentToBookingDocument(entityBookingModel.BookingID, entityBookingModel.ID)
-		bookingDocuments = append(bookingDocuments, bookingDocument)
+	// var bookingDocuments []models.BookingDocument
+	// var bookingDocument models.BookingDocument
+	// for _, document := range entityDocuments {
+	// 	bookingDocument = document.MapEntityBookingDocumentToBookingDocument(entityBookingModel.BookingID, entityBookingModel.ID)
+	// 	bookingDocuments = append(bookingDocuments, bookingDocument)
 
-	}
+	// }
 
 	var bookingCostItems []models.BookingCostItem
 	var bookingCostItem models.BookingCostItem
@@ -99,7 +99,7 @@ func (e *EntityBookingRepositoryImplementation) Create(entityBooking request.Cre
 	}
 
 	entityBookingModel.BookingCostItems = bookingCostItems
-	entityBookingModel.Documents = bookingDocuments
+	// entityBookingModel.Documents = bookingDocuments
 
 	result = e.Db.Save(&entityBookingModel)
 	if result.Error != nil {

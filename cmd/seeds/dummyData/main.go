@@ -174,6 +174,12 @@ func SeedBoookingWithConflicts(db *gorm.DB) {
 
 }
 
+func SeedMultipleBookings(db *gorm.DB, numberOfBookings int) {
+	for i := 0; i < numberOfBookings; i++ {
+		SeedBoooking(db)
+	}
+}
+
 func SeedUsers(db *gorm.DB) {
 	// create users
 	userRepository := repositories.NewUserRepositoryImplementation(db)
@@ -207,7 +213,8 @@ func main() {
 	// objectStorage.CreateSession()
 	// SeedUsers(database.Instance)
 	// SeedBookingUI(database.Instance)
-	SeedBoooking(database.Instance)
+	// SeedBoooking(database.Instance)
+	SeedMultipleBookings(database.Instance, 10)
 
 	// SeedBoookingWithConflicts(database.Instance)
 	log.Println("Database seeding Completed!")

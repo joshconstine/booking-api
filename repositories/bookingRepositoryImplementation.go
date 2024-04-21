@@ -110,17 +110,48 @@ func CalculateCostsForEntityBooking(entity models.EntityBooking, db *gorm.DB) []
 	return costsForEntity
 }
 
+func GetDocumentsForEntity(entity models.EntityBooking, db *gorm.DB) []models.BookingDocument {
+	var documentsForEntity []models.BookingDocument
+	var entityDocuments []models.EntityBookingDocument
+
+	result := db.Model(&models.EntityBookingDocument{}).Where(
+		"entity_id = ? AND entity_type = ?",
+		entity.EntityID,
+		entity.EntityType,
+	).Find(&entityDocuments)
+
+	if result.Error != nil {
+		return []models.BookingDocument{}
+	}
+
+	for _, entityDocument := range entityDocuments {
+		documentsForEntity = append(documentsForEntity, entityDocument.MapEntityBookingDocumentToBookingDocument())
+	}
+
+	return documentsForEntity
+}
+
 func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingRequest) error {
 
 	bookingToCreate := booking.MapCreateBookingRequestToBooking()
 
-	var costsForEntity []models.BookingCostItem
+	//*************COSTS FOR ENTITIES****************
+	var costsForBooking []models.BookingCostItem
 	for _, entityBooking := range bookingToCreate.Entities {
 
-		costsForEntity = append(costsForEntity, CalculateCostsForEntityBooking(entityBooking, t.Db)...)
+		costsForBooking = append(costsForBooking, CalculateCostsForEntityBooking(entityBooking, t.Db)...)
 	}
 
-	bookingToCreate.CostItems = costsForEntity
+	bookingToCreate.CostItems = costsForBooking
+
+	//************DOCUMENTS FOR ENTITIES ************
+
+	var documentsForBooking []models.BookingDocument
+	for _, entityBooking := range bookingToCreate.Entities {
+		documentsForBooking = append(documentsForBooking, GetDocumentsForEntity(entityBooking, t.Db)...)
+	}
+
+	bookingToCreate.Documents = documentsForBooking
 
 	result := t.Db.Model(&models.Booking{}).Create(&bookingToCreate)
 	if result.Error != nil {
