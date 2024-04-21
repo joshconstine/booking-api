@@ -13,17 +13,18 @@ type CreateBookingRequest struct {
 	Email          string
 	PhoneNumber    string
 	Guests         int
-	EntityRequests []EntityBookingRequest
+	EntityRequests []BookEntityRequest
+	InquiryID      uint
 }
 
-type EntityBookingRequest struct {
+type BookEntityRequest struct {
 	EntityID   uint
 	EntityType string
 	StartTime  time.Time
 	EndTime    time.Time
 }
 
-func (e *EntityBookingRequest) MapEntityBookingRequestToEntityBooking() models.EntityBooking {
+func (e *BookEntityRequest) MapEntityBookingRequestToEntityBooking() models.EntityBooking {
 	timeblock := CreateEntityTimeblockRequest{
 		EntityType: e.EntityType,
 		EntityID:   e.EntityID,

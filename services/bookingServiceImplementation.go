@@ -53,8 +53,7 @@ func (t BookingServiceImplementation) Create(request *request.CreateBookingReque
 	}
 
 	if !canBook {
-		fmt.Println("Entities cannot be booked")
-		return nil
+		return err
 	} else {
 
 		bookingToCreate := request.MapCreateBookingRequestToBooking()

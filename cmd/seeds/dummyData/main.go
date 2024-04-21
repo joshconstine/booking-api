@@ -54,8 +54,8 @@ func GetRandomEntity(db *gorm.DB) FakeEntity {
 	return FakeEntity{Entity: entityType, EntityID: entityID}
 }
 
-func GenerateRandomAmmountOfEntityBookings(db *gorm.DB) []request.EntityBookingRequest {
-	var entityBookings []request.EntityBookingRequest
+func GenerateRandomAmmountOfEntityBookings(db *gorm.DB) []request.BookEntityRequest {
+	var entityBookings []request.BookEntityRequest
 
 	today := time.Now()
 	oneHundredTwentyDaysFromNow := today.AddDate(0, 0, 120)
@@ -65,14 +65,14 @@ func GenerateRandomAmmountOfEntityBookings(db *gorm.DB) []request.EntityBookingR
 	var rangeForEntityBookingStart time.Time
 	var rangeForEntityBookingEnd time.Time
 	var randomEntity FakeEntity
-	var entityBooking request.EntityBookingRequest
+	var entityBooking request.BookEntityRequest
 	for i := 0; i < gofakeit.Number(1, 5); i++ {
 
 		rangeForEntityBookingStart = gofakeit.DateRange(startDateOfEntityBookings, startDateOfEntityBookings.AddDate(0, 0, 2))
 		rangeForEntityBookingEnd = gofakeit.DateRange(rangeForEntityBookingStart.AddDate(0, 0, 3), rangeForEntityBookingStart.AddDate(0, 0, 18))
 		randomEntity = GetRandomEntity(db)
 
-		entityBooking = request.EntityBookingRequest{
+		entityBooking = request.BookEntityRequest{
 			EntityID:   randomEntity.EntityID,
 			EntityType: randomEntity.Entity,
 			StartTime:  rangeForEntityBookingStart,
@@ -94,8 +94,8 @@ func GetConflictingStartDateForEntity(entityId uint, entityType string, db *gorm
 	}
 }
 
-func GenerateRandomAmmountOfEntityBookingsWithConflicts(db *gorm.DB) []request.EntityBookingRequest {
-	var entityBookings []request.EntityBookingRequest
+func GenerateRandomAmmountOfEntityBookingsWithConflicts(db *gorm.DB) []request.BookEntityRequest {
+	var entityBookings []request.BookEntityRequest
 
 	//find a date that would cause a conflict
 	var startDateOfEntityBookings time.Time
@@ -103,7 +103,7 @@ func GenerateRandomAmmountOfEntityBookingsWithConflicts(db *gorm.DB) []request.E
 	var rangeForEntityBookingStart time.Time
 	var rangeForEntityBookingEnd time.Time
 	var randomEntity FakeEntity
-	var entityBooking request.EntityBookingRequest
+	var entityBooking request.BookEntityRequest
 	for i := 0; i < gofakeit.Number(1, 5); i++ {
 		randomEntity = GetRandomEntity(db)
 
@@ -111,7 +111,7 @@ func GenerateRandomAmmountOfEntityBookingsWithConflicts(db *gorm.DB) []request.E
 
 		rangeForEntityBookingStart = gofakeit.DateRange(startDateOfEntityBookings, startDateOfEntityBookings.AddDate(0, 0, 2))
 		rangeForEntityBookingEnd = gofakeit.DateRange(rangeForEntityBookingStart.AddDate(0, 0, 3), rangeForEntityBookingStart.AddDate(0, 0, 18))
-		entityBooking = request.EntityBookingRequest{
+		entityBooking = request.BookEntityRequest{
 			EntityID:   randomEntity.EntityID,
 			EntityType: randomEntity.Entity,
 			StartTime:  rangeForEntityBookingStart,
@@ -209,7 +209,7 @@ func main() {
 	// SeedBookingUI(database.Instance)
 	SeedBoooking(database.Instance)
 
-	SeedBoookingWithConflicts(database.Instance)
+	// SeedBoookingWithConflicts(database.Instance)
 	log.Println("Database seeding Completed!")
 
 }
