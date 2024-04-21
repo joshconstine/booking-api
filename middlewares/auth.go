@@ -9,8 +9,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-
-	"github.com/google/uuid"
 )
 
 func NewWithAccountSetupMiddleWare(userService services.UserService) func(http.Handler) http.Handler {
@@ -24,7 +22,7 @@ func NewWithAccountSetupMiddleWare(userService services.UserService) func(http.H
 			}
 
 			user := userService.FindByUserID(authenticatedUser.User.UserID)
-			if user.UserID == uuid.Nil {
+			if user.UserID == "" {
 				http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
 				return
 			}

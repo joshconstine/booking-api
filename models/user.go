@@ -2,9 +2,7 @@ package models
 
 import (
 	"booking-api/data/response"
-	"fmt"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -22,14 +20,14 @@ type User struct {
 	Inquiries []Inquiry `gorm:"foreignKey:UserID"`
 }
 
-func (user *User) BeforeCreate(scope *gorm.DB) error {
-	//TODO:VERIFY THIS IS probs wronf
-	user.UserID = uuid.New().String()
+// func (user *User) BeforeCreate(scope *gorm.DB) error {
+// 	//TODO:VERIFY THIS IS probs wronf
+// 	user.UserID = uuid.New().String()
 
-	fmt.Println("BeforeCreate")
-	fmt.Println(user.UserID)
-	return nil
-}
+// 	fmt.Println("BeforeCreate")
+// 	fmt.Println(user.UserID)
+// 	return nil
+// }
 
 func (user *User) CheckPassword(providedPassword string) error {
 	err := user.Login.CheckPassword(providedPassword)

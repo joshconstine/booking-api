@@ -46,7 +46,7 @@ func WithUser(next http.Handler) http.Handler {
 		}
 		user := models.AuthenticatedUser{
 			User: response.UserResponse{
-				UserID: uuid.MustParse(resp.ID),
+				UserID: uuid.MustParse(resp.ID).String(),
 				Email:  resp.Email,
 
 				//TODO ADD user service to get username here
@@ -86,7 +86,7 @@ func NewWithUserMiddleWare(userService services.UserService) func(http.Handler) 
 				next.ServeHTTP(w, r)
 				return
 			}
-			userData := userService.FindByUserID(uuid.MustParse(resp.ID))
+			userData := userService.FindByUserID(uuid.MustParse(resp.ID).String())
 			// if userData.UserID == uuid.Nil {
 			// 	// http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
 			// 	return
@@ -95,7 +95,7 @@ func NewWithUserMiddleWare(userService services.UserService) func(http.Handler) 
 			user := models.AuthenticatedUser{
 
 				User: response.UserResponse{
-					UserID:    uuid.MustParse(resp.ID), //userData.UserID,
+					UserID:    uuid.MustParse(resp.ID).String(), //userData.UserID,
 					Email:     resp.Email,
 					FirstName: userData.FirstName,
 					LastName:  userData.LastName,
