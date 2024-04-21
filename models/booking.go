@@ -2,6 +2,7 @@ package models
 
 import (
 	"booking-api/data/response"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -110,5 +111,7 @@ func (b *Booking) MapBookingToInformationResponse() response.BookingInformationR
 
 	// response.Customer = b.User.MapUserToResponse()
 
+	//log the booking details
+	fmt.Println(response)
 	return response
 }

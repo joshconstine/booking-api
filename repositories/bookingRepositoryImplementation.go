@@ -44,7 +44,7 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 		Preload("Payments.PaymentMethod").
 		Preload("Details").
 		Preload("CostItems").
-		Preload("User").
+		// Preload("User").
 		Preload("CostItems.BookingCostType").
 		Preload("CostItems.TaxRate").
 		Preload("Documents.Document").
@@ -53,6 +53,7 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 		First(&booking)
 
 	if result.Error != nil {
+		fmt.Println(result.Error.Error())
 		return response.BookingInformationResponse{}
 	}
 
