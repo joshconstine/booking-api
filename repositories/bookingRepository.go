@@ -9,7 +9,7 @@ import (
 type BookingRepository interface {
 	FindAll() []response.BookingResponse
 	FindById(id string) response.BookingInformationResponse
-	Create(booking *models.Booking) error
+	Create(booking *request.CreateBookingRequest) error
 	Update(booking models.Booking) models.Booking
 	CheckIfEntitiesCanBeBooked(request *request.CreateBookingRequest) (bool, error)
 }

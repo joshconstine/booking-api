@@ -8,13 +8,13 @@ import (
 )
 
 type CreateBookingRequest struct {
+	InquiryID      uint
 	FirstName      string
 	LastName       string
 	Email          string
 	PhoneNumber    string
 	Guests         int
 	EntityRequests []BookEntityRequest
-	InquiryID      uint
 }
 
 type BookEntityRequest struct {
@@ -31,11 +31,14 @@ func (e *BookEntityRequest) MapEntityBookingRequestToEntityBooking() models.Enti
 		StartDate:  e.StartTime,
 		EndDate:    e.EndTime,
 	}
+
 	return models.EntityBooking{
-		EntityID:   e.EntityID,
-		EntityType: e.EntityType,
-		Timeblock:  timeblock.MapCreateEntityTimeblockRequestToEntityTimeblock(),
+		EntityID:         e.EntityID,
+		EntityType:       e.EntityType,
+		Timeblock:        timeblock.MapCreateEntityTimeblockRequestToEntityTimeblock(),
+		BookingCostItems: []models.BookingCostItem{},
 	}
+
 }
 func calculatePaymentDueDate(bookingStartDate time.Time) time.Time {
 	//the due date will be 90 days before the booking start date if the startdate is < 90 days from now the due date is now

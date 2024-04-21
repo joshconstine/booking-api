@@ -56,9 +56,9 @@ func (t BookingServiceImplementation) Create(request *request.CreateBookingReque
 		return err
 	} else {
 
-		bookingToCreate := request.MapCreateBookingRequestToBooking()
+		//Start transaction
 
-		t.BookingRepository.Create(&bookingToCreate)
+		t.BookingRepository.Create(request)
 	}
 
 	return nil

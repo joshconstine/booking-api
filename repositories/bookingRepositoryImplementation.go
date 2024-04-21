@@ -59,9 +59,10 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 
 }
 
-func (t *bookingRepositoryImplementation) Create(booking *models.Booking) error {
+func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingRequest) error {
 
-	result := t.Db.Model(&models.Booking{}).Create(&booking)
+	bookingToCreate := booking.MapCreateBookingRequestToBooking()
+	result := t.Db.Model(&models.Booking{}).Create(&bookingToCreate)
 	if result.Error != nil {
 		slog.Error(result.Error.Error())
 		return result.Error
@@ -104,6 +105,7 @@ func (t *bookingRepositoryImplementation) DoesEntityAllowInstantBooking(entityID
 func (t *bookingRepositoryImplementation) CheckIfEntitiesCanBeBooked(request *request.CreateBookingRequest) (bool, error) {
 	for _, entity := range request.EntityRequests {
 
+		//****************************INSTANT BOOKING CHECK********************************
 		allowInstantBooking := t.DoesEntityAllowInstantBooking(entity.EntityID, entity.EntityType)
 
 		if !allowInstantBooking {
@@ -148,6 +150,7 @@ func (t *bookingRepositoryImplementation) CheckIfEntitiesCanBeBooked(request *re
 			}
 		}
 
+		//****************************TIMEBLOCK OVERLAP CHECK********************************
 		var entityTimeblocks []models.EntityTimeblock
 		result := t.Db.Model(&models.EntityTimeblock{}).Where(
 			"entity_id = ? AND entity_type = ?",
