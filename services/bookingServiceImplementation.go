@@ -4,6 +4,7 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/repositories"
+	"fmt"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -35,9 +36,31 @@ func (t BookingServiceImplementation) FindById(id string) response.BookingInform
 
 func (t BookingServiceImplementation) Create(request *request.CreateBookingRequest) error {
 
-	bookingToCreate := request.MapCreateBookingRequestToBooking()
+	//check if the entities are available during the timeblocks
+	//if the entity requires does not allow instant booking, check if there was in inquery > entityBookingRequest was approved.
+	//if it was approved, the request.entitybookingrequest  start and end times must be within the approved time ^
+	//Verify the user exists
+	//Add all booking cost items, documents
+	//set booking payment due data
+	//send email to user
+	//send email to account owner
 
-	t.BookingRepository.Create(&bookingToCreate)
+	canBook, err := t.BookingRepository.CheckIfEntitiesCanBeBooked(request)
+
+	if err != nil {
+		fmt.Printf("error checking if entities can be booked: %v", err)
+		return err
+	}
+
+	if !canBook {
+		fmt.Println("Entities cannot be booked")
+		return nil
+	} else {
+
+		bookingToCreate := request.MapCreateBookingRequestToBooking()
+
+		t.BookingRepository.Create(&bookingToCreate)
+	}
 
 	return nil
 }

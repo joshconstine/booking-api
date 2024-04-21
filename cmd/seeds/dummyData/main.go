@@ -57,7 +57,10 @@ func GetRandomEntity(db *gorm.DB) FakeEntity {
 func GenerateRandomAmmountOfEntityBookings(db *gorm.DB) []request.EntityBookingRequest {
 	var entityBookings []request.EntityBookingRequest
 
-	startDateOfEntityBookings := gofakeit.FutureDate()
+	today := time.Now()
+	oneHundredTwentyDaysFromNow := today.AddDate(0, 0, 120)
+
+	startDateOfEntityBookings := gofakeit.DateRange(today, oneHundredTwentyDaysFromNow)
 
 	var rangeForEntityBookingStart time.Time
 	var rangeForEntityBookingEnd time.Time
@@ -72,8 +75,8 @@ func GenerateRandomAmmountOfEntityBookings(db *gorm.DB) []request.EntityBookingR
 		entityBooking = request.EntityBookingRequest{
 			EntityID:   randomEntity.EntityID,
 			EntityType: randomEntity.Entity,
-			StartDate:  rangeForEntityBookingStart,
-			EndDate:    rangeForEntityBookingEnd,
+			StartTime:  rangeForEntityBookingStart,
+			EndTime:    rangeForEntityBookingEnd,
 		}
 		entityBookings = append(entityBookings, entityBooking)
 	}
@@ -81,6 +84,44 @@ func GenerateRandomAmmountOfEntityBookings(db *gorm.DB) []request.EntityBookingR
 
 }
 
+func GetConflictingStartDateForEntity(entityId uint, entityType string, db *gorm.DB) time.Time {
+	timeblockRepository := repositories.NewTimeblockRepositoryImplementation(db)
+	timeblocks := timeblockRepository.FindByEntity(entityType, entityId)
+	if len(timeblocks) == 0 {
+		return time.Now()
+	} else {
+		return timeblocks[0].StartTime.AddDate(0, 0, 1)
+	}
+}
+
+func GenerateRandomAmmountOfEntityBookingsWithConflicts(db *gorm.DB) []request.EntityBookingRequest {
+	var entityBookings []request.EntityBookingRequest
+
+	//find a date that would cause a conflict
+	var startDateOfEntityBookings time.Time
+
+	var rangeForEntityBookingStart time.Time
+	var rangeForEntityBookingEnd time.Time
+	var randomEntity FakeEntity
+	var entityBooking request.EntityBookingRequest
+	for i := 0; i < gofakeit.Number(1, 5); i++ {
+		randomEntity = GetRandomEntity(db)
+
+		startDateOfEntityBookings = GetConflictingStartDateForEntity(randomEntity.EntityID, randomEntity.Entity, db)
+
+		rangeForEntityBookingStart = gofakeit.DateRange(startDateOfEntityBookings, startDateOfEntityBookings.AddDate(0, 0, 2))
+		rangeForEntityBookingEnd = gofakeit.DateRange(rangeForEntityBookingStart.AddDate(0, 0, 3), rangeForEntityBookingStart.AddDate(0, 0, 18))
+		entityBooking = request.EntityBookingRequest{
+			EntityID:   randomEntity.EntityID,
+			EntityType: randomEntity.Entity,
+			StartTime:  rangeForEntityBookingStart,
+			EndTime:    rangeForEntityBookingEnd,
+		}
+		entityBookings = append(entityBookings, entityBooking)
+	}
+	return entityBookings
+
+}
 func SeedBoooking(db *gorm.DB) {
 	// create booking
 
@@ -100,7 +141,36 @@ func SeedBoooking(db *gorm.DB) {
 	userService := services.NewUserServiceImplementation(userRepository, nil)
 	bookingService := services.NewBookingServiceImplementation(bookingRepository, nil, userService)
 
-	bookingService.Create(&bookingToCreate)
+	err := bookingService.Create(&bookingToCreate)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+}
+
+func SeedBoookingWithConflicts(db *gorm.DB) {
+	// create booking
+
+	person := gofakeit.Person()
+
+	bookingToCreate := request.CreateBookingRequest{
+		Email:          gofakeit.Email(),
+		FirstName:      person.FirstName,
+		LastName:       person.LastName,
+		PhoneNumber:    gofakeit.Phone(),
+		Guests:         gofakeit.Number(1, 5),
+		EntityRequests: GenerateRandomAmmountOfEntityBookingsWithConflicts(db),
+	}
+
+	bookingRepository := repositories.NewBookingRepositoryImplementation(db)
+	userRepository := repositories.NewUserRepositoryImplementation(db)
+	userService := services.NewUserServiceImplementation(userRepository, nil)
+	bookingService := services.NewBookingServiceImplementation(bookingRepository, nil, userService)
+
+	err := bookingService.Create(&bookingToCreate)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 }
 
@@ -135,10 +205,11 @@ func main() {
 
 	// create object storage client
 	// objectStorage.CreateSession()
-	SeedUsers(database.Instance)
+	// SeedUsers(database.Instance)
 	// SeedBookingUI(database.Instance)
 	SeedBoooking(database.Instance)
 
+	SeedBoookingWithConflicts(database.Instance)
 	log.Println("Database seeding Completed!")
 
 }

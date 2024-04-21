@@ -19,16 +19,16 @@ type CreateBookingRequest struct {
 type EntityBookingRequest struct {
 	EntityID   uint
 	EntityType string
-	StartDate  time.Time
-	EndDate    time.Time
+	StartTime  time.Time
+	EndTime    time.Time
 }
 
 func (e *EntityBookingRequest) MapEntityBookingRequestToEntityBooking() models.EntityBooking {
 	timeblock := CreateEntityTimeblockRequest{
 		EntityType: e.EntityType,
 		EntityID:   e.EntityID,
-		StartDate:  e.StartDate,
-		EndDate:    e.EndDate,
+		StartDate:  e.StartTime,
+		EndDate:    e.EndTime,
 	}
 	return models.EntityBooking{
 		EntityID:   e.EntityID,
@@ -48,11 +48,11 @@ func calculatePaymentDueDate(bookingStartDate time.Time) time.Time {
 func (cbr *CreateBookingRequest) MapCreateBookingRequestToBooking() models.Booking {
 	var earliestStartDate time.Time
 
-	earliestStartDate = cbr.EntityRequests[0].StartDate
+	earliestStartDate = cbr.EntityRequests[0].StartTime
 
 	for _, entityRequest := range cbr.EntityRequests {
-		if entityRequest.StartDate.Before(earliestStartDate) {
-			earliestStartDate = entityRequest.StartDate
+		if entityRequest.StartTime.Before(earliestStartDate) {
+			earliestStartDate = entityRequest.StartTime
 		}
 	}
 
