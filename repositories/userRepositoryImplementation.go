@@ -49,15 +49,22 @@ func (t *userRepositoryImplementation) FindByEmail(email string) models.User {
 
 func (t *userRepositoryImplementation) FindByUserID(userID string) response.UserResponse {
 	var user models.User
-	result := t.Db.Where("user_id = ?", userID).First(&user)
+	result := t.Db.Where("id = ?", userID).Preload("Chats.Messages").First(&user)
 	if result.Error != nil {
 		return response.UserResponse{}
 	}
 
-	result = t.Db.Model(&models.Chat{}).Where("user_id = ?", user.UserID).Find(&user.Chats)
-	if result.Error != nil {
-		return response.UserResponse{}
-	}
+	// result = t.Db.Model(&models.Chat{}).Where("id = ?", user.ID).Preload("Messages").Find(&user.Chats)
+	// if result.Error != nil {
+	// 	return response.UserResponse{}
+	// }
+
+	// for _, chat := range user.Chats {
+	// 	result = t.Db.Model(&models.ChatMessage{}).Where("chat_id = ?", chat.ID).Find(&chat.Messages)
+	// 	if result.Error != nil {
+	// 		return response.UserResponse{}
+	// 	}
+	// }
 
 	return user.MapUserToResponse()
 
@@ -65,7 +72,7 @@ func (t *userRepositoryImplementation) FindByUserID(userID string) response.User
 
 func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) error {
 	userToInsert := models.User{
-		UserID:      user.UserID,
+		ID:          user.UserID,
 		Username:    user.Username,
 		Email:       user.Email,
 		FirstName:   user.FirstName,
@@ -86,7 +93,7 @@ func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) e
 
 func (t *userRepositoryImplementation) Update(user *request.UpdateUserRequest) error {
 	var userToUpdate models.User
-	result := t.Db.Model(&models.User{}).Where("user_id = ?", user.UserID).First(&userToUpdate)
+	result := t.Db.Model(&models.User{}).Where("id = ?", user.UserID).First(&userToUpdate)
 
 	if result.Error != nil {
 		return result.Error

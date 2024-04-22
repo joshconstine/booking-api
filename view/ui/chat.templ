@@ -7,12 +7,19 @@ import (
 
 templ Chat(chat response.ChatResponse) {
 
-   <div class="card">
+   <div class="card w-96 h-64 bg-grey-400">
         <div class="card-header">
              <h5 class="card-title">Chat with</h5>
             <span>{chat.UserID}</span>
             <span>and accouunt</span>
             <span>{strconv.Itoa(int(chat.AccountID))}</span>
         </div>
+        <ul>
+        for _, message := range chat.Messages {
+            <li>
+                <span>{message.Message}</span>
+            </li>
+        }
+        </ul>
     </div>
 }

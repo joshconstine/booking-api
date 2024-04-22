@@ -20,11 +20,6 @@ templ Index(user models.AuthenticatedUser) {
 			<dt>{view.AuthenticatedUser(ctx).User.Email}</dt>
 			<dt>{view.AuthenticatedUser(ctx).User.PhoneNumber}</dt>
 			<div>
-			 <ul>
-			 for _, chat := range view.AuthenticatedUser(ctx).User.Chats {
-				@ui.Chat(chat)
-			}
-			 </ul>
 			</div>
 				@ProfileForm(ProfileParams{
 					Username: view.AuthenticatedUser(ctx).User.Username,
@@ -35,6 +30,11 @@ templ Index(user models.AuthenticatedUser) {
 
 				}, ProfileErrors{})
 			</div>
+			 <ul>
+			 for _, chat := range view.AuthenticatedUser(ctx).User.Chats {
+				@ui.Chat(chat)
+			}
+			 </ul>
 		</div>
 	}
 }

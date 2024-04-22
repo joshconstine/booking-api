@@ -26,7 +26,7 @@ func (t *userServiceImplementation) FindAll() []responses.UserResponse {
 	var users []responses.UserResponse
 	for _, value := range result {
 		user := responses.UserResponse{
-			UserID: value.UserID,
+			UserID: value.ID,
 			Email:  value.Email,
 		}
 		users = append(users, user)
@@ -45,7 +45,7 @@ func (t *userServiceImplementation) FindById(id uint) responses.UserResponse {
 	result := t.userRepository.FindById(id)
 
 	user := responses.UserResponse{
-		UserID: result.UserID,
+		UserID: result.ID,
 		Email:  result.Email,
 	}
 
@@ -56,7 +56,7 @@ func (t *userServiceImplementation) FindByEmail(email string) responses.UserResp
 	result := t.userRepository.FindByEmail(email)
 
 	user := responses.UserResponse{
-		UserID: result.UserID,
+		UserID: result.ID,
 		Email:  result.Email,
 	}
 

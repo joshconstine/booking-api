@@ -3909,12 +3909,20 @@ details.collapse summary::-webkit-details-marker {
   height: 4rem;
 }
 
+.h-64 {
+  height: 16rem;
+}
+
 .max-h-8 {
   max-height: 2rem;
 }
 
 .w-32 {
   width: 8rem;
+}
+
+.w-96 {
+  width: 24rem;
 }
 
 .w-full {

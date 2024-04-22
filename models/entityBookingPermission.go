@@ -9,7 +9,7 @@ import (
 
 type EntityBookingPermission struct {
 	gorm.Model
-	UserID          uint      `gorm:"not null"`
+	UserID          string    `gorm:"not null"`
 	AccountID       uint      `gorm:"not null"`
 	EntityID        uint      `gorm:"not null"`
 	EntityType      string    `gorm:"not null"`

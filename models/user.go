@@ -2,24 +2,27 @@ package models
 
 import (
 	"booking-api/data/response"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model
-	UserID      string `gorm:" primaryKey"`
-	Username    string `json:"username" gorm:"unique"`
-	FirstName   string `json:"firstName"`
-	LastName    string `json:"lastName"`
-	Email       string `json:"email" gorm:"unique"`
-	PhoneNumber string `json:"phoneNumber"`
+	ID          string `gorm:" primaryKey"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   gorm.DeletedAt `gorm:"index"`
+	Username    string         `json:"username" gorm:"unique"`
+	FirstName   string         `json:"firstName"`
+	LastName    string         `json:"lastName"`
+	Email       string         `json:"email" gorm:"unique"`
+	PhoneNumber string         `json:"phoneNumber"`
 	Login       Login
 
-	Bookings  []Booking                 `gorm:"foreignKey:UserID"`
-	Inquiries []EntityBookingPermission `gorm:"foreignKey:UserID"`
-	Chats     []Chat                    `gorm:"foreignKey:UserID"`
-	Messages  []ChatMessage             `gorm:"foreignKey:UserID"`
+	Bookings  []Booking
+	Inquiries []EntityBookingPermission
+	Chats     []Chat
+	Messages  []ChatMessage
 }
 
 // func (user *User) BeforeCreate(scope *gorm.DB) error {
@@ -49,7 +52,7 @@ func (user *User) HashPassword(password string) error {
 
 func (user *User) MapUserToResponse() response.UserResponse {
 	response := response.UserResponse{
-		UserID:             user.UserID,
+		UserID:             user.ID,
 		Username:           user.Username,
 		FirstName:          user.FirstName,
 		LastName:           user.LastName,

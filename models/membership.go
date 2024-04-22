@@ -8,8 +8,8 @@ import (
 
 type Membership struct {
 	gorm.Model
-	AccountID   uint `gorm:"not null"`
-	UserID      uint `gorm:"not null"`
+	AccountID   uint   `gorm:"not null"`
+	UserID      string `gorm:"not null"`
 	PhoneNumber string
 	Email       string
 	RoleID      uint `gorm:"not null"`

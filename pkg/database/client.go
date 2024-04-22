@@ -34,8 +34,9 @@ func Connect(connectionString string) {
 	log.Println("Connected to Database!")
 }
 func Migrate() {
+	Instance.Debug()
 	//**************Helpers**************
-	Instance.AutoMigrate(&models.User{})
+	// Instance.AutoMigrate(&models.User{})
 	// Instance.AutoMigrate(&models.BookingStatus{})
 	// Instance.AutoMigrate(&models.BookingCostItem{})
 	// Instance.AutoMigrate(&models.Location{})
@@ -75,19 +76,19 @@ func Migrate() {
 
 	// Instance.AutoMigrate(&models.Login{})
 
-	// //***SAS***
+	//***SAS***
 	// Instance.AutoMigrate(&models.Account{})
 	// Instance.AutoMigrate(&models.Membership{})
-	// Instance.AutoMigrate(&models.AccountSettings{})
+	Instance.AutoMigrate(&models.AccountSettings{})
 	// Instance.AutoMigrate(&models.ServicePlan{})
 
 	// Instance.AutoMigrate(&models.EntityBookingRequest{})
 	// Instance.AutoMigrate(&models.InquiryStatus{})
 	// Instance.AutoMigrate(&models.ServiceFee{})
-	Instance.AutoMigrate(&models.EntityBookingPermission{})
+	// Instance.AutoMigrate(&models.EntityBookingPermission{})
 
-	Instance.AutoMigrate(&models.Chat{})
-	Instance.AutoMigrate(&models.ChatMessage{})
+	// Instance.AutoMigrate(&models.Chat{})
+	// Instance.AutoMigrate(&models.ChatMessage{})
 
 	log.Println("Database Migration Completed!")
 }
