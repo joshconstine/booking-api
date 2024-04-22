@@ -32,7 +32,7 @@ func NewRouter(
 	entityBookingController *controllers.EntityBookingController,
 	userRoleController *controllers.UserRoleController,
 	accountController *controllers.AccountController,
-	inquiryController *controllers.InquiryController,
+	// inquiryController *controllers.InquiryController,
 	entityBookingDocumentController *controllers.EntityBookingDocumentController,
 	entityBookingRuleController *controllers.EntityBookingRuleController,
 	entityBookingCostController *controllers.EntityBookingCostController,
@@ -69,8 +69,8 @@ func NewRouter(
 		accountRouter.GET(":id", accountController.FindByID)
 
 		/************************ INQUIRY ************************/
-		inquiryControllerRouter := api.Group("/inquiries")
-		inquiryControllerRouter.GET(":id", inquiryController.FindByID)
+		// inquiryControllerRouter := api.Group("/inquiries")
+		// inquiryControllerRouter.GET(":id", inquiryController.FindByID)
 
 		/************************ HELPERS ************************/
 

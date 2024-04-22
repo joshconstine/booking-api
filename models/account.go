@@ -13,6 +13,7 @@ type Account struct {
 	Members         []Membership
 	Rentals         []Rental
 	Boats           []Boat
+	Chats           []Chat
 }
 
 func (a *Account) TableName() string {

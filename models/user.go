@@ -16,8 +16,10 @@ type User struct {
 	PhoneNumber string `json:"phoneNumber"`
 	Login       Login
 
-	Bookings  []Booking `gorm:"foreignKey:UserID"`
-	Inquiries []Inquiry `gorm:"foreignKey:UserID"`
+	Bookings  []Booking                 `gorm:"foreignKey:UserID"`
+	Inquiries []EntityBookingPermission `gorm:"foreignKey:UserID"`
+	Chats     []Chat                    `gorm:"foreignKey:UserID"`
+	Messages  []ChatMessage             `gorm:"foreignKey:UserID"`
 }
 
 // func (user *User) BeforeCreate(scope *gorm.DB) error {
@@ -54,15 +56,10 @@ func (user *User) MapUserToResponse() response.UserResponse {
 		Email:       user.Email,
 		PhoneNumber: user.PhoneNumber,
 		Bookings:    []response.BookingResponse{},
-		Inquiries:   []response.InquiryResponse{},
 	}
 
 	for _, booking := range user.Bookings {
 		response.Bookings = append(response.Bookings, booking.MapBookingToResponse())
-	}
-
-	for _, inquiry := range user.Inquiries {
-		response.Inquiries = append(response.Inquiries, inquiry.MapInquiryToResponse())
 	}
 
 	return response
