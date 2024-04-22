@@ -200,23 +200,32 @@ func (t *bookingRepositoryImplementation) CheckIfEntitiesCanBeBooked(request *re
 		//****************************INSTANT BOOKING CHECK********************************
 		allowInstantBooking := t.DoesEntityAllowInstantBooking(entity.EntityID, entity.EntityType)
 
+		fmt.Print(allowInstantBooking)
 		if !allowInstantBooking {
-			//check if there is an inquiry for the entity
-			//if there is an inquiry, check if the entitybookingrequest was approved
-			//if it was approved, the request.entitybookingrequest start and end times must be within the approved time
-			var inquery models.Inquiry
+			// check if there is an inquiry for the entity
+			// if there is an inquiry, check if the entitybookingrequest was approved
+			// if it was approved, the request.entitybookingrequest start and end times must be within the approved time
+
+			var bookingPermissionRequests []models.EntityBookingPermission
+
+			var user models.User
+
+			result := t.Db.Model(&models.User{}).Where("email = ?", request.Email).First(&user)
+			if result.Error != nil {
+				return false, result.Error
+			}
+
+			result = t.Db.Model(&models.EntityBookingPermission{}).Where("user_id = ? AND entity_id = ? AND entity_type = ?", user.ID, entity.EntityID, entity.EntityType).Find(&bookingPermissionRequests)
+			if result.Error != nil {
+				return false, result.Error
+			}
 
 			if request.InquiryID == 0 {
 				errorMsg := fmt.Sprintf("entity (ID: %s , Type: %s) requires an inquiry to be made", strconv.Itoa(int(entity.EntityID)), entity.EntityType)
 				return false, fmt.Errorf(errorMsg)
 			}
 
-			result := t.Db.Model(&models.Inquiry{}).Where("id = ?", request.InquiryID).First(&inquery)
-			if result.Error != nil {
-				return false, result.Error
-			}
-
-			for _, entityInquiry := range inquery.BookingRequests {
+			for _, entityInquiry := range bookingPermissionRequests {
 				if entityInquiry.EntityID == entity.EntityID && entityInquiry.EntityType == entity.EntityType {
 					//check if the entitybookingrequest was approved
 					if entityInquiry.InquiryStatusID == constants.INQUIRY_STATUS_APPROVED_ID {

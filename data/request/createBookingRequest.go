@@ -3,12 +3,11 @@ package request
 import (
 	"booking-api/models"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type CreateBookingRequest struct {
 	InquiryID      uint
+	UserID         string
 	FirstName      string
 	LastName       string
 	Email          string
@@ -61,8 +60,7 @@ func (cbr *CreateBookingRequest) MapCreateBookingRequestToBooking() models.Booki
 	}
 
 	booking := models.Booking{
-		//TODO wtf fix this
-		UserID: uuid.New().String(),
+		UserID: cbr.UserID,
 		Details: models.BookingDetails{
 			GuestCount:       cbr.Guests,
 			BookingStartDate: earliestStartDate,

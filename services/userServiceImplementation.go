@@ -4,6 +4,7 @@ import (
 	requests "booking-api/data/request"
 	responses "booking-api/data/response"
 	"booking-api/repositories"
+	"fmt"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -64,11 +65,14 @@ func (t *userServiceImplementation) FindByEmail(email string) responses.UserResp
 
 func (t *userServiceImplementation) CreateUser(user *requests.CreateUserRequest) error {
 	// validate request
-	err := t.Validate.Struct(user)
-	if err != nil {
-		return err
-	}
+	fmt.Println("validating user")
+	// err := t.Validate.Struct(user)
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// 	return err
+	// }
 
+	fmt.Println("after user")
 	result := t.userRepository.Create(user)
 
 	return result

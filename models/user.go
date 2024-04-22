@@ -49,17 +49,27 @@ func (user *User) HashPassword(password string) error {
 
 func (user *User) MapUserToResponse() response.UserResponse {
 	response := response.UserResponse{
-		UserID:      user.UserID,
-		Username:    user.Username,
-		FirstName:   user.FirstName,
-		LastName:    user.LastName,
-		Email:       user.Email,
-		PhoneNumber: user.PhoneNumber,
-		Bookings:    []response.BookingResponse{},
+		UserID:             user.UserID,
+		Username:           user.Username,
+		FirstName:          user.FirstName,
+		LastName:           user.LastName,
+		Email:              user.Email,
+		PhoneNumber:        user.PhoneNumber,
+		Bookings:           []response.BookingResponse{},
+		Chats:              []response.ChatResponse{},
+		PermissionRequests: []response.EntityBookingPermissionResponse{},
 	}
 
 	for _, booking := range user.Bookings {
 		response.Bookings = append(response.Bookings, booking.MapBookingToResponse())
+	}
+
+	for _, chat := range user.Chats {
+		response.Chats = append(response.Chats, chat.MapChatToResponse())
+	}
+
+	for _, permissionRequests := range user.Inquiries {
+		response.PermissionRequests = append(response.PermissionRequests, permissionRequests.MapEntityBookingPermissionToResponse())
 	}
 
 	return response

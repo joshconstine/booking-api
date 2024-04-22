@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit/v7"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -125,20 +126,38 @@ func GenerateRandomAmmountOfEntityBookingsWithConflicts(db *gorm.DB) []request.B
 func SeedBoooking(db *gorm.DB) {
 	// create booking
 
+	userRepository := repositories.NewUserRepositoryImplementation(db)
+	userService := services.NewUserServiceImplementation(userRepository, nil)
 	person := gofakeit.Person()
 
+	/***************** Insert a new user *****************/
+	var userToBook = request.CreateUserRequest{
+		Email:       gofakeit.Email(),
+		Username:    gofakeit.Username(),
+		FirstName:   gofakeit.FirstName(),
+		LastName:    gofakeit.LastName(),
+		PhoneNumber: gofakeit.Phone(),
+		UserID:      uuid.New().String(),
+	}
+	fmt.Println(userToBook)
+	if err := userService.CreateUser(&userToBook); err != nil {
+		fmt.Println(err.Error())
+		return // handle error
+	}
+
+	/***************** Insert a new booking *****************/
+
 	bookingToCreate := request.CreateBookingRequest{
-		Email:          gofakeit.Email(),
+		Email:          userToBook.Email,
 		FirstName:      person.FirstName,
 		LastName:       person.LastName,
-		PhoneNumber:    gofakeit.Phone(),
+		PhoneNumber:    userToBook.PhoneNumber,
+		UserID:         userToBook.UserID,
 		Guests:         gofakeit.Number(1, 5),
 		EntityRequests: GenerateRandomAmmountOfEntityBookings(db),
 	}
 
 	bookingRepository := repositories.NewBookingRepositoryImplementation(db)
-	userRepository := repositories.NewUserRepositoryImplementation(db)
-	userService := services.NewUserServiceImplementation(userRepository, nil)
 	bookingService := services.NewBookingServiceImplementation(bookingRepository, nil, userService)
 
 	bid, err := bookingService.Create(&bookingToCreate)
