@@ -65,10 +65,15 @@ var ROOM_TYPE_ENTERTAINMENT_ROOM_ID uint = 8
 var ROOM_TYPE_ENTERTAINMENT_ROOM_NAME string = "Entertainment Room"
 
 var USER_ROLE_ADMIN_NAME string = "Admin"
-var USER_ROLE_CLEANING_STAFF_NAME string = "Cleaning Staff"
-var USER_ROLE_MAINTENANCE_STAFF_NAME string = "Maintenance Staff"
+var USER_ROLE_ADMIN_ID uint = 1
 var USER_ROLE_ACCOUNT_OWNER_NAME string = "Account Owner"
+var USER_ROLE_ACCOUNT_OWNER_ID uint = 2
 var USER_ROLE_ACCOUNT_MANAGER_NAME string = "Account Manager"
+var USER_ROLE_ACCOUNT_MANAGER_ID uint = 3
+var USER_ROLE_CLEANING_STAFF_NAME string = "Cleaning Staff"
+var USER_ROLE_CLEANING_STAFF_ID uint = 4
+var USER_ROLE_MAINTENANCE_STAFF_NAME string = "Maintenance Staff"
+var USER_ROLE_MAINTENANCE_STAFF_ID uint = 5
 
 // **************SAAS VALUES**************
 var SERVICE_PLAN_BASIC_ID uint = 1

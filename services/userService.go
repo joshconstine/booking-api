@@ -9,6 +9,7 @@ type UserService interface {
 	FindAll() []responses.UserResponse
 	FindByEmail(email string) responses.UserResponse
 	FindByUserID(userID string) responses.UserResponse
+	IsAdmin(userID string) bool
 	CreateUser(request *requests.CreateUserRequest) error
 	UpdateUser(user *requests.UpdateUserRequest) error
 }

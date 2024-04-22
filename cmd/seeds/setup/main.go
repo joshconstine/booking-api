@@ -448,18 +448,43 @@ func SeedRoomTypes(db *gorm.DB) {
 }
 
 func SeedUserRoles(db *gorm.DB) {
-	userRoles := []string{
-		constants.USER_ROLE_ADMIN_NAME,
-		constants.USER_ROLE_ACCOUNT_OWNER_NAME,
-		constants.USER_ROLE_ACCOUNT_MANAGER_NAME,
-		constants.USER_ROLE_CLEANING_STAFF_NAME,
-		constants.USER_ROLE_MAINTENANCE_STAFF_NAME,
+	userRoles := []models.UserRole{
+		{
+			Model: gorm.Model{
+				ID: uint(constants.USER_ROLE_ADMIN_ID),
+			},
+			Name: constants.USER_ROLE_ADMIN_NAME,
+		},
+		{
+			Model: gorm.Model{
+				ID: uint(constants.USER_ROLE_ACCOUNT_OWNER_ID),
+			},
+			Name: constants.USER_ROLE_ACCOUNT_OWNER_NAME,
+		},
+		{
+			Model: gorm.Model{
+				ID: constants.USER_ROLE_ACCOUNT_MANAGER_ID,
+			},
+			Name: constants.USER_ROLE_ACCOUNT_MANAGER_NAME,
+		},
+		{
+			Model: gorm.Model{
+				ID: constants.USER_ROLE_CLEANING_STAFF_ID,
+			},
+			Name: constants.USER_ROLE_CLEANING_STAFF_NAME,
+		},
+		{
+			Model: gorm.Model{
+				ID: constants.USER_ROLE_MAINTENANCE_STAFF_ID,
+			},
+			Name: constants.USER_ROLE_MAINTENANCE_STAFF_NAME,
+		},
 	}
 
 	userRoleRepository := repositories.NewUserRoleRepositoryImplementation(db)
 
 	for _, userRole := range userRoles {
-		userRoleRepository.Create(userRole)
+		userRoleRepository.Create(&userRole)
 	}
 
 }
@@ -553,10 +578,10 @@ func main() {
 	// create object storage client
 	objectStorage.CreateSession()
 
+	SeedUserRoles(database.Instance)
 	SeedAmenityTypes(database.Instance)
 	SeedBedTypes(database.Instance)
 	SeedBookingCostTypes(database.Instance)
-	SeedUserRoles(database.Instance)
 	SeedBookingStatus(database.Instance)
 	SeedRoomTypes(database.Instance)
 	SeedAmenities(database.Instance)

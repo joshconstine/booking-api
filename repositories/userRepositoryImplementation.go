@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"booking-api/constants"
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
@@ -35,6 +36,25 @@ func (t *userRepositoryImplementation) FindById(id uint) models.User {
 	}
 
 	return user
+}
+
+func (t *userRepositoryImplementation) IsAdmin(userID string) bool {
+	var memberships []models.Membership
+
+	result := t.Db.Model(&models.Membership{}).Where("user_id = ?", userID).Find(&memberships)
+
+	if result.Error != nil {
+		return false
+	}
+
+	for _, membership := range memberships {
+		if membership.RoleID == constants.USER_ROLE_ACCOUNT_OWNER_ID || membership.RoleID == constants.USER_ROLE_ACCOUNT_MANAGER_ID {
+			return true
+
+		}
+	}
+
+	return false
 }
 
 func (t *userRepositoryImplementation) FindByEmail(email string) models.User {

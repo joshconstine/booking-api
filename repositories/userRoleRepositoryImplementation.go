@@ -33,10 +33,8 @@ func (u *UserRoleRepositoryImplementation) FindByID(id uint) response.UserRoleRe
 	return userRole.MapUserRoleToResponse()
 }
 
-func (u *UserRoleRepositoryImplementation) Create(name string) response.UserRoleResponse {
-	userRole := models.UserRole{
-		Name: name,
-	}
+func (u *UserRoleRepositoryImplementation) Create(userRole *models.UserRole) response.UserRoleResponse {
+
 	u.DB.Create(&userRole)
 	return userRole.MapUserRoleToResponse()
 }
