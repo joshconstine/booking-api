@@ -13,13 +13,14 @@ import (
 )
 
 func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController, userSettingsController *controllers.UserSettingsController,
-	userService *services.UserService) *chi.Mux {
+	userService *services.UserService, adminController *controllers.AdminController) *chi.Mux {
 
 	router := chi.NewMux()
 	// router.Use(middlewares.WithLogger)
 	userMiddleware := middlewares.NewWithUserMiddleWare(*userService)
 	router.Use(userMiddleware)
 	withAccountSetupMiddleware := middlewares.NewWithAccountSetupMiddleWare(*userService)
+	withIsAdminMiddleware := middlewares.NewWithIsAdminMiddleWare(*userService)
 
 	router.Handle("/*", http.StripPrefix("/public/", http.FileServerFS(os.DirFS("public"))))
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -69,6 +70,11 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		// 	userSettingsController.HandleSettingsIndex(w, r)
 		// })
 		auth.Put("/settings/account/profile", controllers.Make(userSettingsController.HandleSettingsUpdate))
+	})
+
+	router.Group(func(auth chi.Router) {
+		auth.Use(middlewares.WithAuth, withIsAdminMiddleware)
+		auth.Get("/admin", controllers.Make(adminController.HandleAdminIndex))
 	})
 
 	return router

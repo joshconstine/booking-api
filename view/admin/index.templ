@@ -1,0 +1,19 @@
+package home 
+
+import (
+	"booking-api/view/layout"
+
+	"booking-api/models"
+)
+
+templ Index(user models.AuthenticatedUser) {
+	@layout.App(true) {
+		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
+			<h2 class="text-xl font-semibold mb-6 red-400">Welcomce to your main dashboard, {user.User.FirstName}</h2>
+			<div>
+			booking table
+			</div>
+		</div>
+	}
+
+}

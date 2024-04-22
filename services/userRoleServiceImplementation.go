@@ -2,6 +2,7 @@ package services
 
 import (
 	"booking-api/data/response"
+	"booking-api/models"
 	"booking-api/repositories"
 )
 
@@ -24,5 +25,8 @@ func (r *UserRoleServiceImplementation) FindByID(id uint) response.UserRoleRespo
 }
 
 func (r *UserRoleServiceImplementation) Create(name string) response.UserRoleResponse {
-	return r.userRoleRepository.Create(name)
+	role := models.UserRole{
+		Name: name,
+	}
+	return r.userRoleRepository.Create(&role)
 }

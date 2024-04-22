@@ -3,12 +3,13 @@ package home
 import (
 	"booking-api/view/layout"
 
+	"booking-api/constants"
 )
 
 templ Index() {
 	@layout.App(true) {
 		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
-			<h2 class="text-xl font-semibold mb-6 red-400">Welcomce to Enigma bookings</h2>
+			<h2 class="text-xl font-semibold mb-6 red-400">Welcomce to {constants.APPLICATION_NAME}</h2>
 			<div>
 			<a href="/rentals" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">View Rentals</a>
 			<a href="/boats" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">View Boats</a>
