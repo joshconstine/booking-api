@@ -1,0 +1,18 @@
+package ui
+
+import (
+    "booking-api/data/response"
+    "strconv"
+)
+
+templ Chat(chat response.ChatResponse) {
+
+   <div class="card">
+        <div class="card-header">
+             <h5 class="card-title">Chat with</h5>
+            <span>{chat.UserID}</span>
+            <span>and accouunt</span>
+            <span>{strconv.Itoa(int(chat.AccountID))}</span>
+        </div>
+    </div>
+}

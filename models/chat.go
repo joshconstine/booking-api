@@ -8,8 +8,8 @@ import (
 
 type Chat struct {
 	gorm.Model
-	AccountID uint `gorm:"not null"`
-	UserID    uint `gorm:"not null"`
+	AccountID uint   `gorm:"not null"`
+	UserID    string `gorm:"not null"`
 	Messages  []ChatMessage
 }
 

@@ -2138,6 +2138,15 @@ input.tab:checked + .tab-content,
   line-height: 1.25rem !important;
 }
 
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+}
+
 .card.image-full :where(figure) {
   overflow: hidden;
   border-radius: inherit;
@@ -3684,6 +3693,14 @@ details.collapse summary::-webkit-details-marker {
   height: 15%;
   top: 7%;
   right: 7%;
+}
+
+.card-compact .card-title {
+  margin-bottom: 0.25rem;
+}
+
+.card-normal .card-title {
+  margin-bottom: 0.75rem;
 }
 
 .join.join-vertical > :where(*:not(:first-child)) {

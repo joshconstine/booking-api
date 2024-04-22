@@ -34,6 +34,8 @@ func NewWithAccountSetupMiddleWare(userService services.UserService) func(http.H
 				FirstName:   user.FirstName,
 				LastName:    user.LastName,
 				PhoneNumber: user.PhoneNumber,
+				Chats:       user.Chats,
+				Bookings:    user.Bookings,
 			}
 
 			ctx := context.WithValue(r.Context(), models.UserContextKey, authenticatedUser)

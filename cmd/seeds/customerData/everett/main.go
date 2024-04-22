@@ -71,7 +71,7 @@ func (c *CreateAccountRequest) MapAccountRequestToAccount() models.Account {
 
 var accountsToCreate = []CreateAccountRequest{
 	{
-		AccountName:   "The Everett Reort",
+		AccountName:   "The Everett Reosort",
 		ServicePlanID: constants.SERVICE_PLAN_BASIC_ID,
 		Members: []MemberInput{
 			{
@@ -82,9 +82,10 @@ var accountsToCreate = []CreateAccountRequest{
 				Role:        constants.USER_ROLE_ACCOUNT_OWNER_NAME,
 			},
 		},
+
 		Rentals: []request.CreateRentalRequest{
 			{
-				Name:        "The Lodge ",
+				Name:        "The Lodge",
 				LocationID:  1,
 				Bedrooms:    13,
 				Bathrooms:   7,
@@ -99,11 +100,52 @@ var accountsToCreate = []CreateAccountRequest{
 				NightlyRate: 200,
 				Description: "The Morey is a cozy up north cabin with 3 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Morey is located on the shores of Lake Everett and is a short walk to the marina. The Morey is a cozy up north cabin with 3 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Morey is located on the shores of Lake Everett and is a short walk to the marina. The Morey is a cozy up north cabin with 3 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Morey is located on the shores of Lake Everett and is a short walk to the marina.",
 			},
+			{
+				Name:        "The Gables",
+				LocationID:  1,
+				Bedrooms:    7,
+				Bathrooms:   4,
+				NightlyRate: 300,
+				Description: "The Gables is a cozy up north cabin with 7 bedrooms and 4 bathrooms. It is perfect for medium groups and family gatherings. The Gables is located on the shores of Lake Everett and is a short walk to the marina. The Gables is a cozy up north cabin with 7 bedrooms and 4 bathrooms. It is perfect for medium groups and family gatherings. The Gables is located on the shores of Lake Everett and is a short walk to the marina. The Gables is a cozy up north cabin with 7 bedrooms and 4 bathrooms. It is perfect for medium groups and family gatherings. The Gables is located on the shores of Lake Everett and is a short walk to the marina.",
+			},
+			{
+				Name:        "The Clubhouse",
+				LocationID:  1,
+				Bedrooms:    5,
+				Bathrooms:   3,
+				NightlyRate: 250,
+				Description: "The Clubhouse is a cozy up north cabin with 5 bedrooms and 3 bathrooms. It is perfect for medium groups and family gatherings. The Clubhouse is located on the shores of Lake Everett and is a short walk to the marina. The Clubhouse is a cozy up north cabin with 5 bedrooms and 3 bathrooms. It is perfect for medium groups and family gatherings. The Clubhouse is located on the shores of Lake Everett and is a short walk to the marina. The Clubhouse is a cozy up north cabin with 5 bedrooms and 3 bathrooms. It is perfect for medium groups and family gatherings. The Clubhouse is located on the shores of Lake Everett and is a short walk to the marina.",
+			},
+			{
+				Name:        "The Eisenhower",
+				LocationID:  1,
+				Bedrooms:    4,
+				Bathrooms:   2,
+				NightlyRate: 150,
+				Description: "The Eisenhower is a cozy up north cabin with 4 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Eisenhower is located on the shores of Lake Everett and is a short walk to the marina. The Eisenhower is a cozy up north cabin with 4 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Eisenhower is located on the shores of Lake Everett and is a short walk to the marina. The Eisenhower is a cozy up north cabin with 4 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Eisenhower is located on the shores of Lake Everett and is a short walk to the marina.",
+			},
+			{
+				Name:        "The Musky Inn",
+				LocationID:  2,
+				Bedrooms:    13,
+				Bathrooms:   7,
+				NightlyRate: 500,
+				Description: "The Musky Inn is a cozy up north cabin with 13 bedrooms and 7 bathrooms. It is perfect for large groups and family gatherings. The Musky Inn is located on the shores of Lake Everett and is a short walk to the marina. The Musky Inn is a cozy up north cabin with 13 bedrooms and 7 bathrooms. It is perfect for large groups and family gatherings. The Musky Inn is located on the shores of Lake Everett and is a short walk to the marina. The Musky Inn is a cozy up north cabin with 13 bedrooms and 7 bathrooms. It is perfect for large groups and family gatherings. The Musky Inn is located on the shores of Lake Everett and is a short walk to the marina.",
+			},
+			{
+				Name:        "The Little Guy",
+				LocationID:  2,
+				Bedrooms:    1,
+				Bathrooms:   1,
+				NightlyRate: 100,
+				Description: "The Little Guy is a cozy up north cabin with 1 bedroom and 1 bathroom. It is perfect for small groups and family gatherings. The Little Guy is located on the shores of Lake Everett and is a short walk to the marina. The Little Guy is a cozy up north cabin with 1 bedroom and 1 bathroom. It is perfect for small groups and family gatherings. The Little Guy is located on the shores of Lake Everett and is a short walk to the marina. The Little Guy is a cozy up north cabin with 1 bedroom and 1 bathroom. It is perfect for small groups and family gatherings. The Little Guy is located on the shores of Lake Everett and is a short walk to the marina.",
+			},
 		},
+
 		boats: []request.CreateBoatRequest{},
 	},
 	{
-		AccountName:   "St Boat Rentals",
+		AccountName:   "St Germain Boat Rentals",
 		ServicePlanID: constants.SERVICE_PLAN_BASIC_ID,
 		Members: []MemberInput{
 			{
@@ -117,7 +159,7 @@ var accountsToCreate = []CreateAccountRequest{
 		Rentals: []request.CreateRentalRequest{},
 		boats: []request.CreateBoatRequest{
 			{
-				Name:        " the party barge",
+				Name:        "the party barge",
 				NightlyRate: 500,
 				Description: "be the king of the chain with this party barge",
 			},

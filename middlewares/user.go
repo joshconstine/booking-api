@@ -99,6 +99,8 @@ func NewWithUserMiddleWare(userService services.UserService) func(http.Handler) 
 					Email:     resp.Email,
 					FirstName: userData.FirstName,
 					LastName:  userData.LastName,
+					Username:  userData.Username,
+					Chats:     userData.Chats,
 
 					//TODO ADD user service to get username here
 				},

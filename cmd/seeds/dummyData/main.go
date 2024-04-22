@@ -4,6 +4,7 @@ import (
 	"booking-api/config"
 	"booking-api/constants"
 	"booking-api/data/request"
+	"booking-api/models"
 	"booking-api/pkg/database"
 	"booking-api/repositories"
 	"booking-api/services"
@@ -214,6 +215,18 @@ func SeedUsers(db *gorm.DB) {
 
 	userRepository.Create(&usersToCreate)
 }
+
+func SeedChat(db *gorm.DB) {
+	// create chat
+	accountID := 9
+	userID := "f1cd62fd-5acc-4b8b-9ae1-d3cdd2411cd4"
+	chatRepository := repositories.NewChatRepositoryImplementation(db)
+	chatRepository.Create(&models.Chat{
+		AccountID: uint(accountID),
+		UserID:    userID,
+	})
+}
+
 func main() {
 
 	var exitCode int
@@ -235,7 +248,8 @@ func main() {
 	// SeedUsers(database.Instance)
 	// SeedBookingUI(database.Instance)
 	// SeedBoooking(database.Instance)
-	SeedMultipleBookings(database.Instance, 10)
+	SeedChat(database.Instance)
+	// SeedMultipleBookings(database.Instance, 10)
 
 	// SeedBoookingWithConflicts(database.Instance)
 	log.Println("Database seeding Completed!")

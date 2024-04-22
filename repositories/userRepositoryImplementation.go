@@ -54,6 +54,11 @@ func (t *userRepositoryImplementation) FindByUserID(userID string) response.User
 		return response.UserResponse{}
 	}
 
+	result = t.Db.Model(&models.Chat{}).Where("user_id = ?", user.UserID).Find(&user.Chats)
+	if result.Error != nil {
+		return response.UserResponse{}
+	}
+
 	return user.MapUserToResponse()
 
 }
