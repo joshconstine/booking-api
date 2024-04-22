@@ -132,7 +132,7 @@ func GetDocumentsForEntity(entity models.EntityBooking, db *gorm.DB) []models.Bo
 	return documentsForEntity
 }
 
-func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingRequest) error {
+func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingRequest) (string, error) {
 
 	bookingToCreate := booking.MapCreateBookingRequestToBooking()
 
@@ -157,10 +157,10 @@ func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingR
 	result := t.Db.Model(&models.Booking{}).Create(&bookingToCreate)
 	if result.Error != nil {
 		slog.Error(result.Error.Error())
-		return result.Error
+		return "", result.Error
 	}
 
-	return nil
+	return bookingToCreate.ID, nil
 }
 
 func (t *bookingRepositoryImplementation) Update(booking models.Booking) models.Booking {

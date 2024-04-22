@@ -6,7 +6,7 @@ import (
 )
 
 type BookingService interface {
-	Create(request *request.CreateBookingRequest) error
+	Create(request *request.CreateBookingRequest) (string, error)
 	FindAll() []responses.BookingResponse
 	FindById(id string) responses.BookingInformationResponse
 }

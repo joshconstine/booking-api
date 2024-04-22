@@ -9,6 +9,7 @@ import (
 )
 
 type EnvVars struct {
+	ENV                       string `mapstructure:"ENV"`
 	DSN                       string `mapstructure:"DSN"`
 	PORT                      string `mapstructure:"PORT"`
 	OBJECT_STORAGE_URL        string `mapstructure:"OBJECT_STORAGE_URL"`
@@ -34,6 +35,7 @@ func LoadConfig(configPath string) (config EnvVars, err error) {
 	err = viper.ReadInConfig()
 	if err != nil {
 		// Fallback to environment variables if config file is not found
+		config.ENV = os.Getenv("ENV")
 		config.DSN = os.Getenv("DSN")
 		config.PORT = os.Getenv("PORT")
 		config.OBJECT_STORAGE_URL = os.Getenv("OBJECT_STORAGE_URL")
@@ -47,7 +49,7 @@ func LoadConfig(configPath string) (config EnvVars, err error) {
 		config.SUPABASE_SECRET = os.Getenv("SUPABASE_SECRET")
 		config.SESSION_SECRET = os.Getenv("SESSION_SECRET")
 
-		if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" || config.SEND_GRID_KEY == "" || config.PAYPAL_CLIENT_ID == "" || config.PAYPAL_CLIENT_SECRET == "" || config.SUPABASE_URL == "" || config.SUPABASE_SECRET == "" || config.SESSION_SECRET == "" {
+		if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" || config.SEND_GRID_KEY == "" || config.PAYPAL_CLIENT_ID == "" || config.PAYPAL_CLIENT_SECRET == "" || config.SUPABASE_URL == "" || config.SUPABASE_SECRET == "" || config.SESSION_SECRET == "" || config.ENV == "" {
 			return config, fmt.Errorf("error loading config, %v", err)
 		}
 		return config, nil
@@ -56,6 +58,11 @@ func LoadConfig(configPath string) (config EnvVars, err error) {
 	err = viper.Unmarshal(&config)
 
 	// validate config here
+
+	if config.ENV == "" {
+		err = errors.New("ENV is required")
+		return
+	}
 
 	if config.DSN == "" {
 		err = errors.New("DSN is required")

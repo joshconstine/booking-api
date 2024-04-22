@@ -141,11 +141,12 @@ func SeedBoooking(db *gorm.DB) {
 	userService := services.NewUserServiceImplementation(userRepository, nil)
 	bookingService := services.NewBookingServiceImplementation(bookingRepository, nil, userService)
 
-	err := bookingService.Create(&bookingToCreate)
+	bid, err := bookingService.Create(&bookingToCreate)
 	if err != nil {
 		fmt.Println(err)
 	}
 
+	fmt.Println("booking created with id: ", bid)
 }
 
 func SeedBoookingWithConflicts(db *gorm.DB) {
@@ -167,11 +168,12 @@ func SeedBoookingWithConflicts(db *gorm.DB) {
 	userService := services.NewUserServiceImplementation(userRepository, nil)
 	bookingService := services.NewBookingServiceImplementation(bookingRepository, nil, userService)
 
-	err := bookingService.Create(&bookingToCreate)
+	bid, err := bookingService.Create(&bookingToCreate)
 	if err != nil {
 		fmt.Println(err)
 	}
 
+	fmt.Println("booking created with id: ", bid)
 }
 
 func SeedMultipleBookings(db *gorm.DB, numberOfBookings int) {

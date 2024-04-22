@@ -1,8 +1,10 @@
 package services
 
 import (
+	"booking-api/constants"
 	"booking-api/data/request"
 	"booking-api/data/response"
+	"booking-api/pkg/email"
 	"booking-api/repositories"
 	"fmt"
 
@@ -34,7 +36,7 @@ func (t BookingServiceImplementation) FindById(id string) response.BookingInform
 	return result
 }
 
-func (t BookingServiceImplementation) Create(request *request.CreateBookingRequest) error {
+func (t BookingServiceImplementation) Create(request *request.CreateBookingRequest) (string, error) {
 
 	//check if the entities are available during the timeblocks
 	//if the entity requires does not allow instant booking, check if there was in inquery > entityBookingRequest was approved.
@@ -46,20 +48,36 @@ func (t BookingServiceImplementation) Create(request *request.CreateBookingReque
 	//send email to account owner
 
 	canBook, err := t.BookingRepository.CheckIfEntitiesCanBeBooked(request)
-
+	var bookingId string
 	if err != nil {
 		fmt.Printf("error checking if entities can be booked: %v", err)
-		return err
+		return "", err
 	}
 
 	if !canBook {
-		return err
+		return "", err
 	} else {
 
 		//Start transaction
 
-		t.BookingRepository.Create(request)
+		bookingId, err = t.BookingRepository.Create(request)
+
+		if err != nil {
+			fmt.Printf("error creating booking: %v", err)
+			return "", err
+		}
+
+		//End transaction
+
+		//send confirmation email to user
+
+		//check if mode if Production or Development
+
+		email.SendEmailTemplate(constants.APPLICATION_NAME, constants.SEND_GRID_EMAIL, request.FirstName, "joshua.constine97@gmail.com", "Booking Confirmation"+bookingId, constants.EMAIL_TEMPLATE_BOOKING_CONFIRMATION, map[string]interface{}{
+			"bookingId": bookingId,
+		})
+
 	}
 
-	return nil
+	return bookingId, nil
 }
