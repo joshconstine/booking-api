@@ -53,7 +53,7 @@ func (rental *CreateRentalRequest) MapCreateRentalRequestToRental() models.Renta
 		RentalRooms:                []models.RentalRoom{},
 		BookingCostItemAdjustments: []models.EntityBookingCostAdjustment{},
 		BookingDocuments:           []models.EntityBookingDocument{},
-		BookingRequests:            []models.EntityBookingRequest{},
+		BookingRequests:            []models.EntityBookingPermission{},
 		Timeblocks:                 []models.EntityTimeblock{},
 		Bookings:                   []models.EntityBooking{},
 		EntityPhotos:               []models.EntityPhoto{},

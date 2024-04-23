@@ -23,7 +23,7 @@ type Boat struct {
 	BookingDurationRule        EntityBookingDurationRule     `gorm:"polymorphic:Entity; not null"`
 	BookingRule                EntityBookingRule             `gorm:"polymorphic:Entity; not null"`
 
-	BookingRequests []EntityBookingRequest `gorm:"polymorphic:Entity"`
+	BookingRequests []EntityBookingPermission `gorm:"polymorphic:Entity"`
 }
 
 func (b *Boat) TableName() string {
@@ -84,7 +84,7 @@ func (b *Boat) MapBoatToInformationResponse() response.BoatInformationResponse {
 	}
 
 	for _, bookingRequest := range b.BookingRequests {
-		result.BookingRequests = append(result.BookingRequests, bookingRequest.MapEntityBookingRequestToResponse())
+		result.BookingRequests = append(result.BookingRequests, bookingRequest.MapEntityBookingPermissionToResponse())
 	}
 
 	result.Status = b.Status.MapBoatStatusToResponse()

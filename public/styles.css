@@ -5169,3 +5169,9 @@ details.collapse summary::-webkit-details-marker {
     padding-right: 0px;
   }
 }
+
+@media (min-width: 1024px) {
+  .lg\:flex-row {
+    flex-direction: row;
+  }
+}

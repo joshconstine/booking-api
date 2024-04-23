@@ -29,7 +29,7 @@ type Rental struct {
 	BookingDurationRule        EntityBookingDurationRule     `gorm:"polymorphic:Entity"`
 	BookingRule                EntityBookingRule             `gorm:"polymorphic:Entity"`
 
-	BookingRequests []EntityBookingRequest `gorm:"polymorphic:Entity"`
+	BookingRequests []EntityBookingPermission `gorm:"polymorphic:Entity"`
 }
 
 func (r *Rental) TableName() string {
@@ -92,7 +92,7 @@ func (r *Rental) MapRentalToInformationResponse() response.RentalInformationResp
 	}
 
 	for _, inquiry := range r.BookingRequests {
-		response.BookingRequests = append(response.BookingRequests, inquiry.MapEntityBookingRequestToResponse())
+		response.BookingRequests = append(response.BookingRequests, inquiry.MapEntityBookingPermissionToResponse())
 	}
 
 	response.BookingDurationRule = r.BookingDurationRule.MapEntityBookingDurationRuleToResponse()

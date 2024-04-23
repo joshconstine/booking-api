@@ -44,7 +44,7 @@ func (boat *CreateBoatRequest) MapCreateBoatRequestToBoat() models.Boat {
 		},
 		BookingCostItemAdjustments: []models.EntityBookingCostAdjustment{},
 		BookingDocuments:           []models.EntityBookingDocument{},
-		BookingRequests:            []models.EntityBookingRequest{},
+		BookingRequests:            []models.EntityBookingPermission{},
 		Timeblocks:                 []models.EntityTimeblock{},
 		Bookings:                   []models.EntityBooking{},
 		Photos:                     []models.EntityPhoto{},
