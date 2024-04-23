@@ -22,13 +22,19 @@ templ Index(user models.AuthenticatedUser, Bookings []response.BookingSnapshotRe
 			</label>
 			<button class="btn btn-sm border-2 border-zinc-500 "><i class="fa-solid fa-plus "></i>Add booking</button>
 			</div>
-			<div>
-			@ui.BookingSnapshotWidget(Bookings)
-				 
-				
-				
 
-			
+			<div class="flex gap-2">
+				@ui.BookingSnapshotWidget(Bookings)
+				<div class="flex flex-col gap-2">
+					<div class="flex gap-2">
+						@ui.BookingArrivalWidget(Bookings)
+						@ui.BookingArrivalWidget(Bookings)
+					</div>
+					<div class="flex gap-2">
+						@ui.BookingArrivalWidget(Bookings)
+						@ui.BookingArrivalWidget(Bookings)
+					</div>
+				</div>
 			</div>
 		</div>
 	}

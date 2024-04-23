@@ -1,0 +1,83 @@
+
+
+package ui
+
+import (
+    "booking-api/data/response"
+    "strconv"
+    
+)
+
+templ BookingArrivalWidget(Bookings []response.BookingSnapshotResponse) {
+
+   <div id="arrival_widget" class="card  bg-gray-200 border-2 border-zinc-500 p-4 text-xs font-normal max-w-72">
+        
+        <div class="card-header">
+           
+        </div>
+<div class="">
+  <table class="table table-xs">
+    <!-- head -->
+   <tr>
+   <div  class="flex gap-1 text-sm items-center">
+
+    <span class="">Today</span>
+    <div class="divider divider-horizontal"></div>
+    <span class="">Arriving(5)</span>
+    <div class="divider divider-horizontal"></div>
+
+    <div class="dropdown dropdown-hover">
+        <div tabindex="0" role="button" class="btn btn-ghost">
+            <i class="fa-solid fa-sliders"></i>Filter
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+            <li><a>Item 1</a></li>
+            <li><a>Item 2</a></li>
+        </ul>
+    </div>
+
+    </div>
+     <div class="divider m-0 py-0"></div>
+   </tr>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Guests</th>
+        <th>Rental</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- row 1 -->
+                for _, booking := range Bookings[:5] {
+      <tr class="hover">
+        <td>
+				  <a href={templ.SafeURL(GetPath(booking.ID))}>
+           Joshua Constine
+        
+        </a>
+        </td>
+      
+        <td>
+            5
+        </td>
+        <td>
+            for _, entity := range booking.BookedEntities {
+                <span>{strconv.Itoa(int(entity.EntityID))}</span>
+                <span>{entity.EntityType}</span>
+
+            }
+        </td>
+      
+
+      </tr>
+	}
+   
+    </tbody>
+  </table>
+</div>
+
+
+				 
+    </div>
+}
+
