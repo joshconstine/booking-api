@@ -41,3 +41,6 @@ seed-jim:
 
 seed-dummy:
 	@go run cmd/seeds/dummyData/main.go
+
+reset-db-soft:
+	@go run cmd/seeds/reset/main.go

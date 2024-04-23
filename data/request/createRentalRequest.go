@@ -46,7 +46,7 @@ func (rental *CreateRentalRequest) MapCreateRentalRequestToRental() models.Renta
 		BookingRule: models.EntityBookingRule{
 			AdvertiseAtAllLocations: true,
 			AllowPets:               true,
-			AllowInstantBooking:     false,
+			AllowInstantBooking:     true,
 			OfferEarlyCheckIn:       false,
 		},
 		Amenities:                  []models.Amenity{},
