@@ -7,4 +7,5 @@ import (
 
 type ChatService interface {
 	CreateChatMessage(message *request.CreateChatMessageRequest) (response.ChatResponse, error)
+	DeleteChatMessage(deleteReq *request.DeleteChatMessageRequest) (response.ChatResponse, error)
 }

@@ -24,3 +24,13 @@ func (csi *ChatServiceImplementation) CreateChatMessage(request *request.CreateC
 	return createdMessage, nil
 
 }
+
+func (csi *ChatServiceImplementation) DeleteChatMessage(request *request.DeleteChatMessageRequest) (response.ChatResponse, error) {
+	deletedMessage, err := csi.chatRepository.DeleteChatMessage(request)
+
+	if err != nil {
+		return response.ChatResponse{}, err
+	}
+
+	return deletedMessage, nil
+}

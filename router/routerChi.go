@@ -76,6 +76,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		auth.Use(middlewares.WithAuth, withIsAdminMiddleware)
 		auth.Get("/admin", controllers.Make(adminController.HandleAdminIndex))
 		router.Post("/chat/message", controllers.Make(chatController.HandleChatMessageCreate))
+		router.Delete("/chat/message", controllers.Make(chatController.HandleChatMessageDelete))
 	})
 
 	return router

@@ -47,13 +47,25 @@ func (t ChatController) HandleChatMessageCreate(w http.ResponseWriter, r *http.R
 	}
 
 	return render(r, w, ui.Chat(createdChat))
+}
+func (t ChatController) HandleChatMessageDelete(w http.ResponseWriter, r *http.Request) error {
 
-	// chatResponse := t.chatService.CreateChatMessage()
-	// webResponse := response.Response{
-	// 	Code:   200,
-	// 	Status: "Ok",
-	// 	Data:   chatResponse,
-	// }
-	// ctx.Header("Content-Type", "application/json")
-	// ctx.JSON(http.StatusOK, webResponse)
+	chatID := r.URL.Query().Get("messageID")
+
+	chatIDInt, _ := strconv.Atoi(chatID)
+
+	user := GetAuthenticatedUser(r)
+
+	params := request.DeleteChatMessageRequest{
+		MessageID: uint(chatIDInt),
+		UserID:    user.User.UserID,
+	}
+
+	chat, err := t.chatService.DeleteChatMessage(&params)
+
+	if err != nil {
+		return err
+	}
+
+	return render(r, w, ui.Chat(chat))
 }

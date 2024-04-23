@@ -7,8 +7,10 @@ import (
 
 templ Chat(chat response.ChatResponse) {
 
-   <div class="card w-96  bg-grey-400">
-        <form class="card-footer" hx-post="/chat/message"
+   <div id="chat_container" class="card w-96  bg-grey-400">
+        <form 
+            
+         class="card-footer" hx-post="/chat/message"
             hx-swap="outerHTML" hx-indicator="#loading"
          >
         <div class="card-header">
@@ -19,13 +21,21 @@ templ Chat(chat response.ChatResponse) {
         </div>
         <ul>
         for _, message := range chat.Messages {
-            <li>
-              <div class="chat chat-start">
-                <div class="chat-header">
-                     <time class="text-xs opacity-50">{message.Sent.String()}</time>
-                </div>
-                <div class="chat-bubble">{message.Message}</div>
-                </div>
+                 <li>
+                    <div class="chat chat-start">
+                        <div class="chat-header">
+                            <time class="text-xs opacity-50">{message.Sent.String()}</time>
+                        </div>
+                        <div class="chat-bubble">{message.Message}</div>
+                            <div class="btn btn-square btn-sm btn-ghost"
+                            hx-delete={"/chat/message?messageID=" + strconv.Itoa(int(message.ID))}k
+                                hx-swap="outerHTML"
+                                hx-target="#chat_container"
+                                hx-indicator="#loading"
+                            >
+                            -
+                            </div>
+                        </div>
                 </li>
         }
         </ul>
