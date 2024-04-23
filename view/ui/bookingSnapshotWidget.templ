@@ -6,7 +6,12 @@ import (
     "strconv"
     
 )
-
+func GetPath(id string) string {
+	path := "/bookings/"
+	path +=  id
+	return path
+	
+}
 templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse) {
 
    <div id="chat_container" class="card  bg-gray-200 border-2 border-zinc-500 p-4 text-sm font-normal">
@@ -52,8 +57,16 @@ templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse) {
     <tbody>
       <!-- row 1 -->
                 for _, booking := range Bookings {
-      <tr>
-        <td>Joshua Constine</td>
+      <tr class="hover">
+        <td>
+				  <a href={templ.SafeURL(GetPath(booking.ID))}>
+            <button type="btn btn-ghost" >
+            <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+           Joshua Constine
+        
+        </a>
+        </td>
         <td>
         @StatusBadge(booking.Status)
         </td>
