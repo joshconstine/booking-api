@@ -5,9 +5,19 @@ import (
 )
 
 templ Navigation() {
-	<div class="navbar bg-gray-300 text-white">
+	<div class="navbar bg-gray-500 px-4">
 		<div class="flex-1">
-			<a href="/" class="text-2xl font-black text-primary">Home</a>
+			<div class="dropdown dropdown-hover">
+				<div tabindex="0" role="button" class=" text-white">
+					<i class="fa-solid fa-bars h-8 w-8"></i>
+				</div>
+				<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+					<li><a href="/">Home</a></li>
+					<li><a href="/bookings">Bookings</a></li>
+					<li><a href="/rentals">Rentals</a></li>
+					<li><a href="/admin">admin Dashboard</a></li>
+				</ul>
+			</div>
 		</div>
 		<div class="flex gap-2 items-center">
 		<div>
@@ -15,7 +25,7 @@ templ Navigation() {
 		</div>
 		<div class="indicator">
 		  <span class="indicator-item badge  badge-xs pt-2"></span> 
-			<i class="fa-solid fa-bell h-8 grid place-items-center"></i>
+			<i class="fa-solid fa-bell h-8 grid place-items-center text-white"></i>
 </div>
 		
 
@@ -24,7 +34,7 @@ templ Navigation() {
 					// <li><a href="/generate"><i class="fa-solid fa-wand-magic-sparkles"></i> generate</a></li>
 					<li>
 						<details>
-							<summary>
+							<summary class="text-white">
 								{ view.AuthenticatedUser(ctx).User.Email }
 							</summary>
 							<ul class="p-2 bg-base-100 rounded-t-none">

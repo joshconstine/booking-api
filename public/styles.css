@@ -4342,6 +4342,10 @@ details.collapse summary::-webkit-details-marker {
   width: 18rem;
 }
 
+.w-8 {
+  width: 2rem;
+}
+
 .w-96 {
   width: 24rem;
 }
@@ -4505,9 +4509,9 @@ details.collapse summary::-webkit-details-marker {
   background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 
-.bg-gray-300 {
+.bg-gray-500 {
   --tw-bg-opacity: 1;
-  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
+  background-color: rgb(107 114 128 / var(--tw-bg-opacity));
 }
 
 .p-1 {
@@ -4644,11 +4648,6 @@ details.collapse summary::-webkit-details-marker {
 .text-info {
   --tw-text-opacity: 1;
   color: var(--fallback-in,oklch(var(--in)/var(--tw-text-opacity)));
-}
-
-.text-primary {
-  --tw-text-opacity: 1;
-  color: var(--fallback-p,oklch(var(--p)/var(--tw-text-opacity)));
 }
 
 .text-success {
