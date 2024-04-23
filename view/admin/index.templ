@@ -5,6 +5,7 @@ import (
 
 	"booking-api/models"
 	"booking-api/data/response"
+	"booking-api/view/ui"
 )
 
 templ Index(user models.AuthenticatedUser, Bookings []response.BookingSnapshotResponse) {
@@ -12,13 +13,10 @@ templ Index(user models.AuthenticatedUser, Bookings []response.BookingSnapshotRe
 		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
 			<h2 class="text-xl font-semibold mb-6 red-400">Welcomce to your main dashboard, {user.User.FirstName}</h2>
 			<div>
-			<span>snapshot of your bookings</span>
+			@ui.BookingSnapshotWidget(Bookings)
 				 
-				 <ul>
-				 for _, booking := range Bookings {
-					 <li>{booking.ID} - {booking.Status.Name}</li>
-				 }
-				 </ul>
+				
+				
 
 			
 			</div>

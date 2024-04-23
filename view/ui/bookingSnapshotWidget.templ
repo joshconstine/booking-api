@@ -1,0 +1,26 @@
+
+package ui
+
+import (
+    "booking-api/data/response"
+    
+)
+
+templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse) {
+
+   <div id="chat_container" class="card w-96  bg-grey-400">
+        
+        <div class="card-header">
+             <h5 class="card-title">Snapshot of your bookings</h5>
+           
+        </div>
+        <ul>
+                for _, booking := range Bookings {
+					 <li>{booking.ID} - {booking.Status.Name}</li>
+				 }
+				 
+        </ul>
+        
+    </div>
+}
+
