@@ -20,7 +20,7 @@ type Booking struct {
 	// Inquiry         Inquiry
 	// User            User `gorm:"not nill; foreignKey:UserID"`
 	BookingStatus BookingStatus
-	Details       BookingDetails `gorm:"not null"`
+	Details       BookingDetails
 	CostItems     []BookingCostItem
 	Payments      []BookingPayment
 	Documents     []BookingDocument

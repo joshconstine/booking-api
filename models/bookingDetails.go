@@ -17,7 +17,7 @@ type BookingDetails struct {
 	BookingStartDate time.Time
 	GuestCount       int
 	LocationID       uint   `gorm:"not null"`
-	InvoiceID        string `gorm:"type:varchar(255);unique"`
+	InvoiceID        string `gorm:"type:varchar(255)"`
 }
 
 func (b *BookingDetails) TableName() string {

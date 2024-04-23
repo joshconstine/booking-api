@@ -68,7 +68,7 @@ func GenerateRandomAmmountOfEntityBookings(db *gorm.DB) []request.BookEntityRequ
 	var rangeForEntityBookingEnd time.Time
 	var randomEntity FakeEntity
 	var entityBooking request.BookEntityRequest
-	for i := 0; i < gofakeit.Number(1, 5); i++ {
+	for i := 0; i < gofakeit.Number(1, 2); i++ {
 
 		rangeForEntityBookingStart = gofakeit.DateRange(startDateOfEntityBookings, startDateOfEntityBookings.AddDate(0, 0, 2))
 		rangeForEntityBookingEnd = gofakeit.DateRange(rangeForEntityBookingStart.AddDate(0, 0, 3), rangeForEntityBookingStart.AddDate(0, 0, 18))
@@ -249,7 +249,7 @@ func main() {
 	// SeedBookingUI(database.Instance)
 	// SeedBoooking(database.Instance)
 	SeedChat(database.Instance)
-	// SeedMultipleBookings(database.Instance, 10)
+	SeedMultipleBookings(database.Instance, 10)
 
 	// SeedBoookingWithConflicts(database.Instance)
 	log.Println("Database seeding Completed!")

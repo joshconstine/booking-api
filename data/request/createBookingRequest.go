@@ -60,15 +60,8 @@ func (cbr *CreateBookingRequest) MapCreateBookingRequestToBooking() models.Booki
 	}
 
 	booking := models.Booking{
-		UserID: cbr.UserID,
-		Details: models.BookingDetails{
-			GuestCount:       cbr.Guests,
-			BookingStartDate: earliestStartDate,
-			PaymentDueDate:   calculatePaymentDueDate(earliestStartDate),
-			PaymentComplete:  false,
-			DepositPaid:      false,
-			DocumentsSigned:  false,
-		},
+		UserID:  cbr.UserID,
+		Details: models.BookingDetails{},
 	}
 
 	for _, entityRequest := range cbr.EntityRequests {

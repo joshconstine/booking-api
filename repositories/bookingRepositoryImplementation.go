@@ -60,6 +60,14 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 	return booking.MapBookingToInformationResponse()
 
 }
+func calculatePaymentDueDate(bookingStartDate time.Time) time.Time {
+	//the due date will be 90 days before the booking start date if the startdate is < 90 days from now the due date is now
+	dueDate := bookingStartDate.AddDate(0, 0, -90)
+	if dueDate.Before(time.Now()) {
+		return time.Now()
+	}
+	return dueDate
+}
 func (t *bookingRepositoryImplementation) GetSnapshot() []response.BookingSnapshotResponse {
 	var bookings []models.Booking
 	result := t.Db.Model(&models.Booking{}).Preload("BookingStatus").Preload("Details").Find(&bookings)
@@ -168,8 +176,42 @@ func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingR
 
 	bookingToCreate.Documents = documentsForBooking
 
+	//log the booking details
+	fmt.Println("Booking Details")
+	fmt.Println(bookingToCreate.Details)
 	result := t.Db.Model(&models.Booking{}).Create(&bookingToCreate)
 	if result.Error != nil {
+		fmt.Println(result.Error.Error())
+		slog.Error(result.Error.Error())
+		return "", result.Error
+	}
+
+	var earliestStartDate time.Time
+
+	earliestStartDate = bookingToCreate.Entities[0].Timeblock.StartTime
+
+	for _, entityRequest := range bookingToCreate.Entities {
+		if entityRequest.Timeblock.StartTime.Before(earliestStartDate) {
+			earliestStartDate = entityRequest.Timeblock.StartTime
+		}
+	}
+
+	bookingToCreate.Details = models.BookingDetails{
+		GuestCount:       booking.Guests,
+		BookingStartDate: earliestStartDate,
+		PaymentDueDate:   calculatePaymentDueDate(earliestStartDate),
+		PaymentComplete:  false,
+		DepositPaid:      false,
+		DocumentsSigned:  false,
+		LocationID:       1,
+		BookingID:        bookingToCreate.ID,
+	}
+
+	result = t.Db.Model(&models.BookingDetails{}).Where(
+		"booking_id = ?", bookingToCreate.ID).Save(&bookingToCreate.Details)
+	if result.Error != nil {
+
+		fmt.Println(result.Error.Error())
 		slog.Error(result.Error.Error())
 		return "", result.Error
 	}
