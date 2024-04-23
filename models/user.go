@@ -71,9 +71,5 @@ func (user *User) MapUserToResponse() response.UserResponse {
 		response.Chats = append(response.Chats, chat.MapChatToResponse())
 	}
 
-	for _, permissionRequests := range user.Inquiries {
-		response.PermissionRequests = append(response.PermissionRequests, permissionRequests.MapEntityBookingPermissionToResponse())
-	}
-
 	return response
 }

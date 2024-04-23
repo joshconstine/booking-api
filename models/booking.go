@@ -115,3 +115,20 @@ func (b *Booking) MapBookingToInformationResponse() response.BookingInformationR
 	fmt.Println(response)
 	return response
 }
+func (b *Booking) MapBookingToSnapshotResponse() response.BookingSnapshotResponse {
+	var resp response.EntityInfoResponse
+	response := response.BookingSnapshotResponse{
+		ID:           b.ID,
+		StartDate:    b.Details.BookingStartDate,
+		DateRecieved: b.CreatedAt,
+	}
+
+	response.Status = b.BookingStatus.MapBookingStatusToResponse()
+
+	for _, entity := range b.Entities {
+		resp = entity.MapEntityBookingToEntityInfoResponse()
+		response.BookedEntities = append(response.BookedEntities, resp)
+	}
+
+	return response
+}

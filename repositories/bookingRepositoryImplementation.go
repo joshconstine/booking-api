@@ -60,6 +60,20 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 	return booking.MapBookingToInformationResponse()
 
 }
+func (t *bookingRepositoryImplementation) GetSnapshot() []response.BookingSnapshotResponse {
+	var bookings []models.Booking
+	result := t.Db.Model(&models.Booking{}).Preload("BookingStatus").Preload("Details").Find(&bookings)
+	if result.Error != nil {
+		return []response.BookingSnapshotResponse{}
+	}
+
+	var response []response.BookingSnapshotResponse
+	for _, booking := range bookings {
+		response = append(response, booking.MapBookingToSnapshotResponse())
+	}
+
+	return response
+}
 
 func CalculateNightlyCost(amount float64, startTime time.Time, endTime time.Time) float64 {
 	// Ensure endTime is after startTime
@@ -200,6 +214,7 @@ func (t *bookingRepositoryImplementation) CheckIfEntitiesCanBeBooked(request *re
 		//****************************INSTANT BOOKING CHECK********************************
 		allowInstantBooking := t.DoesEntityAllowInstantBooking(entity.EntityID, entity.EntityType)
 
+		// allowInstantBooking = true
 		fmt.Print(allowInstantBooking)
 		if !allowInstantBooking {
 			// check if there is an inquiry for the entity

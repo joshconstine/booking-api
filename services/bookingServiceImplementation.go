@@ -81,3 +81,8 @@ func (t BookingServiceImplementation) Create(request *request.CreateBookingReque
 
 	return bookingId, nil
 }
+
+func (t BookingServiceImplementation) GetSnapshot() []response.BookingSnapshotResponse {
+	result := t.BookingRepository.GetSnapshot()
+	return result
+}

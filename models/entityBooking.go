@@ -33,3 +33,10 @@ func (e *EntityBooking) MapEntityBookingToResponse() response.EntityBookingRespo
 
 	return response
 }
+
+func (e *EntityBooking) MapEntityBookingToEntityInfoResponse() response.EntityInfoResponse {
+	return response.EntityInfoResponse{
+		EntityID:   e.EntityID,
+		EntityType: e.EntityType,
+	}
+}

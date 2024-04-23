@@ -4,14 +4,23 @@ import (
 	"booking-api/view/layout"
 
 	"booking-api/models"
+	"booking-api/data/response"
 )
 
-templ Index(user models.AuthenticatedUser) {
+templ Index(user models.AuthenticatedUser, Bookings []response.BookingSnapshotResponse) {
 	@layout.App(true) {
 		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
 			<h2 class="text-xl font-semibold mb-6 red-400">Welcomce to your main dashboard, {user.User.FirstName}</h2>
 			<div>
-			booking table
+			<span>snapshot of your bookings</span>
+				 
+				 <ul>
+				 for _, booking := range Bookings {
+					 <li>{booking.ID} - {booking.Status.Name}</li>
+				 }
+				 </ul>
+
+			
 			</div>
 		</div>
 	}
