@@ -3,24 +3,59 @@ package ui
 
 import (
     "booking-api/data/response"
+    "strconv"
     
 )
 
 templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse) {
 
-   <div id="chat_container" class="card w-96  bg-grey-400">
+   <div id="chat_container" class="card  bg-gray-200">
         
         <div class="card-header">
              <h5 class="card-title">Snapshot of your bookings</h5>
            
         </div>
-        <ul>
+<div class="overflow-x-auto">
+  <table class="table">
+    <!-- head -->
+    <thead>
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Dates</th>
+        <th>Rentals</th>
+        <th>Messages</th>
+        <th>Date recieved</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- row 1 -->
                 for _, booking := range Bookings {
-					 <li>{booking.ID} - {booking.Status.Name}</li>
-				 }
+      <tr>
+        <th>Joshua Constine</th>
+        <td>{booking.Status.Name}</td>
+        <td>{booking.StartDate.Format(`MM/DD`)}</td>
+        <td>
+            for _, entity := range booking.BookedEntities {
+                <span>{strconv.Itoa(int(entity.EntityID))}</span>
+                <span>{entity.EntityType}</span>
+
+            }
+        </td>
+        <td>
+            {booking.DateRecieved.Format(`MM/DD/YYYY`)}
+        </td>
+
+      </tr>
+	}
+   
+    </tbody>
+  </table>
+</div>
+
+
 				 
-        </ul>
-        
     </div>
 }
 
