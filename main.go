@@ -131,7 +131,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingRuleRepository := repositories.NewEntityBookingRuleRepositoryImplementation(database.Instance)
 	// entityBookingCostRepository := repositories.NewEntityBookingCostRepositoryImplementation(database.Instance)
 	// entityBookingCostAdjustmentRepository := repositories.NewEntityBookingCostAdjustmentRepositoryImplementation(database.Instance)
-
+	chatRepository := repositories.NewChatRepositoryImplementation(database.Instance)
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
 	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
@@ -159,6 +159,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingRuleService := services.NewEntityBookingRuleServiceImplementation(entityBookingRuleRepository)
 	// entityBookingCostService := services.NewEntityBookingCostServiceImplementation(entityBookingCostRepository)
 	// entityBookingCostAdjustmentService := services.NewEntityBookingCostAdjustmentServiceImplementation(entityBookingCostAdjustmentRepository)
+	chatService := services.NewChatServiceImplementation(chatRepository)
 
 	//Init controller
 	authController := controllers.NewAuthController(userService, sb.ClientInstance)
@@ -195,7 +196,9 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// 	bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController, entityBookingController, userRoleController, accountController, inquiryController, entityBookingDocumentController, entityBookingRuleController, entityBookingCostController, entityBookingCostAdjustmentController)
 	// router.StaticFS("/public", http.Dir("public"))
 
-	router := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController)
+	chatController := controllers.NewChatController(chatService, userService)
+
+	router := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController)
 
 	// ginRouter := router.InitRouter(routes)
 

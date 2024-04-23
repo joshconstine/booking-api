@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
 
@@ -37,4 +38,27 @@ func (t *ChatRepositoryImplementation) Create(chat *models.Chat) (response.ChatR
 	}
 
 	return chat.MapChatToResponse(), nil
+}
+
+func (t *ChatRepositoryImplementation) CreateChatMessage(chatMessageRequest *request.CreateChatMessageRequest) (response.ChatResponse, error) {
+	chatMessage := models.ChatMessage{
+		ChatID:  chatMessageRequest.ChatID,
+		Message: chatMessageRequest.Message,
+		UserID:  chatMessageRequest.UserID,
+	}
+
+	result := t.Db.Model(&models.ChatMessage{}).Create(&chatMessage)
+	if result.Error != nil {
+		return response.ChatResponse{}, result.Error
+	}
+
+	var newChat models.Chat
+
+	chat := t.Db.Model(&models.Chat{}).Preload("Messages").First(&newChat)
+
+	if chat.Error != nil {
+		return response.ChatResponse{}, chat.Error
+	}
+
+	return newChat.MapChatToResponse(), nil
 }
