@@ -9,18 +9,26 @@ import (
 
 templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse) {
 
-   <div id="chat_container" class="card  bg-gray-200">
+   <div id="chat_container" class="card  bg-gray-200 border-2 border-zinc-800 p-4 text-sm font-normal">
         
         <div class="card-header">
-             <h5 class="card-title">Snapshot of your bookings</h5>
            
         </div>
 <div class="overflow-x-auto">
-  <table class="table">
+  <table class="table table-sm">
     <!-- head -->
+   <tr>
+   <div  class="flex gap-4 text-sm items-center">
+
+   <span class="card-title">Snapshot of your bookings</span>
+     <div class="divider divider-horizontal"></div>
+<button class="btn btn-ghost"><i class="fa-solid fa-sliders"></i>Filter</button>
+
+    </div>
+     <div class="divider m-0 py-0"></div>
+   </tr>
     <thead>
       <tr>
-        <th></th>
         <th>Name</th>
         <th>Status</th>
         <th>Dates</th>
@@ -33,7 +41,7 @@ templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse) {
       <!-- row 1 -->
                 for _, booking := range Bookings {
       <tr>
-        <th>Joshua Constine</th>
+        <td>Joshua Constine</td>
         <td>{booking.Status.Name}</td>
         <td>{booking.StartDate.Format(`MM/DD`)}</td>
         <td>
