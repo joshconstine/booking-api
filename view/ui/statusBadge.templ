@@ -1,0 +1,30 @@
+package ui
+
+import (
+	"booking-api/data/response"
+    "booking-api/constants"
+	
+)
+
+func getClass(statusID uint) string {
+    switch statusID {
+        case constants.BOOKING_STATUS_DRAFTED_ID:
+            return "badge badge-neutral"
+        case constants.BOOKING_STATUS_CONFIRMED_ID:
+            return "badge badge-primary"
+        case constants.BOOKING_STATUS_CANCELLED_ID:
+            return "badge badge-error"
+        case constants.BOOKING_STATUS_COMPLETED_ID:
+            return "badge badge-success"
+        default:
+            return "badge"
+
+    }
+}
+
+templ StatusBadge(bookingStatus response.BookingStatusResponse) {
+	<div class={getClass(bookingStatus.ID)}>
+		<span>{bookingStatus.Name}</span>
+	</div>
+}
+

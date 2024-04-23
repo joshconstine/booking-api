@@ -10,8 +10,18 @@ import (
 
 templ Index(user models.AuthenticatedUser, Bookings []response.BookingSnapshotResponse) {
 	@layout.App(true) {
-		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
+		<div class="w-full max-w-screen-xl mx-auto  py-12 px-4 flex flex-col gap-4">
+		<div>
 			<h2 class="text-xl font-semibold mb-6 red-400">Welcomce to your main dashboard, {user.User.FirstName}</h2>
+		</div>
+			<div class="flex item-center gap-2">
+			<label class="input input-bordered flex items-center gap-2 w-72 input-sm  border-2 border-zinc-500">
+
+			<input class="grow" type="text" placeholder="Search by name or booking ID" />
+			<i class="fa-solid fa-search"></i>
+			</label>
+			<button class="btn btn-sm border-2 border-zinc-500 "><i class="fa-solid fa-plus "></i>Add booking</button>
+			</div>
 			<div>
 			@ui.BookingSnapshotWidget(Bookings)
 				 
