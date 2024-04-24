@@ -132,6 +132,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingCostRepository := repositories.NewEntityBookingCostRepositoryImplementation(database.Instance)
 	// entityBookingCostAdjustmentRepository := repositories.NewEntityBookingCostAdjustmentRepositoryImplementation(database.Instance)
 	chatRepository := repositories.NewChatRepositoryImplementation(database.Instance)
+	accountRepository := repositories.NewAccountRepositoryImplementation(database.Instance)
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, validate)
 	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
@@ -160,6 +161,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingCostService := services.NewEntityBookingCostServiceImplementation(entityBookingCostRepository)
 	// entityBookingCostAdjustmentService := services.NewEntityBookingCostAdjustmentServiceImplementation(entityBookingCostAdjustmentRepository)
 	chatService := services.NewChatServiceImplementation(chatRepository)
+	accountService := services.NewAccountServiceImplementation(accountRepository)
 
 	//Init controller
 	authController := controllers.NewAuthController(userService, sb.ClientInstance)
@@ -190,7 +192,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingCostController := controllers.NewEntityBookingCostController(entityBookingCostService)
 	// entityBookingCostAdjustmentController := controllers.NewEntityBookingCostAdjustmentController(entityBookingCostAdjustmentService)
 	userSettingsController := controllers.NewUserSettingsController(userService)
-	adminController := controllers.NewAdminController(userService, bookingService)
+	adminController := controllers.NewAdminController(userService, bookingService, accountService)
 	//Router
 	// router := router.NewRouter(boatController, bookingController, userController,
 	// 	bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController, entityBookingController, userRoleController, accountController, inquiryController, entityBookingDocumentController, entityBookingRuleController, entityBookingCostController, entityBookingCostAdjustmentController)

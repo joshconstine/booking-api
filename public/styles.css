@@ -2173,6 +2173,14 @@ input.tab:checked + .tab-content,
   .btn-primary {
     --btn-color: var(--fallback-p);
   }
+
+  .btn-secondary {
+    --btn-color: var(--fallback-s);
+  }
+
+  .btn-warning {
+    --btn-color: var(--fallback-wa);
+  }
 }
 
 @supports (color: color-mix(in oklab, black, black)) {
@@ -2228,6 +2236,26 @@ input.tab:checked + .tab-content,
   .btn-primary {
     --btn-color: var(--p);
   }
+
+  .btn-secondary {
+    --btn-color: var(--s);
+  }
+
+  .btn-warning {
+    --btn-color: var(--wa);
+  }
+}
+
+.btn-secondary {
+  --tw-text-opacity: 1;
+  color: var(--fallback-sc,oklch(var(--sc)/var(--tw-text-opacity)));
+  outline-color: var(--fallback-s,oklch(var(--s)/1));
+}
+
+.btn-warning {
+  --tw-text-opacity: 1;
+  color: var(--fallback-wac,oklch(var(--wac)/var(--tw-text-opacity)));
+  outline-color: var(--fallback-wa,oklch(var(--wa)/1));
 }
 
 .btn.glass {
@@ -3755,6 +3783,14 @@ details.collapse summary::-webkit-details-marker {
   border-top-width: 4px;
 }
 
+.btn-xs {
+  height: 1.5rem;
+  min-height: 1.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  font-size: 0.75rem;
+}
+
 .btn-sm {
   height: 2rem;
   min-height: 2rem;
@@ -3784,6 +3820,13 @@ details.collapse summary::-webkit-details-marker {
 .btn-square:where(.btn-lg) {
   height: 4rem;
   width: 4rem;
+  padding: 0px;
+}
+
+.btn-circle:where(.btn-xs) {
+  height: 1.5rem;
+  width: 1.5rem;
+  border-radius: 9999px;
   padding: 0px;
 }
 
@@ -4526,6 +4569,10 @@ details.collapse summary::-webkit-details-marker {
   white-space: nowrap;
 }
 
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
 .rounded {
   border-radius: 0.25rem;
 }
@@ -4629,6 +4676,11 @@ details.collapse summary::-webkit-details-marker {
 .py-0 {
   padding-top: 0px;
   padding-bottom: 0px;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
 .py-12 {
