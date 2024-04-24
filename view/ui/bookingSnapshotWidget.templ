@@ -56,14 +56,16 @@ templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse) {
     </thead>
     <tbody>
       <!-- row 1 -->
-                for _, booking := range Bookings[:10] {
+                for _, booking := range Bookings {
       <tr class="hover">
         <td>
 				  <a href={templ.SafeURL(GetPath(booking.ID))}>
             <button type="btn btn-ghost" >
             <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-           Joshua Constine
+          <span>
+              {booking.Name}
+          </span>
         
         </a>
         </td>

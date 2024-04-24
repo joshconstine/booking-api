@@ -118,9 +118,11 @@ func (b *Booking) MapBookingToInformationResponse() response.BookingInformationR
 func (b *Booking) MapBookingToSnapshotResponse() response.BookingSnapshotResponse {
 	var resp response.EntityInfoResponse
 	response := response.BookingSnapshotResponse{
-		ID:           b.ID,
-		StartDate:    b.Details.BookingStartDate,
-		DateRecieved: b.CreatedAt,
+		ID:             b.ID,
+		StartDate:      b.Details.BookingStartDate,
+		DateRecieved:   b.CreatedAt,
+		UserID:         b.UserID,
+		BookedEntities: []response.EntityInfoResponse{},
 	}
 
 	response.Status = b.BookingStatus.MapBookingStatusToResponse()
