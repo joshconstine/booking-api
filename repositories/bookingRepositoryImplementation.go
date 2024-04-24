@@ -68,10 +68,14 @@ func calculatePaymentDueDate(bookingStartDate time.Time) time.Time {
 	}
 	return dueDate
 }
+
+// TODO: Something can be improvewd here,
 func (t *bookingRepositoryImplementation) GetSnapshot() []response.BookingSnapshotResponse {
+	limit := 10
 	var bookings []models.Booking
 	var updatedResponse []response.BookingSnapshotResponse //updated response with user name and entity name
-	result := t.Db.Model(&models.Booking{}).Preload("BookingStatus").Preload("Details").Find(&bookings)
+	var entityResponse response.EntityInfoResponse
+	result := t.Db.Model(&models.Booking{}).Preload("BookingStatus").Preload("Details").Preload("Entities").Limit(limit).Find(&bookings)
 
 	if result.Error != nil {
 		return []response.BookingSnapshotResponse{}
@@ -81,8 +85,6 @@ func (t *bookingRepositoryImplementation) GetSnapshot() []response.BookingSnapsh
 	for _, booking := range bookings {
 		response = append(response, booking.MapBookingToSnapshotResponse())
 	}
-
-	var POCName string
 
 	var user models.User
 
@@ -96,19 +98,27 @@ func (t *bookingRepositoryImplementation) GetSnapshot() []response.BookingSnapsh
 		snapshot.Name = user.FirstName + " " + user.LastName
 		for _, entity := range snapshot.BookedEntities {
 			if entity.EntityType == constants.BOAT_ENTITY {
-				result := t.Db.Model(&models.Boat{}).Where("id = ?", entity.EntityID).Select("Name").First(&POCName)
+				result := t.Db.Model(&models.Boat{}).Where("id = ?", entity.EntityID).Select("Name").First(&entityResponse)
 				if result.Error != nil {
 					fmt.Println(result.Error.Error())
 					// return []response.BookingSnapshotResponse{}
 				}
-				entity.Name = POCName
+				entityResponse.EntityID = entity.EntityID
+				entityResponse.EntityType = entity.EntityType
+
+				snapshot.BookedEntities = append(snapshot.BookedEntities, entityResponse)
+
 			} else if entity.EntityType == constants.RENTAL_ENTITY {
-				result := t.Db.Model(&models.Rental{}).Where("id = ?", entity.EntityID).Select("Name").First(&POCName)
+				result := t.Db.Model(&models.Rental{}).Where("id = ?", entity.EntityID).Select("Name").First(&entityResponse)
 				if result.Error != nil {
 					fmt.Println(result.Error.Error())
 					// return []response.BookingSnapshotResponse{}
 				}
-				entity.Name = POCName
+
+				entityResponse.EntityID = entity.EntityID
+				entityResponse.EntityType = entity.EntityType
+
+				snapshot.BookedEntities = append(snapshot.BookedEntities, entityResponse)
 
 			}
 

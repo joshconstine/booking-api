@@ -3,8 +3,6 @@ package ui
 
 import (
     "booking-api/data/response"
-    "strconv"
-    
 )
 func GetPath(id string) string {
 	path := "/bookings/"
@@ -75,8 +73,8 @@ templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse) {
         <td>{booking.StartDate.Format("01/02")}</td>
         <td>
             for _, entity := range booking.BookedEntities {
-                <span>{strconv.Itoa(int(entity.EntityID))}</span>
-                <span>{entity.EntityType}</span>
+                // <span>{strconv.Itoa(int(entity.EntityID))}</span>
+                <span>{entity.Name}</span>
 
             }
         </td>
