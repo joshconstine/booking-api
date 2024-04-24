@@ -20,11 +20,17 @@ func (usc *AdminController) HandleAdminIndex(w http.ResponseWriter, r *http.Requ
 	user := GetAuthenticatedUser(r)
 	bookings := usc.bookingService.GetSnapshot()
 
-	inquiries, err := usc.accountService.GetInquiriesSnapshot(1)
+	accountId := uint(1)
+	//TODO use account middle ware to protect this and get the id
+	inquiries, err := usc.accountService.GetInquiriesSnapshot(accountId)
+	if err != nil {
+		return err
+	}
+	messages, err := usc.accountService.GetMessagesSnapshot(accountId)
 	if err != nil {
 		return err
 	}
 
 	// user.User = usc.userService.FindByUserID(user.User.UserID)
-	return admin.Index(user, bookings, inquiries).Render(r.Context(), w)
+	return admin.Index(user, bookings, inquiries, messages).Render(r.Context(), w)
 }

@@ -79,3 +79,17 @@ func (repository *AccountRepositoryImplementation) GetInquiriesSnapshot(accountI
 
 	return snap, nil
 }
+func (repository *AccountRepositoryImplementation) GetMessagesSnapshot(accountID uint) (snap response.AccountMessagesSnapshot, err error) {
+
+	snap.Notifications = 5
+	snap.Chats = []response.ChatSnapshotResponse{
+		{
+			ChatID:  1,
+			Message: "Hello, If I have a wedding here, will the bar be open?",
+			Name:    "Jane Do",
+			Sent:    time.Now().Format("2006-01-02 15:04:05"),
+		},
+	}
+
+	return snap, nil
+}

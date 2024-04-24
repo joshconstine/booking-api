@@ -18,3 +18,7 @@ func NewAccountServiceImplementation(accountRepository repositories.AccountRepos
 func (t AccountServiceImplementation) GetInquiriesSnapshot(accountID uint) (response.AccountInquiriesSnapshot, error) {
 	return t.AccountRepository.GetInquiriesSnapshot(accountID)
 }
+
+func (t AccountServiceImplementation) GetMessagesSnapshot(accountID uint) (response.AccountMessagesSnapshot, error) {
+	return t.AccountRepository.GetMessagesSnapshot(accountID)
+}

@@ -18,7 +18,7 @@ func GetFormattedDate() string {
 	return today.Format("January 02, 2006")
 }
 
-templ Index(user models.AuthenticatedUser, Bookings []response.BookingSnapshotResponse, InquiryInfo response.AccountInquiriesSnapshot) {
+templ Index(user models.AuthenticatedUser, Bookings []response.BookingSnapshotResponse, InquiryInfo response.AccountInquiriesSnapshot, messages response.AccountMessagesSnapshot) {
 	@layout.App(true) {
 		<div class="w-full max-w-screen-2xl mx-auto  p-4 flex flex-col gap-4">
 			<div class="flex justify-between w-full">
@@ -59,7 +59,7 @@ templ Index(user models.AuthenticatedUser, Bookings []response.BookingSnapshotRe
 					</div>
 					<div class="flex gap-2 flex-col lg:flex-row">
 						@ui.TasksWidget()
-						@ui.MessagesWidget()
+						@ui.MessagesWidget(messages)
 					</div>
 					<div>
 						@ui.PaymentWidget()

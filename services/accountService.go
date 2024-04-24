@@ -6,4 +6,5 @@ import (
 
 type AccountService interface {
 	GetInquiriesSnapshot(accountID uint) (response.AccountInquiriesSnapshot, error)
+	GetMessagesSnapshot(accountID uint) (response.AccountMessagesSnapshot, error)
 }

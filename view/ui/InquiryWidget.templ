@@ -39,21 +39,7 @@ templ InquirySnapshot(Info response.InquirySnapshotResponse) {
   </div>
 }
 
-templ ChatSnapshot(Info response.ChatSnapshotResponse) {
-  <div class="flex flex-col gap-2">
-    <div class="flex gap-4 items-center text-lg">
-      <span>{Info.Name}</span>
-      <button class="btn btn-ghost">
-        <i class="fa-solid fa-paper-plane"></i>
-        <span>Respond</span>
-      </button>
-    </div>
-    <div class="flex gap-4 items-center">
-      <span>{Info.Message}</span>
-      <span class="text-xs">{Info.Sent}</span>
-    </div>
-  </div>
-}
+
 templ PermissionRequestSnapshot(Info response.EntityBookingPermissionResponse) {
   <div class=" flex w-full justify-between items-center">
     <span class="whitespace-nowrap text-lg">{Info.Entity.Name}</span>
