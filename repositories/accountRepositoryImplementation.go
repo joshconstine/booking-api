@@ -1,8 +1,11 @@
 package repositories
 
 import (
+	"booking-api/constants"
 	"booking-api/data/response"
 	"booking-api/models"
+
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -38,4 +41,38 @@ func (repository *AccountRepositoryImplementation) Update(account models.Account
 	result := repository.Db.Model(&models.Account{}).Save(&account)
 
 	return result.Error
+}
+
+func (repository *AccountRepositoryImplementation) GetInquiriesSnapshot(accountID uint) (snap response.AccountInquiriesSnapshot, err error) {
+
+	snap.Notifications = 5
+	snap.Inquiries = []response.InquirySnapshotResponse{
+		{
+			ChatID:  1,
+			Message: "Hello",
+			Name:    "John Doe",
+			PermissionRequests: []response.EntityBookingPermissionResponse{
+				{
+					ID:        1,
+					AccountID: 1,
+
+					UserID: "1",
+					Entity: response.EntityInfoResponse{
+
+						EntityID:   1,
+						EntityType: "rental",
+						Name:       "The Morey",
+					},
+					InquiryStatus: response.InquiryStatusResponse{
+						ID:   constants.INQUIRY_STATUS_NEW_ID,
+						Name: constants.INQUIRY_STATUS_NEW_NAME,
+					},
+					StartTime: time.Now(),
+					EndTime:   time.Now(),
+				},
+			},
+		},
+	}
+
+	return snap, nil
 }

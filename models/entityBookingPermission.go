@@ -25,11 +25,13 @@ func (entityBookingPermission *EntityBookingPermission) TableName() string {
 
 func (entityBookingPermission *EntityBookingPermission) MapEntityBookingPermissionToResponse() response.EntityBookingPermissionResponse {
 	return response.EntityBookingPermissionResponse{
-		ID:            entityBookingPermission.ID,
-		UserID:        entityBookingPermission.UserID,
-		AccountID:     entityBookingPermission.AccountID,
-		EntityID:      entityBookingPermission.EntityID,
-		EntityType:    entityBookingPermission.EntityType,
+		ID:        entityBookingPermission.ID,
+		UserID:    entityBookingPermission.UserID,
+		AccountID: entityBookingPermission.AccountID,
+		Entity: response.EntityInfoResponse{
+			EntityID:   entityBookingPermission.EntityID,
+			EntityType: entityBookingPermission.EntityType,
+		},
 		StartTime:     entityBookingPermission.StartTime,
 		EndTime:       entityBookingPermission.EndTime,
 		InquiryStatus: entityBookingPermission.InquiryStatus.MapInquiryStatusToResponse(),

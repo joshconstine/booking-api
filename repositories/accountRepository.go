@@ -9,4 +9,5 @@ type AccountRepository interface {
 	Create(account models.Account) error
 	Update(account models.Account) error
 	GetByID(id uint) (response.AccountResponse, error)
+	GetInquiriesSnapshot(accountID uint) (response.AccountInquiriesSnapshot, error)
 }
