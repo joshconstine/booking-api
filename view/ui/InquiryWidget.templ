@@ -18,7 +18,9 @@ templ InquiryWidget(inquiryInfo response.AccountInquiriesSnapshot) {
         </div>
      <div class="divider m-0 py-0"></div>
         <div class="">
-          list here
+          for _, inquiry := range inquiryInfo.Inquiries {
+            @InquirySnapshot(inquiry)
+          }
         </div>
 
 
@@ -26,3 +28,22 @@ templ InquiryWidget(inquiryInfo response.AccountInquiriesSnapshot) {
     </div>
 }
 
+templ InquirySnapshot(Info response.InquirySnapshotResponse) {
+  <div>
+    @ChatSnapshot(Info.Chat)
+    for _, permission := range Info.PermissionRequests {
+      @PermissionRequestSnapshot(permission)
+    }
+  </div>
+}
+
+templ ChatSnapshot(Info response.ChatSnapshotResponse) {
+  <div>
+    <span>{Info.Message}</span>
+  </div>
+}
+templ PermissionRequestSnapshot(Info response.EntityBookingPermissionResponse) {
+  <div>
+    <span>{Info.Entity.Name}</span>
+  </div>
+}

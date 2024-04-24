@@ -48,9 +48,12 @@ func (repository *AccountRepositoryImplementation) GetInquiriesSnapshot(accountI
 	snap.Notifications = 5
 	snap.Inquiries = []response.InquirySnapshotResponse{
 		{
-			ChatID:  1,
-			Message: "Hello",
-			Name:    "John Doe",
+			Chat: response.ChatSnapshotResponse{
+				ChatID:  1,
+				Message: "Hello, does the Morey have enough space for 10 people?",
+				Name:    "John Doe",
+				Sent:    time.Now().Format("2006-01-02 15:04:05"),
+			},
 			PermissionRequests: []response.EntityBookingPermissionResponse{
 				{
 					ID:        1,
