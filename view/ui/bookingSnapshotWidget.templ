@@ -18,7 +18,7 @@ templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse) {
            
         </div>
 <div class="overflow-x-auto">
-  <table class="table table-sm">
+  <table class="table table-md">
     <!-- head -->
    <tr>
    <div  class="flex gap-4 text-sm items-center">
@@ -57,15 +57,17 @@ templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse) {
                 for _, booking := range Bookings {
       <tr class="hover">
         <td>
-				  <a href={templ.SafeURL(GetPath(booking.ID))}>
-            <button type="btn btn-ghost" >
-            <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-          <span>
-              {booking.Name}
-          </span>
-        
-        </a>
+            <a href={templ.SafeURL(GetPath(booking.ID))} class="flex flex-col gap-0">
+              // <button type="btn btn-ghost" >
+              // <i class="fa-solid fa-magnifying-glass"></i>
+              // </button>
+            <span>
+                {booking.Name}
+            </span>
+            <span class="unerline cursor-pointer text-xs text-gray-500">
+              #{booking.ID}
+            </span>
+          </a>
         </td>
         <td>
         @StatusBadge(booking.Status)

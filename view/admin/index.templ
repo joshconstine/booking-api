@@ -58,8 +58,8 @@ templ Index(user models.AuthenticatedUser, Bookings []response.BookingSnapshotRe
 						@ui.InquiryWidget([]response.EntityBookingPermissionResponse{})
 					</div>
 					<div class="flex gap-2 flex-col lg:flex-row">
-						@ui.BookingArrivalWidget(Bookings)
-						@ui.BookingArrivalWidget(Bookings)
+						@ui.TasksWidget()
+						@ui.MessagesWidget()
 					</div>
 				</div>
 			</div>
