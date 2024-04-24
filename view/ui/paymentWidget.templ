@@ -2,13 +2,13 @@
 package ui
 
 templ PaymentWidget() {
-   <div id="payment_widget" class="card bg-gray-200 border-2 border-zinc-500 p-4 text-xs font-normal w-full">
-    <div class="card-header flex justify-between items-center">
-      <div class="flex gap-1 text-sm items-center">
+   <div id="payment_widget" class="card bg-gray-200 border-2 border-zinc-500 p-4 text-xs font-normal">
+    <div class="card-header flex  items-center">
+      <div class="flex gap-1 text-sm items-center w-1/2">
           <span class="card-title">April Payments</span>
-          <div class="divider divider-horizontal"></div>
+          <div class="divider divider-horizontal mx-0"></div>
           <span class="card-title">Paid(12)</span>
-          <div class="divider divider-horizontal"></div>
+          <div class="divider divider-horizontal mx-0"></div>
           <div class="dropdown dropdown-hover">
               <div tabindex="0" role="button" class="btn btn-ghost">
                   <i class="fa-solid fa-sliders"></i>
@@ -21,19 +21,17 @@ templ PaymentWidget() {
           </div>
       </div>
 
-      <div class="divider divider-horizontal"></div>
+      <div class="divider divider-horizontal mx-0"></div>
 
-      <div>
-          <div class="card-header flex justify-between items-center">
-              <span class="card-title">Gross Payments</span>
-              <button class="btn btn-sm border-2 border-zinc-500"><i class="fa-solid fa-plus"></i>Add goal</button>
-          </div>
-      </div>
+        <div class="card-header flex justify-between items-center w-1/2">
+            <span class="card-title">Gross Payments</span>
+            <button class="btn btn-sm border-2 border-zinc-500"><i class="fa-solid fa-plus"></i>Add goal</button>
+        </div>
     </div>
     <div class="divider m-0 py-0"></div>
 
     <div class="flex">
-        <table class="table table-xs">
+        <table class="table table-xs min-w-1/2">
             <thead>
                 <tr>
                     <th>Date</th>
@@ -53,10 +51,29 @@ templ PaymentWidget() {
             </tbody>
         </table>
 
-        <div class="divider divider-horizontal"></div>
+        <div class="divider divider-horizontal mx-0"></div>
 
-        <div>
-            More info here
+        <div >
+           <div class="stats stats-vertical lg:stats-horizontal shadow">
+            <div class="stat ">
+                <div class="stat-title">Downloads</div>
+                <div class="stat-value text-[16px]">31K</div>
+                <div class="stat-desc">Jan 1st - Feb 1st</div>
+            </div>
+            
+            <div class="stat ">
+                <div class="stat-title">New Users</div>
+                <div class="stat-value text-[16px]">4,200</div>
+                <div class="stat-desc">↗︎ 400 (22%)</div>
+            </div>
+            
+            <div class="stat ">
+                <div class="stat-title">New Registers</div>
+                <div class="stat-value text-[16px]">1,200</div>
+                <div class="stat-desc">↘︎ 90 (14%)</div>
+            </div>
+            
+            </div>
         </div>
     </div>
 </div>
