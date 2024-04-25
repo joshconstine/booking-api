@@ -53,26 +53,50 @@ templ PaymentWidget() {
 
         <div class="divider divider-horizontal mx-0"></div>
 
-        <div >
+        <div class="flex flex-col gap-2 items-center" >
            <div class="stats stats-vertical lg:stats-horizontal shadow">
-            <div class="stat ">
-                <div class="stat-title">Downloads</div>
-                <div class="stat-value text-[16px]">31K</div>
-                <div class="stat-desc">Jan 1st - Feb 1st</div>
+                <div class="stat">
+                    <div class="w-full flex justify-end">
+                            <div class="dropdown dropdown-hover">
+                                <div tabindex="1" role="button" class="">
+                                    <i class="fa-regular fa-circle-question"></i>
+                                </div>
+                                <ul tabindex="1" class="dropdown-content z-[2] menu p-2 shadow bg-base-100 rounded-box w-52">
+                                    <span>
+                                        Includes all payments made during April
+                                    </span>
+                                    <span>
+                                        -Including tips, late fees, taxes, and any discounts that were applied
+                                    </span>
+                                    <span>
+                                        -Does not include deduction of business expenses
+                                    </span>
+                                </ul>
+                            </div>
+                    </div>
+                    <div class="stat-title">April</div>
+                    <div class="stat-value text-[16px]">$12,342</div>
+                    <div class="stat-asc text-xs">22% over last year</div>
+                </div>
+                
+                <div class="stat ">
+                    <div class="stat-title">Outstanding</div>
+                    <div class="stat-value text-[16px]">$4,200</div>
+                    // <div class="stat-desc">↗</div>
+                </div>
+                
+                <div class="stat ">
+                    <div class="stat-title">2024 Projected</div>
+                    <div class="stat-value text-[16px]">123,200</div>
+                    // <div class="stat-desc">↘︎ 90 (14%)</div>
+                </div>
             </div>
-            
-            <div class="stat ">
-                <div class="stat-title">New Users</div>
-                <div class="stat-value text-[16px]">4,200</div>
-                <div class="stat-desc">↗︎ 400 (22%)</div>
-            </div>
-            
-            <div class="stat ">
-                <div class="stat-title">New Registers</div>
-                <div class="stat-value text-[16px]">1,200</div>
-                <div class="stat-desc">↘︎ 90 (14%)</div>
-            </div>
-            
+            <div class="flex gap-4 items-center text-md">
+                <span> You're 5433 away from reaching your 2024 gross revenue goal!</span>
+
+                <div>
+                    <div class="radial-progress text-success border-success" style="--value:60;" role="progressbar">60%</div>
+                </div>
             </div>
         </div>
     </div>
