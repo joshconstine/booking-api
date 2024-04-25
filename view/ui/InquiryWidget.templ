@@ -4,17 +4,15 @@ package ui
 
 import (
     "booking-api/data/response"
-    
-    "strconv"
 )
 
 templ InquiryWidget(inquiryInfo response.AccountInquiriesSnapshot) {
 
    <div id="arrival_widget" class="card  bg-gray-200 border-2 border-zinc-500 p-4 text-xs font-normal min-w-72">
         
-        <div class="card-header">
+        <div class="card-header flex gap-4 items-center">
           <span class=" card-title">Inquiries</span>
-          <span class="card-subtitle">{strconv.Itoa(int(inquiryInfo.Notifications))}</span>
+          @Notification(inquiryInfo.Notifications)
         </div>
      <div class="divider m-0 py-0"></div>
         <div class="">
