@@ -29,8 +29,23 @@ func (usc *AdminController) HandleAdminIndex(w http.ResponseWriter, r *http.Requ
 		return err
 	}
 
+	uniqueAccountIDs := []uint{}
+
 	for _, role := range userAccountRoles {
-		accinquiries, err := usc.accountService.GetInquiriesSnapshot(role.AccountID)
+		unique := true
+		for _, id := range uniqueAccountIDs {
+			if id == role.AccountID {
+				unique = false
+				break
+			}
+		}
+		if unique {
+			uniqueAccountIDs = append(uniqueAccountIDs, role.AccountID)
+		}
+	}
+
+	for _, accountID := range uniqueAccountIDs {
+		accinquiries, err := usc.accountService.GetInquiriesSnapshot(accountID)
 		if err != nil {
 			return err
 		}
@@ -38,7 +53,7 @@ func (usc *AdminController) HandleAdminIndex(w http.ResponseWriter, r *http.Requ
 		inquiries.Inquiries = append(inquiries.Inquiries, accinquiries.Inquiries...)
 		accinquiries.Notifications = inquiries.Notifications + accinquiries.Notifications
 
-		accmessages, err := usc.accountService.GetMessagesSnapshot(role.AccountID)
+		accmessages, err := usc.accountService.GetMessagesSnapshot(accountID)
 		if err != nil {
 			return err
 		}

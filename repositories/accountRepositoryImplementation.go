@@ -76,15 +76,41 @@ func (repository *AccountRepositoryImplementation) GetInquiriesSnapshot(accountI
 	return snap, nil
 }
 func (repository *AccountRepositoryImplementation) GetMessagesSnapshot(accountID uint) (snap response.AccountMessagesSnapshot, err error) {
+	var chats []models.Chat
+	var notifications int64
 
-	snap.Notifications = 5
-	snap.Chats = []response.ChatSnapshotResponse{
-		{
-			ChatID:  1,
-			Message: "Hello, If I have a wedding here, will the bar be open?",
-			Name:    "Jane Do",
-			Sent:    time.Now().Format("2006-01-02 15:04:05"),
-		},
+	// result := repository.Db.Model(&models.Chat{}).Where("account_id = ?", accountID).Order("created_at desc").Limit(5).Find(&chats)
+	result := repository.Db.Model(&models.Chat{}).
+		// Joins("JOIN users ON users.id = chats.user_id").
+		Where("account_id = ?", accountID).
+		Order("chats.created_at DESC").
+		Limit(1).
+		Preload("Messages").
+		Limit(3).
+		Find(&chats)
+
+	if result.Error != nil {
+		return snap, result.Error
+	}
+
+	result = repository.Db.Model(&models.Chat{}).Where("account_id = ?", accountID).Preload("Messages").Count(&notifications)
+
+	if result.Error != nil {
+		return snap, result.Error
+	}
+
+	snap.Notifications = uint(notifications)
+
+	var chatSnap response.ChatSnapshotResponse
+
+	for _, chat := range chats {
+		chatSnap.ChatID = chat.ID
+		if len(chat.Messages) > 0 {
+			chatSnap.Message = chat.Messages[0].Message
+		}
+		// chatSnap.Name =
+		snap.Chats = append(snap.Chats, chatSnap)
+		chatSnap = response.ChatSnapshotResponse{}
 	}
 
 	return snap, nil

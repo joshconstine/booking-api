@@ -219,11 +219,31 @@ func SeedUsers(db *gorm.DB) {
 func SeedChat(db *gorm.DB) {
 	// create chat
 	accountID := 9
-	userID := constants.CURRENT_USER_ID
+
+	//get 10 user ids from db
+
+	var userIds []string
+
+	result := db.Model(&models.User{}).Limit(10).Pluck("id", &userIds)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+	}
+
+	userID := userIds[gofakeit.Number(0, len(userIds)-1)]
 	chatRepository := repositories.NewChatRepositoryImplementation(db)
 	chatRepository.Create(&models.Chat{
 		AccountID: uint(accountID),
 		UserID:    userID,
+		Messages: []models.ChatMessage{
+			{
+				Message: gofakeit.Sentence(10),
+				UserID:  userID,
+			},
+			{
+				Message: gofakeit.Sentence(10),
+				UserID:  userID,
+			},
+		},
 	})
 }
 
@@ -305,10 +325,10 @@ func main() {
 	// SeedUsers(database.Instance)
 	// SeedBookingUI(database.Instance)
 	// SeedBoooking(database.Instance)
-	// SeedChat(database.Instance)
+	SeedChat(database.Instance)
 	// SeedMultipleBookings(database.Instance, 10)
-	GenerateInquiry(database.Instance)
-	GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 9)
+	// GenerateInquiry(database.Instance)
+	// GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 9)
 
 	// SeedBoookingWithConflicts(database.Instance)
 	log.Println("Database seeding Completed!")
