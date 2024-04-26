@@ -13,7 +13,7 @@ import (
 )
 
 func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController, userSettingsController *controllers.UserSettingsController,
-	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController) *chi.Mux {
+	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController, entityBookingPermissionController *controllers.EntityBookingPermissionController) *chi.Mux {
 
 	router := chi.NewMux()
 	// router.Use(middlewares.WithLogger)
@@ -77,6 +77,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		auth.Get("/admin", controllers.Make(adminController.HandleAdminIndex))
 		router.Post("/chat/message", controllers.Make(chatController.HandleChatMessageCreate))
 		router.Delete("/chat/message", controllers.Make(chatController.HandleChatMessageDelete))
+		router.Put("/permission/{entityBookingPermissionID}", controllers.Make(entityBookingPermissionController.Update))
 	})
 
 	return router

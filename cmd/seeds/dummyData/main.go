@@ -19,13 +19,25 @@ import (
 )
 
 type FakeEntity struct {
-	Entity   string
-	EntityID uint
+	EntityType string
+	EntityID   uint
 }
 
 var entities = []string{
 	constants.BOAT_ENTITY,
 	constants.RENTAL_ENTITY,
+}
+
+func FindRandomUserIDfromDB(db *gorm.DB) string {
+	var userIds []string
+
+	result := db.Model(&models.User{}).Limit(10).Pluck("id", &userIds)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+	}
+
+	userID := userIds[gofakeit.Number(0, len(userIds)-1)]
+	return userID
 }
 
 func SelectRandomIndexFromSlice(slice []uint) uint {
@@ -53,7 +65,7 @@ func GetRandomIDForEntity(entity string, db *gorm.DB) uint {
 func GetRandomEntity(db *gorm.DB) FakeEntity {
 	entityType := gofakeit.RandomString(entities)
 	entityID := GetRandomIDForEntity(entityType, db)
-	return FakeEntity{Entity: entityType, EntityID: entityID}
+	return FakeEntity{EntityType: entityType, EntityID: entityID}
 }
 
 func GenerateRandomAmmountOfEntityBookings(db *gorm.DB) []request.BookEntityRequest {
@@ -76,7 +88,7 @@ func GenerateRandomAmmountOfEntityBookings(db *gorm.DB) []request.BookEntityRequ
 
 		entityBooking = request.BookEntityRequest{
 			EntityID:   randomEntity.EntityID,
-			EntityType: randomEntity.Entity,
+			EntityType: randomEntity.EntityType,
 			StartTime:  rangeForEntityBookingStart,
 			EndTime:    rangeForEntityBookingEnd,
 		}
@@ -109,13 +121,13 @@ func GenerateRandomAmmountOfEntityBookingsWithConflicts(db *gorm.DB) []request.B
 	for i := 0; i < gofakeit.Number(1, 5); i++ {
 		randomEntity = GetRandomEntity(db)
 
-		startDateOfEntityBookings = GetConflictingStartDateForEntity(randomEntity.EntityID, randomEntity.Entity, db)
+		startDateOfEntityBookings = GetConflictingStartDateForEntity(randomEntity.EntityID, randomEntity.EntityType, db)
 
 		rangeForEntityBookingStart = gofakeit.DateRange(startDateOfEntityBookings, startDateOfEntityBookings.AddDate(0, 0, 2))
 		rangeForEntityBookingEnd = gofakeit.DateRange(rangeForEntityBookingStart.AddDate(0, 0, 3), rangeForEntityBookingStart.AddDate(0, 0, 18))
 		entityBooking = request.BookEntityRequest{
 			EntityID:   randomEntity.EntityID,
-			EntityType: randomEntity.Entity,
+			EntityType: randomEntity.EntityType,
 			StartTime:  rangeForEntityBookingStart,
 			EndTime:    rangeForEntityBookingEnd,
 		}
@@ -221,15 +233,8 @@ func SeedChat(db *gorm.DB) {
 	accountID := 9
 
 	//get 10 user ids from db
+	userID := FindRandomUserIDfromDB(db)
 
-	var userIds []string
-
-	result := db.Model(&models.User{}).Limit(10).Pluck("id", &userIds)
-	if result.Error != nil {
-		fmt.Println(result.Error)
-	}
-
-	userID := userIds[gofakeit.Number(0, len(userIds)-1)]
 	chatRepository := repositories.NewChatRepositoryImplementation(db)
 	chatRepository.Create(&models.Chat{
 		AccountID: uint(accountID),
@@ -266,17 +271,18 @@ func InsertNewUser(db *gorm.DB) (request.CreateUserRequest, error) {
 	return userToBook, nil
 }
 
-func GenerateInquiry(db *gorm.DB) {
+func GenerateBookingPermission(db *gorm.DB) {
 	// create inquiry
-	boatRepository := repositories.NewBoatRepositoryImplementation(db)
-	boats := boatRepository.FindAllIDs()
-	boatID := uint(boats[SelectRandomIndexFromSlice(boats)])
+
+	userID := FindRandomUserIDfromDB(db)
+
+	randomEntity := GetRandomEntity(db)
 
 	var permRequest = models.EntityBookingPermission{
 		AccountID:  9,
-		EntityID:   boatID,
-		EntityType: constants.BOAT_ENTITY,
-		UserID:     constants.CURRENT_USER_ID,
+		EntityID:   randomEntity.EntityID,
+		EntityType: randomEntity.EntityType,
+		UserID:     userID,
 		StartTime:  time.Now(),
 		EndTime:    time.Now().AddDate(0, 0, 1),
 	}
@@ -328,6 +334,7 @@ func main() {
 	SeedChat(database.Instance)
 	// SeedMultipleBookings(database.Instance, 10)
 	// GenerateInquiry(database.Instance)
+	GenerateBookingPermission(database.Instance)
 	// GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 9)
 
 	// SeedBoookingWithConflicts(database.Instance)
