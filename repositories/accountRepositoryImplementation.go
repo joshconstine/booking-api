@@ -5,8 +5,6 @@ import (
 	"booking-api/data/response"
 	"booking-api/models"
 
-	"time"
-
 	"gorm.io/gorm"
 )
 
@@ -18,6 +16,27 @@ func NewAccountRepositoryImplementation(db *gorm.DB) AccountRepository {
 	return &AccountRepositoryImplementation{
 		Db: db,
 	}
+}
+func GetEntityNameFromIDAndType(db *gorm.DB, id uint, entityType string) string {
+	var name string
+	switch entityType {
+	case constants.RENTAL_ENTITY:
+		result := db.Model(&models.Rental{}).Where("id = ?", id).Pluck("name", &name)
+		if result.Error != nil {
+			return ""
+		}
+
+	case constants.BOAT_ENTITY:
+		result := db.Model(&models.Boat{}).Where("id = ?", id).Pluck("name", &name)
+		if result.Error != nil {
+			return ""
+		}
+	default:
+
+	}
+
+	return name
+
 }
 
 func (repository *AccountRepositoryImplementation) Create(account models.Account) error {
@@ -62,15 +81,17 @@ func (repository *AccountRepositoryImplementation) GetInquiriesSnapshot(accountI
 
 	snap.Notifications = uint(notifications)
 
+	var ebpr response.EntityBookingPermissionResponse
 	for _, permission := range boookingPermissionRequests {
-		inqSnapResponse.PermissionRequests = append(inqSnapResponse.PermissionRequests, permission.MapEntityBookingPermissionToResponse())
-		inqSnapResponse.Chat = response.ChatSnapshotResponse{
-			ChatID:  1,
-			Message: "Hello, does the Morey have enough space for 10 people?",
-			Name:    "John Doe",
-			Sent:    time.Now().Format("2006-01-02 15:04:05"),
-		}
+
+		ebpr = permission.MapEntityBookingPermissionToResponse()
+		ebpr.Entity.Name = GetEntityNameFromIDAndType(repository.Db, permission.EntityID, permission.EntityType)
+		inqSnapResponse.PermissionRequests = append(inqSnapResponse.PermissionRequests, ebpr)
+		inqSnapResponse.Chat = response.ChatSnapshotResponse{}
 		snap.Inquiries = append(snap.Inquiries, inqSnapResponse)
+		inqSnapResponse = response.InquirySnapshotResponse{}
+		ebpr = response.EntityBookingPermissionResponse{}
+
 	}
 
 	return snap, nil
