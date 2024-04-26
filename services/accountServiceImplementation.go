@@ -22,3 +22,7 @@ func (t AccountServiceImplementation) GetInquiriesSnapshot(accountID uint) (resp
 func (t AccountServiceImplementation) GetMessagesSnapshot(accountID uint) (response.AccountMessagesSnapshot, error) {
 	return t.AccountRepository.GetMessagesSnapshot(accountID)
 }
+
+func (t AccountServiceImplementation) GetUserAccountRoles(userID string) ([]response.MembershipResponse, error) {
+	return t.AccountRepository.GetUserAccountRoles(userID)
+}

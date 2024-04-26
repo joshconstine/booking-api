@@ -14,6 +14,7 @@ type Account struct {
 	Rentals         []Rental
 	Boats           []Boat
 	Chats           []Chat
+	Tasks           []Task
 }
 
 func (a *Account) TableName() string {

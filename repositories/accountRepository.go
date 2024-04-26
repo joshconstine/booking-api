@@ -6,6 +6,7 @@ import (
 )
 
 type AccountRepository interface {
+	GetUserAccountRoles(userID string) ([]response.MembershipResponse, error)
 	Create(account models.Account) error
 	Update(account models.Account) error
 	GetByID(id uint) (response.AccountResponse, error)

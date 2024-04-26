@@ -35,6 +35,7 @@ func Connect(connectionString string) {
 }
 func Migrate() {
 	Instance.Debug()
+	Instance.AutoMigrate((&models.Task{}))
 	//**************Helpers**************
 	// Instance.AutoMigrate(&models.User{})
 	// Instance.AutoMigrate(&models.BookingStatus{})
@@ -56,7 +57,7 @@ func Migrate() {
 
 	// Instance.AutoMigrate(&models.Booking{})
 	// Instance.AutoMigrate(&models.EntityBooking{})
-	// Instance.AutoMigrate(&models.BookingDetails{})
+	Instance.AutoMigrate(&models.BookingDetails{})
 	// Instance.AutoMigrate(&models.BookingPayment{})
 
 	// Instance.AutoMigrate(&models.Boat{})
@@ -79,7 +80,7 @@ func Migrate() {
 	//***SAS***
 	// Instance.AutoMigrate(&models.Account{})
 	// Instance.AutoMigrate(&models.Membership{})
-	Instance.AutoMigrate(&models.AccountSettings{})
+	// Instance.AutoMigrate(&models.AccountSettings{})
 	// Instance.AutoMigrate(&models.ServicePlan{})
 
 	// Instance.AutoMigrate(&models.EntityBookingRequest{})

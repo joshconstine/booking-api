@@ -219,12 +219,69 @@ func SeedUsers(db *gorm.DB) {
 func SeedChat(db *gorm.DB) {
 	// create chat
 	accountID := 9
-	userID := "f1cd62fd-5acc-4b8b-9ae1-d3cdd2411cd4"
+	userID := constants.CURRENT_USER_ID
 	chatRepository := repositories.NewChatRepositoryImplementation(db)
 	chatRepository.Create(&models.Chat{
 		AccountID: uint(accountID),
 		UserID:    userID,
 	})
+}
+
+func InsertNewUser(db *gorm.DB) (request.CreateUserRequest, error) {
+	userRepository := repositories.NewUserRepositoryImplementation(db)
+	userService := services.NewUserServiceImplementation(userRepository, nil)
+
+	var userToBook = request.CreateUserRequest{
+		Email:       gofakeit.Email(),
+		Username:    gofakeit.Username(),
+		FirstName:   gofakeit.FirstName(),
+		LastName:    gofakeit.LastName(),
+		PhoneNumber: gofakeit.Phone(),
+		UserID:      uuid.New().String(),
+	}
+	if err := userService.CreateUser(&userToBook); err != nil {
+		fmt.Println(err.Error())
+		return userToBook, err
+	}
+	return userToBook, nil
+}
+
+func GenerateInquiry(db *gorm.DB) {
+	// create inquiry
+	boatRepository := repositories.NewBoatRepositoryImplementation(db)
+	boats := boatRepository.FindAllIDs()
+	boatID := uint(boats[SelectRandomIndexFromSlice(boats)])
+
+	var permRequest = models.EntityBookingPermission{
+		AccountID:  9,
+		EntityID:   boatID,
+		EntityType: constants.BOAT_ENTITY,
+		UserID:     constants.CURRENT_USER_ID,
+		StartTime:  time.Now(),
+		EndTime:    time.Now().AddDate(0, 0, 1),
+	}
+
+	result := db.Create(&permRequest)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+	}
+	fmt.Println("Inquiry created with id: ", permRequest.ID)
+
+}
+
+func GrantUserRolesOnAccount(db *gorm.DB, userID string, accountID uint) {
+	var membership = models.Membership{
+		AccountID: accountID,
+		UserID:    userID,
+		RoleID:    constants.USER_ROLE_ACCOUNT_OWNER_ID,
+	}
+
+	result := db.Create(&membership)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+	}
+	fmt.Println("Membership created with id: ", membership.ID)
+
 }
 
 func main() {
@@ -248,8 +305,10 @@ func main() {
 	// SeedUsers(database.Instance)
 	// SeedBookingUI(database.Instance)
 	// SeedBoooking(database.Instance)
-	SeedChat(database.Instance)
-	SeedMultipleBookings(database.Instance, 10)
+	// SeedChat(database.Instance)
+	// SeedMultipleBookings(database.Instance, 10)
+	GenerateInquiry(database.Instance)
+	GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 9)
 
 	// SeedBoookingWithConflicts(database.Instance)
 	log.Println("Database seeding Completed!")

@@ -45,36 +45,32 @@ func (repository *AccountRepositoryImplementation) Update(account models.Account
 
 func (repository *AccountRepositoryImplementation) GetInquiriesSnapshot(accountID uint) (snap response.AccountInquiriesSnapshot, err error) {
 
-	snap.Notifications = 5
-	snap.Inquiries = []response.InquirySnapshotResponse{
-		{
-			Chat: response.ChatSnapshotResponse{
-				ChatID:  1,
-				Message: "Hello, does the Morey have enough space for 10 people?",
-				Name:    "John Doe",
-				Sent:    time.Now().Format("2006-01-02 15:04:05"),
-			},
-			PermissionRequests: []response.EntityBookingPermissionResponse{
-				{
-					ID:        1,
-					AccountID: 1,
+	var boookingPermissionRequests []models.EntityBookingPermission
+	var inqSnapResponse response.InquirySnapshotResponse
+	var notifications int64
+	result := repository.Db.Model(&models.EntityBookingPermission{}).Where("account_id = ?", accountID).Order("created_at desc").Preload("InquiryStatus").Limit(5).Find(&boookingPermissionRequests)
 
-					UserID: "1",
-					Entity: response.EntityInfoResponse{
+	if result.Error != nil {
+		return snap, result.Error
+	}
 
-						EntityID:   1,
-						EntityType: "rental",
-						Name:       "The Morey",
-					},
-					InquiryStatus: response.InquiryStatusResponse{
-						ID:   constants.INQUIRY_STATUS_NEW_ID,
-						Name: constants.INQUIRY_STATUS_NEW_NAME,
-					},
-					StartTime: time.Now(),
-					EndTime:   time.Now(),
-				},
-			},
-		},
+	result = repository.Db.Model(&models.EntityBookingPermission{}).Where("account_id = ?", accountID).Where("inquiry_status_id = ?", constants.INQUIRY_STATUS_NEW_ID).Count(&notifications)
+
+	if result.Error != nil {
+		return snap, result.Error
+	}
+
+	snap.Notifications = uint(notifications)
+
+	for _, permission := range boookingPermissionRequests {
+		inqSnapResponse.PermissionRequests = append(inqSnapResponse.PermissionRequests, permission.MapEntityBookingPermissionToResponse())
+		inqSnapResponse.Chat = response.ChatSnapshotResponse{
+			ChatID:  1,
+			Message: "Hello, does the Morey have enough space for 10 people?",
+			Name:    "John Doe",
+			Sent:    time.Now().Format("2006-01-02 15:04:05"),
+		}
+		snap.Inquiries = append(snap.Inquiries, inqSnapResponse)
 	}
 
 	return snap, nil
@@ -92,4 +88,14 @@ func (repository *AccountRepositoryImplementation) GetMessagesSnapshot(accountID
 	}
 
 	return snap, nil
+}
+
+func (repository *AccountRepositoryImplementation) GetUserAccountRoles(userID string) ([]response.MembershipResponse, error) {
+	var memberships []models.Membership
+	result := repository.Db.
+		Preload("Role").
+		Where("user_id = ?", userID).
+		Find(&memberships)
+
+	return models.MapMembershipsToResponses(memberships), result.Error
 }

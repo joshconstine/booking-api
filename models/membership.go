@@ -25,11 +25,11 @@ func (m *Membership) MapMembershipToResponse() response.MembershipResponse {
 	return response.MembershipResponse{
 		ID: m.ID,
 
+		AccountID:   m.AccountID,
 		PhoneNumber: m.PhoneNumber,
 		Email:       m.Email,
-
-		Role: m.Role.MapUserRoleToResponse(),
-		User: m.User.MapUserToResponse(),
+		Role:        m.Role.MapUserRoleToResponse(),
+		UserID:      m.UserID,
 	}
 }
 

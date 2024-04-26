@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"booking-api/data/response"
 	"booking-api/services"
 	admin "booking-api/view/admin"
 	"net/http"
@@ -18,17 +19,33 @@ func NewAdminController(service services.UserService, bookingService services.Bo
 
 func (usc *AdminController) HandleAdminIndex(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
+	var inquiries response.AccountInquiriesSnapshot
+	var messages response.AccountMessagesSnapshot
+
 	bookings := usc.bookingService.GetSnapshot()
 
-	accountId := uint(1)
-	//TODO use account middle ware to protect this and get the id
-	inquiries, err := usc.accountService.GetInquiriesSnapshot(accountId)
+	userAccountRoles, err := usc.accountService.GetUserAccountRoles(user.User.UserID)
 	if err != nil {
 		return err
 	}
-	messages, err := usc.accountService.GetMessagesSnapshot(accountId)
-	if err != nil {
-		return err
+
+	for _, role := range userAccountRoles {
+		accinquiries, err := usc.accountService.GetInquiriesSnapshot(role.AccountID)
+		if err != nil {
+			return err
+		}
+
+		inquiries.Inquiries = append(inquiries.Inquiries, accinquiries.Inquiries...)
+		accinquiries.Notifications = inquiries.Notifications + accinquiries.Notifications
+
+		accmessages, err := usc.accountService.GetMessagesSnapshot(role.AccountID)
+		if err != nil {
+			return err
+		}
+
+		messages.Chats = append(messages.Chats, accmessages.Chats...)
+		accmessages.Notifications = messages.Notifications + accmessages.Notifications
+
 	}
 
 	// user.User = usc.userService.FindByUserID(user.User.UserID)
