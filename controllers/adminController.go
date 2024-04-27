@@ -49,17 +49,16 @@ func (usc *AdminController) HandleAdminIndex(w http.ResponseWriter, r *http.Requ
 		if err != nil {
 			return err
 		}
-
-		inquiries.Inquiries = append(inquiries.Inquiries, accinquiries.Inquiries...)
-		accinquiries.Notifications = inquiries.Notifications + accinquiries.Notifications
-
 		accmessages, err := usc.accountService.GetMessagesSnapshot(accountID)
 		if err != nil {
 			return err
 		}
 
+		inquiries.Inquiries = append(inquiries.Inquiries, accinquiries.Inquiries...)
+		inquiries.Notifications += accinquiries.Notifications
+
 		messages.Chats = append(messages.Chats, accmessages.Chats...)
-		accmessages.Notifications = messages.Notifications + accmessages.Notifications
+		messages.Notifications += accmessages.Notifications
 
 	}
 
