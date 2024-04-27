@@ -78,6 +78,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		router.Post("/chat/message", controllers.Make(chatController.HandleChatMessageCreate))
 		router.Delete("/chat/message", controllers.Make(chatController.HandleChatMessageDelete))
 		router.Put("/permission/{entityBookingPermissionID}", controllers.Make(entityBookingPermissionController.Update))
+		router.Put("/permission/{entityBookingPermissionID}/approve", controllers.Make(entityBookingPermissionController.HandleApproveBookingPermissionRequest))
 	})
 
 	return router
