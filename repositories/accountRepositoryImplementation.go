@@ -67,13 +67,13 @@ func (repository *AccountRepositoryImplementation) GetInquiriesSnapshot(accountI
 	var boookingPermissionRequests []models.EntityBookingPermission
 	var inqSnapResponse response.InquirySnapshotResponse
 	var notifications int64
-	result := repository.Db.Model(&models.EntityBookingPermission{}).Where("account_id = ?", accountID).Order("created_at desc").Preload("InquiryStatus").Limit(5).Find(&boookingPermissionRequests)
+	result := repository.Db.Model(&models.EntityBookingPermission{}).Where("account_id = ? AND inquiry_status_id = ?", accountID, constants.INQUIRY_STATUS_NEW_ID).Order("created_at desc").Preload("InquiryStatus").Limit(5).Find(&boookingPermissionRequests)
 
 	if result.Error != nil {
 		return snap, result.Error
 	}
 
-	result = repository.Db.Model(&models.EntityBookingPermission{}).Where("account_id = ?", accountID).Where("inquiry_status_id = ?", constants.INQUIRY_STATUS_NEW_ID).Count(&notifications)
+	result = repository.Db.Model(&models.EntityBookingPermission{}).Where("account_id = ? AND inquiry_status_id = ?", accountID, constants.INQUIRY_STATUS_NEW_ID).Where("inquiry_status_id = ?", constants.INQUIRY_STATUS_NEW_ID).Count(&notifications)
 
 	if result.Error != nil {
 		return snap, result.Error

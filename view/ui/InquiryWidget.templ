@@ -55,7 +55,7 @@ templ InquirySnapshot(Info response.InquirySnapshotResponse) {
 
 templ PermissionRequestSnapshot(Info response.EntityBookingPermissionResponse) {
   <div class=" flex w-full justify-between items-center">
-    <span id="loading" class="loading loading-dots loading-md htmx-indicator"></span>
+    <span id={"loading_" + strconv.Itoa(int(Info.ID))} class="loading loading-dots loading-md htmx-indicator"></span>
     <span class="whitespace-nowrap text-lg">{Info.Entity.Name}</span>
     <div id={"permission_actions_" + strconv.Itoa(int(Info.ID))} class="flex gap-2">
 
@@ -65,7 +65,7 @@ templ PermissionRequestSnapshot(Info response.EntityBookingPermissionResponse) {
         hx-put={templ.JoinStringErrs(string(templ.SafeURL(GetApproveURLPath(Info.ID))))}
         hx-target={"#permission_actions_" + strconv.Itoa(int(Info.ID))}
         hx-swap="outerHTML"
-        hx-indicator="#loading"
+        hx-indicator={"#loading_" + strconv.Itoa(int(Info.ID))}
         >
         <div class="flex gap-2 items-center">
           <i class="fa-solid fa-check"></i>
