@@ -3,7 +3,7 @@ package repositories
 import (
 	"booking-api/data/response"
 	"booking-api/models"
-	"booking-api/objectStorage"
+	"booking-api/pkg/objectStorage"
 	"mime/multipart"
 
 	"gorm.io/gorm"

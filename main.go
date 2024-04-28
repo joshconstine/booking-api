@@ -3,8 +3,9 @@ package main
 import (
 	"booking-api/config"
 	"booking-api/controllers"
-	"booking-api/objectStorage"
 	"booking-api/pkg/database"
+	"booking-api/pkg/objectStorage"
+	payments "booking-api/pkg/payment"
 	"booking-api/pkg/sb"
 	"booking-api/repositories"
 	"booking-api/router"
@@ -66,6 +67,11 @@ func run(env config.EnvVars) (func(), error) {
 	// Creates a new Supabase client
 	// accessable via sb.ClientInstance
 	sb.CreateAuthClient(env)
+
+	// Create a new paypal client
+
+	// pay.CreatePaypalClient()
+	payments.CreatePaypalClient(env)
 
 	app, cleanup, err := buildServer(env)
 	if err != nil {
@@ -165,10 +171,11 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	chatService := services.NewChatServiceImplementation(chatRepository)
 	accountService := services.NewAccountServiceImplementation(accountRepository)
 	entityBookingPermissionService := services.NewEntityBookingPermissionServiceImplementation(entityBookingPermissionRepository)
+	invoiceService := services.NewInvoiceServiceImplementation(bookingRepository)
 
 	//Init controller
 	authController := controllers.NewAuthController(userService, sb.ClientInstance)
-	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService)
+	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService, invoiceService)
 	boatController := controllers.NewBoatController(boatService)
 	// userController := controllers.NewUserController(userService)
 	// bookingStatusController := controllers.NewBookingStatusController(bookingStatusService)

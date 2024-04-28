@@ -50,6 +50,8 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		bookingController.HandleBookingInformation(w, r)
 	})
 
+	router.Put("/bookings/{bookingId}/invoice", controllers.Make(bookingController.HandleCreateInvoiceForBooking))
+
 	router.Get("/login", controllers.Make(authController.HandleLoginIndex))
 	router.Get("/login/provider/google", controllers.Make(authController.HandleLoginWithGoogle))
 	router.Get("/signup", controllers.Make(authController.HandleSignupIndex))

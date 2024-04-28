@@ -11,6 +11,7 @@ require (
 	github.com/go-playground/validator/v10 v10.14.0
 	github.com/gorilla/sessions v1.2.2
 	github.com/nedpals/supabase-go v0.4.0
+	github.com/plutov/paypal/v4 v4.7.1
 	golang.org/x/crypto v0.21.0
 )
 

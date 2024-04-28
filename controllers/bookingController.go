@@ -5,6 +5,7 @@ import (
 	"booking-api/data/response"
 	"booking-api/services"
 	bookings "booking-api/view/bookings"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -15,10 +16,11 @@ import (
 type BookingController struct {
 	bookingService        services.BookingService
 	bookingDetailsService services.BookingDetailsService
+	invoiceService        services.InvoiceService
 }
 
-func NewBookingController(service services.BookingService, detailsService services.BookingDetailsService) *BookingController {
-	return &BookingController{bookingService: service, bookingDetailsService: detailsService}
+func NewBookingController(service services.BookingService, detailsService services.BookingDetailsService, invoiceService services.InvoiceService) *BookingController {
+	return &BookingController{bookingService: service, bookingDetailsService: detailsService, invoiceService: invoiceService}
 }
 
 func (t BookingController) FindAll(ctx *gin.Context) {
@@ -114,4 +116,23 @@ func (controller *BookingController) HandleBookingInformation(w http.ResponseWri
 	booking := controller.bookingService.FindById(bookingId)
 
 	return bookings.BookingInformationTemplate(booking).Render(r.Context(), w)
+}
+
+func (controller *BookingController) HandleCreateInvoiceForBooking(w http.ResponseWriter, r *http.Request) error {
+
+	// vars := mux.Vars(r)
+	// bookingId := vars["id"]
+	bookingId := chi.URLParam(r, "bookingId")
+
+	invoiceId, err := controller.invoiceService.CreateInvoiceForBooking(bookingId)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed to create invoice: %v", err), http.StatusInternalServerError)
+
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte(invoiceId))
+	return nil
+
 }
