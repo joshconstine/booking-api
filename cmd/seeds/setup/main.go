@@ -5,8 +5,8 @@ import (
 	"booking-api/constants"
 	requests "booking-api/data/request"
 	"booking-api/models"
-	"booking-api/objectStorage"
 	"booking-api/pkg/database"
+	"booking-api/pkg/objectStorage"
 	"booking-api/repositories"
 	"fmt"
 	"log"
@@ -107,11 +107,11 @@ func SeedBookingStatus(db *gorm.DB) {
 func SeedTaxRates(db *gorm.DB) {
 	taxRatesToSeed := []requests.CreateTaxRateRequest{
 		{
-			Percentage: 0.12,
+			Percentage: 12,
 			Name:       "Short Term Rental Tax",
 		},
 		{
-			Percentage: 0.16,
+			Percentage: 06,
 			Name:       "Sales Tax",
 		},
 	}
@@ -578,17 +578,17 @@ func main() {
 	// create object storage client
 	objectStorage.CreateSession()
 
-	SeedUserRoles(database.Instance)
-	SeedAmenityTypes(database.Instance)
-	SeedBedTypes(database.Instance)
-	SeedBookingCostTypes(database.Instance)
-	SeedBookingStatus(database.Instance)
-	SeedRoomTypes(database.Instance)
-	SeedAmenities(database.Instance)
-	SeedPaymentMethods(database.Instance)
-	SeedInquiryStatuses(database.Instance)
+	// SeedUserRoles(database.Instance)
+	// SeedAmenityTypes(database.Instance)
+	// SeedBedTypes(database.Instance)
+	// SeedBookingCostTypes(database.Instance)
+	// SeedBookingStatus(database.Instance)
+	// SeedRoomTypes(database.Instance)
+	// SeedAmenities(database.Instance)
+	// SeedPaymentMethods(database.Instance)
+	// SeedInquiryStatuses(database.Instance)
 	SeedTaxRates(database.Instance)
-	SeedServicePlans(database.Instance)
+	// SeedServicePlans(database.Instance)
 
 	log.Println("Database seeding Completed!")
 

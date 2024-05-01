@@ -12,7 +12,7 @@ type CreateBoatRequest struct {
 	Description string
 }
 
-func (boat *CreateBoatRequest) MapCreateBoatRequestToBoat() models.Boat {
+func (boat *CreateBoatRequest) MapCreateBoatRequestToBoat(taxid uint) models.Boat {
 
 	fivePm := time.Date(2024, 0, 0, 17, 0, 0, 0, time.UTC)
 
@@ -24,9 +24,8 @@ func (boat *CreateBoatRequest) MapCreateBoatRequestToBoat() models.Boat {
 		Status:    models.BoatStatus{},
 		BookingCostItems: []models.EntityBookingCost{
 			{
-				Amount:            boat.NightlyRate,
-				TaxRateID:         1,
-				BookingCostTypeID: 1,
+				Amount:    boat.NightlyRate,
+				TaxRateID: taxid,
 			},
 		},
 		BookingDurationRule: models.EntityBookingDurationRule{

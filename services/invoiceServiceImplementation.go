@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 
 	"booking-api/data/request"
@@ -61,18 +62,18 @@ func SetConstantsForInvoice(invoice *request.CreateInvoiceRequest) {
 	//fill in the configuration field
 	//fill in the amount field
 	invoice.Detail.CurrencyCode = "USD"
-	invoice.Detail.PaymentTerm.TermType = "no refunds with 30 days of booking"
+	invoice.Detail.PaymentTerm.TermType = "NET_30"
 
 	invoice.Configuration.PartialPayment.AllowPartialPayment = true
 	invoice.Configuration.PartialPayment.MinimumAmountDue = paypal.Money{
 		Currency: "USD",
-		Value:    "50.00",
+		Value:    "0.00",
 	}
 
 	invoice.Configuration.AllowTip = true
 	invoice.Configuration.TaxCalculatedAfterDiscount = true
 	invoice.Configuration.TaxInclusive = false
-	invoice.Configuration.TemplateId = ""
+	invoice.Configuration.TemplateId = "TEMP-8M018176VU180072F"
 }
 
 func AddInvoicerDetailsToInvoice(invoice *request.CreateInvoiceRequest) error {
@@ -83,6 +84,13 @@ func AddInvoicerDetailsToInvoice(invoice *request.CreateInvoiceRequest) error {
 		{
 			CountryCode:    "001",
 			NationalNumber: "920-265-7335",
+		},
+	}
+
+	invoice.Invoicer.Phones = []paypal.InvoicerPhoneDetail{
+		{
+			CountryCode:    "001",
+			NationalNumber: "9202657335",
 		},
 	}
 
@@ -104,8 +112,18 @@ func AddRecipientDetailsToInvoice(invoice *request.CreateInvoiceRequest, booking
 			Phones: []paypal.InvoicerPhoneDetail{
 				{
 					CountryCode:    "001",
-					NationalNumber: "920-265-7335",
+					NationalNumber: "9202657335",
 				},
+			},
+		},
+		ShippingInfo: paypal.InvoiceContactInfo{
+
+			BusinessName: "Joshua Constine",
+			RecipientAddress: paypal.InvoiceAddressPortable{
+				AddressLine1:   "1234 Elm Street",
+				PostalCode:     "95121",
+				CountryCode:    "US",
+				AddressDetails: paypal.InvoiceAddressDetails{},
 			},
 		},
 	}
@@ -115,11 +133,22 @@ func AddRecipientDetailsToInvoice(invoice *request.CreateInvoiceRequest, booking
 
 }
 
+func round(num float64) int {
+	return int(num + math.Copysign(0.5, num))
+}
+
+func toFixed(num float64, precision int) float64 {
+	output := math.Pow(10, float64(precision))
+	return float64(round(num*output)) / output
+}
+
 func AddItemsToInvoice(invoice *request.CreateInvoiceRequest, bookingInformation *response.BookingInformationResponse) error {
 	//get booking details from db
 	//fill in the items field
 	var items []paypal.InvoiceItem
 
+	itemTotalValue := 0.0
+	taxTotalValue := 0.0
 	for _, bookingCost := range bookingInformation.CostItems {
 
 		// name, err := GetBookingCostTypeNameFromID(bookingCost.BookingCostTypeID, db)
@@ -128,7 +157,20 @@ func AddItemsToInvoice(invoice *request.CreateInvoiceRequest, bookingInformation
 		// }
 
 		name := "Booking Cost"
-		stringAmmount := fmt.Sprintf("%f", bookingCost.Amount)
+		stringAmmount := fmt.Sprintf("%2f", bookingCost.Amount)
+		itemTotalValue += bookingCost.Amount
+
+		taxRateString := fmt.Sprintf("%2f", bookingCost.TaxRate.Percentage)
+
+		taxAmmountForItem := bookingCost.Amount * bookingCost.TaxRate.Percentage / 100
+		taxAmmountForItem = toFixed(taxAmmountForItem, 2)
+
+		//truncate to 2 decimal places
+
+		// taxAmmountForItem = math.Ceil(taxAmmountForItem*100) / 100
+
+		taxTotalValue += taxAmmountForItem
+		// taxTotalValue += .01
 
 		item := paypal.InvoiceItem{
 			Name:        name,
@@ -138,11 +180,80 @@ func AddItemsToInvoice(invoice *request.CreateInvoiceRequest, bookingInformation
 				Currency: "USD",
 				Value:    stringAmmount,
 			},
+
+			Tax: paypal.InvoiceTax{
+				Name:    bookingCost.TaxRate.Name,
+				Percent: taxRateString,
+				Amount: paypal.Money{
+					Currency: "USD",
+					Value:    fmt.Sprintf("%.2f", taxAmmountForItem),
+				},
+			},
+			InvoiceDiscount: paypal.InvoicingDiscount{
+				DiscountAmount: paypal.Money{
+					Currency: "USD",
+					Value:    "0.00",
+				},
+			},
 		}
 		items = append(items, item)
 	}
 
 	invoice.Items = items
+
+	itemTotalValue = toFixed(itemTotalValue, 2)
+	taxTotalValue = toFixed(taxTotalValue, 2)
+
+	value := itemTotalValue + taxTotalValue
+	value = toFixed(value, 2)
+	valueStr := fmt.Sprintf("%.2f", value)
+
+	ammount := paypal.AmountSummaryDetail{
+		Currency: "USD",
+		Value:    valueStr,
+		Breakdown: paypal.InvoiceAmountWithBreakdown{
+
+			Custom: paypal.CustomAmount{
+				Amount: paypal.Money{
+					Currency: "USD",
+					Value:    "0.00",
+				},
+				Label: "booking",
+			},
+			Discount: paypal.AggregatedDiscount{
+				InvoiceDiscount: paypal.InvoicingDiscount{
+					DiscountAmount: paypal.Money{
+						Currency: "USD",
+						Value:    "0.00",
+					},
+					Percent: "0.00",
+				},
+			},
+			Shipping: paypal.InvoiceShippingCost{
+				Tax: paypal.InvoiceTax{
+					Name:    "Sales Tax",
+					Percent: "0.00",
+					Amount: paypal.Money{
+						Currency: "USD",
+						Value:    "0.00",
+					},
+				},
+				Amount: paypal.Money{
+					Currency: "USD",
+					Value:    "0.00",
+				},
+			},
+			ItemTotal: paypal.Money{
+				Currency: "USD",
+				Value:    fmt.Sprintf("%.2f", itemTotalValue),
+			},
+			TaxTotal: paypal.Money{
+				Currency: "USD",
+				Value:    fmt.Sprintf("%.2f", taxTotalValue),
+			},
+		},
+	}
+	invoice.Amount = ammount
 
 	return nil
 }
@@ -155,7 +266,7 @@ func CreateInvoiceRequestForBooking(booking *response.BookingInformationResponse
 		PrimaryRecipients: []paypal.InvoiceRecipientInfo{},
 		Items:             []paypal.InvoiceItem{},
 		Configuration:     paypal.InvoiceConfiguration{},
-		Amount:            paypal.AmountSummaryDetail{},
+		// Amount:            paypal.AmountSummaryDetail{},
 	}
 
 	err := payments.AddNextInvoiceNumberToInvoice(context.Background(), &paypalInvoice)
@@ -191,9 +302,17 @@ func CreateInvoiceRequestForBooking(booking *response.BookingInformationResponse
 		return nil, fmt.Errorf("failed to add items to invoice: %v", err)
 	}
 
+	//turn the invoice into json
+
+	invoiceBytes, err := json.Marshal(paypalInvoice)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal invoice: %v", err)
+	}
+	log.Println(string(invoiceBytes))
+
 	//log the object
 	// Log the struct with fields and values
-	log.Println(fmt.Sprintf("%+v", paypalInvoice))
+	// log.Println(fmt.Sprintf("%+v", paypalInvoice))
 
 	//update booking details with invoice id
 	return &paypalInvoice, nil

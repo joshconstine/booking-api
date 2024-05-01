@@ -51,13 +51,13 @@ func Migrate() {
 	// Instance.AutoMigrate(&models.PaymentMethod{})
 	// Instance.AutoMigrate(&models.BookingCostType{})
 	// Instance.AutoMigrate(&models.Amenity{})
-	// Instance.AutoMigrate(&models.TaxRate{})
+	Instance.AutoMigrate(&models.TaxRate{})
 	// Instance.AutoMigrate(&models.BedType{})
 	// Instance.AutoMigrate(&models.RoomType{})
 
 	// Instance.AutoMigrate(&models.Booking{})
 	// Instance.AutoMigrate(&models.EntityBooking{})
-	Instance.AutoMigrate(&models.BookingDetails{})
+	// Instance.AutoMigrate(&models.BookingDetails{})
 	// Instance.AutoMigrate(&models.BookingPayment{})
 
 	// Instance.AutoMigrate(&models.Boat{})
@@ -78,7 +78,7 @@ func Migrate() {
 	// Instance.AutoMigrate(&models.Login{})
 
 	//***SAS***
-	// Instance.AutoMigrate(&models.Account{})
+	Instance.AutoMigrate(&models.Account{})
 	// Instance.AutoMigrate(&models.Membership{})
 	// Instance.AutoMigrate(&models.AccountSettings{})
 	// Instance.AutoMigrate(&models.ServicePlan{})

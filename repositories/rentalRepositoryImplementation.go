@@ -4,6 +4,8 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
+	"booking-api/pkg/database"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -70,8 +72,25 @@ func (r *RentalRepositoryImplementation) FindById(id uint) response.RentalInform
 }
 
 func (r *RentalRepositoryImplementation) Create(rental request.CreateRentalRequest) (response.RentalResponse, error) {
-	rentalModel := rental.MapCreateRentalRequestToRental()
-	result := r.Db.Create(&rentalModel)
+
+	//TODO Add the tax rate to the create request to remove the need for this query
+	taxRates := []models.TaxRate{}
+
+	result := database.Instance.Model(&models.TaxRate{}).Find(&taxRates)
+	if result.Error != nil {
+		log.Println(result.Error)
+	}
+
+	var shortTermTaxRate models.TaxRate
+	for _, taxRate := range taxRates {
+		if taxRate.Name == "Short Term Rental Tax" {
+			shortTermTaxRate = taxRate
+		}
+
+	}
+
+	rentalModel := rental.MapCreateRentalRequestToRental(shortTermTaxRate.ID)
+	result = r.Db.Create(&rentalModel)
 	if result.Error != nil {
 		return response.RentalResponse{}, result.Error
 	}

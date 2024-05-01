@@ -331,10 +331,10 @@ func main() {
 	// SeedUsers(database.Instance)
 	// SeedBookingUI(database.Instance)
 	// SeedBoooking(database.Instance)
-	SeedChat(database.Instance)
-	// SeedMultipleBookings(database.Instance, 10)
+	// SeedChat(database.Instance)
+	SeedMultipleBookings(database.Instance, 10)
 	// GenerateInquiry(database.Instance)
-	GenerateBookingPermission(database.Instance)
+	// GenerateBookingPermission(database.Instance)
 	// GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 9)
 
 	// SeedBoookingWithConflicts(database.Instance)

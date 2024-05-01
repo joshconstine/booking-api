@@ -146,6 +146,8 @@ func SendInvoiceToPaypal(ctx context.Context, byte []byte) (bool, error) {
 	}
 
 	if resp.StatusCode != http.StatusCreated {
+		// log the error
+		fmt.Printf("failed to create invoice with error code: %s", resp.Body)
 		return false, fmt.Errorf("unexpected response status: %s", resp.Status)
 	}
 

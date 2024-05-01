@@ -1,6 +1,7 @@
 package request
 
 import (
+	"booking-api/constants"
 	"booking-api/models"
 	"time"
 )
@@ -15,7 +16,7 @@ type CreateRentalRequest struct {
 	Description string  `json: validate:"required"`
 }
 
-func (rental *CreateRentalRequest) MapCreateRentalRequestToRental() models.Rental {
+func (rental *CreateRentalRequest) MapCreateRentalRequestToRental(taxid uint) models.Rental {
 
 	fivePm := time.Date(2024, 0, 0, 17, 0, 0, 0, time.UTC)
 
@@ -32,8 +33,8 @@ func (rental *CreateRentalRequest) MapCreateRentalRequestToRental() models.Renta
 		BookingCostItems: []models.EntityBookingCost{
 			{
 				Amount:            rental.NightlyRate,
-				TaxRateID:         1,
-				BookingCostTypeID: 1,
+				BookingCostTypeID: constants.BOOKING_COST_TYPE_RENTAL_COST_ID,
+				TaxRateID:         taxid,
 			},
 		},
 		BookingDurationRule: models.EntityBookingDurationRule{

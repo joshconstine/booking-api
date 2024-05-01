@@ -5,13 +5,12 @@ import (
 	"booking-api/constants"
 	"booking-api/data/request"
 	"booking-api/models"
-	"booking-api/objectStorage"
 	"booking-api/pkg/database"
+	"booking-api/pkg/objectStorage"
 	"booking-api/repositories"
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -55,14 +54,32 @@ func (c *CreateAccountRequest) MapAccountRequestToAccount() models.Account {
 		Rentals: []models.Rental{},
 		Boats:   []models.Boat{},
 	}
+	taxRates := []models.TaxRate{}
+
+	result := database.Instance.Model(&models.TaxRate{}).Find(&taxRates)
+	if result.Error != nil {
+		log.Println(result.Error)
+	}
+
+	var shortTermTaxRate models.TaxRate
+	var salesTaxRate models.TaxRate
+	for _, taxRate := range taxRates {
+		if taxRate.Name == "Short Term Rental Tax" {
+			shortTermTaxRate = taxRate
+		}
+		if taxRate.Name == "Sales Tax" {
+			salesTaxRate = taxRate
+		}
+	}
+
 	for _, memberInput := range c.Members {
 		account.Members = append(account.Members, memberInput.MapMemberInputToMember())
 	}
 	for _, rentalInput := range c.Rentals {
-		account.Rentals = append(account.Rentals, rentalInput.MapCreateRentalRequestToRental())
+		account.Rentals = append(account.Rentals, rentalInput.MapCreateRentalRequestToRental(shortTermTaxRate.ID))
 	}
 	for _, boatInput := range c.boats {
-		account.Boats = append(account.Boats, boatInput.MapCreateBoatRequestToBoat())
+		account.Boats = append(account.Boats, boatInput.MapCreateBoatRequestToBoat(salesTaxRate.ID))
 
 	}
 
@@ -207,159 +224,6 @@ func SeedDocuments(client *objectStorage.S3Client, db *gorm.DB) {
 	for _, document := range documents {
 		documentRepository.AddDocumentWithUrl(document.URL, document.Name)
 
-	}
-
-}
-
-func SeedBoats(db *gorm.DB) {
-	nineAM := time.Date(2021, 1, 1, 9, 0, 0, 0, time.UTC)
-	//elevenAM := time.Date(2021, 1, 1, 11, 0, 0, 0, time.UTC)
-	threePM := time.Date(2021, 1, 1, 15, 0, 0, 0, time.UTC)
-	twoWeeksFromNow := time.Now().AddDate(0, 0, 14)
-	threeWeeksFromNow := time.Now().AddDate(0, 0, 21)
-
-	sixWeeksFromNow := time.Now().AddDate(0, 0, 42)
-	seventyDaysFromNow := time.Now().AddDate(0, 0, 70)
-	//fivePM := time.Date(2021, 1, 1, 17, 0, 0, 0, time.UTC)
-	boats := []models.Boat{
-		{
-			// Model: gorm.Model{
-			// 	ID: 1,
-			// },
-
-			Name:       "The Big Kahuna",
-			Occupancy:  10,
-			MaxWeight:  2000,
-			Timeblocks: []models.EntityTimeblock{},
-			Photos: []models.EntityPhoto{
-				{
-					Photo: models.Photo{
-						URL: "boat_photos/1/https://bookingapp.us-ord-1.linodeobjects.com/boat_photos/1/5a1ab150-1ef3-4959-8b5b-085263d9b831.jpeg",
-					},
-				},
-			},
-			BookingDurationRule: models.EntityBookingDurationRule{
-				MinimumDuration: 2,
-				MaximumDuration: 14,
-				BookingBuffer:   2,
-				StartTime:       nineAM,
-				EndTime:         threePM,
-			},
-			BookingDocuments: []models.EntityBookingDocument{
-				{
-					Document: models.Document{
-						Model: gorm.Model{
-							ID: 2,
-						},
-					},
-					RequiresSignature: true,
-				},
-			},
-			BookingCostItems: []models.EntityBookingCost{
-				{
-					BookingCostType: models.BookingCostType{
-						Model: gorm.Model{
-							ID: 4,
-						},
-					},
-					TaxRateID: 2,
-					Amount:    250,
-				},
-				{
-					BookingCostType: models.BookingCostType{
-						Model: gorm.Model{
-							ID: 2,
-						},
-					},
-					TaxRateID: 2,
-					Amount:    80,
-				},
-			},
-			BookingCostItemAdjustments: []models.EntityBookingCostAdjustment{
-				{
-					Amount:            1500,
-					BookingCostTypeID: 4,
-					TaxRateID:         1,
-
-					StartDate: twoWeeksFromNow,
-					EndDate:   threeWeeksFromNow,
-				},
-				{
-					Amount:            2000,
-					BookingCostTypeID: 4,
-					TaxRateID:         1,
-
-					StartDate: sixWeeksFromNow,
-					EndDate:   seventyDaysFromNow,
-				},
-			},
-			Status: models.BoatStatus{
-				IsClean:    true,
-				LocationID: 1,
-			},
-
-			BookingRule: models.EntityBookingRule{
-				AdvertiseAtAllLocations: true,
-				AllowPets:               false,
-				AllowInstantBooking:     true,
-				OfferEarlyCheckIn:       true,
-			},
-		},
-		// {
-		// 	// Model: gorm.Model{
-		// 	// 	ID: 2,
-		// 	// },
-		// 	Name:      "The Little Dipper",
-		// 	Occupancy: 4,
-		// 	MaxWeight: 1000,
-		// 	Timeblocks: []models.Timeblock{
-		// 		{
-		// 			StartTime: elevenAM,
-		// 			EndTime:   fivePM,
-		// 		},
-		// 	},
-		// 	Photos: []models.EntityPhoto{
-		// 		{
-		// 			Photo: models.Photo{
-
-		// 				URL: "boat_photos/2/https://bookingapp.us-ord-1.linodeobjects.com/boat_photos/2/5a1ab150-1ef3-4959-8b5b-085263d9b831.jpeg",
-		// 			},
-		// 		},
-		// 	},
-		// 	BookingDurationRule: models.EntityBookingDurationRule{
-		// 		MinimumDuration: 3,
-		// 		MaximumDuration: 18,
-		// 		BookingBuffer:   3,
-		// 		StartTime:       elevenAM,
-		// 		EndTime:         fivePM,
-		// 	},
-		// 	BookingCostItems: []models.EntityBookingCost{
-		// 		{
-		// 			BookingCostType: models.BookingCostType{
-		// 				Model: gorm.Model{
-		// 					ID: 4,
-		// 				},
-		// 			},
-		// 			TaxRateID: 2,
-		// 			Amount:    150,
-		// 		},
-		// 		{
-		// 			BookingCostType: models.BookingCostType{
-		// 				Model: gorm.Model{
-		// 					ID: 2,
-		// 				},
-		// 			},
-		// 			TaxRateID: 2,
-		// 			Amount:    130,
-		// 		},
-		// 	},
-		// },
-	}
-
-	boatRepository := repositories.NewBoatRepositoryImplementation(db)
-
-	for _, boat := range boats {
-		boatRepository.Create(boat)
 	}
 
 }
