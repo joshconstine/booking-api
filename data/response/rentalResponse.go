@@ -7,4 +7,5 @@ type RentalResponse struct {
 	Bedrooms    uint             `json:"bedrooms"`
 	Bathrooms   uint             `json:"bathrooms"`
 	Description string           `json:"description"`
+	Thumbnail   string           `json:"thumbnail"`
 }

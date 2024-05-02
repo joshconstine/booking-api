@@ -21,7 +21,7 @@ func NewRentalRepositoryImplementation(db *gorm.DB, timeblockRepository EntityTi
 
 func (r *RentalRepositoryImplementation) FindAll() []response.RentalResponse {
 	var rentals []models.Rental
-	result := r.Db.Model(&models.Rental{}).Preload("Location").Find(&rentals)
+	result := r.Db.Model(&models.Rental{}).Preload("Location").Preload("EntityPhotos.Photo").Find(&rentals)
 	if result.Error != nil {
 		return []response.RentalResponse{}
 	}

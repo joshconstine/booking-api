@@ -1,7 +1,9 @@
 package models
 
 import (
+	"booking-api/config"
 	"booking-api/data/response"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -37,6 +39,24 @@ func (r *Rental) TableName() string {
 }
 
 func (r *Rental) MapRentalsToResponse() response.RentalResponse {
+	thumbnail := ""
+
+	if len(r.EntityPhotos) > 0 {
+
+		// load config
+		env, err := config.LoadConfig(".")
+		if err != nil {
+			fmt.Printf("error: %v", err)
+		}
+		base := env.OBJECT_STORAGE_URL
+		thumbnail = r.EntityPhotos[0].Photo.URL
+
+		if thumbnail != "" {
+			thumbnail = "https://" + base + "/" + thumbnail
+		}
+
+	}
+
 	return response.RentalResponse{
 		ID:          r.ID,
 		Name:        r.Name,
@@ -44,6 +64,7 @@ func (r *Rental) MapRentalsToResponse() response.RentalResponse {
 		Bedrooms:    r.Bedrooms,
 		Bathrooms:   r.Bathrooms,
 		Description: r.Description,
+		Thumbnail:   thumbnail,
 	}
 }
 

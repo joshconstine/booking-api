@@ -24,6 +24,7 @@ templ Index(rentals []response.RentalResponse) {
 			for _, rental := range rentals {
 				<a href={templ.SafeURL(GetPath(int(rental.ID)))}>
     		<li>{ rental.Name }</li>
+			<img src={ rental.Thumbnail } alt={ rental.Name } class="w-1/4" />
 				</a>
   			}
 			</ul>

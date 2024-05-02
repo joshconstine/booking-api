@@ -14,6 +14,7 @@ type CreateRentalRequest struct {
 	Bathrooms   uint    `json: validate:"required"`
 	NightlyRate float64 `json: validate:"required"`
 	Description string  `json: validate:"required"`
+	Thumbnail   string
 }
 
 func (rental *CreateRentalRequest) MapCreateRentalRequestToRental(taxid uint) models.Rental {
@@ -57,7 +58,13 @@ func (rental *CreateRentalRequest) MapCreateRentalRequestToRental(taxid uint) mo
 		BookingRequests:            []models.EntityBookingPermission{},
 		Timeblocks:                 []models.EntityTimeblock{},
 		Bookings:                   []models.EntityBooking{},
-		EntityPhotos:               []models.EntityPhoto{},
+		EntityPhotos: []models.EntityPhoto{
+			{
+				Photo: models.Photo{
+					URL: rental.Thumbnail,
+				},
+			},
+		},
 	}
 	return rentalModel
 }

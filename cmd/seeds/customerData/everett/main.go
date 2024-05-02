@@ -108,6 +108,7 @@ var accountsToCreate = []CreateAccountRequest{
 				Bathrooms:   7,
 				NightlyRate: 500,
 				Description: "The Lodge is a cozy up north cabin with 13 bedrooms and 7 bathrooms. It is perfect for large groups and family gatherings. The Lodge is located on the shores of Lake Everett and is a short walk to the marina. The Lodge is a cozy up north cabin with 13 bedrooms and 7 bathrooms. It is perfect for large groups and family gatherings. The Lodge is located on the shores of Lake Everett and is a short walk to the marina. The Lodge is a cozy up north cabin with 13 bedrooms and 7 bathrooms. It is perfect for large groups and family gatherings. The Lodge is located on the shores of Lake Everett and is a short walk to the marina.",
+				Thumbnail:   "lodge-cabin-eagle-river-09.PNG",
 			},
 			{
 				Name:        "The Morey",
@@ -116,6 +117,7 @@ var accountsToCreate = []CreateAccountRequest{
 				Bathrooms:   2,
 				NightlyRate: 200,
 				Description: "The Morey is a cozy up north cabin with 3 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Morey is located on the shores of Lake Everett and is a short walk to the marina. The Morey is a cozy up north cabin with 3 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Morey is located on the shores of Lake Everett and is a short walk to the marina. The Morey is a cozy up north cabin with 3 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Morey is located on the shores of Lake Everett and is a short walk to the marina.",
+				Thumbnail:   "morrey-cabin-eagle-river-04.PNG",
 			},
 			{
 				Name:        "The Gables",
@@ -124,6 +126,7 @@ var accountsToCreate = []CreateAccountRequest{
 				Bathrooms:   4,
 				NightlyRate: 300,
 				Description: "The Gables is a cozy up north cabin with 7 bedrooms and 4 bathrooms. It is perfect for medium groups and family gatherings. The Gables is located on the shores of Lake Everett and is a short walk to the marina. The Gables is a cozy up north cabin with 7 bedrooms and 4 bathrooms. It is perfect for medium groups and family gatherings. The Gables is located on the shores of Lake Everett and is a short walk to the marina. The Gables is a cozy up north cabin with 7 bedrooms and 4 bathrooms. It is perfect for medium groups and family gatherings. The Gables is located on the shores of Lake Everett and is a short walk to the marina.",
+				Thumbnail:   "gables-cabin-eagle-river-26.PNG",
 			},
 			{
 				Name:        "The Clubhouse",
@@ -132,6 +135,7 @@ var accountsToCreate = []CreateAccountRequest{
 				Bathrooms:   3,
 				NightlyRate: 250,
 				Description: "The Clubhouse is a cozy up north cabin with 5 bedrooms and 3 bathrooms. It is perfect for medium groups and family gatherings. The Clubhouse is located on the shores of Lake Everett and is a short walk to the marina. The Clubhouse is a cozy up north cabin with 5 bedrooms and 3 bathrooms. It is perfect for medium groups and family gatherings. The Clubhouse is located on the shores of Lake Everett and is a short walk to the marina. The Clubhouse is a cozy up north cabin with 5 bedrooms and 3 bathrooms. It is perfect for medium groups and family gatherings. The Clubhouse is located on the shores of Lake Everett and is a short walk to the marina.",
+				Thumbnail:   "clubhouse-cabin-eagle-river-24.PNG",
 			},
 			{
 				Name:        "The Eisenhower",
@@ -140,6 +144,7 @@ var accountsToCreate = []CreateAccountRequest{
 				Bathrooms:   2,
 				NightlyRate: 150,
 				Description: "The Eisenhower is a cozy up north cabin with 4 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Eisenhower is located on the shores of Lake Everett and is a short walk to the marina. The Eisenhower is a cozy up north cabin with 4 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Eisenhower is located on the shores of Lake Everett and is a short walk to the marina. The Eisenhower is a cozy up north cabin with 4 bedrooms and 2 bathrooms. It is perfect for small groups and family gatherings. The Eisenhower is located on the shores of Lake Everett and is a short walk to the marina.",
+				Thumbnail:   "eisenhower-cabin-eagle-river-04.PNG",
 			},
 			{
 				Name:        "The Musky Inn",
@@ -148,6 +153,7 @@ var accountsToCreate = []CreateAccountRequest{
 				Bathrooms:   7,
 				NightlyRate: 500,
 				Description: "The Musky Inn is a cozy up north cabin with 13 bedrooms and 7 bathrooms. It is perfect for large groups and family gatherings. The Musky Inn is located on the shores of Lake Everett and is a short walk to the marina. The Musky Inn is a cozy up north cabin with 13 bedrooms and 7 bathrooms. It is perfect for large groups and family gatherings. The Musky Inn is located on the shores of Lake Everett and is a short walk to the marina. The Musky Inn is a cozy up north cabin with 13 bedrooms and 7 bathrooms. It is perfect for large groups and family gatherings. The Musky Inn is located on the shores of Lake Everett and is a short walk to the marina.",
+				Thumbnail:   "musky-inn-eagle-river-03.PNG",
 			},
 			{
 				Name:        "The Little Guy",
@@ -156,6 +162,7 @@ var accountsToCreate = []CreateAccountRequest{
 				Bathrooms:   1,
 				NightlyRate: 100,
 				Description: "The Little Guy is a cozy up north cabin with 1 bedroom and 1 bathroom. It is perfect for small groups and family gatherings. The Little Guy is located on the shores of Lake Everett and is a short walk to the marina. The Little Guy is a cozy up north cabin with 1 bedroom and 1 bathroom. It is perfect for small groups and family gatherings. The Little Guy is located on the shores of Lake Everett and is a short walk to the marina. The Little Guy is a cozy up north cabin with 1 bedroom and 1 bathroom. It is perfect for small groups and family gatherings. The Little Guy is located on the shores of Lake Everett and is a short walk to the marina.",
+				Thumbnail:   "musky-inn-eagle-river-03.PNG",
 			},
 		},
 
