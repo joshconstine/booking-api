@@ -19,16 +19,16 @@ templ Index(rentals []response.RentalResponse) {
 	@layout.App(true) {
 		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
 			<h2 class="text-xl font-semibold mb-6 red-400">Rentals</h2>
-			<ul class="text-left">
-
-			for _, rental := range rentals {
-				<a href={templ.SafeURL(GetPath(int(rental.ID)))}>
-    		<li>{ rental.Name }</li>
-			<img src={ rental.Thumbnail } alt={ rental.Name } class="w-1/4" />
-				</a>
-  			}
+			<ul class=" flex gap-4 flex-wrap">
+				for _, rental := range rentals {
+					<div class="w-32">
+						<a href={templ.SafeURL(GetPath(int(rental.ID)))}>
+							<li>{ rental.Name }</li>
+							<img src={ rental.Thumbnail } alt={ rental.Name }  />
+						</a>
+					</div>
+				}
 			</ul>
-			
 		</div>
 	}
 }

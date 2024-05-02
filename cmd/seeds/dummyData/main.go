@@ -335,8 +335,8 @@ func main() {
 	// SeedMultipleBookings(database.Instance, 10)
 	// GenerateInquiry(database.Instance)
 	// GenerateBookingPermission(database.Instance)
-	GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 11)
-	GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 12)
+	GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 13)
+	GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 14)
 
 	// SeedBoookingWithConflicts(database.Instance)
 	log.Println("Database seeding Completed!")
