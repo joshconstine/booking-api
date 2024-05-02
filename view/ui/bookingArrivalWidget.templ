@@ -45,7 +45,7 @@ templ BookingArrivalWidget(Bookings []response.BookingSnapshotResponse) {
     </thead>
     <tbody>
       <!-- row 1 -->
-                for _, booking := range Bookings[:5] {
+                for _, booking := range Bookings {
       <tr class="hover">
         <td>
 				  <a href={templ.SafeURL(GetPath(booking.ID))}>

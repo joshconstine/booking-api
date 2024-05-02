@@ -55,7 +55,7 @@ func (c *CreateAccountRequest) MapAccountRequestToAccount() models.Account {
 		Boats:   []models.Boat{},
 	}
 	taxRates := []models.TaxRate{}
-
+	// TODO:make a helper to get a tax rate
 	result := database.Instance.Model(&models.TaxRate{}).Find(&taxRates)
 	if result.Error != nil {
 		log.Println(result.Error)
