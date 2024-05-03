@@ -5,8 +5,8 @@ import (
 )
 
 templ Navigation() {
-	<div class="navbar bg-branded-400 px-4">
-		<div class="flex-1">
+	<div class="navbar bg-branded-400 px-4 flex w-full justify-between">
+		<div class="flex gap-4">
 			<div class="dropdown dropdown-hover">
 				<div tabindex="0" role="button" class=" text-black">
 					<i class="fa-solid fa-bars h-8 w-8"></i>
@@ -25,15 +25,16 @@ templ Navigation() {
 					<li><a href="/help"><i class="fa-regular fa-circle-question"></i>Help center</a></li>
 				</ul>
 			</div>
+			<img src="/public/images/logo.svg" class="h-8" alt="logo" />
 		</div>
 		<div class="flex gap-2 items-center">
-		<div>
-			<button class="btn btn-sm "><i class="fa-solid fa-plus "></i>Add booking</button>
-		</div>
+			<div>
+				<button class="btn btn-sm "><i class="fa-solid fa-plus "></i>Add booking</button>
+			</div>
 		<div class="indicator">
 		  <span class="indicator-item badge  badge-xs pt-2"></span> 
 			<i class="fa-solid fa-bell h-8 grid place-items-center text-white"></i>
-</div>
+		</div>
 		
 
 			<ul class="menu menu-horizontal px-1">
