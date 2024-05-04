@@ -19,7 +19,7 @@ func (t *BoatRepositoryImplementation) FindAll() []response.BoatResponse {
 	var boats []models.Boat
 	result := t.Db.Model(&models.Boat{}).
 		Preload("Timeblocks").
-		Preload("Photos").
+		Preload("Photos.Photo").
 		Preload("Bookings").
 		Preload("BookingCostItems").
 		Preload("BookingDurationRule").

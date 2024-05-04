@@ -7,7 +7,7 @@ type BoatResponse struct {
 	MaxWeight uint   `json:"maxWeight"`
 
 	Timeblocks          []EntityTimeblockResponse         `json:"timeblocks"`
-	Photos              []EntityPhotoResponse             `json:"photos"`
+	Thumbnail           string                            `json:"thumbnail"`
 	BookingRule         EntityBookingRuleResponse         `json:"bookingRule"`
 	BookingDurationRule EntityBookingDurationRuleResponse `json:"bookingDurationRule"`
 }

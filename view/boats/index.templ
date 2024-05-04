@@ -24,6 +24,7 @@ templ Index(boats []response.BoatResponse) {
 			for _, boat := range boats {
 				<a href={templ.SafeURL(GetPath(int(boat.ID)))}>
     		<li>{ boat.Name }</li>
+							<img src={ boat.Thumbnail } alt={ boat.Name }  />
 				</a>
   			}
 			</ul>

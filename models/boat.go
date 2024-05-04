@@ -1,7 +1,9 @@
 package models
 
 import (
+	"booking-api/config"
 	"booking-api/data/response"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -42,9 +44,24 @@ func (b *Boat) MapBoatToResponse() response.BoatResponse {
 		result.Timeblocks = append(result.Timeblocks, timeBlock.MapTimeblockToResponse())
 	}
 
-	for _, photo := range b.Photos {
-		result.Photos = append(result.Photos, photo.MapEntityPhotoToResponse())
+	thumbnail := ""
+	if len(b.Photos) > 0 {
+
+		// load config
+		env, err := config.LoadConfig(".")
+		if err != nil {
+			fmt.Printf("error: %v", err)
+		}
+		base := env.OBJECT_STORAGE_URL
+		thumbnail = b.Photos[0].Photo.URL
+
+		if thumbnail != "" {
+			thumbnail = "https://" + base + "/" + thumbnail
+		}
+
 	}
+
+	result.Thumbnail = thumbnail
 
 	result.BookingDurationRule = b.BookingDurationRule.MapEntityBookingDurationRuleToResponse()
 	result.BookingRule = b.BookingRule.MapEntityBookingRuleToResponse()

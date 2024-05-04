@@ -10,6 +10,7 @@ type CreateBoatRequest struct {
 	AccountID   uint
 	NightlyRate float64
 	Description string
+	Thumbnail   string
 }
 
 func (boat *CreateBoatRequest) MapCreateBoatRequestToBoat(taxid uint) models.Boat {
@@ -46,7 +47,13 @@ func (boat *CreateBoatRequest) MapCreateBoatRequestToBoat(taxid uint) models.Boa
 		BookingRequests:            []models.EntityBookingPermission{},
 		Timeblocks:                 []models.EntityTimeblock{},
 		Bookings:                   []models.EntityBooking{},
-		Photos:                     []models.EntityPhoto{},
+		Photos: []models.EntityPhoto{
+			{
+				Photo: models.Photo{
+					URL: boat.Thumbnail,
+				},
+			},
+		},
 	}
 	return boatModel
 }

@@ -41,7 +41,7 @@ func main() {
 		"entity_bookings",
 		"entity_booking_rules",
 		"entity_booking_costs",
-		"tax_rates",
+		// "tax_rates",
 	}
 
 	for _, table := range tables {
