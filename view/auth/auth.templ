@@ -64,15 +64,16 @@ templ AccountSetupForm(parmas AccountSetupParams, errors AccountSetupErrors) {
 		</label>
 
 		
-		<button class="btn btn-primary">setup account <i class="fa-solid fa-arrow-right"></i></button>
+		<button class="btn btn-primary bg-branded-800">setup account <i class="fa-solid fa-arrow-right"></i></button>
 	</form>
 }
 
 templ Login() {
 	@layout.App(false) {
 		<div class="flex justify-center mt-[calc(100vh-100vh+8rem)]">
-			<div class="max-w-md w-full bg-base-300 py-12 px-8 rounded-xl">
-				<h1 class="text-center text-xl font-black mb-10">Login to Enigma bookings</h1>
+			<div class="max-w-md w-full bg-branded-400 py-12 px-8 rounded-xl">
+				<img src="/public/images/logo.svg" class="h-8" alt="logo" />
+				<h1 class="text-center text-xl font-black mb-10">Login</h1>
 				@LoginForm(supabase.UserCredentials{}, LoginErrors{})
 			</div>
 		</div>
@@ -82,8 +83,9 @@ templ Login() {
 templ Signup() {
 	@layout.App(false) {
 		<div class="flex justify-center mt-[calc(100vh-100vh+8rem)]">
-			<div class="max-w-md w-full bg-base-300 py-12 px-8 rounded-xl">
-				<h1 class="text-center text-xl font-black mb-10">Signup to dreapicai</h1>
+			<img src="/public/images/logo.svg" class="h-8" alt="logo" />
+			<div class="max-w-md w-full bg-branded-400 py-12 px-8 rounded-xl">
+				<h1 class="text-center text-xl font-black mb-10">Signup</h1>
 				@SignupForm(SignupParams{}, SignupErrors{})
 			</div>
 		</div>
@@ -145,7 +147,7 @@ templ SignupForm(params SignupParams, errors SignupErrors) {
 				</div>
 			}
 		</div>
-		<button type="submit" class="btn btn-primary w-full">login <i class="fa-solid fa-arrow-right"></i></button>
+		<button type="submit" class="btn btn-primary w-full bg-branded-800">login <i class="fa-solid fa-arrow-right"></i></button>
 	</form>
 }
 
