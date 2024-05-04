@@ -11,8 +11,11 @@ templ Navigation() {
 				<div tabindex="0" role="button" class=" text-black">
 					<i class="fa-solid fa-bars h-8 w-8"></i>
 				</div>
-				<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-branded-800 text-white rounded-box w-52">
-					<li><a href="/admin"><i class="fa-solid fa-border-all"></i>Dashboard</a></li>
+				<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-branded-800 text-white rounded-box w-52" hx-boost="true" hx-indicator="#loading">
+
+            <span id="loading" class="loading loading-spinner loading-md htmx-indicator"></span>
+			
+					<li><a href="/admin" ><i class="fa-solid fa-border-all"></i>Dashboard</a></li>
 					<li><a href="/bookings"><i class="fa-solid fa-bars-progress"></i>Manage bookings</a></li>
 					<li><a href="/rentals"><i class="fa-solid fa-house"></i>Mange rental listings</a></li>
 					<li><a href="/baots"><i class="fa-solid fa-sailboat"></i>Mange boat listings</a></li>
@@ -61,6 +64,6 @@ templ Navigation() {
 
 templ LogoutForm() {
 	<form method="POST" action="/logout">
-		<li><button type="submit" class="btn btn-link">Logout</button></li>
+		<li><button type="submit" class="btn btn-link bg-branded-800">Logout</button></li>
 	</form>
 }
