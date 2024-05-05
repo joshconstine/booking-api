@@ -123,8 +123,8 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// paymentMethodRepository := repositories.NewPaymentMethodRepositoryImplementation(database.Instance)
 	// bookingPaymentRepository := repositories.NewBookingPaymentRepositoryImplementation(database.Instance)
 	// rentalStatusRepository := repositories.NewRentalStatusRepositoryImplementation(database.Instance)
-	// photoRepository := repositories.NewPhotoRepositoryImplementation(objectStorage.Client, database.Instance)
-	// entitiyPhotoRepository := repositories.NewEntityPhotoRepositoryImplementation(database.Instance)
+	photoRepository := repositories.NewPhotoRepositoryImplementation(objectStorage.Client, database.Instance)
+	entitiyPhotoRepository := repositories.NewEntityPhotoRepositoryImplementation(database.Instance)
 	// locationRepository := repositories.NewLocationRepositoryImplementation(database.Instance)
 	// roomTypeRepository := repositories.NewRoomTypeRepositoryImplementation(database.Instance)
 	// rentalRoomRepository := repositories.NewRentalRoomRepositoryImplementation(database.Instance)
@@ -156,8 +156,8 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// paymentMethodService := services.NewPaymentMethodServiceImplementation(paymentMethodRepository, validate)
 	// bookingPaymentService := services.NewBookingPaymentServiceImplementation(bookingPaymentRepository, validate)
 	// rentalStatusService := services.NewRentalStatusServiceImplementation(rentalStatusRepository, validate)
-	// photoService := services.NewPhotoServiceImplementation(photoRepository, validate)
-	// entityPhotoService := services.NewEntityPhotoServiceImplementation(entitiyPhotoRepository, validate)
+	photoService := services.NewPhotoServiceImplementation(photoRepository, validate)
+	entityPhotoService := services.NewEntityPhotoServiceImplementation(entitiyPhotoRepository, validate)
 	// locationService := services.NewLocationServiceImplementation(locationRepository, validate)
 	// roomTypeService := services.NewRoomTypeServiceImplementation(roomTypeRepository)
 	// rentalRoomService := services.NewRentalRoomServiceImplementation(rentalRoomRepository, validate)
@@ -188,7 +188,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// paymentMethodController := controllers.NewPaymentMethodController(paymentMethodService)
 	// bookingPaymentController := controllers.NewBookingPaymentController(bookingPaymentService)
 	// rentalStatusController := controllers.NewRentalStatusController(rentalStatusService)
-	// photoController := controllers.NewPhotoController(photoService, entityPhotoService)
+	photoController := controllers.NewPhotoController(photoService, entityPhotoService)
 	// locationController := controllers.NewLocationController(locationService)
 	// roomTypeController := controllers.NewRoomTypeController(roomTypeService)
 	// rentalRoomController := controllers.NewRentalRoomController(rentalRoomService)
@@ -211,7 +211,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 
 	chatController := controllers.NewChatController(chatService, userService)
 
-	router := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController)
+	router := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController, photoController)
 
 	// ginRouter := router.InitRouter(routes)
 

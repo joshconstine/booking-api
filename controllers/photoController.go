@@ -48,14 +48,11 @@ func (controller *PhotoController) FindAllForEntity(ctx *gin.Context, entity str
 	ctx.JSON(http.StatusOK, response)
 }
 
-func (controller *PhotoController) AddPhoto(ctx *gin.Context, entity string, entityID int) {
-
-	var response response.Response
+func (controller *PhotoController) AddPhoto(w http.ResponseWriter, r *http.Request, entity string, entityID int) {
 
 	// Create a context with a timeout that will abort the upload if it takes
 	// more than the passed in timeout.
-	r := ctx.Request
-	w := ctx.Writer
+
 	timeout := 20 * time.Second
 
 	var cancelFn func()
@@ -76,9 +73,7 @@ func (controller *PhotoController) AddPhoto(ctx *gin.Context, entity string, ent
 	if err != nil {
 		http.Error(w, "Failed to get file from form", http.StatusInternalServerError)
 		// return "", err
-		response.Code = http.StatusBadRequest
-		response.Status = http.StatusText(http.StatusBadRequest)
-		response.Data = "Failed to get file from form"
+		w.Write([]byte("Failed to get file from form"))
 
 	}
 	defer file.Close()
@@ -87,18 +82,15 @@ func (controller *PhotoController) AddPhoto(ctx *gin.Context, entity string, ent
 	entityPhotoResult := controller.EntityPhotoService.AddPhotoToEntity(photoResult.ID, entity, uint(entityID))
 
 	if entityPhotoResult.ID == 0 {
-		response.Code = http.StatusBadRequest
-		response.Status = http.StatusText(http.StatusBadRequest)
-		response.Data = "Failed to add photo to entity"
-		ctx.Header("Content-Type", "application/json")
-		ctx.JSON(http.StatusBadRequest, response)
+		w.Write([]byte("Failed to add photo to entity"))
 		return
 	}
-	response.Code = http.StatusOK
-	response.Status = http.StatusText(http.StatusOK)
-	response.Data = photoResult
 
-	ctx.Header("Content-Type", "application/json")
-	ctx.JSON(http.StatusOK, response)
+	// ctx.Header("Content-Type", "application/json")
+	// ctx.JSON(http.StatusOK, response)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Photo added successfully"))
 
 }

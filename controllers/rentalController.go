@@ -10,6 +10,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-chi/chi/v5"
+
+	"encoding/json"
 )
 
 type RentalController struct {
@@ -29,17 +31,18 @@ func NewRentalController(rentalService services.RentalService) *RentalController
 	return &RentalController{rentalService: rentalService}
 }
 
-func (controller *RentalController) FindAll(ctx *gin.Context) {
+func (controller *RentalController) FindAll(w http.ResponseWriter, r *http.Request) error {
 	rentals := controller.rentalService.FindAll()
 
-	webResponse := response.Response{
-		Code:   200,
-		Status: "Ok",
-		Data:   rentals,
+	rentalsJSON, err := json.Marshal(rentals)
+	if err != nil {
+		return err
 	}
 
-	ctx.Header("Content-Type", "application/json")
-	ctx.JSON(http.StatusOK, webResponse)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(rentalsJSON)
+	return nil
 
 }
 

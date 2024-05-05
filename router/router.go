@@ -52,6 +52,10 @@ func NewRouter(
 		userRouter := api.Group("/users")
 		userRouter.GET("", userController.FindAll)
 		userRouter.POST("/register", userController.RegisterUser)
+		// userRouter.POST("/:userId/photo", func(ctx *gin.Context) {
+		// 	userId := ctx.Param("userId")
+		// 	photoController.AddPhoto(ctx, constants.USER_ENTITY, userId)
+		// })
 		// api.POST("/token", controllers.GenerateToken)
 		// api.GET("/boats", controllers.GetBoats)
 		// api.GET("/boats/:id", controllers.GetBoat)
@@ -146,10 +150,10 @@ func NewRouter(
 		// boatRouter.POST("", boatController.Create)
 		// boatRouter.PATCH("/:boatId", boatController.Update)
 		// boatRouter.DELETE("/:boatId", boatController.Delete)
-		boatRouter.POST("/:boatId/photos", func(ctx *gin.Context) {
-			boatIdint, _ := strconv.Atoi(ctx.Param("boatId"))
-			photoController.AddPhoto(ctx, constants.BOAT_ENTITY, boatIdint)
-		})
+		// boatRouter.POST("/:boatId/photos", func(ctx *gin.Context) {
+		// 	boatIdint, _ := strconv.Atoi(ctx.Param("boatId"))
+		// 	photoController.AddPhoto(ctx, constants.BOAT_ENTITY, boatIdint)
+		// })
 
 		boatRouter.GET("/:boatId/photos", func(ctx *gin.Context) {
 			boatIdint, _ := strconv.Atoi(ctx.Param("boatId"))
@@ -158,17 +162,17 @@ func NewRouter(
 
 		/************************ RENTALS ************************/
 		rentalRouter := api.Group("/rentals")
-		rentalRouter.GET("", rentalController.FindAll)
+		// rentalRouter.GET("", rentalController.FindAll)
 		rentalRouter.POST("", rentalController.Create)
 		rentalRouter.PUT("", rentalController.Update)
 		rentalRouter.GET("/info", rentalRoomController.FindAll)
 		rentalRouter.GET("/:rentalId", rentalController.FindById)
 		rentalRouter.GET("/:rentalId/status", rentalStatusController.FindByRentalId)
 
-		rentalRouter.POST("/:rentalId/photos", func(ctx *gin.Context) {
-			rentalIdint, _ := strconv.Atoi(ctx.Param("rentalId"))
-			photoController.AddPhoto(ctx, constants.RENTAL_ENTITY, rentalIdint)
-		})
+		// rentalRouter.POST("/:rentalId/photos", func(ctx *gin.Context) {
+		// 	rentalIdint, _ := strconv.Atoi(ctx.Param("rentalId"))
+		// 	photoController.AddPhoto(ctx, constants.RENTAL_ENTITY, rentalIdint)
+		// })
 
 		rentalRouter.GET("/:rentalId/photos", func(ctx *gin.Context) {
 			rentalIdint, _ := strconv.Atoi(ctx.Param("rentalId"))

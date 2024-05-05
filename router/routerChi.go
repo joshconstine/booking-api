@@ -1,11 +1,13 @@
 package router
 
 import (
+	"booking-api/constants"
 	"booking-api/controllers"
 	"booking-api/middlewares"
 	"booking-api/services"
 	home "booking-api/view/home"
 	"os"
+	"strconv"
 
 	"net/http"
 
@@ -13,9 +15,10 @@ import (
 )
 
 func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController, userSettingsController *controllers.UserSettingsController,
-	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController, entityBookingPermissionController *controllers.EntityBookingPermissionController) *chi.Mux {
+	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController, entityBookingPermissionController *controllers.EntityBookingPermissionController, photoController *controllers.PhotoController) *chi.Mux {
 
 	router := chi.NewMux()
+
 	// router.Use(middlewares.WithLogger)
 	userMiddleware := middlewares.NewWithUserMiddleWare(*userService)
 	router.Use(userMiddleware)
@@ -27,6 +30,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		home.Index().Render(r.Context(), w)
 	})
 
+	/************************ ADMIN ROUTES ************************/
 	router.Get("/rentals", func(w http.ResponseWriter, r *http.Request) {
 		rentalsController.HandleHomeIndex(w, r)
 	})
@@ -83,5 +87,23 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		router.Put("/permission/{entityBookingPermissionID}/approve", controllers.Make(entityBookingPermissionController.HandleApproveBookingPermissionRequest))
 	})
 
+	apiRouter := chi.NewRouter()
+
+	apiRouter.Get("/rentals", controllers.Make(rentalsController.FindAll))
+	apiRouter.Post("/rentals/{rentalId}/photos", func(w http.ResponseWriter, r *http.Request) {
+		rentalID := chi.URLParam(r, "rentalId")
+
+		rentalIDInt, err := strconv.Atoi(rentalID)
+
+		if err != nil {
+			http.Error(w, "Invalid rental ID", http.StatusBadRequest)
+			return
+		}
+
+		photoController.AddPhoto(w, r, constants.RENTAL_ENTITY, rentalIDInt)
+		// bookingController.HandleBookingInformation(w, r)
+	})
+
+	router.Mount("/api", apiRouter)
 	return router
 }
