@@ -19,10 +19,11 @@ type User struct {
 	PhoneNumber string         `json:"phoneNumber"`
 	Login       Login
 
-	Bookings  []Booking
-	Inquiries []EntityBookingPermission
-	Chats     []Chat
-	Messages  []ChatMessage
+	ProfilePicture EntityPhoto `gorm:"polymorphic:Entity"`
+	Bookings       []Booking
+	Inquiries      []EntityBookingPermission
+	Chats          []Chat
+	Messages       []ChatMessage
 }
 
 // func (user *User) BeforeCreate(scope *gorm.DB) error {
