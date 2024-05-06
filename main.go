@@ -20,6 +20,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/stripe/stripe-go/v78"
 )
 
 func main() {
@@ -64,6 +65,7 @@ func run(env config.EnvVars) (func(), error) {
 
 	objectStorage.CreateSession()
 
+	stripe.Key = env.STRIPE_KEY
 	// Creates a new Supabase client
 	// accessable via sb.ClientInstance
 	sb.CreateAuthClient(env)

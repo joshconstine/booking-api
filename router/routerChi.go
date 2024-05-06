@@ -67,6 +67,9 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		auth.Use(middlewares.WithAuth)
 		auth.Get("/account/setup", controllers.Make(authController.HandleAccountSetupIndex))
 		auth.Post("/account/setup", controllers.Make(authController.HandleAccountSetupCreate))
+		auth.Post("/billing/account", controllers.Make(userSettingsController.CreateAccount))
+		auth.Post("/billing/session", controllers.Make(userSettingsController.CreateAccountSession))
+
 	})
 
 	router.Group(func(auth chi.Router) {
