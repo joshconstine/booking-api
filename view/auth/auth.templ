@@ -70,15 +70,28 @@ templ AccountSetupForm(parmas AccountSetupParams, errors AccountSetupErrors) {
 
 templ Login() {
 	@layout.App(false) {
-		<div class="flex justify-center mt-[calc(100vh-100vh+8rem)]">
-			<div class="max-w-md w-full py-12 px-8 rounded-xl flex items-center gap-4 flex-col">
-				<img src="/public/images/logotagline.svg"  alt="logo" />
-				// <h1 class="text-center text-xl font-black mb-10">Login</h1>
-				<div  class="join">
-					<a  class="btn w-32 btn-sm">Sign-Up</a>
-					<a  class="btn btn-active w-32 btn-sm ">Login</a>
+		<div class="flex flex-col w-full items-center">
+			<div class="w-full flex px-8 py-8">
+			<a href="/">
+				<div class="flex gap-4 items-center">
+					<i class="fa-solid fa-arrow-left font-4xl text-branded-800"></i>
+					<div class="w-20 h-20">
+						<img src="/public/images/mono.svg" alt="logo" />
+					</div>
+
 				</div>
-				@LoginForm(supabase.UserCredentials{}, LoginErrors{})
+			</a>
+			</div>
+			<div class="flex justify-center mt-[calc(100vh-100vh+8rem)]">
+				<div class="max-w-md w-full py-12 px-8 rounded-xl flex items-center gap-4 flex-col">
+					<img src="/public/images/logotagline.svg"  alt="logo" />
+					// <h1 class="text-center text-xl font-black mb-10">Login</h1>
+					<div  class="join">
+						<a  class="btn w-32 btn-sm">Sign-Up</a>
+						<a  class="btn btn-active w-32 btn-sm ">Login</a>
+					</div>
+					@LoginForm(supabase.UserCredentials{}, LoginErrors{})
+				</div>
 			</div>
 		</div>
 	}

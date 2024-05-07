@@ -5080,6 +5080,11 @@ details.collapse summary::-webkit-details-marker {
   padding-bottom: 1.5rem;
 }
 
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
 .py-96 {
   padding-top: 24rem;
   padding-bottom: 24rem;
@@ -5179,6 +5184,11 @@ details.collapse summary::-webkit-details-marker {
 .text-black {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.text-branded-800 {
+  --tw-text-opacity: 1;
+  color: rgb(88 106 93 / var(--tw-text-opacity));
 }
 
 .text-error {
