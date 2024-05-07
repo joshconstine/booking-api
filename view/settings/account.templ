@@ -15,17 +15,17 @@ templ Index(user models.AuthenticatedUser, selected string) {
 			<div>
 				// <h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Profoile</h1>
 				<div class="join">
-					<button class="join-item btn btn-primary" hx-get="/settings/account/profile"
+					<button class="join-item btn bg-branded-400" hx-get="/settings/account/profile"
 						hx-target="#profile-container"
 					>Profile</button>
-					<button class="join-item btn btn-primary" hx-get="/settings/account/subscriptions"
+					<button class="join-item btn bg-branded-400" hx-get="/settings/account/subscriptions"
 						hx-target="#profile-container"
 					>Subscription</button>
-					<button hx-target="#profile-container" class="join-item btn btn-primary" hx-get="/settings/account/team">Team</button>
-					<button hx-target="#profile-container" class="join-item btn btn-primary" hx-get="/settings/account/finances">Finances</button>
-					<button hx-target="#profile-container" class="join-item btn btn-primary" hx-get="/settings/account/notifications">Notifications</button>
-					<button hx-target="#profile-container" class="join-item btn btn-primary" hx-get="/settings/account/cleaners">Cleaners</button>
-					<button hx-target="#profile-container" class="join-item btn btn-primary" hx-get="/settings/account/security">Log in/Security</button>
+					<button hx-target="#profile-container" class="join-item btn bg-branded-400" hx-get="/settings/account/team">Team</button>
+					<button hx-target="#profile-container" class="join-item btn bg-branded-400" hx-get="/settings/account/finances">Finances</button>
+					<button hx-target="#profile-container" class="join-item btn bg-branded-400" hx-get="/settings/account/notifications">Notifications</button>
+					<button hx-target="#profile-container" class="join-item btn bg-branded-400" hx-get="/settings/account/cleaners">Cleaners</button>
+					<button hx-target="#profile-container" class="join-item btn bg-branded-400" hx-get="/settings/account/security">Log in/Security</button>
 				</div>
 				<div id="profile-container">
 				if selected == "profile" {
