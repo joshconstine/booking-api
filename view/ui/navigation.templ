@@ -48,8 +48,8 @@ templ Navigation() {
 							<summary class="text-white">
 								{ view.AuthenticatedUser(ctx).User.Email }
 							</summary>
-							<ul class="p-2 bg-base-100 rounded-t-none">
-								<li><a href="/settings">Settings</a></li>
+							<ul class="p-2 bg-white rounded-t-none flex flex-col items-end">
+								<li><a href="/settings">My account<i class="fa-regular fa-circle-user"></i></a></li>
 								@LogoutForm()
 							</ul>
 						</details>
@@ -64,6 +64,6 @@ templ Navigation() {
 
 templ LogoutForm() {
 	<form method="POST" action="/logout">
-		<li><button type="submit" class="btn btn-link bg-branded-800">Logout</button></li>
+		<li><button type="submit" class="">Logout<i class="fa-solid fa-right-from-bracket"></i></button></li>
 	</form>
 }
