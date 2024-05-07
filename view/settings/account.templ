@@ -9,11 +9,116 @@ import (
     "booking-api/view/ui"
 )
 
-templ Index(user models.AuthenticatedUser) {
+templ Index(user models.AuthenticatedUser, selected string) {
 	@layout.App(true) {
 		<div class="max-w-2xl w-full mx-auto mt-8">
 			<div>
-				<h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Profile</h1>
+				// <h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Profoile</h1>
+				<div class="join">
+					<button class="join-item btn btn-primary" hx-get="/settings/account/profile"
+						hx-target="#profile-container"
+					>Profile</button>
+					<button class="join-item btn btn-primary" hx-get="/settings/account/subscriptions"
+						hx-target="#profile-container"
+					>Subscription</button>
+					<button hx-target="#profile-container" class="join-item btn btn-primary" hx-get="/settings/account/team">Team</button>
+					<button hx-target="#profile-container" class="join-item btn btn-primary" hx-get="/settings/account/finances">Finances</button>
+					<button hx-target="#profile-container" class="join-item btn btn-primary" hx-get="/settings/account/notifications">Notifications</button>
+					<button hx-target="#profile-container" class="join-item btn btn-primary" hx-get="/settings/account/cleaners">Cleaners</button>
+					<button hx-target="#profile-container" class="join-item btn btn-primary" hx-get="/settings/account/security">Log in/Security</button>
+				</div>
+				<div id="profile-container">
+				if selected == "profile" {
+					@Profile(view.AuthenticatedUser(ctx))
+				}
+				if selected == "subscriptions" {
+					@Subscription(view.AuthenticatedUser(ctx))
+				}
+				
+					// @Profile(view.AuthenticatedUser(ctx))
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ Finances(user models.AuthenticatedUser) {
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+			<div>
+				<h2>Finances</h2>
+				<p>Manage your finances</p>
+			</div>
+		</div>
+	</div>
+}
+templ Team(user models.AuthenticatedUser) {
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+			<div>
+				<h2>Team</h2>
+				<p>Manage your team</p>
+			</div>
+		</div>
+	</div>
+}
+
+templ Notifications(user models.AuthenticatedUser) {
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+			<div>
+				<h2>Notifications</h2>
+				<p>Manage your notifications</p>
+			</div>
+		</div>
+	</div>
+}
+
+templ Cleaners(user models.AuthenticatedUser) {
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+			<div>
+				<h2>Cleaners</h2>
+				<p>Manage your cleaners</p>
+			</div>
+		</div>
+	</div>
+}
+
+templ Security(user models.AuthenticatedUser) {
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+			<div>
+				<h2>Security</h2>
+				<p>Manage your security</p>
+			</div>
+		</div>
+	</div>
+}
+
+
+templ Subscription(user models.AuthenticatedUser) {
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+			<div>
+				<h2>Subscription pro plan</h2>
+				<p>Upgrade your subscription</p>
+			</div>
+		</div>
+	</div>
+}
+
+templ Profile(user models.AuthenticatedUser) {
+	// @layout.App(true) {
+		<div class="max-w-2xl w-full mx-auto mt-8">
+			<div>
+				// <h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Profile</h1>
 			<dt>{view.AuthenticatedUser(ctx).User.FirstName}</dt>
 			<dt>{view.AuthenticatedUser(ctx).User.LastName}</dt>
 			<dt>{view.AuthenticatedUser(ctx).User.Username}</dt>
@@ -66,7 +171,7 @@ templ Index(user models.AuthenticatedUser) {
     <div id="error" hidden>Something went wrong!</div>
 		<script src="/public/stripe.js" type="module"></script>
 		</div>
-	}
+	// }
 }
 
 type ProfileParams struct {

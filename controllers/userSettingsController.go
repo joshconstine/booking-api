@@ -27,7 +27,7 @@ func NewUserSettingsController(service services.UserService) *UserSettingsContro
 func (usc *UserSettingsController) HandleSettingsIndex(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
 	// user.User = usc.userService.FindByUserID(user.User.UserID)
-	return render(r, w, settings.Index(user))
+	return render(r, w, settings.Index(user, "profile"))
 }
 
 func (usc *UserSettingsController) HandleSettingsUpdate(w http.ResponseWriter, r *http.Request) error {
@@ -66,6 +66,42 @@ func (usc *UserSettingsController) HandleSettingsUpdate(w http.ResponseWriter, r
 
 	params.Success = true
 	return render(r, w, settings.ProfileForm(params, settings.ProfileErrors{}))
+}
+
+func (usc *UserSettingsController) HandleSubscriptions(w http.ResponseWriter, r *http.Request) error {
+	user := GetAuthenticatedUser(r)
+	return render(r, w, settings.Subscription(user))
+	// return nil
+}
+
+func (usc *UserSettingsController) HandleTeam(w http.ResponseWriter, r *http.Request) error {
+	user := GetAuthenticatedUser(r)
+	return render(r, w, settings.Team(user))
+}
+
+func (usc *UserSettingsController) HandleFinances(w http.ResponseWriter, r *http.Request) error {
+	user := GetAuthenticatedUser(r)
+	return render(r, w, settings.Finances(user))
+}
+
+func (usc *UserSettingsController) HandleNotifications(w http.ResponseWriter, r *http.Request) error {
+	user := GetAuthenticatedUser(r)
+	return render(r, w, settings.Notifications(user))
+}
+
+func (usc *UserSettingsController) HandleCleaners(w http.ResponseWriter, r *http.Request) error {
+	user := GetAuthenticatedUser(r)
+	return render(r, w, settings.Cleaners(user))
+}
+
+func (usc *UserSettingsController) HandleSecurity(w http.ResponseWriter, r *http.Request) error {
+	user := GetAuthenticatedUser(r)
+	return render(r, w, settings.Security(user))
+}
+
+func (usc *UserSettingsController) HandleProfile(w http.ResponseWriter, r *http.Request) error {
+	user := GetAuthenticatedUser(r)
+	return render(r, w, settings.Profile(user))
 }
 
 type RequestBody struct {

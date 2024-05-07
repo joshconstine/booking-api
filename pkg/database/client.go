@@ -80,7 +80,7 @@ func Migrate() {
 	//***SAS***
 	// Instance.AutoMigrate(&models.Account{})
 	// Instance.AutoMigrate(&models.Membership{})
-	// Instance.AutoMigrate(&models.AccountSettings{})
+	Instance.AutoMigrate(&models.AccountSettings{})
 	// Instance.AutoMigrate(&models.ServicePlan{})
 
 	// Instance.AutoMigrate(&models.EntityBookingRequest{})

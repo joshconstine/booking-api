@@ -79,6 +79,14 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		// 	userSettingsController.HandleSettingsIndex(w, r)
 		// })
 		auth.Put("/settings/account/profile", controllers.Make(userSettingsController.HandleSettingsUpdate))
+		auth.Get("/settings/account/subscriptions", controllers.Make(userSettingsController.HandleSubscriptions))
+		auth.Get("/settings/account/profile", controllers.Make(userSettingsController.HandleProfile))
+		auth.Get("/settings/account/team", controllers.Make(userSettingsController.HandleTeam))
+		auth.Get("/settings/account/finances", controllers.Make(userSettingsController.HandleFinances))
+		auth.Get("/settings/account/notifications", controllers.Make(userSettingsController.HandleNotifications))
+		auth.Get("/settings/account/cleaners", controllers.Make(userSettingsController.HandleCleaners))
+		auth.Get("/settings/account/security", controllers.Make(userSettingsController.HandleSecurity))
+
 	})
 
 	router.Group(func(auth chi.Router) {
