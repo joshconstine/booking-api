@@ -15,7 +15,7 @@ import (
 )
 
 func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController, userSettingsController *controllers.UserSettingsController,
-	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController, entityBookingPermissionController *controllers.EntityBookingPermissionController, photoController *controllers.PhotoController) *chi.Mux {
+	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController, entityBookingPermissionController *controllers.EntityBookingPermissionController, photoController *controllers.PhotoController, accountController *controllers.AccountController) *chi.Mux {
 
 	router := chi.NewMux()
 
@@ -67,8 +67,8 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		auth.Use(middlewares.WithAuth)
 		auth.Get("/account/setup", controllers.Make(authController.HandleAccountSetupIndex))
 		auth.Post("/account/setup", controllers.Make(authController.HandleAccountSetupCreate))
-		auth.Post("/billing/account", controllers.Make(userSettingsController.CreateAccount))
-		auth.Post("/billing/session", controllers.Make(userSettingsController.CreateAccountSession))
+		auth.Post("/billing/account", controllers.Make(accountController.CreateAccount))
+		auth.Post("/billing/session", controllers.Make(accountController.CreateAccountSession))
 
 	})
 

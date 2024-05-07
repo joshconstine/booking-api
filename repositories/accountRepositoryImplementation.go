@@ -146,3 +146,34 @@ func (repository *AccountRepositoryImplementation) GetUserAccountRoles(userID st
 
 	return models.MapMembershipsToResponses(memberships), result.Error
 }
+
+func (repository *AccountRepositoryImplementation) GetAccountSettings(accountID uint) (response.AccountSettingsResponse, error) {
+	var accountSettings models.AccountSettings
+	result := repository.Db.
+		Preload("ServicePlan.Fees").
+		Preload("AccountOwner").
+		First(&accountSettings, "account_id = ?", accountID)
+
+	return accountSettings.MapAccountSettingsToResponse(), result.Error
+}
+
+func (repository *AccountRepositoryImplementation) AddStripeIDToAccountSettings(accountID uint, stripeAccountID string) error {
+	var accountSettings models.AccountSettings
+	accountSettings.AccountID = accountID
+	accountSettings.StripeAccountID = stripeAccountID
+
+	result := repository.Db.
+		FirstOrCreate(&accountSettings, "account_id = ?", accountID)
+
+	if result.Error != nil {
+		return result.Error
+	}
+	// if accountSettings.StripeAccountID != "" {
+	// 	return nil
+	// }
+
+	// accountSettings.StripeAccountID = stripeAccountID
+	// result = repository.Db.Save(&accountSettings)
+
+	return result.Error
+}
