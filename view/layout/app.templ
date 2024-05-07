@@ -19,11 +19,14 @@ templ App(nav bool) {
 			<script src="https://cdn.jsdelivr.net/npm/stripe@15.5.0/cjs/stripe.cjs.node.min.js"></script>
 			// <script src="https://cdn.jsdelivr.net/npm/@stripe/connect-js" type="module" ></script>
 		</head>
-		<body class="antialiased">
+		<body class=" h-full min-h-full flex flex-col justify-between">
 			if nav {
 				@ui.Navigation()
 			}
 			{ children... }
+			if nav {
+				@ui.Footer()
+			}
 		</body>
 	</html>
 }
