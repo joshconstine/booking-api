@@ -102,6 +102,7 @@ func NewWithUserMiddleWare(userService services.UserService) func(http.Handler) 
 					Username:  userData.Username,
 					Chats:     userData.Chats,
 
+					ProfilePicture: userData.ProfilePicture,
 					//TODO ADD user service to get username here
 				},
 				LoggedIn:    true,

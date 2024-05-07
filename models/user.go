@@ -8,22 +8,22 @@ import (
 )
 
 type User struct {
-	ID          string `gorm:" primaryKey"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
-	Username    string         `json:"username" gorm:"unique"`
-	FirstName   string         `json:"firstName"`
-	LastName    string         `json:"lastName"`
-	Email       string         `json:"email" gorm:"unique"`
-	PhoneNumber string         `json:"phoneNumber"`
-	Login       Login
+	ID             string `gorm:" primaryKey"`
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	DeletedAt      gorm.DeletedAt `gorm:"index"`
+	Username       string         `json:"username" gorm:"unique"`
+	FirstName      string         `json:"firstName"`
+	LastName       string         `json:"lastName"`
+	Email          string         `json:"email" gorm:"unique"`
+	PhoneNumber    string         `json:"phoneNumber"`
+	ProfilePicture string         `json:"profilePicture"`
+	Login          Login
 
-	ProfilePicture EntityPhoto `gorm:"polymorphic:Entity"`
-	Bookings       []Booking
-	Inquiries      []EntityBookingPermission
-	Chats          []Chat
-	Messages       []ChatMessage
+	Bookings  []Booking
+	Inquiries []EntityBookingPermission
+	Chats     []Chat
+	Messages  []ChatMessage
 }
 
 // func (user *User) BeforeCreate(scope *gorm.DB) error {
@@ -71,6 +71,8 @@ func (user *User) MapUserToResponse() response.UserResponse {
 	for _, chat := range user.Chats {
 		response.Chats = append(response.Chats, chat.MapChatToResponse())
 	}
+
+	response.ProfilePicture = MakeUrlPathForObjectStorage(user.ProfilePicture)
 
 	return response
 }

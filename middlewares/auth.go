@@ -28,14 +28,15 @@ func NewWithAccountSetupMiddleWare(userService services.UserService) func(http.H
 			}
 			fmt.Println("in here!!!!!")
 			authenticatedUser.User = response.UserResponse{
-				UserID:      authenticatedUser.User.UserID,
-				Username:    user.Username,
-				Email:       user.Email,
-				FirstName:   user.FirstName,
-				LastName:    user.LastName,
-				PhoneNumber: user.PhoneNumber,
-				Chats:       user.Chats,
-				Bookings:    user.Bookings,
+				UserID:         authenticatedUser.User.UserID,
+				Username:       user.Username,
+				Email:          user.Email,
+				FirstName:      user.FirstName,
+				LastName:       user.LastName,
+				PhoneNumber:    user.PhoneNumber,
+				Chats:          user.Chats,
+				Bookings:       user.Bookings,
+				ProfilePicture: user.ProfilePicture,
 			}
 
 			ctx := context.WithValue(r.Context(), models.UserContextKey, authenticatedUser)

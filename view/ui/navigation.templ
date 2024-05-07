@@ -47,6 +47,12 @@ templ Navigation() {
 						<details>
 							<summary class="text-white">
 								{ view.AuthenticatedUser(ctx).User.Email }
+								<div class="avatar ">
+									<div class="w-8 rounded-full avatar">
+										<img src={view.AuthenticatedUser(ctx).User.ProfilePicture} alt="avatar"  />
+									</div>
+								</div>
+
 							</summary>
 							<ul class="p-2 bg-white rounded-t-none flex flex-col items-end">
 								<li><a href="/settings">My account<i class="fa-regular fa-circle-user"></i></a></li>

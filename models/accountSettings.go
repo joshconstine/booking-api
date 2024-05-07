@@ -8,11 +8,12 @@ import (
 
 type AccountSettings struct {
 	gorm.Model
-	AccountID      uint   `gorm:"not null; uniqueIndex"`
-	ServicePlanID  uint   `gorm:"not null"`
-	AccountOwnerID string `gorm:"not null"`
-	AccountOwner   Membership
-	ServicePlan    ServicePlan
+	AccountID       uint `gorm:"not null; uniqueIndex"`
+	ServicePlanID   uint `gorm:"not null"`
+	AccountOwnerID  uint `gorm:"not null"`
+	StripeAccountID string
+	AccountOwner    Membership
+	ServicePlan     ServicePlan
 }
 
 func (a *AccountSettings) TableName() string {
