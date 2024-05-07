@@ -99,6 +99,8 @@ func (ac *AccountController) CreateAccount(w http.ResponseWriter, r *http.Reques
 		return err
 	}
 
+	//TODO:: this is bad, add accountid from a paramater as this will caise bugs for hosts with multiple accounts
+
 	for _, userAccountRole := range userAccountRoles {
 		if userAccountRole.Role.ID == constants.USER_ROLE_ACCOUNT_OWNER_ID {
 			accountId = int(userAccountRole.AccountID)
