@@ -6,6 +6,7 @@ import (
 	"booking-api/middlewares"
 	"booking-api/services"
 	home "booking-api/view/home"
+	learn "booking-api/view/learn"
 	"os"
 	"strconv"
 
@@ -28,6 +29,10 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 	router.Handle("/*", http.StripPrefix("/public/", http.FileServerFS(os.DirFS("public"))))
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		home.Index().Render(r.Context(), w)
+	})
+
+	router.Get("/learn", func(w http.ResponseWriter, r *http.Request) {
+		learn.Index().Render(r.Context(), w)
 	})
 
 	/************************ ADMIN ROUTES ************************/

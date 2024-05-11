@@ -1,0 +1,44 @@
+
+package home 
+
+import (
+	"booking-api/view/layout"
+	
+	"booking-api/constants"
+)
+
+templ Index() {
+	@layout.App(true) {
+		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
+			<h2 class="text-xl font-semibold mb-6 ">{constants.APPLICATION_NAME}</h2>
+                <p class="text-gray-700 mb-6">Here's what makes our platform unique:</p>
+        
+        <!-- Main Features Section -->
+                <section class="mb-8">
+                    <h2 class="text-xl font-semibold mb-4">Main Features</h2>
+                    <ul class="list-disc list-inside">
+                        <li class="mb-2">Allows hosts to list rental units similar to other short term rental services.</li>
+                        <li class="mb-2">Accepts boat bookings as well.</li>
+                        <li class="mb-2">Provides cleaning service and maintenance features.</li>
+                        <li class="mb-2">Allows for instant bookings or requires inquiries.</li>
+                        <li class="mb-2">Uses Stripe for payment processing.</li>
+                        <li class="mb-2">Deposits funds directly from the customer to the host, and charges a fee.</li>
+                    </ul>
+                </section>
+
+                <!-- Payment Processing Section -->
+                <section class="mb-8">
+                    <h2 class="text-xl font-semibold mb-4">Payment Processing</h2>
+                    <p class="text-gray-700 mb-2">We use Stripe for payment processing.</p>
+                    <p class="text-gray-700">When a booking is made, funds are deposited directly from the customer to the host, and we charge a fee for our services.</p>
+                </section>
+
+                <!-- Get Started Section -->
+                <section>
+                    <h2 class="text-xl font-semibold mb-4">Get Started</h2>
+                    <p class="text-gray-700 mb-2">Ready to start hosting or booking your next stay? Sign up now!</p>
+                    <a href="#" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Sign Up</a>
+                </section>
+		</div>
+	}
+}
