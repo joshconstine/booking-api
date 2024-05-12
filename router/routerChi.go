@@ -7,6 +7,8 @@ import (
 	"booking-api/services"
 	home "booking-api/view/home"
 	learn "booking-api/view/learn"
+	privacy "booking-api/view/privacy"
+	terms "booking-api/view/terms"
 	"os"
 	"strconv"
 
@@ -33,6 +35,14 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 
 	router.Get("/learn", func(w http.ResponseWriter, r *http.Request) {
 		learn.Index().Render(r.Context(), w)
+	})
+
+	router.Get("/terms", func(w http.ResponseWriter, r *http.Request) {
+		terms.Index().Render(r.Context(), w)
+	})
+
+	router.Get("/privacy", func(w http.ResponseWriter, r *http.Request) {
+		privacy.Index().Render(r.Context(), w)
 	})
 
 	/************************ ADMIN ROUTES ************************/
