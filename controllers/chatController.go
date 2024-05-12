@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"booking-api/data/request"
+	"booking-api/data/response"
 	"booking-api/services"
 	inbox "booking-api/view/inbox"
 	"booking-api/view/ui"
@@ -11,12 +12,13 @@ import (
 )
 
 type ChatController struct {
-	chatService services.ChatService
-	userService services.UserService
+	chatService    services.ChatService
+	userService    services.UserService
+	accountService services.AccountService
 }
 
-func NewChatController(chatService services.ChatService, userService services.UserService) *ChatController {
-	return &ChatController{chatService: chatService, userService: userService}
+func NewChatController(chatService services.ChatService, userService services.UserService, accountService services.AccountService) *ChatController {
+	return &ChatController{chatService: chatService, userService: userService, accountService: accountService}
 }
 
 func (t ChatController) HandleChatMessageCreate(w http.ResponseWriter, r *http.Request) error {
@@ -74,5 +76,50 @@ func (t ChatController) HandleChatMessageDelete(w http.ResponseWriter, r *http.R
 func (t ChatController) HandleChatIndex(w http.ResponseWriter, r *http.Request) error {
 	// user := GetAuthenticatedUser(r)
 	// user.User = t.userService.FindByUserID(user.User.UserID)
-	return render(r, w, inbox.Index())
+	user := GetAuthenticatedUser(r)
+	var inquiries response.AccountInquiriesSnapshot
+	var messages response.AccountMessagesSnapshot
+
+	userAccountRoles, err := t.accountService.GetUserAccountRoles(user.User.UserID)
+	if err != nil {
+		return err
+	}
+
+	uniqueAccountIDs := []uint{}
+
+	for _, role := range userAccountRoles {
+		unique := true
+		for _, id := range uniqueAccountIDs {
+			if id == role.AccountID {
+				unique = false
+				break
+			}
+		}
+		if unique {
+			uniqueAccountIDs = append(uniqueAccountIDs, role.AccountID)
+		}
+	}
+
+	for _, accountID := range uniqueAccountIDs {
+		accinquiries, err := t.accountService.GetInquiriesSnapshot(accountID)
+		if err != nil {
+			return err
+		}
+		accmessages, err := t.accountService.GetMessagesSnapshot(accountID)
+		if err != nil {
+			return err
+		}
+
+		inquiries.Inquiries = append(inquiries.Inquiries, accinquiries.Inquiries...)
+		inquiries.Notifications += accinquiries.Notifications
+
+		messages.Chats = append(messages.Chats, accmessages.Chats...)
+		messages.Notifications += accmessages.Notifications
+
+	}
+
+	return render(r, w, inbox.Index(
+		inquiries,
+		messages,
+	))
 }
