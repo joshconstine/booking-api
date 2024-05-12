@@ -102,6 +102,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		auth.Get("/settings/account/cleaners", controllers.Make(userSettingsController.HandleCleaners))
 		auth.Get("/settings/account/security", controllers.Make(userSettingsController.HandleSecurity))
 
+		auth.Get("/inbox", controllers.Make(chatController.HandleChatIndex))
 	})
 
 	router.Group(func(auth chi.Router) {

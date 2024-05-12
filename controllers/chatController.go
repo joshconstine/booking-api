@@ -3,6 +3,7 @@ package controllers
 import (
 	"booking-api/data/request"
 	"booking-api/services"
+	inbox "booking-api/view/inbox"
 	"booking-api/view/ui"
 	"fmt"
 	"net/http"
@@ -68,4 +69,10 @@ func (t ChatController) HandleChatMessageDelete(w http.ResponseWriter, r *http.R
 	}
 
 	return render(r, w, ui.Chat(chat))
+}
+
+func (t ChatController) HandleChatIndex(w http.ResponseWriter, r *http.Request) error {
+	// user := GetAuthenticatedUser(r)
+	// user.User = t.userService.FindByUserID(user.User.UserID)
+	return render(r, w, inbox.Index())
 }
