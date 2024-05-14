@@ -33,27 +33,26 @@ templ Index(Bookings []response.BookingSnapshotResponse, InquiryInfo response.Ac
 					<i class="fa-solid fa-search"></i>
 					</label>
 						<a href="/create-booking">
-							<div class="btn btn-sm border-2 border-zinc-500 "><i class="fa-solid fa-plus "></i>Add booking</div>
+							<div class="btn btn-xs border-2 border-zinc-500 text-xs md:btn-md md:text-md flex gap-2 "><i class="fa-solid fa-plus "></i><span>Add booking</span></div>
 						</a>
 					</div>
 				</div>
-				<div class="flex gap-2 items-end">
+				<div class="flex gap-2 flex-row flex-nowrap items-end hidden md:flex">
 					<div class=" flex flex-col items-end font-bold text-lg">
 						<span>Today is</span>
 						<span>{GetFormattedDate()}</span>
 					</div>
-					<div >
-					</div>
+					
 					<div class="indicator">
 						<span class="indicator-item indicator-middle indicator-center text-3xl pr-8 pb-4 font-bold">{GetTheDayOftheMonthNumber()}</span>
 						<i class="fa-regular fa-calendar h-20 w-20 place-items-center grid"></i>
 					</div>
 				</div>
 			</div>
-			<div class="flex gap-2">
-			<div>
-				@ui.BookingSnapshotWidget(Bookings)
-			</div>
+			<div class="flex flex-col lg:flex-row gap-2">
+				<div>
+					@ui.BookingSnapshotWidget(Bookings)
+				</div>
 				<div class="flex flex-col gap-2">
 					<div class="flex gap-2 flex-col lg:flex-row">
 						@ui.BookingArrivalWidget(Bookings)

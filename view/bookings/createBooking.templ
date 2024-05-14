@@ -9,27 +9,33 @@ import (
 // RentalInformationResponse renders a page with detailed information about a specific rental
 templ CreateBookingPage() {
     @layout.App(true) {
-                <div>
-                    <div>
-                        <h1>
-                            Create a new booking
-                        </h1>
-                        
-                    </div>
-                    <form hx-post="/api/booking" hx-target="#booking-form">
-                        <div>
+                <div class="max-w-xl bg-base-300 px-6 py-4 w-full mx-auto mt-4 rounded-xl">
+                        <h1 class="text-xl font-black ">Create a booking for a customer</h1>
+                    <form hx-post="/api/booking" hx-target="#booking-form" class="w-full flex flex-col gap-2">
+                        <div class="flex flex-col gap-2">
                             <label for="firstName">
                                 First Name
                             </label>
                             <input type="text" name="firstName" id="firstName" required class="input input-bordered" />
 
                         </div>
-                        <div>
+                        <div class="flex flex-col gap-2">
                             <label for="lastName">
                                 Last Name
                             </label>
                             <input type="text" name="lastName" id="lastName" required class="input input-bordered" />
                         </div>
+                        <div class="flex flex-col gap-2">
+                            <label for="email">
+                                Email
+                            </label>
+                            <input type="email" name="email" id="email" required class="input input-bordered" />
+                        </div>
+                        <div class="flex gap-2 w-full justify-end">
+                            <button class="btn btn-borderd" >Save Draft</button>
+                            <button class="btn bg-branded-400" type="submit">Create Booking</button>
+                        </div>
+
                     </form>
 
                 </div>
