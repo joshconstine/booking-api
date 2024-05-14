@@ -1,9 +1,14 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
     content: [ "./**/*.html", "./**/*.templ", "./**/*.go", ],
    safelist: [],
    theme: {
        extend: {
+          fontFamily:{
+            "sans": ["Averta" ,"Roboto", "sans"],
+            "serif": ["Averta" ,"Roboto", "serif"],
+          },
            colors: {
               "branded": {
                 //   "100": "#E6F6FF",
@@ -21,6 +26,16 @@ module.exports = {
    },
    plugins: [require("daisyui")],
    daisyui: {
-       themes: [ "light"]
+       themes: [
+        {
+            mytheme: {
+              "primary": "#B2C2C1",
+              "secondary": "#f6d860",
+              "accent": "#37cdbe",
+              "neutral": "#3d4451",
+              "base-100": "#ffffff",
+            },
+          },
+        "light"]
    }
 }
