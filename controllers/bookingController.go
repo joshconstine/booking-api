@@ -104,7 +104,7 @@ func (controller *BookingController) HandleHomeIndex(w http.ResponseWriter, r *h
 	// }
 	// fmt.Printf("%+v\n", user.Account)
 
-	bookingData := controller.bookingService.FindAll()
+	bookingData := controller.bookingService.GetSnapshot()
 
 	return bookings.Index(bookingData).Render(r.Context(), w)
 }

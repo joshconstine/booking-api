@@ -3,6 +3,7 @@ package home
 import (
 	"booking-api/view/layout"
 	"booking-api/data/response"
+	ui "booking-api/view/ui"
 	
 )
 
@@ -14,18 +15,13 @@ func GetPath(id string) string {
 	
 }
 
-templ Index(bookings []response.BookingResponse) {
+templ Index(Bookings []response.BookingSnapshotResponse) {
 	@layout.App(true) {
 		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
 			<h2 class="text-xl font-semibold mb-6 red-400">Bookings</h2>
-			<ul class="text-left">
-
-			for _, booking := range bookings {
-				<a href={templ.SafeURL(GetPath(booking.ID))}>
-    		<li>{ booking.ID }</li>
-				</a>
-  			}
-			</ul>
+			<div>
+				@ui.BookingSnapshotWidget(Bookings)
+			</div>
 			
 		</div>
 	}

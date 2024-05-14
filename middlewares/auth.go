@@ -6,7 +6,6 @@ import (
 	"booking-api/models"
 	"booking-api/services"
 	"context"
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -26,7 +25,6 @@ func NewWithAccountSetupMiddleWare(userService services.UserService) func(http.H
 				http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
 				return
 			}
-			fmt.Println("in here!!!!!")
 			authenticatedUser.User = response.UserResponse{
 				UserID:         authenticatedUser.User.UserID,
 				Username:       user.Username,
