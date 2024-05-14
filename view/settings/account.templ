@@ -11,30 +11,83 @@ import (
 
 templ Index(user models.AuthenticatedUser, selected string) {
 	@layout.App(true) {
-		<div class="max-w-2xl w-full mx-auto mt-8 flex flex-col gap-4">
-				<div class="join">
-					<button class="join-item btn bg-branded-400" hx-get="/settings/account/profile"
-						hx-target="#profile-container"
-					>Profile</button>
-					<button class="join-item btn bg-branded-400" hx-get="/settings/account/subscriptions"
-						hx-target="#profile-container"
-					>Subscription</button>
-					<button hx-target="#profile-container" class="join-item btn bg-branded-400" hx-get="/settings/account/team">Team</button>
-					<button hx-target="#profile-container" class="join-item btn bg-branded-400" hx-get="/settings/account/finances">Finances</button>
-					<button hx-target="#profile-container" class="join-item btn bg-branded-400" hx-get="/settings/account/notifications">Notifications</button>
-					<button hx-target="#profile-container" class="join-item btn bg-branded-400" hx-get="/settings/account/cleaners">Cleaners</button>
-					<button hx-target="#profile-container" class="join-item btn bg-branded-400" hx-get="/settings/account/security">Log in/Security</button>
+		@ProfileContainer(user, selected)
+	}
+}
+
+templ ProfileContainer(user models.AuthenticatedUser, selected string) {
+
+<div class="max-w-2xl w-full mx-auto mt-8 flex flex-col gap-4" id="profile-container">
+			    <div class="join">
+					if selected == "profile" {
+						<button hx-get="/settings/account/profile" hx-target="#profile-container" class="join-item btn  bg-branded-400">Profile</button>
+					} else {
+						<button hx-get="/settings/account/profile" hx-target="#profile-container" class="join-item btn  btn-ghost">Profile</button>
+					}
+					if selected == "subscriptions" {
+						<button class="join-item btn btn-ghost bg-branded-400" hx-get="/settings/account/subscriptions" hx-target="#profile-container">Subscription</button>
+					} else {
+						<button class="join-item btn btn-ghost" hx-get="/settings/account/subscriptions" hx-target="#profile-container">Subscription</button>
+					}
+					if selected == "team" {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost bg-branded-400" hx-get="/settings/account/team">Team</button>
+					} else {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost" hx-get="/settings/account/team">Team</button>
+					}
+					if selected == "finances" {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost bg-branded-400" hx-get="/settings/account/finances">Finances</button>
+					} else {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost" hx-get="/settings/account/finances">Finances</button>
+					}
+					if selected == "notifications" {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost bg-branded-400" hx-get="/settings/account/notifications">Notifications</button>
+					} else {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost" hx-get="/settings/account/notifications">Notifications</button>
+					}
+					if selected == "cleaners" {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost bg-branded-400" hx-get="/settings/account/cleaners">Cleaners</button>
+					} else {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost" hx-get="/settings/account/cleaners">Cleaners</button>
+					}
+					if selected == "security" {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost bg-branded-400" hx-get="/settings/account/security">Log in/Security</button>
+					} else {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost" hx-get="/settings/account/security">Log in/Security</button>
+					}
+					
+					// <button hx-get="/settings/account/profile" hx-target="#profile-container" class="{{if eq selected "profile"}}bg-branded-800{{end}}">Profile</button>
+					// <button class="join-item btn btn-ghost {{if eq selected "subscriptions"}}bg-branded-800{{end}}" hx-get="/settings/account/subscriptions" hx-target="#profile-container">Subscription</button>
+					// <button hx-target="#profile-container" class="join-item btn btn-ghost {{if eq selected "team"}}bg-branded-800{{end}}" hx-get="/settings/account/team">Team</button>
+					// <button hx-target="#profile-container" class="join-item btn btn-ghost {{if eq selected "finances"}}bg-branded-800{{end}}" hx-get="/settings/account/finances">Finances</button>
+					// <button hx-target="#profile-container" class="join-item btn btn-ghost {{if eq selected "notifications"}}bg-branded-800{{end}}" hx-get="/settings/account/notifications">Notifications</button>
+					// <button hx-target="#profile-container" class="join-item btn btn-ghost {{if eq selected "cleaners"}}bg-branded-800{{end}}" hx-get="/settings/account/cleaners">Cleaners</button>
+					// <button hx-target="#profile-container" class="join-item btn btn-ghost {{if eq selected "security"}}bg-branded-800{{end}}" hx-get="/settings/account/security">Log in/Security</button>
 				</div>
-				<div id="profile-container">
+				<div>
 				if selected == "profile" {
 					@Profile(view.AuthenticatedUser(ctx))
 				}
 				if selected == "subscriptions" {
 					@Subscription(view.AuthenticatedUser(ctx))
 				}
+				if selected == "team" {
+					@Team(view.AuthenticatedUser(ctx))
+				}
+				if selected == "finances" {
+					@Finances(view.AuthenticatedUser(ctx))
+				}
+				if selected == "notifications" {
+					@Notifications(view.AuthenticatedUser(ctx))
+				}
+				if selected == "cleaners" {
+					@Cleaners(view.AuthenticatedUser(ctx))
+				}
+				if selected == "security" {
+					@Security(view.AuthenticatedUser(ctx))
+				}
+				
 				</div>
 		</div>
-	}
 }
 
 templ Finances(user models.AuthenticatedUser) {
@@ -209,7 +262,7 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 					<input
 						class="input input-bordered w-full max-w-sm"
 						value={ params.FirstName }
-						name="firstname"
+						name="firstName"
 					/>
 					if len(errors.FirstName) > 0 {
 						<div class="text-sm text-error mt-1">{ errors.FirstName }</div>
@@ -220,7 +273,7 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 					<input
 						class="input input-bordered w-full max-w-sm"
 						value={ params.LastName }
-						name="lastname"
+						name="lastName"
 					/>
 				</dd>
 				if len(errors.LastName) > 0 {
@@ -255,7 +308,7 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 
 			</div>
 				<dd class="sm:col-span-2 sm:mt-0">
-					<button class="btn btn-primary">save</button>
+					<button class="btn bg-branded-800">save</button>
 				</dd>
 
 		</div>

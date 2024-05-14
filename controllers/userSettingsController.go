@@ -60,38 +60,38 @@ func (usc *UserSettingsController) HandleSettingsUpdate(w http.ResponseWriter, r
 	return render(r, w, settings.ProfileForm(params, settings.ProfileErrors{}))
 }
 
+func (usc *UserSettingsController) HandleProfile(w http.ResponseWriter, r *http.Request) error {
+	user := GetAuthenticatedUser(r)
+	return render(r, w, settings.ProfileContainer(user, "profile"))
+}
+
 func (usc *UserSettingsController) HandleSubscriptions(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.Subscription(user))
+	return render(r, w, settings.ProfileContainer(user, "subscriptions"))
 	// return nil
 }
 
 func (usc *UserSettingsController) HandleTeam(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.Team(user))
+	return render(r, w, settings.ProfileContainer(user, "team"))
 }
 
 func (usc *UserSettingsController) HandleFinances(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.Finances(user))
+	return render(r, w, settings.ProfileContainer(user, "finances"))
 }
 
 func (usc *UserSettingsController) HandleNotifications(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.Notifications(user))
+	return render(r, w, settings.ProfileContainer(user, "notifications"))
 }
 
 func (usc *UserSettingsController) HandleCleaners(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.Cleaners(user))
+	return render(r, w, settings.ProfileContainer(user, "cleaners"))
 }
 
 func (usc *UserSettingsController) HandleSecurity(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.Security(user))
-}
-
-func (usc *UserSettingsController) HandleProfile(w http.ResponseWriter, r *http.Request) error {
-	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.Profile(user))
+	return render(r, w, settings.ProfileContainer(user, "security"))
 }
