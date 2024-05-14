@@ -11,9 +11,7 @@ import (
 
 templ Index(user models.AuthenticatedUser, selected string) {
 	@layout.App(true) {
-		<div class="max-w-2xl w-full mx-auto mt-8">
-			<div>
-				// <h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Profoile</h1>
+		<div class="max-w-2xl w-full mx-auto mt-8 flex flex-col gap-4">
 				<div class="join">
 					<button class="join-item btn bg-branded-400" hx-get="/settings/account/profile"
 						hx-target="#profile-container"
@@ -34,10 +32,7 @@ templ Index(user models.AuthenticatedUser, selected string) {
 				if selected == "subscriptions" {
 					@Subscription(view.AuthenticatedUser(ctx))
 				}
-				
-					// @Profile(view.AuthenticatedUser(ctx))
 				</div>
-			</div>
 		</div>
 	}
 }
@@ -140,33 +135,43 @@ templ Subscription(user models.AuthenticatedUser) {
 
 templ Profile(user models.AuthenticatedUser) {
 	// @layout.App(true) {
-		<div class="max-w-2xl w-full mx-auto mt-8">
-			<div>
-				// <h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Profile</h1>
-			<dt>{view.AuthenticatedUser(ctx).User.FirstName}</dt>
-			<dt>{view.AuthenticatedUser(ctx).User.LastName}</dt>
-			<dt>{view.AuthenticatedUser(ctx).User.Username}</dt>
-			<dt>{view.AuthenticatedUser(ctx).User.Email}</dt>
-			<dt>{view.AuthenticatedUser(ctx).User.PhoneNumber}</dt>
-			<div>
-			</div>
-				@ProfileForm(ProfileParams{
-					Username: view.AuthenticatedUser(ctx).User.Username,
-					FirstName: view.AuthenticatedUser(ctx).User.FirstName,
-					LastName: view.AuthenticatedUser(ctx).User.LastName,
-					Email: view.AuthenticatedUser(ctx).User.Email,
-					PhoneNumber: view.AuthenticatedUser(ctx).User.PhoneNumber,
+		// <div class="max-w-2xl w-full mx-auto mt-8">
+			// <div>
+			// 	// <h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Profile</h1>
+			// <dt>{view.AuthenticatedUser(ctx).User.FirstName}</dt>
+			// <dt>{view.AuthenticatedUser(ctx).User.LastName}</dt>
+			// <dt>{view.AuthenticatedUser(ctx).User.Username}</dt>
+			// <dt>{view.AuthenticatedUser(ctx).User.Email}</dt>
+			// <dt>{view.AuthenticatedUser(ctx).User.PhoneNumber}</dt>
+			// <div>
+			// </div>
+			// 	@ProfileForm(ProfileParams{
+			// 		Username: view.AuthenticatedUser(ctx).User.Username,
+			// 		FirstName: view.AuthenticatedUser(ctx).User.FirstName,
+			// 		LastName: view.AuthenticatedUser(ctx).User.LastName,
+			// 		Email: view.AuthenticatedUser(ctx).User.Email,
+			// 		PhoneNumber: view.AuthenticatedUser(ctx).User.PhoneNumber,
 
-				}, ProfileErrors{})
-			</div>
-			 <ul>
-			 for _, chat := range view.AuthenticatedUser(ctx).User.Chats {
-				@ui.Chat(chat)
-			}
-			 </ul>
+			// 	}, ProfileErrors{})
+			// </div>
+			//  <ul>
+			//  for _, chat := range view.AuthenticatedUser(ctx).User.Chats {
+			// 	@ui.Chat(chat)
+			// }
+			//  </ul>
 			   
    
+		// </div>
+		<div class="bg-base-100 p-4 rounded-lg shadow-md">
+				@ProfileForm(ProfileParams{
+					Username: user.User.Username,
+					FirstName: user.User.FirstName,
+					LastName: user.User.LastName,
+					Email: user.User.Email,
+					PhoneNumber: user.User.PhoneNumber,
+				}, ProfileErrors{})
 		</div>
+
 	// }
 }
 
@@ -183,6 +188,8 @@ type ProfileParams struct {
 
 type ProfileErrors struct {
 	Username string
+	FirstName string
+	LastName string
 }
 
 templ ProfileForm(params ProfileParams, errors ProfileErrors) {
@@ -190,52 +197,67 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 		hx-put="/settings/account/profile"
 		hx-swap="outerHTML"
 	>
-		<div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 items-center mt-8">
-			<dt class="">Username</dt>
-			<dd class="sm:col-span-2 sm:mt-0">
-				if params.Success {
-					@ui.Toast("Username updated successfully")
-				}
-				<input
-					class="input input-bordered w-full max-w-sm"
-					value={ params.Username }
-					name="username"
-				/>
-				if len(errors.Username) > 0 {
-					<div class="text-sm text-error mt-1">{ errors.Username }</div>
-				}
-			</dd>
-			<dt>First Name</dt>
-			<dd class="sm:col-span-2 sm:mt-0">
-				<input
-					class="input input-bordered w-full max-w-sm"
-					value={ params.FirstName }
-					name="firstName"
-				/>
-			</dd>
-			<dt>Last Name</dt>
-			<dd class="sm:col-span-2 sm:mt-0">
-				<input
-					class="input input-bordered w-full max-w-sm"
-					value={ params.LastName }
-					name="lastName"
-				/>
-			</dd>
-			
-			
-			<dt>Phone Number</dt>
-			<dd class="sm:col-span-2 sm:mt-0">
-				<input
-					class="input input-bordered w-full max-w-sm"
-					value={ params.PhoneNumber }
-					name="phoneNumber"
-				/>
-			</dd>
+		<div class="flex flex-col gap-1">
+			<span class="text-lg font-semibold border-b border-gray-700 pb-2">Personal Information</span>
+			<div class="flex w-full gap-2">
+				<dt class="">First Name</dt>
 
-			<dt></dt>
-			<dd class="sm:col-span-2 sm:mt-0">
-				<button class="btn btn-primary">save</button>
-			</dd>
+				<dd class="sm:col-span-2 sm:mt-0">
+					if params.Success {
+						@ui.Toast("First Name updated successfully")
+					}
+					<input
+						class="input input-bordered w-full max-w-sm"
+						value={ params.FirstName }
+						name="firstname"
+					/>
+					if len(errors.FirstName) > 0 {
+						<div class="text-sm text-error mt-1">{ errors.FirstName }</div>
+					}
+				</dd>
+				<dt>Last Name</dt>
+				<dd class="sm:col-span-2 sm:mt-0">
+					<input
+						class="input input-bordered w-full max-w-sm"
+						value={ params.LastName }
+						name="lastname"
+					/>
+				</dd>
+				if len(errors.LastName) > 0 {
+					<div class="text-sm text-error mt-1">{ errors.LastName }</div>
+				}
+			</div>
+			<div class="flex w-full gap-2">
+				<dt class="">Username</dt>
+
+				<dd class="sm:col-span-2 sm:mt-0">
+					if params.Success {
+						@ui.Toast("Username updated successfully")
+					}
+					<input
+						class="input input-bordered w-full max-w-sm"
+						value={ params.Username }
+						name="username"
+					/>
+					if len(errors.Username) > 0 {
+						<div class="text-sm text-error mt-1">{ errors.Username }</div>
+					}
+				</dd>
+						
+				<dt>Phone Number</dt>
+				<dd class="sm:col-span-2 sm:mt-0">
+					<input
+						class="input input-bordered w-full max-w-sm"
+						value={ params.PhoneNumber }
+						name="phoneNumber"
+					/>
+				</dd>
+
+			</div>
+				<dd class="sm:col-span-2 sm:mt-0">
+					<button class="btn btn-primary">save</button>
+				</dd>
+
 		</div>
 	</form>
 }
