@@ -85,7 +85,7 @@ templ ProfileContainer(user models.AuthenticatedUser, selected string) {
 				if selected == "security" {
 					@Security(view.AuthenticatedUser(ctx))
 				}
-				
+
 				</div>
 		</div>
 }
@@ -215,7 +215,7 @@ templ Profile(user models.AuthenticatedUser) {
 			   
    
 		// </div>
-		<div class="bg-base-100 p-4 rounded-lg shadow-md">
+		<div class="bg-base-100 p-4 rounded-lg shadow-md mx-4">
 				@ProfileForm(ProfileParams{
 					Username: user.User.Username,
 					FirstName: user.User.FirstName,
@@ -250,9 +250,24 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 		hx-put="/settings/account/profile"
 		hx-swap="outerHTML"
 	>
-		<div class="flex flex-col gap-1">
+		<div class="flex flex-col gap-4">
 			<span class="text-lg font-semibold border-b border-gray-700 pb-2">Personal Information</span>
 			<div class="flex w-full gap-2">
+				
+				<dd class="sm:col-span-2 sm:mt-0">
+								<div class="avatar ">
+									<div class="w-20 rounded-full avatar">
+										<img src={view.AuthenticatedUser(ctx).User.ProfilePicture} alt="avatar"  />
+									</div>
+
+								</div>
+								<input type="file" name="profilePicture" />
+				</dd>
+			</div>
+
+			<div class="flex w-full gap-4">
+				<div class="flex flex-col gap-1 w-full">
+
 				<dt class="">First Name</dt>
 
 				<dd class="sm:col-span-2 sm:mt-0">
@@ -260,7 +275,7 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 						@ui.Toast("First Name updated successfully")
 					}
 					<input
-						class="input input-bordered w-full max-w-sm"
+						class="input input-bordered w-full "
 						value={ params.FirstName }
 						name="firstName"
 					/>
@@ -268,10 +283,13 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 						<div class="text-sm text-error mt-1">{ errors.FirstName }</div>
 					}
 				</dd>
+				</div>
+
+				<div class="flex flex-col gap-1 w-full">
 				<dt>Last Name</dt>
 				<dd class="sm:col-span-2 sm:mt-0">
 					<input
-						class="input input-bordered w-full max-w-sm"
+						class="input input-bordered w-full "
 						value={ params.LastName }
 						name="lastName"
 					/>
@@ -279,8 +297,10 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 				if len(errors.LastName) > 0 {
 					<div class="text-sm text-error mt-1">{ errors.LastName }</div>
 				}
+				</div>
 			</div>
-			<div class="flex w-full gap-2">
+			<div class="flex w-full gap-4">
+				<div class="flex flex-col gap-1 w-full">
 				<dt class="">Username</dt>
 
 				<dd class="sm:col-span-2 sm:mt-0">
@@ -288,7 +308,7 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 						@ui.Toast("Username updated successfully")
 					}
 					<input
-						class="input input-bordered w-full max-w-sm"
+						class="input input-bordered w-full "
 						value={ params.Username }
 						name="username"
 					/>
@@ -296,19 +316,22 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 						<div class="text-sm text-error mt-1">{ errors.Username }</div>
 					}
 				</dd>
-						
+				</div>
+				<div class="flex flex-col gap-1 w-full">
+
 				<dt>Phone Number</dt>
 				<dd class="sm:col-span-2 sm:mt-0">
 					<input
-						class="input input-bordered w-full max-w-sm"
+						class="input input-bordered w-full "
 						value={ params.PhoneNumber }
 						name="phoneNumber"
 					/>
 				</dd>
-
 			</div>
-				<dd class="sm:col-span-2 sm:mt-0">
-					<button class="btn bg-branded-800">save</button>
+			</div>
+				<dd class="flex w-full gap-2 items-center justify-end">
+					<button type="reset" class="btn" >Reset</button>
+					<button class="btn bg-branded-400">Save</button>
 				</dd>
 
 		</div>
