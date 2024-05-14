@@ -108,6 +108,9 @@ func (controller *BookingController) HandleHomeIndex(w http.ResponseWriter, r *h
 
 	return bookings.Index(bookingData).Render(r.Context(), w)
 }
+func (controller *BookingController) HandleCreateBookingPage(w http.ResponseWriter, r *http.Request) error {
+	return bookings.CreateBookingPage().Render(r.Context(), w)
+}
 
 func (controller *BookingController) HandleBookingInformation(w http.ResponseWriter, r *http.Request) error {
 
