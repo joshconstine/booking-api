@@ -82,13 +82,13 @@ templ Login() {
 				</div>
 			</a>
 			</div>
-			<div class="flex justify-center mt-[calc(100vh-100vh+8rem)]">
+			<div class="flex justify-center mt-[calc(100vh-100vh+8rem)] bg-base-100 rounded-lg p-4">
 				<div class="max-w-md w-full py-12 px-8 rounded-xl flex items-center gap-4 flex-col">
 					<img src="/public/images/logotagline.svg"  alt="logo" />
 					// <h1 class="text-center text-xl font-black mb-10">Login</h1>
 					<div  class="join">
-						<a  class="btn w-32 btn-sm">Sign-Up</a>
-						<a  class="btn btn-active w-32 btn-sm ">Login</a>
+						<a  class="btn w-32 btn-sm join-item">Sign-Up</a>
+						<a  class="btn  w-32 btn-sm join-item ">Login</a>
 					</div>
 					@LoginForm(supabase.UserCredentials{}, LoginErrors{})
 				</div>
@@ -185,7 +185,7 @@ templ LoginForm(creds supabase.UserCredentials, errors LoginErrors) {
 					<i class="fa-regular fa-envelope" class="h-8"></i>
 			<div class=" flex flex-col gap-1">
 				<span class="text-xs">Email address</span>
-			<input type="email" value={ creds.Email } name="email" autocomplete="off" required placeholder="Type here" />
+			<input type="email" value={ creds.Email } name="email" autocomplete="off" required placeholder="Enter valid email address"  class="w-96"/>
 			</div>
 			if len(errors.Email) > 0 {
 				<div class="label">
@@ -193,20 +193,20 @@ templ LoginForm(creds supabase.UserCredentials, errors LoginErrors) {
 				</div>
 			}
 			</div>
-			<div class="input input-bordered w-full join-item flex items-center gap-2">
-			<i class="fa-solid fa-key" class="h-8"></i>
-			<div class=" flex flex-col gap-1">
-					<span class="text-xs">Password</span>
-			<input type="password" value={ creds.Password } name="password" autocomplete="off" required placeholder="Enter your password" />
-			</div>
-			if len(errors.Email) > 0 {
-				<div class="label">
-					<span class="label-text-alt text-error">{ errors.Password }</span>
-				</div>
-			}
-				</div>
+			// <div class="input input-bordered w-full join-item flex items-center gap-2">
+			// 	// <i class="fa-solid fa-key" class="h-8"></i>
+			// 	// <div class=" flex flex-col gap-1">
+			// 	// 		<span class="text-xs">Password</span>
+			// 	// <input type="password" value={ creds.Password } name="password" autocomplete="off" required placeholder="Enter your password" />
+			// 	// </div>
+			// 	if len(errors.Email) > 0 {
+			// 		<div class="label">
+			// 			<span class="label-text-alt text-error">{ errors.Password }</span>
+			// 		</div>
+			// 	}
+			// </div>
 		</div>
-		<button type="submit" class="btn btn-primary w-full">login <i class="fa-solid fa-arrow-right"></i></button>
+		<button type="submit" class="btn bg-branded-400 w-full">Sign in</button>
 		<div class="divider">OR</div>
 		<a href="/login/provider/google" class="btn btn-outline w-full">login with Google <i class="fa-brands fa-google"></i></a>
 	</form>
