@@ -30,6 +30,7 @@ type Rental struct {
 	BookingDocuments           []EntityBookingDocument       `gorm:"polymorphic:Entity"`
 	BookingDurationRule        EntityBookingDurationRule     `gorm:"polymorphic:Entity"`
 	BookingRule                EntityBookingRule             `gorm:"polymorphic:Entity"`
+	Reviews                    []EntityReview                `gorm:"polymorphic:Entity"`
 
 	BookingRequests []EntityBookingPermission `gorm:"polymorphic:Entity"`
 }

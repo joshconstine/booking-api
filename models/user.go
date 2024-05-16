@@ -18,7 +18,10 @@ type User struct {
 	PreferedName   string         `json:"prefferedName"`
 	Email          string         `json:"email" gorm:"unique"`
 	PhoneNumber    string         `json:"phoneNumber"`
+	Gender         string         `json:"gender"`
+	DOB            time.Time      `json:"dob"`
 	ProfilePicture string         `json:"profilePicture"`
+	AddressID      uint
 	Login          Login
 
 	Bookings  []Booking

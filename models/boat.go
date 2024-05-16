@@ -24,6 +24,7 @@ type Boat struct {
 	BookingDocuments           []EntityBookingDocument       `gorm:"polymorphic:Entity"`
 	BookingDurationRule        EntityBookingDurationRule     `gorm:"polymorphic:Entity; not null"`
 	BookingRule                EntityBookingRule             `gorm:"polymorphic:Entity; not null"`
+	Reviews                    []EntityReview                `gorm:"polymorphic:Entity"`
 
 	BookingRequests []EntityBookingPermission `gorm:"polymorphic:Entity"`
 }
