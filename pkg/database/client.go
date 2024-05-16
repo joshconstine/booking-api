@@ -35,12 +35,21 @@ func Connect(connectionString string) {
 }
 func Migrate() {
 	Instance.Debug()
-	Instance.AutoMigrate((&models.Task{}))
+	// Instance.AutoMigrate((&models.Task{}))
 	//**************Helpers**************
+	Instance.AutoMigrate(&models.Address{})
+	Instance.AutoMigrate(&models.Country{})
+	Instance.AutoMigrate(&models.Region{})
+	Instance.AutoMigrate(&models.Postal{})
+	Instance.AutoMigrate(&models.AddressType{})
+	Instance.AutoMigrate(&models.Street{})
 	Instance.AutoMigrate(&models.User{})
+	Instance.AutoMigrate(&models.Locality{})
+	Instance.AutoMigrate(&models.Location{})
+	Instance.AutoMigrate(&models.EntityReview{})
 	// Instance.AutoMigrate(&models.BookingStatus{})
 	// Instance.AutoMigrate(&models.BookingCostItem{})
-	// Instance.AutoMigrate(&models.Location{})
+	Instance.AutoMigrate(&models.Location{})
 	// Instance.AutoMigrate(&models.Photo{})
 	// Instance.AutoMigrate(&models.UserRole{})
 
@@ -80,7 +89,7 @@ func Migrate() {
 	//***SAS***
 	// Instance.AutoMigrate(&models.Account{})
 	// Instance.AutoMigrate(&models.Membership{})
-	Instance.AutoMigrate(&models.AccountSettings{})
+	// Instance.AutoMigrate(&models.AccountSettings{})
 	// Instance.AutoMigrate(&models.ServicePlan{})
 
 	// Instance.AutoMigrate(&models.EntityBookingRequest{})

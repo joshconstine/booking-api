@@ -15,6 +15,7 @@ type User struct {
 	Username       string         `json:"username" gorm:"unique"`
 	FirstName      string         `json:"firstName"`
 	LastName       string         `json:"lastName"`
+	PreferedName   string         `json:"prefferedName"`
 	Email          string         `json:"email" gorm:"unique"`
 	PhoneNumber    string         `json:"phoneNumber"`
 	ProfilePicture string         `json:"profilePicture"`

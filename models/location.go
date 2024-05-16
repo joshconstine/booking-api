@@ -8,7 +8,8 @@ import (
 
 type Location struct {
 	gorm.Model
-	Name string `gorm:"unique;not null"`
+	Name      string `gorm:"unique;not null"`
+	AddressID uint
 }
 
 func (l *Location) TableName() string {
