@@ -5164,6 +5164,14 @@ details.collapse summary::-webkit-details-marker {
   font-weight: 700;
 }
 
+.font-extrabold {
+  font-weight: 800;
+}
+
+.font-light {
+  font-weight: 300;
+}
+
 .font-normal {
   font-weight: 400;
 }
@@ -5711,6 +5719,38 @@ details.collapse summary::-webkit-details-marker {
   font-family: 'Averta';
 
   src: url("../../public//fonts/averta/avertareg.woff2")
+}
+
+@font-face {
+  font-family: 'Averta';
+
+  src: url("../../public//fonts/averta/avertasemibold.woff2");
+
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Averta';
+
+  src: url("../../public//fonts/averta/avertabold.woff2");
+
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Averta';
+
+  src: url("../../public//fonts/averta/avertaextrabold.woff2");
+
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: 'Averta';
+
+  src: url("../../public//fonts/averta/avertalightiItalic.woff2");
+
+  font-weight: 300;
 }
 
 @media (min-width: 768px) {
