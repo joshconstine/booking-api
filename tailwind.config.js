@@ -4,11 +4,10 @@ module.exports = {
     content: [ "./**/*.html", "./**/*.templ", "./**/*.go", ],
    safelist: [],
    theme: {
+     fontFamily:{
+        averta: ["Averta", "sans-serif"],
+     },
        extend: {
-          fontFamily:{
-            "sans": ["Averta" ,"Roboto", "sans"],
-            "serif": ["Averta" ,"Roboto", "serif"],
-          },
            colors: {
               "branded": {
                   "100": "#E8ECEC",

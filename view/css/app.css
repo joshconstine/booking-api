@@ -5,3 +5,9 @@
 .border-app {
 	@apply border-gray-700
 } */
+
+@font-face {
+	font-family: 'Averta';
+	src: url("../../public//fonts/averta/avertareg.woff2")
+
+}

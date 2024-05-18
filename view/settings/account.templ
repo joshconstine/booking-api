@@ -17,7 +17,7 @@ templ Index(user models.AuthenticatedUser, selected string) {
 
 templ ProfileContainer(user models.AuthenticatedUser, selected string) {
 
-<div class="max-w-2xl w-full mx-auto md:mt-8 mt-1 flex flex-col gap-4" id="profile-container">
+<div class="max-w-2xl w-full mx-auto md:mt-2 mt-1 flex flex-col gap-4" id="profile-container">
 			    <div class="join join-vertical md:join-horizontal">
 					if selected == "profile" {
 						<button hx-get="/settings/account/profile" hx-target="#profile-container" class="join-item btn  btn-xs md:btn-md bg-branded-400">Profile</button>
