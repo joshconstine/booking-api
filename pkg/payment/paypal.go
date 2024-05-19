@@ -22,7 +22,7 @@ func CreatePaypalClient(env config.EnvVars) error {
 
 	// Create a paypal client
 	var err error
-	client, err = paypal.NewClient(env.PAYPAL_CLIENT_ID, env.PAYPAL_CLIENT_SECRET, paypal.APIBaseSandBox)
+	// client, err = paypal.NewClient(env.PAYPAL_CLIENT_ID, env.PAYPAL_CLIENT_SECRET, paypal.APIBaseSandBox)
 	if err != nil {
 		log.Fatalf("failed to create paypal client: %v", err)
 	}

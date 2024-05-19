@@ -5,7 +5,6 @@ import (
 	"booking-api/controllers"
 	"booking-api/pkg/database"
 	"booking-api/pkg/objectStorage"
-	payments "booking-api/pkg/payment"
 	"booking-api/pkg/sb"
 	"booking-api/repositories"
 	"booking-api/router"
@@ -73,7 +72,7 @@ func run(env config.EnvVars) (func(), error) {
 	// Create a new paypal client
 
 	// pay.CreatePaypalClient()
-	payments.CreatePaypalClient(env)
+	// payments.CreatePaypalClient(env)
 
 	app, cleanup, err := buildServer(env)
 	if err != nil {

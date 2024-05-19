@@ -5,14 +5,15 @@ go 1.22
 toolchain go1.22.2
 
 require (
-	github.com/a-h/templ v0.2.663
+	github.com/a-h/templ v0.2.680
 	github.com/brianvoe/gofakeit/v7 v7.0.2
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/go-playground/validator/v10 v10.14.0
 	github.com/gorilla/sessions v1.2.2
 	github.com/nedpals/supabase-go v0.4.0
 	github.com/plutov/paypal/v4 v4.7.1
-	golang.org/x/crypto v0.21.0
+	github.com/stripe/stripe-go/v78 v78.5.0
+	golang.org/x/crypto v0.22.0
 )
 
 require (
@@ -32,11 +33,10 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/nedpals/postgrest-go v0.1.3 // indirect
-	github.com/stripe/stripe-go/v78 v78.5.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/arch v0.3.0 // indirect
-	golang.org/x/net v0.21.0 // indirect
+	golang.org/x/net v0.24.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 )
 
@@ -65,10 +65,9 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.18.2
 	github.com/subosito/gotenv v1.6.0 // indirect
-	go.uber.org/atomic v1.10.0 // indirect
-	go.uber.org/multierr v1.9.0 // indirect
+	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

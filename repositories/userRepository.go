@@ -14,5 +14,4 @@ type UserRepository interface {
 	FindByEmail(email string) models.User
 	Create(user *request.CreateUserRequest) error
 	Update(user *request.UpdateUserRequest) error
-	UpdateProfilePicture(userID string, photoUrl string) error
 }

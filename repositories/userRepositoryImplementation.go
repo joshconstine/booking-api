@@ -6,6 +6,7 @@ import (
 	"booking-api/data/response"
 	"booking-api/models"
 	"log"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -69,35 +70,25 @@ func (t *userRepositoryImplementation) FindByEmail(email string) models.User {
 
 func (t *userRepositoryImplementation) FindByUserID(userID string) response.UserResponse {
 	var user models.User
-	result := t.Db.Where("id = ?", userID).Preload("Chats.Messages").First(&user)
+	result := t.Db.Model(models.User{}).Where("id = ?", userID).Preload("Chats.Messages").First(&user)
 	if result.Error != nil {
 		return response.UserResponse{}
 	}
-
-	// result = t.Db.Model(&models.Chat{}).Where("id = ?", user.ID).Preload("Messages").Find(&user.Chats)
-	// if result.Error != nil {
-	// 	return response.UserResponse{}
-	// }
-
-	// for _, chat := range user.Chats {
-	// 	result = t.Db.Model(&models.ChatMessage{}).Where("chat_id = ?", chat.ID).Find(&chat.Messages)
-	// 	if result.Error != nil {
-	// 		return response.UserResponse{}
-	// 	}
-	// }
-
 	return user.MapUserToResponse()
 
 }
 
 func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) error {
 	userToInsert := models.User{
-		ID:          user.UserID,
-		Username:    user.Username,
-		Email:       user.Email,
-		FirstName:   user.FirstName,
-		LastName:    user.LastName,
-		PhoneNumber: user.PhoneNumber,
+		ID:             user.UserID,
+		Username:       user.Username,
+		Email:          user.Email,
+		FirstName:      user.FirstName,
+		LastName:       user.LastName,
+		PhoneNumber:    user.PhoneNumber,
+		Gender:         "male",
+		DOB:            time.Now(),
+		ProfilePicture: "",
 	}
 
 	result := t.Db.Model(&models.User{}).Create(&userToInsert)
