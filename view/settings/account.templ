@@ -17,7 +17,7 @@ templ Index(user models.AuthenticatedUser, selected string) {
 
 templ ProfileContainer(user models.AuthenticatedUser, selected string) {
 
-<div class="max-w-2xl w-full mx-auto md:mt-2 mt-1 flex flex-col gap-4" id="profile-container">
+<div class=" w-full mx-auto md:mt-2 mt-1 flex flex-col gap-4" id="profile-container">
 			    <div class="join join-vertical md:join-horizontal">
 					if selected == "profile" {
 						<button hx-get="/settings/account/profile" hx-target="#profile-container" class="join-item btn  btn-xs md:btn-md bg-branded-400">Profile</button>
@@ -187,45 +187,49 @@ templ Subscription(user models.AuthenticatedUser) {
 }
 
 templ Profile(user models.AuthenticatedUser) {
-	// @layout.App(true) {
-		// <div class="max-w-2xl w-full mx-auto mt-8">
-			// <div>
-			// 	// <h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Profile</h1>
-			// <dt>{view.AuthenticatedUser(ctx).User.FirstName}</dt>
-			// <dt>{view.AuthenticatedUser(ctx).User.LastName}</dt>
-			// <dt>{view.AuthenticatedUser(ctx).User.Username}</dt>
-			// <dt>{view.AuthenticatedUser(ctx).User.Email}</dt>
-			// <dt>{view.AuthenticatedUser(ctx).User.PhoneNumber}</dt>
-			// <div>
-			// </div>
-			// 	@ProfileForm(ProfileParams{
-			// 		Username: view.AuthenticatedUser(ctx).User.Username,
-			// 		FirstName: view.AuthenticatedUser(ctx).User.FirstName,
-			// 		LastName: view.AuthenticatedUser(ctx).User.LastName,
-			// 		Email: view.AuthenticatedUser(ctx).User.Email,
-			// 		PhoneNumber: view.AuthenticatedUser(ctx).User.PhoneNumber,
+<div class="mx-auto mt-2 gap-4 md:gap-8 flex">
 
-			// 	}, ProfileErrors{})
-			// </div>
-			//  <ul>
-			//  for _, chat := range view.AuthenticatedUser(ctx).User.Chats {
-			// 	@ui.Chat(chat)
-			// }
-			//  </ul>
-			   
-   
-		// </div>
-		<div class="bg-base-100 p-4 rounded-lg shadow-md mx-4">
-				@ProfileForm(ProfileParams{
-					Username: user.User.Username,
-					FirstName: user.User.FirstName,
-					LastName: user.User.LastName,
-					Email: user.User.Email,
-					PhoneNumber: user.User.PhoneNumber,
-				}, ProfileErrors{})
-		</div>
+    <div class="bg-base-100 p-4 rounded-lg shadow-md mx-4">
+        <form hx-put="/settings/account/profile" hx-swap="outerHTML">
+            <div class="flex flex-col gap-4 w-full items-center">
+				<dd class="sm:col-span-2 sm:mt-0">
+					<div class="avatar ">
+						<div class="w-32 rounded-full avatar">
+							<img src={view.AuthenticatedUser(ctx).User.ProfilePicture} alt="avatar" />
+						</div>
 
-	// }
+					</div>
+					// <input type="file" name="profilePicture" />
+				</dd>
+				<div class="flex flex-col gap-1 w-full">
+
+					<dt class="">Preferred Name</dt>
+
+					<dd class="sm:col-span-2 sm:mt-0">
+						// if params.Success {
+						// @ui.Toast("First Name updated successfully")
+						// }
+						<input class="input input-bordered w-full " value={ user.User.PrefferedName } name="firstName" />
+						// if len(errors.PrefferedName) > 0 {
+						// <div class="text-sm text-error mt-1">{ errors.PrefferedName }</div>
+						// }
+					</dd>
+				</div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <div class="bg-base-100 p-4 rounded-lg shadow-md mx-4">
+            @ProfileForm(ProfileParams{
+            Username: user.User.Username,
+            FirstName: user.User.FirstName,
+            LastName: user.User.LastName,
+            Email: user.User.Email,
+            PhoneNumber: user.User.PhoneNumber,
+            }, ProfileErrors{})
+        </div>
+    </div>
+</div>
 }
 
 type ProfileParams struct {
@@ -238,6 +242,8 @@ type ProfileParams struct {
 	Success  bool
 
 }
+
+
 
 type ProfileErrors struct {
 	Username string
@@ -252,37 +258,25 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 	>
 		<div class="flex flex-col gap-4">
 			<span class="text-lg font-semibold border-b border-gray-700 pb-2">Personal Information</span>
-			<div class="flex w-full gap-2">
-				
-				<dd class="sm:col-span-2 sm:mt-0">
-								<div class="avatar ">
-									<div class="w-20 rounded-full avatar">
-										<img src={view.AuthenticatedUser(ctx).User.ProfilePicture} alt="avatar"  />
-									</div>
-
-								</div>
-								<input type="file" name="profilePicture" />
-				</dd>
-			</div>
-
+			
 			<div class="flex w-full flex-col md:flex-row gap-4">
 				<div class="flex flex-col gap-1 w-full">
 
-				<dt class="">First Name</dt>
+					<dt class="">First Name</dt>
 
-				<dd class="sm:col-span-2 sm:mt-0">
-					if params.Success {
-						@ui.Toast("First Name updated successfully")
-					}
-					<input
-						class="input input-bordered w-full "
-						value={ params.FirstName }
-						name="firstName"
-					/>
-					if len(errors.FirstName) > 0 {
-						<div class="text-sm text-error mt-1">{ errors.FirstName }</div>
-					}
-				</dd>
+					<dd class="sm:col-span-2 sm:mt-0">
+						if params.Success {
+							@ui.Toast("First Name updated successfully")
+						}
+						<input
+							class="input input-bordered w-full "
+							value={ params.FirstName }
+							name="firstName"
+						/>
+						if len(errors.FirstName) > 0 {
+							<div class="text-sm text-error mt-1">{ errors.FirstName }</div>
+						}
+					</dd>
 				</div>
 
 				<div class="flex flex-col gap-1 w-full">

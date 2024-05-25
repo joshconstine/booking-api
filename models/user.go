@@ -63,6 +63,7 @@ func (user *User) MapUserToResponse() response.UserResponse {
 		LastName:           user.LastName,
 		Email:              user.Email,
 		PhoneNumber:        user.PhoneNumber,
+		PrefferedName:      user.PreferedName,
 		Bookings:           []response.BookingResponse{},
 		Chats:              []response.ChatResponse{},
 		PermissionRequests: []response.EntityBookingPermissionResponse{},

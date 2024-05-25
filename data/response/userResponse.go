@@ -8,6 +8,7 @@ type UserResponse struct {
 	Email              string            `json:"email"`
 	PhoneNumber        string            `json:"phoneNumber"`
 	ProfilePicture     string            `json:"profilePicture"`
+	PrefferedName      string            `json:"prefferedName"`
 	Bookings           []BookingResponse `json:"bookings"`
 	Chats              []ChatResponse
 	PermissionRequests []EntityBookingPermissionResponse
