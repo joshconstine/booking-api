@@ -328,15 +328,14 @@ func main() {
 
 	// create object storage client
 	// objectStorage.CreateSession()
-	// SeedUsers(database.Instance)
+	//SeedUsers(database.Instance)
 	// SeedBookingUI(database.Instance)
 	// SeedBoooking(database.Instance)
-	// SeedChat(database.Instance)
+	SeedChat(database.Instance)
 	SeedMultipleBookings(database.Instance, 10)
-	// GenerateInquiry(database.Instance)
-	// GenerateBookingPermission(database.Instance)
-	GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 15)
-	GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 16)
+	GenerateBookingPermission(database.Instance)
+	GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 9)
+	GrantUserRolesOnAccount(database.Instance, constants.CURRENT_USER_ID, 10)
 
 	// SeedBoookingWithConflicts(database.Instance)
 	log.Println("Database seeding Completed!")

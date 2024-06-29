@@ -578,17 +578,17 @@ func main() {
 	// create object storage client
 	objectStorage.CreateSession()
 
-	// SeedUserRoles(database.Instance)
-	// SeedAmenityTypes(database.Instance)
-	// SeedBedTypes(database.Instance)
-	// SeedBookingCostTypes(database.Instance)
-	// SeedBookingStatus(database.Instance)
-	// SeedRoomTypes(database.Instance)
-	// SeedAmenities(database.Instance)
-	// SeedPaymentMethods(database.Instance)
-	// SeedInquiryStatuses(database.Instance)
+	SeedUserRoles(database.Instance)
+	SeedAmenityTypes(database.Instance)
+	SeedBedTypes(database.Instance)
+	SeedBookingCostTypes(database.Instance)
+	SeedBookingStatus(database.Instance)
+	SeedRoomTypes(database.Instance)
+	SeedAmenities(database.Instance)
+	SeedPaymentMethods(database.Instance)
+	SeedInquiryStatuses(database.Instance)
 	SeedTaxRates(database.Instance)
-	// SeedServicePlans(database.Instance)
+	SeedServicePlans(database.Instance)
 
 	log.Println("Database seeding Completed!")
 

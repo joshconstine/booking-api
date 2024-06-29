@@ -419,23 +419,10 @@ func main() {
 	// create object storage client
 	// objectStorage.CreateSession()
 
-	// SeedAmenityTypes(database.Instance)
-	// SeedBookingCostTypes(database.Instance)
-	// SeedUserRoles(database.Instance)
-	// SeedBookingStatus(database.Instance)
-	// SeedDocuments(objectStorage.Client, database.Instance)
-	// SeedRoomTypes(database.Instance)
-	// SeedAmenities(database.Instance)
-	// SeedPaymentMethods(database.Instance)
-	// SeedTaxRates(database.Instance)
-	// SeedLocations(database.Instance)
+	SeedDocuments(objectStorage.Client, database.Instance)
+	SeedLocations(database.Instance)
 
-	// SeedInquiryStatuses(database.Instance)
-	//SeedInquiries(database.Instance)
 	SeedAccountsFromInput(database.Instance)
-
-	// SeedRentals(database.Instance)
-	// SeedBoats(database.Instance)
 
 	//*****users rbac
 

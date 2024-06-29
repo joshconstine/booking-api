@@ -1,5 +1,7 @@
 package request
 
+import "time"
+
 type CreateUserRequest struct {
 	UserID      string
 	Email       string
@@ -7,4 +9,5 @@ type CreateUserRequest struct {
 	FirstName   string
 	LastName    string
 	PhoneNumber string
+	DOB         *time.Time
 }

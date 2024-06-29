@@ -5,10 +5,8 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
-	"log"
-	"time"
-
 	"gorm.io/gorm"
+	"log"
 )
 
 type userRepositoryImplementation struct {
@@ -87,7 +85,7 @@ func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) e
 		LastName:       user.LastName,
 		PhoneNumber:    user.PhoneNumber,
 		Gender:         "male",
-		DOB:            time.Now(),
+		DOB:            user.DOB,
 		ProfilePicture: "",
 	}
 
