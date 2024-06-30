@@ -78,8 +78,11 @@ func (t BookingController) CreateBookingWithUserInformation(w http.ResponseWrite
 		return err
 
 	}
-	return render(r, w, bookings.BookingConfirmation(bookingId))
+	//return render(r, w, bookings.BookingConfirmation(bookingId))
 
+	//reroute to /bookings/{bookingId}
+	http.Redirect(w, r, fmt.Sprintf("/bookings/%s", bookingId), http.StatusFound)
+	return nil
 }
 
 func (t BookingController) GetDetailsForBookingID(ctx *gin.Context) {

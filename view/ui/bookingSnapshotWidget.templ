@@ -73,13 +73,20 @@ templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse) {
         @StatusBadge(booking.Status)
         </td>
         <td>{booking.StartDate.Format("01/02")}</td>
-        <td>
-            for _, entity := range booking.BookedEntities {
-                // <span>{strconv.Itoa(int(entity.EntityID))}</span>
-                <span>{entity.Name}</span>
+       <td>
+             if booking.BookedEntities != nil {
 
-            }
+                   for _, entity := range booking.BookedEntities {
+                    // <span>{strconv.Itoa(int(entity.EntityID))}</span>
+                    <span>{entity.Name}</span>
+                }
+}
+             else {
+                <span>No entities booked</span>
+
+           }
         </td>
+
         <td>
         <i class="fa-solid fa-paper-plane"></i>
         </td>

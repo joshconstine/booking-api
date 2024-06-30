@@ -25,8 +25,8 @@ type BookingUserInformationErrors struct {
 
 templ BookingUserInformationForm(params  request.CreateBookingWithUserInformationRequest, errors BookingUserInformationErrors) {
     <form
-     hx-post="/api/booking"
-     hx-swap="outerHTML"
+     action="/api/booking"
+        method="POST"
 
 
       class="w-full flex flex-col gap-2">
