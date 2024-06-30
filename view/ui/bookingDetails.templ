@@ -6,45 +6,41 @@ import (
 )
 
 templ BookingDetails(details response.BookingDetailsResponse) {
-	<div class="navbar bg-base-100 border-b border-gray-700">
-		<div class="flex gap-2">
-            <span>Payment Completed</span>
-            if details.PaymentComplete {
-                <span >Yes</span>
-            } else {
-
-                <span >No</span>
-
-            }
-        </div>
-            <div>
-                <span>Deposit Paid</span>
-                if details.DepositPaid {
-                    <span >Yes</span>
-                } else {
-                    <span >No</span>
-                }
-
-            </div> 
-            <div>
-                <span>Documents Signed</span>
-                if details.DocumentsSigned {
-                    <span >Yes</span>
-                } else {
-                    <span >No</span>
-                }
-
-            </div>
-<div>
-<span> Payment Due Date</span>
-<span>{details.PaymentDueDate.Format("02/02/2021")}</span>
-</div>
-<div>
-<span> Payment Start Date</span>
-<span>{details.BookingStartDate.Format("02/02/2021")}</span>
-<span>{strconv.Itoa(int(details.LocationID))}</span>
-<span>{details.InvoiceID}</span>
-</div>
+<div class="bg-base-100 rounded-lg flex p-4 items-center">
+   <div class="flex gap-2">
+      <span>Payment Completed</span>
+      if details.PaymentComplete {
+      <span >Yes</span>
+      } else {
+      <span >No</span>
+      }
+   </div>
+   <div>
+      <span>Deposit Paid</span>
+      if details.DepositPaid {
+      <span >Yes</span>
+      } else {
+      <span >No</span>
+      }
+   </div>
+   <div>
+      <span>Documents Signed</span>
+      if details.DocumentsSigned {
+      <span >Yes</span>
+      } else {
+      <span >No</span>
+      }
+   </div>
+   <div>
+      <span> Payment Due Date</span>
+      <span>{details.PaymentDueDate.Format("02/02/2021")}</span>
+   </div>
+   <div>
+      <span> Payment Start Date</span>
+      <span>{details.BookingStartDate.Format("02/02/2021")}</span>
+      <span>{strconv.Itoa(int(details.LocationID))}</span>
+      <span>{details.InvoiceID}</span>
+   </div>
 </div>
 
 

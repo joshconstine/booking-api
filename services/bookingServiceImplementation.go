@@ -33,6 +33,10 @@ func (t BookingServiceImplementation) FindAll() []response.BookingResponse {
 func (t BookingServiceImplementation) FindById(id string) response.BookingInformationResponse {
 	result := t.BookingRepository.FindById(id)
 
+	customerInfo := t.UserService.FindByUserID(result.Customer.UserID)
+
+	result.Customer = customerInfo
+
 	return result
 }
 
