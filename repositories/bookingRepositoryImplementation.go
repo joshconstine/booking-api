@@ -60,15 +60,15 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 	return booking.MapBookingToInformationResponse()
 
 }
-func calculatePaymentDueDate(bookingStartDate *time.Time) *time.Time {
+func calculatePaymentDueDate(bookingStartDate time.Time) time.Time {
 	//the due date will be 90 days before the booking start date if the startdate is < 90 days from now the due date is now
 	dueDate := bookingStartDate.AddDate(0, 0, -90)
 	if dueDate.Before(time.Now()) {
 		now := time.Now()
-		return &now
+		return now
 
 	}
-	return &dueDate
+	return dueDate
 }
 
 // TODO: Something can be improvewd here,
@@ -257,8 +257,8 @@ func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingR
 
 	bookingToCreate.Details = models.BookingDetails{
 		GuestCount:       booking.Guests,
-		BookingStartDate: &earliestStartDate,
-		PaymentDueDate:   calculatePaymentDueDate(&earliestStartDate),
+		BookingStartDate: earliestStartDate,
+		PaymentDueDate:   calculatePaymentDueDate(earliestStartDate),
 		PaymentComplete:  false,
 		DepositPaid:      false,
 		DocumentsSigned:  false,

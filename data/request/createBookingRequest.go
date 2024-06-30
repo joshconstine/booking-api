@@ -88,7 +88,7 @@ func (cbr *CreateBookingRequest) MapCreateBookingRequestToBooking() models.Booki
 		UserID: cbr.UserID,
 		Details: models.BookingDetails{
 			// Initialize booking details here
-			BookingStartDate: &earliestStartDate,
+			BookingStartDate: earliestStartDate,
 		},
 	}
 

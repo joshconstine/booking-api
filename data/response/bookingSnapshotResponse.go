@@ -7,7 +7,7 @@ type BookingSnapshotResponse struct {
 	UserID         string
 	Name           string
 	PaymentStatus  string
-	StartDate      *time.Time            `json:"startDate"`
+	StartDate      time.Time             `json:"startDate"`
 	DateRecieved   time.Time             `json:"dateRecieved"`
 	Status         BookingStatusResponse `json:"status"`
 	BookedEntities []EntityInfoResponse  `json:"entities"`

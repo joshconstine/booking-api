@@ -12,9 +12,9 @@ type BookingDetails struct {
 	BookingID        string `gorm:"unique; not null"`
 	PaymentComplete  bool
 	DepositPaid      bool
-	PaymentDueDate   *time.Time
+	PaymentDueDate   time.Time
 	DocumentsSigned  bool
-	BookingStartDate *time.Time
+	BookingStartDate time.Time
 	GuestCount       int
 	LocationID       uint   `gorm:"not null"`
 	InvoiceID        string `gorm:"type:varchar(255)"`
