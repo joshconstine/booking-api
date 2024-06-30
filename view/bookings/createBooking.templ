@@ -83,7 +83,13 @@ templ GuestConfirmationDialog(params  request.CreateBookingWithUserInformationRe
 
             </div>
             <div class="flex flex-col gap-4">
-                <p>If this who you are looking for?</p>
+                <p>Is this who you are looking for?</p>
+                <div class="avatar ">
+						<div class="w-32 rounded-full avatar">
+							<img src={userToConfirm.ProfilePicture} alt="avatar" />
+						</div>
+
+					</div>
                 <span>{userToConfirm.Email}</span>
                 <span>{userToConfirm.PreferredName} {userToConfirm.LastName}</span>
             </div>
@@ -96,7 +102,7 @@ templ GuestConfirmationDialog(params  request.CreateBookingWithUserInformationRe
                 <input type="hidden" name="lastName" value={params.LastName} />
                 <input type="hidden" name="email" value={params.Email} />
 
-                <button class="btn btn-primary" id="confirm-guest">Yes</button>
+                <button class="btn bg-branded-400" id="confirm-guest">Yes</button>
                 </form>
                 <button class="btn" id="cancel-guest">Cancel</button>
             </div>
