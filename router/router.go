@@ -124,7 +124,7 @@ func NewRouter(
 		bookingRouter.GET("/:bookingId", bookingController.FindById)
 		bookingRouter.GET("/:bookingId/costItems", bookingCostItemController.FindByBookingId)
 		bookingRouter.GET("/:bookingId/costItems/total", bookingCostItemController.TotalForBookingId)
-		bookingRouter.POST("/ui", bookingController.CreateBookingWithUserInformation)
+		//bookingRouter.POST("/ui", bookingController.CreateBookingWithUserInformation)
 
 		bookingRouter.GET("/:bookingId/payments", bookingPaymentController.FindByBookingId)
 		bookingRouter.GET("/:bookingId/payments/total", bookingPaymentController.FindTotalAmountByBookingId)

@@ -2,6 +2,7 @@ package request
 
 import (
 	"booking-api/models"
+	"log"
 	"time"
 )
 
@@ -14,6 +15,12 @@ type CreateBookingRequest struct {
 	PhoneNumber    string
 	Guests         int
 	EntityRequests []BookEntityRequest
+}
+
+type CreateBookingWithUserInformationRequest struct {
+	FirstName string
+	LastName  string
+	Email     string
 }
 
 type BookEntityRequest struct {
@@ -39,6 +46,15 @@ func (e *BookEntityRequest) MapEntityBookingRequestToEntityBooking() models.Enti
 	}
 
 }
+
+func (uir *CreateBookingWithUserInformationRequest) MapCreateBookingWithUserInformationRequestToCreateBookingRequest() CreateBookingRequest {
+	return CreateBookingRequest{
+		FirstName: uir.FirstName,
+		LastName:  uir.LastName,
+		Email:     uir.Email,
+	}
+
+}
 func calculatePaymentDueDate(bookingStartDate time.Time) time.Time {
 	//the due date will be 90 days before the booking start date if the startdate is < 90 days from now the due date is now
 	dueDate := bookingStartDate.AddDate(0, 0, -90)
@@ -47,12 +63,21 @@ func calculatePaymentDueDate(bookingStartDate time.Time) time.Time {
 	}
 	return dueDate
 }
-
 func (cbr *CreateBookingRequest) MapCreateBookingRequestToBooking() models.Booking {
-	var earliestStartDate time.Time
+	if cbr.EntityRequests == nil || len(cbr.EntityRequests) == 0 {
+		log.Println("EntityRequests is empty")
+		return models.Booking{
+			UserID:  cbr.UserID,
+			Details: models.BookingDetails{},
+		}
+	}
 
-	earliestStartDate = cbr.EntityRequests[0].StartTime
+	log.Printf("Mapping %d entity requests\n", len(cbr.EntityRequests))
+	//earliestStartDate := cbr.EntityRequests[0].StartTime
 
+	ebr := cbr.EntityRequests
+
+	earliestStartDate := ebr[0].StartTime
 	for _, entityRequest := range cbr.EntityRequests {
 		if entityRequest.StartTime.Before(earliestStartDate) {
 			earliestStartDate = entityRequest.StartTime
@@ -60,8 +85,11 @@ func (cbr *CreateBookingRequest) MapCreateBookingRequestToBooking() models.Booki
 	}
 
 	booking := models.Booking{
-		UserID:  cbr.UserID,
-		Details: models.BookingDetails{},
+		UserID: cbr.UserID,
+		Details: models.BookingDetails{
+			// Initialize booking details here
+			BookingStartDate: &earliestStartDate,
+		},
 	}
 
 	for _, entityRequest := range cbr.EntityRequests {

@@ -3,6 +3,7 @@ package controllers
 import (
 	"booking-api/data/request"
 	"booking-api/data/response"
+	validate "booking-api/pkg/kit"
 	"booking-api/services"
 	bookings "booking-api/view/bookings"
 	"fmt"
@@ -55,32 +56,30 @@ func (t BookingController) FindById(ctx *gin.Context) {
 
 }
 
-func (t BookingController) CreateBookingWithUserInformation(ctx *gin.Context) {
-	var request request.CreateUserRequest
-	ctx.BindJSON(&request)
-
-	// bookingResponse, err := t.bookingService.Create(request)
-
-	// bookingResponse, err :=
-	// if err != nil {
-	// 	webResponse := response.Response{
-	// 		Code:   http.StatusBadRequest,
-	// 		Status: http.StatusText(http.StatusBadRequest),
-	// 		Data:   err.Error(),
-	// 	}
-
-	// 	ctx.Header("Content-Type", "application/json")
-	// 	ctx.JSON(http.StatusBadRequest, webResponse)
-	// 	return
-	// }
-
-	webResponse := response.Response{
-		Code:   http.StatusCreated,
-		Status: http.StatusText(http.StatusCreated),
-		Data:   "not implemented",
+func (t BookingController) CreateBookingWithUserInformation(w http.ResponseWriter, r *http.Request) error {
+	params := request.CreateBookingWithUserInformationRequest{
+		FirstName: r.FormValue("firstName"),
+		LastName:  r.FormValue("lastName"),
+		Email:     r.FormValue("email"),
 	}
-	ctx.Header("Content-Type", "application/json")
-	ctx.JSON(http.StatusCreated, webResponse)
+
+	errors := bookings.BookingUserInformationErrors{}
+	ok := validate.New(&params, validate.Fields{
+		"FirstName": validate.Rules(validate.Required),
+		"LastName":  validate.Rules(validate.Required),
+		"Email":     validate.Rules(validate.Required),
+	}).Validate(&errors)
+	if !ok {
+		return render(r, w, bookings.BookingUserInformationForm(params, errors))
+	}
+
+	bookingId, err := t.bookingService.CreateBookingWithUserInformation(&params)
+	if err != nil {
+		return err
+
+	}
+	return render(r, w, bookings.BookingConfirmation(bookingId))
+
 }
 
 func (t BookingController) GetDetailsForBookingID(ctx *gin.Context) {

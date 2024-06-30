@@ -60,13 +60,15 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 	return booking.MapBookingToInformationResponse()
 
 }
-func calculatePaymentDueDate(bookingStartDate time.Time) time.Time {
+func calculatePaymentDueDate(bookingStartDate *time.Time) *time.Time {
 	//the due date will be 90 days before the booking start date if the startdate is < 90 days from now the due date is now
 	dueDate := bookingStartDate.AddDate(0, 0, -90)
 	if dueDate.Before(time.Now()) {
-		return time.Now()
+		now := time.Now()
+		return &now
+
 	}
-	return dueDate
+	return &dueDate
 }
 
 // TODO: Something can be improvewd here,
@@ -205,6 +207,10 @@ func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingR
 
 	bookingToCreate := booking.MapCreateBookingRequestToBooking()
 
+	if booking.EntityRequests == nil || len(booking.EntityRequests) == 0 {
+		booking.EntityRequests = []request.BookEntityRequest{}
+	}
+
 	//*************COSTS FOR ENTITIES****************
 	var costsForBooking []models.BookingCostItem
 	for _, entityBooking := range bookingToCreate.Entities {
@@ -235,7 +241,13 @@ func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingR
 
 	var earliestStartDate time.Time
 
-	earliestStartDate = bookingToCreate.Entities[0].Timeblock.StartTime
+	if len(bookingToCreate.Entities) > 0 {
+		earliestStartDate = bookingToCreate.Entities[0].Timeblock.StartTime
+	} else {
+		earliestStartDate = time.Now()
+
+		earliestStartDate = earliestStartDate.AddDate(10, 0, 0)
+	}
 
 	for _, entityRequest := range bookingToCreate.Entities {
 		if entityRequest.Timeblock.StartTime.Before(earliestStartDate) {
@@ -245,8 +257,8 @@ func (t *bookingRepositoryImplementation) Create(booking *request.CreateBookingR
 
 	bookingToCreate.Details = models.BookingDetails{
 		GuestCount:       booking.Guests,
-		BookingStartDate: earliestStartDate,
-		PaymentDueDate:   calculatePaymentDueDate(earliestStartDate),
+		BookingStartDate: &earliestStartDate,
+		PaymentDueDate:   calculatePaymentDueDate(&earliestStartDate),
 		PaymentComplete:  false,
 		DepositPaid:      false,
 		DocumentsSigned:  false,
@@ -298,6 +310,9 @@ func (t *bookingRepositoryImplementation) DoesEntityAllowInstantBooking(entityID
 }
 
 func (t *bookingRepositoryImplementation) CheckIfEntitiesCanBeBooked(request *request.CreateBookingRequest) (bool, error) {
+	if request.EntityRequests == nil || len(request.EntityRequests) == 0 {
+		return true, nil
+	}
 	for _, entity := range request.EntityRequests {
 
 		//****************************INSTANT BOOKING CHECK********************************

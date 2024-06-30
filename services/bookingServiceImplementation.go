@@ -57,22 +57,16 @@ func (t BookingServiceImplementation) Create(request *request.CreateBookingReque
 	if !canBook {
 		return "", err
 	} else {
-
 		//Start transaction
-
 		bookingId, err = t.BookingRepository.Create(request)
-
 		if err != nil {
 			fmt.Printf("error creating booking: %v", err)
 			return "", err
 		}
 
 		//End transaction
-
 		//send confirmation email to user
-
 		//check if mode if Production or Development
-
 		email.SendEmailTemplate(constants.APPLICATION_NAME, constants.SEND_GRID_EMAIL, request.FirstName, "joshua.constine97@gmail.com", "Booking Confirmation"+bookingId, constants.EMAIL_TEMPLATE_BOOKING_CONFIRMATION, map[string]interface{}{
 			"bookingId": bookingId,
 		})
@@ -80,6 +74,20 @@ func (t BookingServiceImplementation) Create(request *request.CreateBookingReque
 	}
 
 	return bookingId, nil
+}
+
+func (t BookingServiceImplementation) CreateBookingWithUserInformation(request *request.CreateBookingWithUserInformationRequest) (string, error) {
+
+	createBookingRequest := request.MapCreateBookingWithUserInformationRequestToCreateBookingRequest()
+
+	//validate the request
+	err := t.Validate.Struct(createBookingRequest)
+	if err != nil {
+		return "", err
+
+	}
+
+	return t.Create(&createBookingRequest)
 }
 
 func (t BookingServiceImplementation) GetSnapshot() []response.BookingSnapshotResponse {

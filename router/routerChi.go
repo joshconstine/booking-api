@@ -135,6 +135,12 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		// bookingController.HandleBookingInformation(w, r)
 	})
 
+	apiRouter.Group(func(adminApiRouter chi.Router) {
+		adminApiRouter.Use(middlewares.WithAuth, withIsAdminMiddleware, withAccountSetupMiddleware)
+		adminApiRouter.Post("/booking", controllers.Make((bookingController.CreateBookingWithUserInformation)))
+
+	})
+
 	router.Mount("/api", apiRouter)
 	return router
 }
