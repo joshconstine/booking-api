@@ -178,7 +178,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	authController := controllers.NewAuthController(userService, sb.ClientInstance)
 	bookingController := controllers.NewBookingController(bookingService, bookingDetailsService, invoiceService)
 	boatController := controllers.NewBoatController(boatService)
-	// userController := controllers.NewUserController(userService)
+	userController := controllers.NewUserController(userService)
 	// bookingStatusController := controllers.NewBookingStatusController(bookingStatusService)
 	// bookingCostTypeController := controllers.NewBookingCostTypeController(bookingCostTypeService)
 	rentalController := controllers.NewRentalController(rentalService)
@@ -212,7 +212,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 
 	chatController := controllers.NewChatController(chatService, userService, accountService)
 
-	router := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController, photoController, accountController)
+	router := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController, photoController, accountController, userController)
 
 	// ginRouter := router.InitRouter(routes)
 

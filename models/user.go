@@ -15,7 +15,7 @@ type User struct {
 	Username       string         `json:"username" gorm:"unique"`
 	FirstName      string         `json:"firstName"`
 	LastName       string         `json:"lastName"`
-	PreferedName   string         `json:"prefferedName"`
+	PreferredName  string         `json:"preferredName"`
 	Email          string         `json:"email" gorm:"unique"`
 	PhoneNumber    string         `json:"phoneNumber"`
 	Gender         string         `json:"gender"`
@@ -63,7 +63,7 @@ func (user *User) MapUserToResponse() response.UserResponse {
 		LastName:           user.LastName,
 		Email:              user.Email,
 		PhoneNumber:        user.PhoneNumber,
-		PrefferedName:      user.PreferedName,
+		PreferredName:      user.PreferredName,
 		Bookings:           []response.BookingResponse{},
 		Chats:              []response.ChatResponse{},
 		PermissionRequests: []response.EntityBookingPermissionResponse{},
@@ -80,4 +80,14 @@ func (user *User) MapUserToResponse() response.UserResponse {
 	response.ProfilePicture = MakeUrlPathForObjectStorage(user.ProfilePicture)
 
 	return response
+}
+func (user *User) MapUserToPublicResponse() response.PublicUserResponse {
+
+	res := response.PublicUserResponse{
+		PreferredName:  user.PreferredName,
+		ProfilePicture: MakeUrlPathForObjectStorage(user.ProfilePicture),
+		Username:       user.Username,
+		Email:          user.Email,
+	}
+	return res
 }

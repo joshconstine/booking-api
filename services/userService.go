@@ -7,7 +7,8 @@ import (
 
 type UserService interface {
 	FindAll() []responses.UserResponse
-	FindByEmail(email string) responses.UserResponse
+	FindByEmailPublic(email string) (responses.PublicUserResponse, error)
+	FindByEmail(email string) (responses.UserResponse, error)
 	FindByUserID(userID string) responses.UserResponse
 	IsAdmin(userID string) bool
 	CreateUser(request *requests.CreateUserRequest) error

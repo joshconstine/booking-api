@@ -57,17 +57,23 @@ func (t *userServiceImplementation) FindById(id uint) responses.UserResponse {
 	return user
 }
 
-func (t *userServiceImplementation) FindByEmail(email string) responses.UserResponse {
-	result := t.userRepository.FindByEmail(email)
-
-	user := responses.UserResponse{
-		UserID: result.ID,
-		Email:  result.Email,
+func (t *userServiceImplementation) FindByEmail(email string) (responses.UserResponse, error) {
+	result, err := t.userRepository.FindByEmail(email)
+	if err != nil {
+		return responses.UserResponse{}, err
 	}
 
-	return user
+	return result.MapUserToResponse(), nil
 }
 
+func (t *userServiceImplementation) FindByEmailPublic(email string) (responses.PublicUserResponse, error) {
+	result, err := t.userRepository.FindByEmail(email)
+	if err != nil {
+		return responses.PublicUserResponse{}, err
+	}
+
+	return result.MapUserToPublicResponse(), nil
+}
 func (t *userServiceImplementation) CreateUser(user *requests.CreateUserRequest) error {
 	// validate request
 	fmt.Println("validating user")

@@ -80,8 +80,18 @@ func (t BookingServiceImplementation) CreateBookingWithUserInformation(request *
 
 	createBookingRequest := request.MapCreateBookingWithUserInformationRequestToCreateBookingRequest()
 
+	user, err := t.UserService.FindByEmail(createBookingRequest.Email)
+	if err != nil {
+		return "", err
+
+	}
+
+	createBookingRequest.UserID = user.UserID
+	createBookingRequest.FirstName = user.FirstName
+	createBookingRequest.PhoneNumber = user.PhoneNumber
+
 	//validate the request
-	err := t.Validate.Struct(createBookingRequest)
+	err = t.Validate.Struct(createBookingRequest)
 	if err != nil {
 		return "", err
 

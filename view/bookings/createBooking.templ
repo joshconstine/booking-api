@@ -4,6 +4,7 @@ package home
 import (
     "booking-api/view/layout"
     "booking-api/data/request"
+    "booking-api/data/response"
 )
 
 // RentalInformationResponse renders a page with detailed information about a specific rental
@@ -25,10 +26,9 @@ type BookingUserInformationErrors struct {
 
 templ BookingUserInformationForm(params  request.CreateBookingWithUserInformationRequest, errors BookingUserInformationErrors) {
     <form
-     action="/api/booking"
-        method="POST"
-
-
+     hx-post="/api/userFindOrCreate"
+    hx-indicator="#loading"
+ hx-swap="outerHTML"
       class="w-full flex flex-col gap-2">
 
         <div class="flex flex-col gap-2">
@@ -61,6 +61,7 @@ templ BookingUserInformationForm(params  request.CreateBookingWithUserInformatio
         <div class="flex gap-2 w-full justify-end">
             <button class="btn btn-borderd" >Save Draft</button>
             <button class="btn bg-branded-400" type="submit">Create Booking</button>
+            <span id="loading" class="loading loading-dots loading-md htmx-indicator"></span>
         </div>
 
     </form>
@@ -72,4 +73,32 @@ templ BookingConfirmation(bookingId string) {
             <p class="text-lg">Your booking has been successfully created</p>
             <p class="text-lg">Booking ID: { bookingId }</p>
         </div>
+}
+
+templ GuestConfirmationDialog(params  request.CreateBookingWithUserInformationRequest, userToConfirm response.PublicUserResponse){
+
+    <div  class="flex flex-col gap-8" >
+            <div class="">
+                <p class="text-lg font-bold">It Looks like we found an account for  {userToConfirm.PreferredName}</p>
+
+            </div>
+            <div class="flex flex-col gap-4">
+                <p>If this who you are looking for?</p>
+                <span>{userToConfirm.Email}</span>
+                <span>{userToConfirm.PreferredName} {userToConfirm.LastName}</span>
+            </div>
+            <div class="flex w-full items-center gap-4">
+            <form
+               action="/api/booking"
+                method="POST"
+                >
+                <input type="hidden" name="firstName" value={params.FirstName} />
+                <input type="hidden" name="lastName" value={params.LastName} />
+                <input type="hidden" name="email" value={params.Email} />
+
+                <button class="btn btn-primary" id="confirm-guest">Yes</button>
+                </form>
+                <button class="btn" id="cancel-guest">Cancel</button>
+            </div>
+    </div>
 }

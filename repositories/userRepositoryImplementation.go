@@ -56,14 +56,14 @@ func (t *userRepositoryImplementation) IsAdmin(userID string) bool {
 	return false
 }
 
-func (t *userRepositoryImplementation) FindByEmail(email string) models.User {
+func (t *userRepositoryImplementation) FindByEmail(email string) (models.User, error) {
 	var user models.User
 	result := t.Db.Where("email = ?", email).First(&user)
 	if result.Error != nil {
-		return models.User{}
+		return models.User{}, result.Error
 	}
 
-	return user
+	return user, nil
 }
 
 func (t *userRepositoryImplementation) FindByUserID(userID string) response.UserResponse {
