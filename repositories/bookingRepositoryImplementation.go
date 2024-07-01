@@ -62,6 +62,9 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 	for j, entity := range resp.Entities {
 		entityName := GetNameForEntity(entity.EntityID, entity.EntityType, t.Db)
 		resp.Entities[j].Name = entityName
+		thumbnail := GetThumbnailForEntity(entity.EntityID, entity.EntityType, t.Db)
+
+		resp.Entities[j].Thumbnail = thumbnail
 	}
 	return resp
 

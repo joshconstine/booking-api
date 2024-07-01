@@ -1,8 +1,10 @@
 package repositories
 
 import (
+	"booking-api/config"
 	"booking-api/data/response"
 	"booking-api/models"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -37,6 +39,17 @@ func (e *EntityPhotoRepositoryImplementation) FindAllForEntity(entity string, en
 		ph.ID = photoModel.ID
 		ph.URL = photoModel.URL
 
+		// load config
+		env, err := config.LoadConfig(".")
+		if err != nil {
+			fmt.Printf("error: %v", err)
+		}
+
+		base := env.OBJECT_STORAGE_URL
+
+		if ph.URL != "" {
+			ph.URL = "https://" + base + "/" + ph.URL
+		}
 		photos = append(photos, ph)
 
 	}

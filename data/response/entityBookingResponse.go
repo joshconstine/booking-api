@@ -6,6 +6,7 @@ type EntityBookingResponse struct {
 	EntityType string                    `json:"entity_type"`
 	BookingID  string                    `json:"booking_id"`
 	Name       string                    `json:"name"`
+	Thumbnail  string                    `json:"thumbnail"`
 	Timeblock  EntityTimeblockResponse   `json:"timeblock"`
 	Status     BookingStatusResponse     `json:"status"`
 	CostItems  []BookingCostItemResponse `json:"costItems"`
