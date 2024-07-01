@@ -39,7 +39,7 @@ templ BookingActions(booking response.BookingInformationResponse) {
           </div>
         </dialog>
 
-        <button class="btn btn-primary">Refund</button>
+ //       <button class="btn btn-primary">Refund</button>
 
        // <button class="btn btn-primary">Resend</button>
     </div>
@@ -59,16 +59,62 @@ templ AddEntityToBookingForm(params AddEntityToBookingRequestParams,rentals []re
         method="POST"
         class="bg-base-200 rounded-lg flex flex-col gap-4 p-4"
     >
+    <script>
+        function updateForm() {
+				const rentalRadio = document.getElementById('rental');
+				const boatRadio = document.getElementById('boat');
+				const rentalSelect = document.getElementById('rentalSelect');
+				const boatSelect = document.getElementById('boatSelect');
+
+				if (rentalRadio.checked) {
+					rentalSelect.style.display = 'block';
+					boatSelect.style.display = 'none';
+				} else if (boatRadio.checked) {
+					rentalSelect.style.display = 'none';
+					boatSelect.style.display = 'block';
+				}
+
+				const entityType = rentalRadio.checked ? rentalRadio.value : boatRadio.value;
+				document.getElementById('entityType').value = entityType;
+			}
+
+
+            document.getElementById('rental').onchange = updateForm;
+            document.getElementById('boat').onchange = updateForm;
+
+			window.onload = updateForm;
+    </script>
         <label class="form-control w-full max-w-xs">
                 <div class="label">
                     <span class="label-text">Select a rental</span>
                 </div>
-                <select class="select select-bordered w-full" name="entityID">
-                    for _, rental := range rentals {
 
+                <div class="form-control">
+                    <label class="label cursor-pointer">
+                        <span class="label-text">Rental</span>
+                        <input type="radio" id="rental" name="entityType" value={constants.RENTAL_ENTITY} checked  class="radio checked:bg-red-500" checked/>
+                    </label>
+                </div>
+                <div class="form-control">
+                    <label class="label cursor-pointer">
+                        <span class="label-text">Boat</span>
+                        <input type="radio" id="boat" name="entityType" value={constants.BOAT_ENTITY} class="radio checked:bg-red-500" />
+                    </label>
+
+                </div>
+
+                <select class="select select-bordered w-full" name="entityIDRental"  id="rentalSelect">
+                    for _, rental := range rentals {
                         <option value={
                             strconv.Itoa(int(rental.ID))
                         }>{rental.Name}</option>
+                    }
+                </select>
+                <select class="select select-bordered w-full hidden" name="entityIDBoat"  id="boatSelect">
+                    for _, boat := range boats {
+                        <option value={
+                            strconv.Itoa(int(boat.ID))
+                        }>{boat.Name}</option>
                     }
                 </select>
             </label>
