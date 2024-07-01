@@ -25,10 +25,11 @@ func (e *EntityBooking) TableName() string {
 func (e *EntityBooking) MapEntityBookingToResponse() response.EntityBookingResponse {
 
 	response := response.EntityBookingResponse{
-		ID:        e.ID,
-		BookingID: e.BookingID,
-		Name:      e.EntityType,
-		Timeblock: e.Timeblock.MapTimeblockToResponse(),
+		ID:         e.ID,
+		EntityID:   e.EntityID,
+		EntityType: e.EntityType,
+		BookingID:  e.BookingID,
+		Timeblock:  e.Timeblock.MapTimeblockToResponse(),
 		Status: response.BookingStatusResponse{
 			ID: e.BookingStatusID,
 		},

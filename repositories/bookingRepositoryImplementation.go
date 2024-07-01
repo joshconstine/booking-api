@@ -57,7 +57,13 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 		return response.BookingInformationResponse{}
 	}
 
-	return booking.MapBookingToInformationResponse()
+	resp := booking.MapBookingToInformationResponse()
+
+	for j, entity := range resp.Entities {
+		entityName := GetNameForEntity(entity.EntityID, entity.EntityType, t.Db)
+		resp.Entities[j].Name = entityName
+	}
+	return resp
 
 }
 func calculatePaymentDueDate(bookingStartDate time.Time) time.Time {
@@ -75,8 +81,6 @@ func calculatePaymentDueDate(bookingStartDate time.Time) time.Time {
 func (t *bookingRepositoryImplementation) GetSnapshot() []response.BookingSnapshotResponse {
 	limit := 10
 	var bookings []models.Booking
-	var updatedResponse []response.BookingSnapshotResponse //updated response with user name and entity name
-	var entityResponse response.EntityInfoResponse
 	result := t.Db.Model(&models.Booking{}).Preload("BookingStatus").Preload("Details").Preload("Entities").Limit(limit).Find(&bookings)
 
 	if result.Error != nil {
@@ -88,48 +92,48 @@ func (t *bookingRepositoryImplementation) GetSnapshot() []response.BookingSnapsh
 		response = append(response, booking.MapBookingToSnapshotResponse())
 	}
 
-	var user models.User
-
-	for _, snapshot := range response {
+	for i, snapshot := range response {
+		var user models.User
 		result := t.Db.Model(&models.User{}).Where("id = ?", snapshot.UserID).Select("FirstName", "LastName").First(&user)
+		if result.Error != nil {
+			fmt.Println(result.Error.Error())
+		} else {
+			snapshot.Name = user.FirstName + " " + user.LastName
+		}
+
+		for j, entity := range snapshot.BookedEntities {
+			entityName := GetNameForEntity(entity.EntityID, entity.EntityType, t.Db)
+			snapshot.BookedEntities[j].Name = entityName
+		}
+
+		// Update the original response slice
+		response[i] = snapshot
+	}
+
+	return response
+}
+
+func GetNameForEntity(entityID uint, entityType string, db *gorm.DB) string {
+	var entityResponse response.EntityInfoResponse
+	if entityType == constants.BOAT_ENTITY {
+		result := db.Model(&models.Boat{}).Where("id = ?", entityID).Select("Name").First(&entityResponse)
 		if result.Error != nil {
 			fmt.Println(result.Error.Error())
 			// return []response.BookingSnapshotResponse{}
 		}
 
-		snapshot.Name = user.FirstName + " " + user.LastName
-		for _, entity := range snapshot.BookedEntities {
-			if entity.EntityType == constants.BOAT_ENTITY {
-				result := t.Db.Model(&models.Boat{}).Where("id = ?", entity.EntityID).Select("Name").First(&entityResponse)
-				if result.Error != nil {
-					fmt.Println(result.Error.Error())
-					// return []response.BookingSnapshotResponse{}
-				}
-				entityResponse.EntityID = entity.EntityID
-				entityResponse.EntityType = entity.EntityType
-
-				snapshot.BookedEntities = append(snapshot.BookedEntities, entityResponse)
-
-			} else if entity.EntityType == constants.RENTAL_ENTITY {
-				result := t.Db.Model(&models.Rental{}).Where("id = ?", entity.EntityID).Select("Name").First(&entityResponse)
-				if result.Error != nil {
-					fmt.Println(result.Error.Error())
-					// return []response.BookingSnapshotResponse{}
-				}
-
-				entityResponse.EntityID = entity.EntityID
-				entityResponse.EntityType = entity.EntityType
-
-				snapshot.BookedEntities = append(snapshot.BookedEntities, entityResponse)
-
-			}
-
+		return entityResponse.Name
+	} else if entityType == constants.RENTAL_ENTITY {
+		result := db.Model(&models.Rental{}).Where("id = ?", entityID).Select("Name").First(&entityResponse)
+		if result.Error != nil {
+			fmt.Println(result.Error.Error())
+			// return []response.BookingSnapshotResponse{}
 		}
 
-		updatedResponse = append(updatedResponse, snapshot)
-	}
+		return entityResponse.Name
 
-	return updatedResponse
+	}
+	return ""
 }
 
 func CalculateNightlyCost(amount float64, startTime time.Time, endTime time.Time) float64 {
