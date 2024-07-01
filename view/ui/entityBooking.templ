@@ -1,0 +1,30 @@
+package ui
+
+import (
+    "booking-api/data/response"
+)
+
+templ EntityBooking(ebr response.EntityBookingResponse) {
+    <div class="flex flex-col gap-4 items-center">
+        <h1 class="text-3xl font-bold text-center mb-8">{ebr.Name}</h1>
+        <div class="mb-4 p-4 shadow-lg rounded-lg">
+           <span class="text-lg font-semibold">{ebr.Timeblock.StartTime.Format("2006-01-02 15:04")}</span>
+              <span class="text-lg font-semibold"> - </span>
+                <span class="text-lg font-semibold">{ebr.Timeblock.EndTime.Format("2006-01-02 15:04")}</span>
+                </div>
+                    @StatusBadge(ebr.Status)
+
+                   <div>
+                   <span>Cost Items</span>
+
+                   for _, costItem := range ebr.CostItems {
+
+                    @BookingCostItem(costItem)
+                    }
+                   </div>
+
+
+                </div>
+
+
+    }

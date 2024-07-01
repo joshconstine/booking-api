@@ -4,7 +4,6 @@ import (
     "booking-api/view/layout"
      response "booking-api/data/response"
 	
-	
 	"booking-api/view/ui"
 )
 
@@ -33,7 +32,11 @@ templ BookingInformationTemplate(booking response.BookingInformationResponse) {
                             </div>
                         </div>
                         <div class="flex flex-col bg-base-100 rounded-lg gap-8 items-center max-w-64">
-                            <span>Entity Bookings</span>
+                            <ul>
+                                for _, entityBooking := range booking.Entities {
+                                    @ui.EntityBooking(entityBooking)
+                                }
+                            </ul>
                         </div>
                     </div>
                 </div>

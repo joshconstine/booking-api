@@ -25,10 +25,21 @@ func (e *EntityBooking) TableName() string {
 func (e *EntityBooking) MapEntityBookingToResponse() response.EntityBookingResponse {
 
 	response := response.EntityBookingResponse{
-		ID:              e.ID,
-		BookingID:       e.BookingID,
-		TimeblockID:     e.TimeblockID,
-		BookingStatusID: e.BookingStatusID,
+		ID:        e.ID,
+		BookingID: e.BookingID,
+		Name:      e.EntityType,
+		Timeblock: e.Timeblock.MapTimeblockToResponse(),
+		Status: response.BookingStatusResponse{
+			ID: e.BookingStatusID,
+		},
+	}
+
+	for _, costItem := range e.BookingCostItems {
+		response.CostItems = append(response.CostItems, costItem.MapBookingCostItemToResponse())
+	}
+
+	for _, document := range e.Documents {
+		response.Documents = append(response.Documents, document.MapBookingDocumentToResponse())
 	}
 
 	return response
