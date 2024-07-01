@@ -2,35 +2,82 @@ package controllers
 
 import (
 	"booking-api/data/request"
-	"booking-api/data/response"
 	"booking-api/services"
+	"booking-api/view/ui"
+	"fmt"
+	"github.com/go-chi/chi/v5"
+	"log"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"strconv"
+	"time"
 )
 
 type EntityBookingController struct {
 	entityBookingService services.EntityBookingService
+	rentalService        services.RentalService
+	boatService          services.BoatService
 }
 
-func NewEntityBookingController(entityBookingService services.EntityBookingService) *EntityBookingController {
-	return &EntityBookingController{entityBookingService: entityBookingService}
+func NewEntityBookingController(entityBookingService services.EntityBookingService, rentalService services.RentalService, boatService services.BoatService) *EntityBookingController {
+	return &EntityBookingController{entityBookingService: entityBookingService,
+		rentalService: rentalService,
+		boatService:   boatService}
 }
 
-func (e *EntityBookingController) CreateEntityBooking(ctx *gin.Context) {
-	var entityBooking request.CreateEntityBookingRequest
-	ctx.BindJSON(&entityBooking)
+func (e *EntityBookingController) CreateEntityBooking(w http.ResponseWriter, r *http.Request) error {
 
-	booking, err := e.entityBookingService.AttemptToCreate(entityBooking)
-
+	entityIdInt, err := strconv.Atoi(r.FormValue("entityID"))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		return err
+
 	}
 
-	ctx.JSON(http.StatusOK, response.Response{
-		Code:   200,
-		Status: "Ok",
-		Data:   booking,
-	})
+	params := ui.AddEntityToBookingRequestParams{
+		BookingID:  r.FormValue("bookingID"),
+		StartTime:  r.FormValue("startTime"),
+		EntityID:   uint(entityIdInt),
+		EndTime:    r.FormValue("endTime"),
+		EntityType: r.FormValue("entityType"),
+	}
+	// Adjust the time parsing format to match the input
+	startTimeTime, err := time.Parse("2006-01-02T15:04", params.StartTime)
+	if err != nil {
+		return err
+	}
+	endTimeTime, err := time.Parse("2006-01-02T15:04", params.EndTime)
+	if err != nil {
+		return err
+	}
+
+	rentalEntityBooking := request.CreateEntityBookingRequest{
+		BookingID:  params.BookingID,
+		EntityID:   uint(entityIdInt),
+		EntityType: params.EntityType,
+		StartTime:  startTimeTime,
+		EndTime:    endTimeTime,
+	}
+
+	booking, err := e.entityBookingService.AttemptToCreate(rentalEntityBooking)
+
+	if err != nil {
+		return err
+
+	}
+
+	log.Printf("Created entity booking: %v", booking.ID)
+
+	http.Redirect(w, r, fmt.Sprintf("/bookings/%s", params.BookingID), http.StatusFound)
+	return nil
+}
+
+func (e *EntityBookingController) AddEntityToBookingForm(w http.ResponseWriter, r *http.Request) error {
+	bookingID := chi.URLParam(r, "bookingID")
+	params := ui.AddEntityToBookingRequestParams{
+		BookingID: bookingID,
+	}
+
+	rentals := e.rentalService.FindAll()
+	boats := e.boatService.FindAll()
+
+	return render(r, w, ui.AddEntityToBookingForm(params, rentals, boats))
 }

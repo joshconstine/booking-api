@@ -1,0 +1,97 @@
+package ui
+
+import (
+    "booking-api/data/response"
+	"booking-api/constants"
+    "strconv"
+)
+
+func GetAddEntityURLPath(id string) string {
+  path := "/bookings/"
+  path +=  id
+  path += "/add-entity"
+  return path
+
+}
+templ BookingActions(booking response.BookingInformationResponse) {
+    <div class="flex gap-4">
+       // <button class="btn btn-primary">Edit</button>
+        <button class="btn btn-primary">Cancel</button>
+        <form
+        hx-get={templ.JoinStringErrs(string(templ.SafeURL(GetAddEntityURLPath(booking.ID))))}
+        hx-swap="innerHTML"
+        hx-target="#add_to_booking_modal"
+        hx-indicator="#loading"
+        >
+        <button class="btn bg-primary-400" onclick="add_to_booking_modal.showModal()">Add to booking</button>
+        </form>
+        <dialog id="add_to_booking_modal" class="modal">
+          <div class="modal-box">
+
+            <span id="loading" class="loading loading-spinner loading-md htmx-indicator"></span>
+            <div class="modal-action">
+              <form method="dialog">
+                <!-- if there is a button in form, it will close the modal -->
+
+                <button class="btn">Close</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+
+        <button class="btn btn-primary">Refund</button>
+
+       // <button class="btn btn-primary">Resend</button>
+    </div>
+}
+
+type AddEntityToBookingRequestParams struct {
+	BookingID string `json:"booking_id"`
+	EntityID  uint `json:"entity_id"`
+	EntityType string `json:"entity_type"`
+	StartTime string `json:"start_time"`
+	EndTime string `json:"end_time"`
+}
+
+templ AddEntityToBookingForm(params AddEntityToBookingRequestParams,rentals []response.RentalResponse , boats []response.BoatResponse,  ) {
+    <form
+        action="/api/booking/entity"
+        method="POST"
+        class="bg-base-200 rounded-lg flex flex-col gap-4 p-4"
+    >
+        <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Select a rental</span>
+                </div>
+                <select class="select select-bordered w-full" name="entityID">
+                    for _, rental := range rentals {
+
+                        <option value={
+                            strconv.Itoa(int(rental.ID))
+                        }>{rental.Name}</option>
+                    }
+                </select>
+            </label>
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text
+                    ">Start Time</span>
+                </div>
+                <input class="input input-bordered" type="datetime-local" name="startTime"/>
+            </label>
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text
+                    ">End Time</span>
+                </div>
+                <input class="input input-bordered" type="datetime-local" name="endTime"/>
+            </label>
+            <input type="hidden" name="bookingID" value={params.BookingID}/>
+            <input type="hidden" name="entityType" value={constants.RENTAL_ENTITY}/>
+            <button class="btn btn-primary bg-branded-800">Add to booking <i class="fa-solid fa-arrow-right"></i></button>
+
+
+
+
+    </form>
+}

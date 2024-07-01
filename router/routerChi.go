@@ -18,7 +18,7 @@ import (
 )
 
 func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController, userSettingsController *controllers.UserSettingsController,
-	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController, entityBookingPermissionController *controllers.EntityBookingPermissionController, photoController *controllers.PhotoController, accountController *controllers.AccountController, userController *controllers.UserController) *chi.Mux {
+	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController, entityBookingPermissionController *controllers.EntityBookingPermissionController, photoController *controllers.PhotoController, accountController *controllers.AccountController, userController *controllers.UserController, entityBookingController *controllers.EntityBookingController) *chi.Mux {
 
 	router := chi.NewMux()
 
@@ -116,6 +116,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		router.Delete("/chat/message", controllers.Make(chatController.HandleChatMessageDelete))
 		router.Put("/permission/{entityBookingPermissionID}", controllers.Make(entityBookingPermissionController.Update))
 		router.Put("/permission/{entityBookingPermissionID}/approve", controllers.Make(entityBookingPermissionController.HandleApproveBookingPermissionRequest))
+		router.Get("/bookings/{bookingID}/add-entity", controllers.Make(entityBookingController.AddEntityToBookingForm))
 	})
 
 	apiRouter := chi.NewRouter()
@@ -139,6 +140,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		adminApiRouter.Use(middlewares.WithAuth, withIsAdminMiddleware, withAccountSetupMiddleware)
 		adminApiRouter.Post("/userFindOrCreate", controllers.Make((userController.FindOrCreateUser)))
 		adminApiRouter.Post("/booking", controllers.Make((bookingController.CreateBookingWithUserInformation)))
+		adminApiRouter.Post("/booking/entity", controllers.Make((entityBookingController.CreateEntityBooking)))
 
 	})
 
