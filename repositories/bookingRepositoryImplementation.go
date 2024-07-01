@@ -50,6 +50,9 @@ func (t *bookingRepositoryImplementation) FindById(id string) response.BookingIn
 		Preload("Documents.Document").
 		Preload("BookingStatus").
 		Preload("Entities").
+		Preload("Entities.Timeblock").
+		Preload("Entities.Documents").
+		Preload("Entities.BookingCostItems").
 		First(&booking)
 
 	if result.Error != nil {

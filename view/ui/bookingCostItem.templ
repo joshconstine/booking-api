@@ -6,19 +6,15 @@ import (
 )
 
 templ BookingCostItem(costItem response.BookingCostItemResponse) {
-	<div class="navbar bg-base-100 border-b border-gray-700">
-    <div>
-        <span>Cost item Amount</span>
-		<span>{ fmt.Sprintf("%f", costItem.Amount) }</span>
-    </div>
-    <div>
-        <span>Tax Rate</span>
-        <span>{ costItem.TaxRate.Name }</span>
-        <span>{ fmt.Sprintf("%f", costItem.TaxRate.Percentage) }</span>
-    </div>
+	<div class="flex flex-col gap-2">
         <div>
-            <span>Type</span>
-            <span>{ costItem.BookingCostType.Name }</span>
+            <span class="font-bold">{ costItem.BookingCostType.Name }:</span>
+            <span>${ fmt.Sprintf("%.2f", costItem.Amount) }</span>
+        </div>
+        <div>
+            <span class="font-bold">Tax Rate:</span>
+            <span>{ costItem.TaxRate.Name }</span>
+            <span>%{ fmt.Sprintf("%.2f", costItem.TaxRate.Percentage) }</span>
         </div>
 	</div>
 }
