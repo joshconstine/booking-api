@@ -6,7 +6,7 @@ import (
 )
 
 templ BookingDetails(details response.BookingDetailsResponse) {
-<div class="bg-base-100 rounded-lg flex p-4 items-center">
+<div class="bg-base-100 rounded-lg flex flex-col gap-1 p-2 ">
    <div class="flex gap-2">
       <span>Payment Completed</span>
       if details.PaymentComplete {

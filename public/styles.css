@@ -4887,6 +4887,10 @@ details.collapse summary::-webkit-details-marker {
   max-width: 42rem;
 }
 
+.max-w-64 {
+  max-width: 16rem;
+}
+
 .max-w-md {
   max-width: 28rem;
 }

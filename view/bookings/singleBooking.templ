@@ -11,7 +11,7 @@ import (
 // RentalInformationResponse renders a page with detailed information about a specific rental
 templ BookingInformationTemplate(booking response.BookingInformationResponse) {
     @layout.App(true) {
-                <div class="flex flex-col gap-2 bg-base-200 rounded-lg mx-8 w-full my-8">
+                <div class="flex flex-col gap-2  mx-8 w-full my-8">
                     <div class="flex gap-8 items-center">
                         <h1 class="text-2xl font-bold">
                             {booking.ID}
@@ -19,16 +19,21 @@ templ BookingInformationTemplate(booking response.BookingInformationResponse) {
 
                         @ui.StatusBadge(booking.Status)
                     </div>
-                    <div class="flex gap-4 items-center">
-                        @ui.CustomerTile(booking.Customer)
-                        @ui.BookingDetails(booking.Details)
-                        <div>
-                            <span>Booking Cost Items</span>
-                            <ul>
-                                for _, item := range booking.CostItems {
-                                    @ui.BookingCostItem(item)
-                                }
-                            </ul>
+                    <div class="flex w-full gap-8">
+                        <div class="flex flex-col bg-base-100 rounded-lg gap-8 ">
+                            @ui.CustomerTile(booking.Customer)
+                            @ui.BookingDetails(booking.Details)
+                            <div>
+                                <span>Booking Cost Items</span>
+                                <ul>
+                                    for _, item := range booking.CostItems {
+                                        @ui.BookingCostItem(item)
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="flex flex-col bg-base-100 rounded-lg gap-8 items-center max-w-64">
+                            <span>Entity Bookings</span>
                         </div>
                     </div>
                 </div>
