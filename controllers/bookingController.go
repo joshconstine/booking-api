@@ -45,7 +45,18 @@ func convertStringToUint(s string) uint {
 func (t BookingController) FindById(ctx *gin.Context) {
 	id := ctx.Param("bookingId")
 
-	bookingResponse := t.bookingService.FindById(id)
+	bookingResponse, err := t.bookingService.FindById(id)
+	if err != nil {
+		webResponse := response.Response{
+			Code:   404,
+			Status: "Not Found",
+			Data:   nil,
+		}
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(http.StatusNotFound, webResponse)
+		return
+
+	}
 	webResponse := response.Response{
 		Code:   200,
 		Status: "Ok",
@@ -118,7 +129,11 @@ func (controller *BookingController) HandleBookingInformation(w http.ResponseWri
 
 	bookingId := chi.URLParam(r, "bookingId")
 
-	booking := controller.bookingService.FindById(bookingId)
+	booking, err := controller.bookingService.FindById(bookingId)
+
+	if err != nil {
+		return err
+	}
 
 	return bookings.BookingInformationTemplate(booking).Render(r.Context(), w)
 }

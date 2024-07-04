@@ -30,14 +30,19 @@ func (t BookingServiceImplementation) FindAll() []response.BookingResponse {
 	return result
 }
 
-func (t BookingServiceImplementation) FindById(id string) response.BookingInformationResponse {
+func (t BookingServiceImplementation) FindById(id string) (response.BookingInformationResponse, error) {
 	result := t.BookingRepository.FindById(id)
 
-	customerInfo := t.UserService.FindByUserID(result.Customer.UserID)
+	customerInfo, err := t.UserService.FindByPublicUserID(result.Customer.UserID)
+
+	if err != nil {
+		fmt.Printf("error finding customer by public user id: %v", err)
+		return response.BookingInformationResponse{}, err
+	}
 
 	result.Customer = customerInfo
 
-	return result
+	return result, nil
 }
 
 func (t BookingServiceImplementation) Create(request *request.CreateBookingRequest) (string, error) {
