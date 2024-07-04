@@ -50,11 +50,11 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		// controllers.Make(userController.PublicUserProfile)
 		userController.PublicUserProfile(w, r)
 
-		// rentalsController.HandleHomeIndex(w, r)
 	})
 
 	/************************ ADMIN ROUTES ************************/
 	router.Get("/rentals", func(w http.ResponseWriter, r *http.Request) {
+		rentalsController.HandleHomeIndex(w, r)
 	})
 
 	router.Get("/rentals/{rentalId}", func(w http.ResponseWriter, r *http.Request) {
