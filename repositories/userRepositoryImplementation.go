@@ -37,6 +37,16 @@ func (t *userRepositoryImplementation) FindById(id uint) models.User {
 	return user
 }
 
+func (t *userRepositoryImplementation) FindByPublicUserID(userID string) (response.UserResponse, error) {
+	var user models.User
+	result := t.Db.Where("public_user_id = ?", userID).First(&user)
+
+	if result.Error != nil {
+		return response.UserResponse{}, result.Error
+	}
+	return user.MapUserToResponse(), nil
+
+}
 func (t *userRepositoryImplementation) IsAdmin(userID string) bool {
 	var memberships []models.Membership
 

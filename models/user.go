@@ -9,6 +9,7 @@ import (
 
 type User struct {
 	ID             string `gorm:" primaryKey"`
+	PublicUserId   string `gorm:"unique; key"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      gorm.DeletedAt `gorm:"index"`
@@ -28,6 +29,15 @@ type User struct {
 	Inquiries []EntityBookingPermission
 	Chats     []Chat
 	Messages  []ChatMessage
+}
+
+func (u *User) BeforeCreate(db *gorm.DB) error {
+	rand := RandStringBytesMask(10)
+
+	u.PublicUserId = rand
+
+	return nil
+
 }
 
 // func (user *User) BeforeCreate(scope *gorm.DB) error {
@@ -57,7 +67,7 @@ func (user *User) HashPassword(password string) error {
 
 func (user *User) MapUserToResponse() response.UserResponse {
 	response := response.UserResponse{
-		UserID:             user.ID,
+		UserID:             user.PublicUserId,
 		Username:           user.Username,
 		FirstName:          user.FirstName,
 		LastName:           user.LastName,

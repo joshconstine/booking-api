@@ -4,6 +4,12 @@ import (
 	"booking-api/data/response"
 )
 
+
+func GetUserPath(user response.UserResponse) string {
+    return "/" +  "user" + "/" +
+    user.UserID
+}
+
 templ CustomerTile(user response.UserResponse) {
 	<div class="bg-base-100 rounded-lg flex gap-8 p-4 ">
         <div class="avatar ">
@@ -13,7 +19,9 @@ templ CustomerTile(user response.UserResponse) {
 
         </div>
         <div class="flex flex-col gap-4">
-            <span class="text-2xl">{user.PreferredName} {user.LastName}</span>
+            <a href={templ.SafeURL(GetUserPath(user))} >
+                <span class="text-2xl">{user.FirstName} {user.LastName}</span>
+            </a>
             <span>{user.Email}</span>
             <span>{user.PhoneNumber}</span>
 

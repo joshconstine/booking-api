@@ -40,6 +40,17 @@ func (t *userServiceImplementation) FindByUserID(userID string) responses.UserRe
 
 	return result
 }
+
+func (t *userServiceImplementation) FindByPublicUserID(publicUserID string) (responses.UserResponse, error) {
+	result, err := t.userRepository.FindByPublicUserID(publicUserID)
+
+	if err != nil {
+		return responses.UserResponse{}, err
+
+	}
+	return result, nil
+
+}
 func (t *userServiceImplementation) IsAdmin(userID string) bool {
 	result := t.userRepository.IsAdmin(userID)
 

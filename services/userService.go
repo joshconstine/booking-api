@@ -10,6 +10,7 @@ type UserService interface {
 	FindByEmailPublic(email string) (responses.PublicUserResponse, error)
 	FindByEmail(email string) (responses.UserResponse, error)
 	FindByUserID(userID string) responses.UserResponse
+	FindByPublicUserID(publicUserID string) (responses.UserResponse, error)
 	IsAdmin(userID string) bool
 	CreateUser(request *requests.CreateUserRequest) error
 	UpdateUser(user *requests.UpdateUserRequest) error

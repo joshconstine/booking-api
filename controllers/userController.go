@@ -5,7 +5,12 @@ import (
 	validate "booking-api/pkg/kit"
 	"booking-api/services"
 	bookings "booking-api/view/bookings"
+	userView "booking-api/view/user"
+	"fmt"
+
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type UserController struct {
@@ -79,4 +84,19 @@ func (controller *UserController) FindOrCreateUser(w http.ResponseWriter, r *htt
 
 	return render(r, w, bookings.GuestConfirmationDialog(params, user))
 
+}
+
+func (controller *UserController) PublicUserProfile(w http.ResponseWriter, r *http.Request) error {
+
+	userId := chi.URLParam(r, "userId")
+	user, err := controller.userService.FindByPublicUserID(userId)
+	if err != nil {
+		return err
+	}
+	// print(user)
+	fmt.Printf("User: %v", user)
+	// // return rentals.Index(rentalData).Render(r.Context(), w)
+	// return render(r, w, userView.PublicUserProfile(user))
+	return userView.PublicUserProfile(user).Render(r.Context(), w)
+	// return userProfile.PublicUserProfile(user).Render(r.Context(), w)
 }

@@ -59,15 +59,24 @@ func main() {
 
 func run(env config.EnvVars) (func(), error) {
 
+	log.Println("Connecting to the database...")
 	database.Connect(env.DSN)
-	//database.Migrate()
+	log.Println("Database connected.")
 
+	// Uncomment if you have migrations
+	// log.Println("Running database migrations...")
+	// database.Migrate()
+	// log.Println("Database migrations completed.")
+
+	log.Println("Creating object storage session...")
 	objectStorage.CreateSession()
+	log.Println("Object storage session created.")
 
 	stripe.Key = env.STRIPE_KEY
-	// Creates a new Supabase client
-	// accessable via sb.ClientInstance
+
+	log.Println("Creating Supabase client...")
 	sb.CreateAuthClient(env)
+	log.Println("Supabase client created.")
 
 	// Create a new paypal client
 
@@ -81,13 +90,16 @@ func run(env config.EnvVars) (func(), error) {
 
 	go func() {
 		port := env.PORT
-		log.Println("application running", "port", port)
-		http.ListenAndServe(port, app)
+		log.Printf("Application running on port %s", port)
+		if err := http.ListenAndServe(port, app); err != nil {
+			log.Printf("Error starting server: %v", err)
+		}
 	}()
 
 	return func() {
+		log.Println("Running cleanup...")
 		cleanup()
-		// app.Shutdown(nil)
+		log.Println("Cleanup completed.")
 	}, nil
 
 }
@@ -212,11 +224,11 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 
 	chatController := controllers.NewChatController(chatService, userService, accountService)
 
-	router := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController, photoController, accountController, userController, entityBookingController)
+	chirouter := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController, photoController, accountController, userController, entityBookingController)
 
 	// ginRouter := router.InitRouter(routes)
 
-	return router, func() {
+	return chirouter, func() {
 
 	}, nil
 }
