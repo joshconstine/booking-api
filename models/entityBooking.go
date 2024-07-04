@@ -13,6 +13,7 @@ type EntityBooking struct {
 	BookingID        string `gorm:"not null"`
 	TimeblockID      uint   `gorm:"not null"`
 	BookingStatusID  uint   `gorm:"not null:default:1"`
+	BookingStatus    BookingStatus
 	Timeblock        EntityTimeblock
 	BookingCostItems []BookingCostItem `gorm:"foreignKey:EntityBookingID"`
 	Documents        []BookingDocument `gorm:"foreignKey:EntityBookingID"`
@@ -31,7 +32,8 @@ func (e *EntityBooking) MapEntityBookingToResponse() response.EntityBookingRespo
 		BookingID:  e.BookingID,
 		Timeblock:  e.Timeblock.MapTimeblockToResponse(),
 		Status: response.BookingStatusResponse{
-			ID: e.BookingStatusID,
+			ID:   e.BookingStatus.ID,
+			Name: e.BookingStatus.Name,
 		},
 	}
 

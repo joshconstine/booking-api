@@ -16,14 +16,14 @@ func GetAddEntityURLPath(id string) string {
 templ BookingActions(booking response.BookingInformationResponse) {
     <div class="flex gap-4">
        // <button class="btn btn-primary">Edit</button>
-        <button class="btn btn-primary">Cancel</button>
+ //       <button class="btn btn-primary">Cancel</button>
         <form
         hx-get={templ.JoinStringErrs(string(templ.SafeURL(GetAddEntityURLPath(booking.ID))))}
         hx-swap="innerHTML"
         hx-target="#add_to_booking_modal"
         hx-indicator="#loading"
         >
-        <button class="btn bg-primary-400" onclick="add_to_booking_modal.showModal()">Add to booking</button>
+        <button class="btn " onclick="add_to_booking_modal.showModal()">Add to booking</button>
         </form>
         <dialog id="add_to_booking_modal" class="modal">
           <div class="modal-box">

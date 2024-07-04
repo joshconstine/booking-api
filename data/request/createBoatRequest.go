@@ -1,6 +1,7 @@
 package request
 
 import (
+	"booking-api/constants"
 	"booking-api/models"
 	"time"
 )
@@ -25,8 +26,9 @@ func (boat *CreateBoatRequest) MapCreateBoatRequestToBoat(taxid uint) models.Boa
 		Status:    models.BoatStatus{},
 		BookingCostItems: []models.EntityBookingCost{
 			{
-				Amount:    boat.NightlyRate,
-				TaxRateID: taxid,
+				Amount:            boat.NightlyRate,
+				TaxRateID:         taxid,
+				BookingCostTypeID: constants.BOOKING_COST_TYPE_BOAT_RENTAL_COST_ID,
 			},
 		},
 		BookingDurationRule: models.EntityBookingDurationRule{

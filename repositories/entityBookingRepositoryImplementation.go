@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"booking-api/constants"
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
@@ -50,9 +51,10 @@ func (e *EntityBookingRepositoryImplementation) FindAllForBooking(bookingID stri
 func (e *EntityBookingRepositoryImplementation) Create(entityBooking request.CreateEntityBookingRequest) response.EntityBookingResponse {
 
 	entityBookingModel := models.EntityBooking{
-		BookingID:  entityBooking.BookingID,
-		EntityID:   entityBooking.EntityID,
-		EntityType: entityBooking.EntityType,
+		BookingID:       entityBooking.BookingID,
+		EntityID:        entityBooking.EntityID,
+		EntityType:      entityBooking.EntityType,
+		BookingStatusID: constants.BOOKING_STATUS_DRAFTED_ID,
 		Timeblock: models.EntityTimeblock{
 			StartTime:  entityBooking.StartTime,
 			EndTime:    entityBooking.EndTime,
