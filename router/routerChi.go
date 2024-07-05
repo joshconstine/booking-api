@@ -139,6 +139,10 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 			rentalsController.HandleRentalAdminDetail(w, r)
 		})
 
+		owner.Put("/rentals/{rentalId}", func(w http.ResponseWriter, r *http.Request) {
+			rentalsController.Update(w, r)
+		})
+
 	})
 
 	apiRouter := chi.NewRouter()

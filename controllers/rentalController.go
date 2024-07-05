@@ -77,19 +77,40 @@ func (controller *RentalController) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, rental)
 }
 
-func (controller *RentalController) Update(ctx *gin.Context) {
-	var request request.UpdateRentalRequest
-	ctx.BindJSON(&request)
+func (controller *RentalController) Update(w http.ResponseWriter, r *http.Request) error {
+	rentalId := chi.URLParam(r, "rentalId")
+	bedrooms := r.FormValue("bedrooms")
+	bathrooms := r.FormValue("bathrooms")
 
-	rental, err := controller.rentalService.Update(request)
+	id, _ := strconv.Atoi(rentalId)
+	bedroomsInt, _ := strconv.Atoi(bedrooms)
+	bathroomsInt, _ := strconv.Atoi(bathrooms)
 
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+	params := rentals.RentalFormParams{
+		RentalID:    id,
+		Name:        r.FormValue("name"),
+		Description: r.FormValue("description"),
+		Bedrooms:    bedroomsInt,
+		Bathrooms:   bathroomsInt,
 	}
 
-	ctx.Header("Content-Type", "application/json")
-	ctx.JSON(http.StatusOK, rental)
+	rental, err := controller.rentalService.UpdateRental(params)
+
+	if err != nil {
+		return err
+
+	}
+
+	params = rentals.RentalFormParams{
+		Name:        rental.Name,
+		Description: rental.Description,
+		Bedrooms:    int(rental.Bedrooms),
+		Bathrooms:   int(rental.Bathrooms),
+
+		Success: true,
+	}
+
+	return rentals.RentalForm(params, rentals.RentalFormErrors{}).Render(r.Context(), w)
 }
 
 func (controller *RentalController) HandleRentalDetail(w http.ResponseWriter, r *http.Request) error {
