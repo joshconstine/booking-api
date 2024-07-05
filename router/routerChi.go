@@ -27,6 +27,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 	router.Use(userMiddleware)
 	withAccountSetupMiddleware := middlewares.NewWithAccountSetupMiddleWare(*userService)
 	withIsAdminMiddleware := middlewares.NewWithIsAdminMiddleWare(*userService)
+	withIsOwnerOfEntityMiddleware := middlewares.NewWithIsOwnerOfEntityMiddleWare(*userService)
 
 	router.Handle("/*", http.StripPrefix("/public/", http.FileServerFS(os.DirFS("public"))))
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -124,6 +125,15 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		router.Put("/permission/{entityBookingPermissionID}", controllers.Make(entityBookingPermissionController.Update))
 		router.Put("/permission/{entityBookingPermissionID}/approve", controllers.Make(entityBookingPermissionController.HandleApproveBookingPermissionRequest))
 		router.Get("/bookings/{bookingID}/add-entity", controllers.Make(entityBookingController.AddEntityToBookingForm))
+	})
+
+	router.Group(func(auth chi.Router) {
+		auth.Use(middlewares.WithAuth, withIsAdminMiddleware, withIsOwnerOfEntityMiddleware)
+
+		router.Get("/rentals/{rentalId}/admin", func(w http.ResponseWriter, r *http.Request) {
+			rentalsController.HandleRentalAdminDetail(w, r)
+		})
+
 	})
 
 	apiRouter := chi.NewRouter()

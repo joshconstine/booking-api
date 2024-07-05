@@ -104,6 +104,16 @@ func (controller *RentalController) HandleRentalDetail(w http.ResponseWriter, r 
 	return rentals.RentalInformationResponse(rental).Render(r.Context(), w)
 }
 
+func (controller *RentalController) HandleRentalAdminDetail(w http.ResponseWriter, r *http.Request) error {
+
+	rentalId := chi.URLParam(r, "rentalId")
+	id, _ := strconv.Atoi(rentalId)
+
+	rental := controller.rentalService.FindById(uint(id))
+
+	return rentals.RentalAdmin(rental).Render(r.Context(), w)
+}
+
 func (controller *RentalController) HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {
 	// user := view.getAuthenticatedUser(r)
 	// account, err := db.GetAccountByUserID(user.ID)
