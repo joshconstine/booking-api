@@ -4,11 +4,13 @@ import (
 	"booking-api/constants"
 	"booking-api/controllers"
 	"booking-api/middlewares"
+	"booking-api/repositories"
 	"booking-api/services"
 	home "booking-api/view/home"
 	learn "booking-api/view/learn"
 	privacy "booking-api/view/privacy"
 	terms "booking-api/view/terms"
+	"context"
 	"os"
 	"strconv"
 
@@ -18,7 +20,7 @@ import (
 )
 
 func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController, userSettingsController *controllers.UserSettingsController,
-	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController, entityBookingPermissionController *controllers.EntityBookingPermissionController, photoController *controllers.PhotoController, accountController *controllers.AccountController, userController *controllers.UserController, entityBookingController *controllers.EntityBookingController) *chi.Mux {
+	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController, entityBookingPermissionController *controllers.EntityBookingPermissionController, photoController *controllers.PhotoController, accountController *controllers.AccountController, userController *controllers.UserController, entityBookingController *controllers.EntityBookingController, membershipRepository repositories.MembershipRepository, entityRepository repositories.EntityRepository) *chi.Mux {
 
 	router := chi.NewMux()
 
@@ -27,7 +29,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 	router.Use(userMiddleware)
 	withAccountSetupMiddleware := middlewares.NewWithAccountSetupMiddleWare(*userService)
 	withIsAdminMiddleware := middlewares.NewWithIsAdminMiddleWare(*userService)
-	withIsOwnerOfEntityMiddleware := middlewares.NewWithIsOwnerOfEntityMiddleWare(*userService)
+	withIsOwnerOfEntityMiddleware := middlewares.NewWithIsOwnerOfEntityMiddleWare(*userService, membershipRepository, entityRepository)
 
 	router.Handle("/*", http.StripPrefix("/public/", http.FileServerFS(os.DirFS("public"))))
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -127,10 +129,13 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		router.Get("/bookings/{bookingID}/add-entity", controllers.Make(entityBookingController.AddEntityToBookingForm))
 	})
 
-	router.Group(func(auth chi.Router) {
-		auth.Use(middlewares.WithAuth, withIsAdminMiddleware, withIsOwnerOfEntityMiddleware)
+	router.Group(func(owner chi.Router) {
+		owner.Use(middlewares.WithAuth, withIsAdminMiddleware, withIsOwnerOfEntityMiddleware)
 
-		router.Get("/rentals/{rentalId}/admin", func(w http.ResponseWriter, r *http.Request) {
+		owner.Get("/rentals/{rentalId}/admin", func(w http.ResponseWriter, r *http.Request) {
+			ctx := context.WithValue(r.Context(), "entityType", constants.RENTAL_ENTITY)
+			ctx = context.WithValue(ctx, "entityID", chi.URLParam(r, "rentalId"))
+			r = r.WithContext(ctx)
 			rentalsController.HandleRentalAdminDetail(w, r)
 		})
 

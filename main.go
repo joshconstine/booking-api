@@ -154,9 +154,10 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	accountRepository := repositories.NewAccountRepositoryImplementation(database.Instance)
 	entityBookingPermissionRepository := repositories.NewEntityBookingPermissionRepositoryImplementation(database.Instance)
 	entityRepository := repositories.NewEntityRepositoryImplementation(database.Instance)
+	membershipRepository := repositories.NewMembershipRepositoryImplementation(database.Instance)
 
 	//Init Service
-	userService := services.NewUserServiceImplementation(userRepository, entityRepository, validate)
+	userService := services.NewUserServiceImplementation(userRepository, entityRepository, membershipRepository, validate)
 	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
 	bookingService := services.NewBookingServiceImplementation(bookingRepository, validate, userService)
 	boatService := services.NewBoatServiceImplementation(boatRepository, validate)
@@ -225,7 +226,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 
 	chatController := controllers.NewChatController(chatService, userService, accountService)
 
-	chirouter := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController, photoController, accountController, userController, entityBookingController)
+	chirouter := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController, photoController, accountController, userController, entityBookingController, membershipRepository, entityRepository)
 
 	// ginRouter := router.InitRouter(routes)
 

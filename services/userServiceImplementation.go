@@ -10,14 +10,18 @@ import (
 )
 
 type userServiceImplementation struct {
-	userRepository repositories.UserRepository
-	Validate       *validator.Validate
+	userRepository       repositories.UserRepository
+	entityRepository     repositories.EntityRepository
+	membershipRepository repositories.MembershipRepository
+	Validate             *validator.Validate
 }
 
-func NewUserServiceImplementation(userRepository repositories.UserRepository, validate *validator.Validate) UserService {
+func NewUserServiceImplementation(userRepository repositories.UserRepository, entityRepository repositories.EntityRepository, membershipRepository repositories.MembershipRepository, validate *validator.Validate) UserService {
 	return &userServiceImplementation{
-		userRepository: userRepository,
-		Validate:       validate,
+		userRepository:       userRepository,
+		entityRepository:     entityRepository,
+		membershipRepository: membershipRepository,
+		Validate:             validate,
 	}
 }
 func (t *userServiceImplementation) FindAll() []responses.UserResponse {
@@ -55,6 +59,17 @@ func (t *userServiceImplementation) IsAdmin(userID string) bool {
 	result := t.userRepository.IsAdmin(userID)
 
 	return result
+}
+
+func (t *userServiceImplementation) IsOwnerOfEntity(userID string, entityType string, entityID uint) (bool, error) {
+	memberships := t.membershipRepository.FindAllForUser(userID)
+
+	result, err := t.entityRepository.IsUserAdminOfEntity(userID, memberships, entityType, entityID)
+	if err != nil {
+		return false, err
+	}
+
+	return result, nil
 }
 
 func (t *userServiceImplementation) FindById(id uint) responses.UserResponse {
