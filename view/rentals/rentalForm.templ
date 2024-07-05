@@ -51,6 +51,47 @@ templ RentalForm(params RentalFormParams, errors RentalFormErrors) {
 							<div class="text-sm text-error mt-1">{ errors.Name }</div>
 						}
 					</dd>
+
+					<dt class="">Description</dt>
+
+					<dd class="sm:col-span-2 sm:mt-0">
+                        <textarea
+                        rows="10"
+
+                            class="textarea textarea-bordered w-full "
+                            name="description"
+                        >{ params.Description }</textarea>
+
+                        if len(errors.Description) > 0 {
+                            <div class="text-sm text-error mt-1">{ errors.Description }</div>
+                        }
+                    </dd>
+
+                    <dt class="">Bedrooms
+                    </dt>
+                    <dd class="sm:col-span-2 sm:mt-0">
+                        <input
+                            class="input input-bordered w-full "
+                            value={ strconv.Itoa(params.Bedrooms) }
+                            name="bedrooms"
+                        />
+                        if len(errors.Bedrooms) > 0 {
+                            <div class="text-sm text-error mt-1">{ errors.Bedrooms }</div>
+                        }
+                    </dd>
+
+                    <dt class="">Bathrooms
+                    </dt>
+                    <dd class="sm:col-span-2 sm:mt-0">
+                        <input
+                            class="input input-bordered w-full "
+                            value={ strconv.Itoa(params.Bathrooms) }
+                            name="bathrooms"
+                        />
+                        if len(errors.Bathrooms) > 0 {
+                            <div class="text-sm text-error mt-1">{ errors.Bathrooms }</div>
+                        }
+                    </dd>
 				</div>
             <dd class="flex w-full gap-2 items-center justify-end">
 					<button type="reset" class="btn" >Reset</button>
