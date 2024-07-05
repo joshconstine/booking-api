@@ -153,28 +153,7 @@ func NewWithIsAdminMiddleWare(userService services.UserService) func(http.Handle
 				return
 			}
 
-			// if userData.UserID == uuid.Nil {
-			// 	// http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
-			// 	return
-			// }
-
-			user := models.AuthenticatedUser{
-
-				User: response.UserResponse{
-					UserID:    uuid.MustParse(resp.ID).String(), //userData.UserID,
-					Email:     resp.Email,
-					FirstName: userData.FirstName,
-					LastName:  userData.LastName,
-					Username:  userData.Username,
-					Chats:     userData.Chats,
-
-					//TODO ADD user service to get username here
-				},
-				LoggedIn:    true,
-				AccessToken: accessToken.(string),
-			}
-			ctx := context.WithValue(r.Context(), models.UserContextKey, user)
-			next.ServeHTTP(w, r.WithContext(ctx))
+			next.ServeHTTP(w, r)
 		})
 	}
 	return withIsAdmin
@@ -252,23 +231,7 @@ func NewWithIsOwnerOfEntityMiddleWare(userService services.UserService, membersh
 				return
 			}
 
-			user := models.AuthenticatedUser{
-
-				User: response.UserResponse{
-					UserID:    userData.UserID,
-					Email:     resp.Email,
-					FirstName: userData.FirstName,
-					LastName:  userData.LastName,
-					Username:  userData.Username,
-					Chats:     userData.Chats,
-
-					//TODO ADD user service to get username here
-				},
-				LoggedIn:    true,
-				AccessToken: accessToken.(string),
-			}
-			ctx := context.WithValue(r.Context(), models.UserContextKey, user)
-			next.ServeHTTP(w, r.WithContext(ctx))
+			next.ServeHTTP(w, r)
 		})
 	}
 	return withIsOwnerOfEntity
