@@ -110,7 +110,7 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 		Success: true,
 	}
 
-	return rentals.RentalForm(params, rentals.RentalFormErrors{}).Render(r.Context(), w)
+	return rentals.RentalDetails(params).Render(r.Context(), w)
 }
 
 func (controller *RentalController) HandleRentalDetail(w http.ResponseWriter, r *http.Request) error {
