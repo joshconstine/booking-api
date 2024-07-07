@@ -95,5 +95,5 @@ func (usc *AdminController) HandleAdminIndex(w http.ResponseWriter, r *http.Requ
 	}
 
 	// user.User = usc.userService.FindByUserID(user.User.UserID)
-	return admin.Index(bookings, inquiries, messages).Render(r.Context(), w)
+	return admin.Index(bookings, request.PaginationRequest, inquiries, messages).Render(r.Context(), w)
 }

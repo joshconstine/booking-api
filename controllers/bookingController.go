@@ -150,7 +150,7 @@ func (controller *BookingController) HandleHomeIndex(w http.ResponseWriter, r *h
 
 	bookingData := controller.bookingService.GetSnapshot(request)
 
-	return bookings.Index(bookingData).Render(r.Context(), w)
+	return bookings.Index(bookingData, request.PaginationRequest).Render(r.Context(), w)
 }
 func (controller *BookingController) HandleCreateBookingPage(w http.ResponseWriter, r *http.Request) error {
 	return bookings.CreateBookingPage().Render(r.Context(), w)

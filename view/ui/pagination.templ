@@ -1,0 +1,31 @@
+package ui
+
+import (
+    "booking-api/data/request"
+    "strconv"
+)
+
+func GeneratePath(pagination request.PaginationRequest, base string) string {
+    path := base
+    path += "?page=" + strconv.Itoa(pagination.Page)
+    path += "&limit=" + strconv.Itoa(pagination.Limit)
+    return path
+}
+templ Pagination (pagination request.PaginationRequest, base string, target string) {
+    <div class="flex justify-center items-center gap-4">
+        <a class="btn btn-ghost" href={templ.SafeURL(GeneratePath(
+        request.PaginationRequest{Page: pagination.Page - 1, Limit: pagination.Limit}, base))}
+           >
+
+        >
+            Previous
+        </a>
+        <a class="btn btn-ghost" href={
+            templ.SafeURL(
+        GeneratePath( request.PaginationRequest{Page: pagination.Page + 1, Limit: pagination.Limit}, base))}
+            >
+        >
+            Next
+        </a>
+    </div>
+}

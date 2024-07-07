@@ -2,6 +2,7 @@ package home
 
 import (
 	"booking-api/view/layout"
+	"booking-api/data/request"
 	"booking-api/data/response"
 	ui "booking-api/view/ui"
 	
@@ -15,12 +16,12 @@ func GetPath(id string) string {
 	
 }
 
-templ Index(Bookings []response.BookingSnapshotResponse) {
+templ Index(Bookings []response.BookingSnapshotResponse, Pagination request.PaginationRequest) {
 	@layout.App(true) {
 		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
 			<h2 class="text-xl font-semibold mb-6 red-400">Bookings</h2>
 			<div>
-				@ui.BookingSnapshotWidget(Bookings)
+				@ui.BookingSnapshotWidget(Bookings, Pagination)
 			</div>
 			
 		</div>
