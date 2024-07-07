@@ -33,8 +33,43 @@ templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse, paginat
 <i class="fa-solid fa-sliders"></i>Filter
 </div>
   <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-    <li><a>Item 1</a></li>
-    <li><a>Item 2</a></li>
+    <li class="menu-title">Booking Status</li>
+    <li><a>
+        @StatusBadge(response.BookingStatusResponse{
+        ID: 1,
+        Name: "Drafted",
+})
+    </a></li>
+    <li><a>
+    @StatusBadge(response.BookingStatusResponse{
+        ID: 2,
+        Name: "Requested",
+        })
+    </a></li>
+    <li><a>
+        @StatusBadge(response.BookingStatusResponse{
+        ID: 3,
+        Name: "Confirmed",
+        })
+    </a></li>
+    <li><a>
+    @StatusBadge(response.BookingStatusResponse{
+        ID: 4,
+        Name: "In Progress",
+        })
+    </a></li>
+    <li><a>
+    @StatusBadge(response.BookingStatusResponse{
+        ID: 5,
+        Name: "Completed",
+        })
+    </a></li>
+    <li><a>
+    @StatusBadge(response.BookingStatusResponse{
+        ID: 6,
+        Name: "Cancelled",
+        })
+    </a></li>
   </ul>
 </div>
 
