@@ -9,6 +9,6 @@ type BookingService interface {
 	Create(request *request.CreateBookingRequest) (string, error)
 	CreateBookingWithUserInformation(request *request.CreateBookingWithUserInformationRequest) (string, error)
 	FindAll() []responses.BookingResponse
-	GetSnapshot() []responses.BookingSnapshotResponse
+	GetSnapshot(request request.GetBookingSnapshotRequest) []responses.BookingSnapshotResponse
 	FindById(id string) (responses.BookingInformationResponse, error)
 }

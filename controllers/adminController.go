@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/services"
 	admin "booking-api/view/admin"
 	"net/http"
+	"strconv"
 )
 
 type AdminController struct {
@@ -22,7 +24,37 @@ func (usc *AdminController) HandleAdminIndex(w http.ResponseWriter, r *http.Requ
 	var inquiries response.AccountInquiriesSnapshot
 	var messages response.AccountMessagesSnapshot
 
-	bookings := usc.bookingService.GetSnapshot()
+	// Default values for pagination
+	limit := 10 // Default limit
+	page := 1   // Default page
+	sort := ""  // Default sort
+
+	// Parse query parameters
+	query := r.URL.Query()
+
+	// Get 'limit' from query parameters, if present
+	if limitParam := query.Get("limit"); limitParam != "" {
+		limit, _ = strconv.Atoi(limitParam) // Convert to int
+	}
+
+	// Get 'page' from query parameters, if present
+	if pageParam := query.Get("page"); pageParam != "" {
+		page, _ = strconv.Atoi(pageParam) // Convert to int
+	}
+
+	// Get 'sort' from query parameters, if present
+	sort = query.Get("sort")
+
+	request := request.GetBookingSnapshotRequest{
+		SearchString: "",
+		Statuses:     []int{},
+		PaginationRequest: request.PaginationRequest{
+			Limit: limit,
+			Page:  page,
+			Sort:  sort,
+		},
+	}
+	bookings := usc.bookingService.GetSnapshot(request)
 
 	userAccountRoles, err := usc.accountService.GetUserAccountRoles(user.User.UserID)
 	if err != nil {

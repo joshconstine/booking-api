@@ -9,7 +9,7 @@ import (
 type BookingRepository interface {
 	FindAll() []response.BookingResponse
 	FindById(id string) response.BookingInformationResponse
-	GetSnapshot() []response.BookingSnapshotResponse
+	GetSnapshot(request request.GetBookingSnapshotRequest) []response.BookingSnapshotResponse
 	Create(booking *request.CreateBookingRequest) (string, error)
 	Update(booking models.Booking) models.Booking
 	CheckIfEntitiesCanBeBooked(request *request.CreateBookingRequest) (bool, error)

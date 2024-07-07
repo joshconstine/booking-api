@@ -109,7 +109,7 @@ func (t BookingServiceImplementation) CreateBookingWithUserInformation(request *
 	return t.Create(&createBookingRequest)
 }
 
-func (t BookingServiceImplementation) GetSnapshot() []response.BookingSnapshotResponse {
-	result := t.BookingRepository.GetSnapshot()
+func (t BookingServiceImplementation) GetSnapshot(request request.GetBookingSnapshotRequest) []response.BookingSnapshotResponse {
+	result := t.BookingRepository.GetSnapshot(request)
 	return result
 }

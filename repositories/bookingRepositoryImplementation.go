@@ -5,6 +5,7 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
+	"booking-api/pkg/database"
 	"fmt"
 	"log/slog"
 	"strconv"
@@ -85,11 +86,12 @@ func calculatePaymentDueDate(bookingStartDate time.Time) time.Time {
 }
 
 // TODO: Something can be improvewd here,
-func (t *bookingRepositoryImplementation) GetSnapshot() []response.BookingSnapshotResponse {
-	limit := 10
+func (t *bookingRepositoryImplementation) GetSnapshot(request request.GetBookingSnapshotRequest) []response.BookingSnapshotResponse {
+	//limit := 10
 	var bookings []models.Booking
-	result := t.Db.Model(&models.Booking{}).Preload("BookingStatus").Preload("Details").Preload("Entities").Limit(limit).Find(&bookings)
+	//result := t.Db.Model(&models.Booking{}).Preload("BookingStatus").Preload("Details").Preload("Entities").Limit(limit).Find(&bookings)
 
+	result := t.Db.Scopes(database.Paginate(bookings, &request.PaginationRequest, t.Db)).Preload("BookingStatus").Preload("Details").Preload("Entities").Find(&bookings)
 	if result.Error != nil {
 		return []response.BookingSnapshotResponse{}
 	}

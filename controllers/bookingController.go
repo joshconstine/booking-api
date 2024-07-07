@@ -117,7 +117,38 @@ func (controller *BookingController) HandleHomeIndex(w http.ResponseWriter, r *h
 	// }
 	// fmt.Printf("%+v\n", user.Account)
 
-	bookingData := controller.bookingService.GetSnapshot()
+	// Default values for pagination
+	limit := 10 // Default limit
+	page := 1   // Default page
+	sort := ""  // Default sort
+
+	// Parse query parameters
+	query := r.URL.Query()
+
+	// Get 'limit' from query parameters, if present
+	if limitParam := query.Get("limit"); limitParam != "" {
+		limit, _ = strconv.Atoi(limitParam) // Convert to int
+	}
+
+	// Get 'page' from query parameters, if present
+	if pageParam := query.Get("page"); pageParam != "" {
+		page, _ = strconv.Atoi(pageParam) // Convert to int
+	}
+
+	// Get 'sort' from query parameters, if present
+	sort = query.Get("sort")
+
+	request := request.GetBookingSnapshotRequest{
+		SearchString: "",
+		Statuses:     []int{},
+		PaginationRequest: request.PaginationRequest{
+			Limit: limit,
+			Page:  page,
+			Sort:  sort,
+		},
+	}
+
+	bookingData := controller.bookingService.GetSnapshot(request)
 
 	return bookings.Index(bookingData).Render(r.Context(), w)
 }
