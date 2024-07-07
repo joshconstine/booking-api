@@ -11,7 +11,7 @@ func GeneratePath(pagination request.PaginationRequest, base string) string {
     path += "&limit=" + strconv.Itoa(pagination.Limit)
     return path
 }
-templ Pagination (pagination request.PaginationRequest, base string, target string) {
+templ Pagination (pagination request.PaginationRequest, base string) {
     <div class="flex justify-center items-center gap-4">
         <a class="btn btn-ghost" href={templ.SafeURL(GeneratePath(
         request.PaginationRequest{Page: pagination.Page - 1, Limit: pagination.Limit}, base))}

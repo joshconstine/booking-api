@@ -21,7 +21,7 @@ templ Index(Bookings []response.BookingSnapshotResponse, Pagination request.Pagi
 		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
 			<h2 class="text-xl font-semibold mb-6 red-400">Bookings</h2>
 			<div>
-				@ui.BookingSnapshotWidget(Bookings, Pagination)
+				@ui.BookingSnapshotWidget(Bookings, Pagination, "bookings")
 			</div>
 			
 		</div>

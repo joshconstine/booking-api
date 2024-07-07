@@ -11,7 +11,7 @@ func GetPath(id string) string {
 	return path
 	
 }
-templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse, pagination request.PaginationRequest) {
+templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse, pagination request.PaginationRequest, path string) {
 
    <div id="chat_container" class="card  bg-gray-200 border-2 border-zinc-500 p-4 text-sm font-normal">
         
@@ -98,7 +98,7 @@ templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse, paginat
       </tr>
 	}
    <tr>
-    @Pagination(pagination, "bookings", "#chat_container")
+    @Pagination(pagination, path)
    </tr>
     </tbody>
   </table>

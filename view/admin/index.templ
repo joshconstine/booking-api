@@ -52,7 +52,7 @@ templ Index(Bookings []response.BookingSnapshotResponse, Pagination request.Pagi
 			</div>
 			<div class="flex flex-col lg:flex-row gap-2">
 				<div>
-					@ui.BookingSnapshotWidget(Bookings, Pagination)
+					@ui.BookingSnapshotWidget(Bookings, Pagination, "admin")
 				</div>
 				<div class="flex flex-col gap-2">
 					<div class="flex gap-2 flex-col lg:flex-row">
