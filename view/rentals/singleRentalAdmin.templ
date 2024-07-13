@@ -8,6 +8,9 @@ import (
     "booking-api/view/ui"
 )
 
+func CreateGetBookingFormUrl(id int) string {
+    return "/entityBookingForm/rentals/"  + strconv.Itoa(id)
+}
 // RentalInformationResponse renders a page with detailed information about a specific rental
 templ RentalAdmin(rental response.RentalInformationResponse) {
     @layout.App(true) {
@@ -64,8 +67,13 @@ templ RentalAdmin(rental response.RentalInformationResponse) {
                 @ui.EntityPhotoList(rental.Photos)
             </div>
             </div>
-            <div class="mb-4 p-4 shadow-lg rounded-lg">
+            <div id="target-form"></div>
+            <div class="mb-4 p-4 shadow-lg rounded-lg w-96">
                 <h2 class="text-2xl font-semibold mb-4">Booking Information</h2>
+                <button class="btn bg-branded-400" hx-get={CreateGetBookingFormUrl(int(rental.ID))} hx-swap="outerHTML" hx-target="#target-form"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                </button>
                 <p><strong>Costs:</strong> <div>
                     @ui.EntityBookingCostList(rental.BookingCostItems)
 			</div>

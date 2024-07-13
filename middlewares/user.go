@@ -191,6 +191,12 @@ func NewWithIsOwnerOfEntityMiddleWare(userService services.UserService, membersh
 			entityType := chi.URLParam(r, "entityType")
 			entityIDstr := chi.URLParam(r, "entityID")
 
+			//try form values
+			if entityType == "" && entityIDstr == "" {
+				entityType = r.FormValue("entityType")
+				entityIDstr = r.FormValue("entityID")
+			}
+
 			entityID, err := strconv.Atoi(entityIDstr)
 
 			if err != nil {

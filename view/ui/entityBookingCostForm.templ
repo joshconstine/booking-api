@@ -1,0 +1,133 @@
+package ui
+
+import (
+    "strconv"
+    "booking-api/data/response"
+
+	"fmt"
+)
+
+type EntityBookingCostFormParams struct {
+EntityID uint
+EntityType string
+BookingCostTypeID uint
+Amount float64
+TaxRateID uint
+TaxRatePercentage float64
+StartDate string
+EndDate string
+
+Success bool
+
+}
+
+type EntityBookingCostFormErrors struct {
+Amount string
+StartDate string
+EndDate string
+TaxRatePercentage string
+TaxRateID string
+BookingCostTypeID string
+}
+
+
+
+templ EntityBookingCostForm(params EntityBookingCostFormParams, errors EntityBookingCostFormErrors, bookingCostTypes []response.BookingCostTypeResponse, taxRates []response.TaxRateResponse) {
+   <form
+   hx-put="/entityBookingCost"
+    hx-swap="outerHTML"
+    hx-boost="true"
+    class="flex flex-col gap-4 w-full max-w-screen-md mx-auto p-4 shadow-lg rounded-lg"
+
+    >
+    	<div class="flex flex-col gap-1 w-full">
+
+                    <input type="hidden" name="entityID" value={strconv.Itoa(int(params.EntityID))}/>
+                    <input type="hidden" name="entityType" value={params.EntityType}/>
+					<dd class="sm:col-span-2 sm:mt-0">
+						if params.Success {
+							@Toast("Cost Item Created.")
+						}
+						<input
+							class="input input-bordered w-full "
+							value={ fmt.Sprintf("%.2f", params.Amount)}
+							name="amount"
+						/>
+						if len(errors.Amount) > 0 {
+							<div class="text-sm text-error mt-1">{ errors.Amount }</div>
+						}
+					</dd>
+
+					<dt class="">Cost Type</dt>
+
+					<dd class="sm:col-span-2 sm:mt-0">
+                    <select class="select select-bordered w-full" name="bookingCostTypeID">
+                    for _, costType := range bookingCostTypes {
+                        <option value={
+                            strconv.Itoa(int(costType.ID))
+                        }
+
+                        >{ costType.Name }</option>
+
+                    }
+                    </select>
+                    </dd>
+
+                    <dt class="">Tax Rate</dt>
+                    <dd class="sm:col-span-2 sm:mt-0">
+                        <input
+                            class="input input-bordered w-full "
+                            value={ fmt.Sprintf("%.1f", params.TaxRatePercentage) }
+                            name="taxRate"
+                        />
+                        if len(errors.TaxRatePercentage) > 0 {
+                            <div class="text-sm text-error mt-1">{ errors.TaxRatePercentage }</div>
+                        }
+                    </dd>
+                    <dt class="">Tax Type</dt>
+                    <dd class="sm:col-span-2 sm:mt-0">
+                    <select class="select select-bordered w-full" name="taxRateID">
+                    for _, taxRate := range taxRates {
+                        <option value={
+                            strconv.Itoa(int(taxRate.ID))
+                        }
+
+                        >{ taxRate.Name }</option>
+
+                    }
+                    </select>
+                    </dd>
+                     <dt class="">Start Date</dt>
+                    <dd class="sm:col-span-2 sm:mt-0">
+                        <input
+                            class="input input-bordered w-full "
+                            value={ params.StartDate }
+                            name="startDate"
+                            type="date"
+                        />
+                        if len(errors.StartDate) > 0 {
+                            <div class="text-sm text-error mt-1">{ errors.StartDate }</div>
+                        }
+                    </dd>
+                    <dt class="">End Date
+                    </dt>
+                    <dd class="sm:col-span-2 sm:mt-0">
+                        <input
+                            class="input input-bordered w-full "
+                            value={ params.EndDate }
+                            name="endDate"
+                            type="date"
+                        />
+                        if len(errors.EndDate) > 0 {
+                            <div class="text-sm text-error mt-1">{ errors.EndDate }</div>
+                        }
+                    </dd>
+
+
+				</div>
+            <dd class="flex w-full gap-2 items-center justify-end">
+					<button type="reset" class="btn" >Reset</button>
+					<button class="btn bg-branded-400">Save</button>
+				</dd>
+    </form>
+}

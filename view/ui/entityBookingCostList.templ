@@ -8,21 +8,21 @@ import (
 templ EntityBookingCostList(costItems []response.EntityBookingCostResponse) {
     <div>
         for _, costItem := range costItems {
-        <div>
-            <div>
-            <span>Cost item Amount</span>
-                <span>{ fmt.Sprintf("%f", costItem.Amount) }</span>
-            </div>
-            <div>
-                <span>Tax Rate</span>
-                <span>{ costItem.TaxRate.Name }</span>
-                <span>{ fmt.Sprintf("%f", costItem.TaxRate.Percentage) }</span>
-                <div>
-                    <span>Type</span>
-                    <span>{ costItem.BookingCostType.Name }</span>
-                </div>
-                </div>
-                </div>
+       <div class="mb-4 p-4 border rounded shadow-sm">
+        <div class="flex justify-between mb-2">
+            <span class="font-semibold text-gray-700">Type:</span>
+            <span class="text-gray-900">{ costItem.BookingCostType.Name }</span>
+        </div>
+        <div class="flex justify-between mb-2">
+            <span class="font-semibold text-gray-700">Cost item Amount:</span>
+            <span class="text-gray-900">${ fmt.Sprintf("%.2f", costItem.Amount) }</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-900">{ costItem.TaxRate.Name }</span>
+            <span class="font-semibold text-gray-700">Tax Rate:</span>
+            <span class="text-gray-900">%{ fmt.Sprintf("%.1f", costItem.TaxRate.Percentage) }</span>
+        </div>
+    </div>
     }
 	</div>
 }

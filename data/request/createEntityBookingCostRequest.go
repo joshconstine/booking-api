@@ -6,4 +6,5 @@ type CreateEntityBookingCostRequest struct {
 	BookingCostTypeID uint    `json:"bookingCostTypeId"`
 	Amount            float64 `json:"amount"`
 	TaxRateID         uint    `json:"taxRateId"`
+	TaxRatePercentage float64 `json:"taxRatePercentage"`
 }
