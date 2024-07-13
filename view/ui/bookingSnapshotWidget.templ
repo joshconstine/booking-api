@@ -32,45 +32,80 @@ templ BookingSnapshotWidget(Bookings []response.BookingSnapshotResponse, paginat
   <div tabindex="0" role="button" class="btn btn-ghost">
 <i class="fa-solid fa-sliders"></i>Filter
 </div>
-  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-    <li class="menu-title">Booking Status</li>
-    <li><a>
+<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+<li>
+    <span class="menu-dropdown-toggle">Booking Status</span>
+      <ul  class="menu-dropdown menu-dropdown-show">
+        <li><a>
+            @StatusBadge(response.BookingStatusResponse{
+            ID: 1,
+            Name: "Drafted",
+    })
+        </a></li>
+        <li><a>
         @StatusBadge(response.BookingStatusResponse{
-        ID: 1,
-        Name: "Drafted",
-})
-    </a></li>
-    <li><a>
-    @StatusBadge(response.BookingStatusResponse{
-        ID: 2,
-        Name: "Requested",
-        })
-    </a></li>
-    <li><a>
+            ID: 2,
+            Name: "Requested",
+            })
+        </a></li>
+        <li><a>
+            @StatusBadge(response.BookingStatusResponse{
+            ID: 3,
+            Name: "Confirmed",
+            })
+        </a></li>
+        <li><a>
         @StatusBadge(response.BookingStatusResponse{
-        ID: 3,
-        Name: "Confirmed",
-        })
-    </a></li>
-    <li><a>
-    @StatusBadge(response.BookingStatusResponse{
-        ID: 4,
-        Name: "In Progress",
-        })
-    </a></li>
-    <li><a>
-    @StatusBadge(response.BookingStatusResponse{
-        ID: 5,
-        Name: "Completed",
-        })
-    </a></li>
-    <li><a>
-    @StatusBadge(response.BookingStatusResponse{
-        ID: 6,
-        Name: "Cancelled",
-        })
-    </a></li>
-  </ul>
+            ID: 4,
+            Name: "In Progress",
+            })
+        </a></li>
+        <li><a>
+        @StatusBadge(response.BookingStatusResponse{
+            ID: 5,
+            Name: "Completed",
+            })
+        </a></li>
+        <li><a>
+        @StatusBadge(response.BookingStatusResponse{
+            ID: 6,
+            Name: "Cancelled",
+            })
+        </a></li>
+      </ul>
+     </li>
+    <li>
+
+    <span class="menu-dropdown-toggle menu-dropdown-show">Payment Statuses</span>
+        <ul  class="menu-dropdown">
+            <li><a>Overdue</a></li>
+            <li><a>Paid</a></li>
+            <li><a>Deposit Paid</a></li>
+            <li><a>Refund Requested</a></li>
+            <li><a>Refunded</a></li>
+        </ul>
+    </li>
+    <li>
+    <span class="menu-dropdown-toggle">Date</span>
+        <ul  class="menu-dropdown  menu-dropdown-show">
+            <li><a>This Week</a></li>
+            <li><a>This Month</a></li>
+            <li>
+                <span class="menu-dropdown-toggle menu-dropdown-show">Custom</span>
+                <ul class="menu p-2 shadow bg-base-100 rounded-box w-52">
+                    <li >
+                        <label  for="startDate">Start Date</label>
+                        <input type="date" name="startDate" placeholder="Start Date" class="input input-bordered"></input>
+                    </li>
+                    <li >
+                        <label  for="endDate">End Date</label>
+                        <input type="date" placeholder="End Date" class="input input-bordered"></input>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+       </li>
+</ul>
 </div>
 
 
