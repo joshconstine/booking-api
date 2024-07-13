@@ -41,26 +41,25 @@ templ EntityBookingCostForm(params EntityBookingCostFormParams, errors EntityBoo
 
     >
     	<div class="flex flex-col gap-1 w-full">
-
+                    
                     <input type="hidden" name="entityID" value={strconv.Itoa(int(params.EntityID))}/>
                     <input type="hidden" name="entityType" value={params.EntityType}/>
-					<dd class="sm:col-span-2 sm:mt-0">
-						if params.Success {
-							@Toast("Cost Item Created.")
-						}
+                <div class="flex gap-4 items center md:flex-row flex-col justify-between ">
+
+
+					<dt class="">Amount</dt>
 						<input
-							class="input input-bordered w-full "
+							class="input input-bordered "
 							value={ fmt.Sprintf("%.2f", params.Amount)}
 							name="amount"
 						/>
 						if len(errors.Amount) > 0 {
 							<div class="text-sm text-error mt-1">{ errors.Amount }</div>
 						}
-					</dd>
 
 					<dt class="">Cost Type</dt>
 
-					<dd class="sm:col-span-2 sm:mt-0">
+					<dd class="sm:col-span-2 sm:mt-0 ">
                     <select class="select select-bordered w-full" name="bookingCostTypeID">
                     for _, costType := range bookingCostTypes {
                         <option value={
@@ -72,7 +71,8 @@ templ EntityBookingCostForm(params EntityBookingCostFormParams, errors EntityBoo
                     }
                     </select>
                     </dd>
-
+                    </div>
+                    <div class=" flex gap-4 items-center flex-col md:flex-row items-center justify-between ">
                     <dt class="">Tax Rate</dt>
                     <dd class="sm:col-span-2 sm:mt-0">
                         <input
@@ -97,6 +97,9 @@ templ EntityBookingCostForm(params EntityBookingCostFormParams, errors EntityBoo
                     }
                     </select>
                     </dd>
+                    </div>
+                    
+                <div class="flex gap-4 items-center md:flex-row flex-col justify-between ">
                      <dt class="">Start Date</dt>
                     <dd class="sm:col-span-2 sm:mt-0">
                         <input
@@ -123,6 +126,7 @@ templ EntityBookingCostForm(params EntityBookingCostFormParams, errors EntityBoo
                         }
                     </dd>
 
+                    </div>
 
 				</div>
             <dd class="flex w-full gap-2 items-center justify-end">
