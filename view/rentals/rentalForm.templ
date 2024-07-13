@@ -4,6 +4,8 @@ import (
     "strconv"
 
     "booking-api/view/ui"
+	"booking-api/data/response"
+
 )
 
 type RentalFormParams struct {
@@ -12,8 +14,8 @@ Name string
 Description string
 Bedrooms int
 Bathrooms int
-
 Success bool
+Amenities []response.AmenityResponse
 }
 
 type RentalFormErrors struct {
@@ -26,8 +28,23 @@ Bathrooms string
 func  CreateRentalUpdateUrl(id int) string {
     return "/rentals/" + strconv.Itoa(id)
 }
+func contains(s []response.AmenityResponse, e int) bool {
+    for _, a := range s {
+        if int(a.ID) == e {
+            return true
+        }
+    }
+    return false
+}
 
-templ RentalForm(params RentalFormParams, errors RentalFormErrors) {
+func getIsChecked(b bool) string {
+    if b {
+        return "checked"
+    }
+    return ""
+}
+
+templ RentalForm(params RentalFormParams, errors RentalFormErrors, amenities []response.SortedAmenityResponse) {
    <form
    hx-put={CreateRentalUpdateUrl(params.RentalID)}
     hx-swap="outerHTML"
@@ -93,6 +110,24 @@ templ RentalForm(params RentalFormParams, errors RentalFormErrors) {
                         }
                     </dd>
 				</div>
+				for _, amenityType := range amenities {
+                    <h2 class="text-2xl font-semibold mb-4">{ amenityType.TypeName }</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+				for _, amenity := range amenityType.Amenities {
+				    <dt class="">Amenity: { amenity.Name }</dt>
+				    <dd class="sm:col-span-2 sm:mt-0">
+				        <input
+                            type="checkbox"
+                            name="amenities"
+                            value={ strconv.Itoa(int(amenity.ID)) }
+                            checked={  getIsChecked(contains(params.Amenities, int(amenity.ID)) ) }
+                        />
+                    </dd>
+            }
+        </div>
+    }
+
             <dd class="flex w-full gap-2 items-center justify-end">
 					<button type="reset" class="btn" >Reset</button>
 					<button class="btn bg-branded-400">Save</button>

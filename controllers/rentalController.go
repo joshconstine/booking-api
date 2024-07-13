@@ -15,7 +15,12 @@ import (
 )
 
 type RentalController struct {
-	rentalService services.RentalService
+	rentalService  services.RentalService
+	amenityService services.AmenityService
+}
+
+func NewRentalController(rentalService services.RentalService, amenityService services.AmenityService) *RentalController {
+	return &RentalController{rentalService: rentalService, amenityService: amenityService}
 }
 
 type RentalListTemplateData struct {
@@ -25,10 +30,6 @@ type RentalListTemplateData struct {
 type RentalTemplateData struct {
 	PageTitle string
 	Rental    response.RentalInformationResponse
-}
-
-func NewRentalController(rentalService services.RentalService) *RentalController {
-	return &RentalController{rentalService: rentalService}
 }
 
 func (controller *RentalController) FindAll(w http.ResponseWriter, r *http.Request) error {
@@ -132,7 +133,8 @@ func (controller *RentalController) HandleRentalAdminDetail(w http.ResponseWrite
 
 	rental := controller.rentalService.FindById(uint(id))
 
-	return rentals.RentalAdmin(rental).Render(r.Context(), w)
+	amenities := controller.amenityService.FindAllSorted()
+	return rentals.RentalAdmin(rental, amenities).Render(r.Context(), w)
 }
 
 func (controller *RentalController) HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {

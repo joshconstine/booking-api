@@ -37,6 +37,7 @@ templ EntityBookingCostForm(params EntityBookingCostFormParams, errors EntityBoo
    hx-put="/entityBookingCost"
     hx-swap="outerHTML"
     hx-boost="true"
+    hx-indicator="#loading"
     class="flex flex-col gap-4 w-full max-w-screen-md mx-auto p-4 shadow-lg rounded-lg"
 
     >
@@ -130,6 +131,8 @@ templ EntityBookingCostForm(params EntityBookingCostFormParams, errors EntityBoo
 
 				</div>
             <dd class="flex w-full gap-2 items-center justify-end">
+
+                    <span class="loading-dots loading-dots-sm mr-2" id="loading"></span>
 					<button type="reset" class="btn" >Reset</button>
 					<button class="btn bg-branded-400">Save</button>
 				</dd>

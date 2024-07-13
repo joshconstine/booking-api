@@ -44,6 +44,39 @@ func (t AmenityServiceImplementation) FindAll() []response.AmenityResponse {
 	}
 	return amenities
 }
+func (t AmenityServiceImplementation) FindAllSorted() []response.SortedAmenityResponse {
+
+	allAmenities := t.AmenityRepository.FindAll()
+
+	var sortedAmenities []response.SortedAmenityResponse
+
+	for _, amenity := range allAmenities {
+		if len(sortedAmenities) == 0 {
+			sortedAmenities = append(sortedAmenities, response.SortedAmenityResponse{
+				TypeId:    amenity.AmenityType.ID,
+				TypeName:  amenity.AmenityType.Name,
+				Amenities: []response.AmenityResponse{amenity},
+			})
+		} else {
+			for index, sortedAmenity := range sortedAmenities {
+				if sortedAmenity.TypeId == amenity.AmenityType.ID {
+					sortedAmenities[index].Amenities = append(sortedAmenities[index].Amenities, amenity)
+					break
+				} else if index == len(sortedAmenities)-1 {
+					sortedAmenities = append(sortedAmenities, response.SortedAmenityResponse{
+						TypeId:    amenity.AmenityType.ID,
+						TypeName:  amenity.AmenityType.Name,
+						Amenities: []response.AmenityResponse{amenity},
+					})
+					break
+				}
+
+			}
+		}
+	}
+
+	return sortedAmenities
+}
 
 func (t AmenityServiceImplementation) FindById(amenityId uint) response.AmenityResponse {
 	amenityData := t.AmenityRepository.FindById(amenityId)

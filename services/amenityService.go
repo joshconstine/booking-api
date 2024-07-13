@@ -8,6 +8,7 @@ import (
 
 type AmenityService interface {
 	FindAll() []responses.AmenityResponse
+	FindAllSorted() []responses.SortedAmenityResponse
 	FindById(id uint) responses.AmenityResponse
 	Create(amenity requests.CreateAmenityRequest) responses.AmenityResponse
 }

@@ -11,8 +11,16 @@ import (
 func CreateGetBookingFormUrl(id int) string {
     return "/entityBookingForm/rentals/"  + strconv.Itoa(id)
 }
+
+func GetIdsFromAmens(amenities []response.AmenityResponse) []int {
+    var ids []int
+    for _, amen := range amenities {
+        ids = append(ids, int(amen.ID))
+    }
+    return ids
+}
 // RentalInformationResponse renders a page with detailed information about a specific rental
-templ RentalAdmin(rental response.RentalInformationResponse) {
+templ RentalAdmin(rental response.RentalInformationResponse, amenities []response.SortedAmenityResponse) {
     @layout.App(true) {
         <div class="w-full max-w-screen-xl mx-auto py-12">
             <h1 class="text-3xl font-bold text-center mb-8">{rental.Name}</h1>
@@ -22,7 +30,8 @@ templ RentalAdmin(rental response.RentalInformationResponse) {
                 Description: rental.Description,
                 Bedrooms: int(rental.Bedrooms),
                 Bathrooms: int(rental.Bathrooms),
-            }, RentalFormErrors{})
+                Amenities: rental.Amenities,
+            }, RentalFormErrors{}, amenities)
               @RentalDetails(RentalFormParams{
                     RentalID: int(rental.ID),
                     Name: rental.Name,
@@ -55,12 +64,7 @@ templ RentalAdmin(rental response.RentalInformationResponse) {
                 }
             </div>
             </div>
-            <div class="mb-4 p-4 shadow-lg rounded-lg">
-                <h2 class="text-2xl font-semibold mb-4">Amenities</h2>
-                for _, amenity := range rental.Amenities {
-                    <p>{amenity.Name} - {amenity.AmenityType.Name}</p>
-                }
-            </div>
+            @ui.AmenityList(rental.Amenities)
             <div class="mb-4 p-4 shadow-lg rounded-lg">
                 <h2 class="text-2xl font-semibold mb-4">Photos</h2>
 				<div>
