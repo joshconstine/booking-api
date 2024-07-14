@@ -1,0 +1,33 @@
+package ui
+
+import (
+    "strconv"
+)
+
+type AddPhotoToEntityFormParams struct {
+    EntityID uint
+    EntityType string
+    Errors []string
+    Success bool
+}
+
+templ AddPhotoToEntityForm(params AddPhotoToEntityFormParams) {
+    <form
+    hx-put="/entityPhotos"
+    hx-swap="outerHTML"
+    hx-indicator="#loading"
+
+    hx-boost="false"
+    >
+    <input type="hidden" name="entityID" value={strconv.Itoa(int(params.EntityID))} />
+    <input type="hidden" name="entityType" value={params.EntityType} />
+    <input type="file" accept="image/*" name="photo"/>
+    <button class="btn btn-primary" id="addPhoto">Add Photo</button>
+
+    <span id="loading" class="loading loading-dots hidden" ></span>
+    if params.Success {
+    @Toast("Photo added successfully")
+    }
+    </form>
+
+}

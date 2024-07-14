@@ -141,6 +141,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 
 		owner.Get("/entityBookingForm/{entityType}/{entityID}", controllers.Make(entityBookingCostController.GetEntityBookingCostForm))
 		owner.Put("/entityBookingCost", controllers.Make(entityBookingCostController.Create))
+		owner.Put("/entityPhotos", controllers.Make(photoController.AddPhotoForm))
 
 		owner.Put("/rentals/{rentalId}", func(w http.ResponseWriter, r *http.Request) {
 			rentalsController.Update(w, r)

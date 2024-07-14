@@ -88,7 +88,7 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 	bathroomsInt, _ := strconv.Atoi(bathrooms)
 
 	params := rentals.RentalFormParams{
-		RentalID:    id,
+		RentalID:    uint(id),
 		Name:        r.FormValue("name"),
 		Description: r.FormValue("description"),
 		Bedrooms:    bedroomsInt,

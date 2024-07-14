@@ -12,8 +12,10 @@ type EntityBookingRule struct {
 	EntityType              string `gorm:"index:idx_entity,unique"`
 	AdvertiseAtAllLocations bool   `gorm:"default: false"`
 	AllowPets               bool   `gorm:"default: false"`
-	AllowInstantBooking     bool   `gorm:"default: false"`
+	LuggageDropOff          bool
+	AllowInstantBooking     bool `gorm:"default: false"`
 	OfferEarlyCheckIn       bool
+	OfferLateCheckOut       bool
 }
 
 func (e *EntityBookingRule) TableName() string {

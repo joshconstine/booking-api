@@ -25,15 +25,20 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
         <div class="w-full max-w-screen-xl mx-auto py-12">
             <h1 class="text-3xl font-bold text-center mb-8">{rental.Name}</h1>
             @RentalForm(RentalFormParams{
-                RentalID: int(rental.ID),
+                RentalID: rental.ID,
                 Name: rental.Name,
                 Description: rental.Description,
                 Bedrooms: int(rental.Bedrooms),
                 Bathrooms: int(rental.Bathrooms),
                 Amenities: rental.Amenities,
+                Photos: rental.Photos,
             }, RentalFormErrors{}, amenities)
+            @ui.AddPhotoToEntityForm(ui.AddPhotoToEntityFormParams{
+                    EntityID: rental.ID,
+                    EntityType:"rentals",
+                })
               @RentalDetails(RentalFormParams{
-                    RentalID: int(rental.ID),
+                    RentalID: rental.ID,
                     Name: rental.Name,
                     Description: rental.Description,
                     Bedrooms: int(rental.Bedrooms),
@@ -60,6 +65,7 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                     </div>
 
                 @ui.EntityPhotoList(room.Photos)
+
 
                 }
             </div>
