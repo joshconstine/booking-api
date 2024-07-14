@@ -217,7 +217,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingRuleController := controllers.NewEntityBookingRuleController(entityBookingRuleService)
 	entityBookingCostController := controllers.NewEntityBookingCostController(entityBookingCostService, bookingCostTypeService, taxRateRepository)
 	// entityBookingCostAdjustmentController := controllers.NewEntityBookingCostAdjustmentController(entityBookingCostAdjustmentService)
-	userSettingsController := controllers.NewUserSettingsController(userService)
+	userSettingsController := controllers.NewUserSettingsController(userService, accountService)
 	adminController := controllers.NewAdminController(userService, bookingService, accountService)
 	entityBookingPermissionController := controllers.NewEntityBookingPermissionController(entityBookingPermissionService)
 	//Router

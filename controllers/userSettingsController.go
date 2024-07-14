@@ -9,17 +9,23 @@ import (
 )
 
 type UserSettingsController struct {
-	userService services.UserService
+	userService    services.UserService
+	accountService services.AccountService
 }
 
-func NewUserSettingsController(service services.UserService) *UserSettingsController {
-	return &UserSettingsController{userService: service}
+func NewUserSettingsController(userService services.UserService, accountService services.AccountService) *UserSettingsController {
+	return &UserSettingsController{userService: userService, accountService: accountService}
 }
 
 func (usc *UserSettingsController) HandleSettingsIndex(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
 	// user.User = usc.userService.FindByUserID(user.User.UserID)
-	return render(r, w, settings.Index(user, "profile"))
+	memberships, err := usc.accountService.GetUserAccountRoles(user.User.UserID)
+	if err != nil {
+		return err
+
+	}
+	return render(r, w, settings.Index(user, "profile", memberships))
 }
 
 func (usc *UserSettingsController) HandleSettingsUpdate(w http.ResponseWriter, r *http.Request) error {
@@ -62,36 +68,71 @@ func (usc *UserSettingsController) HandleSettingsUpdate(w http.ResponseWriter, r
 
 func (usc *UserSettingsController) HandleProfile(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.ProfileContainer(user, "profile"))
+	memberships, err := usc.accountService.GetUserAccountRoles(user.User.UserID)
+	if err != nil {
+		return err
+
+	}
+	return render(r, w, settings.ProfileContainer(user, "profile", memberships))
 }
 
 func (usc *UserSettingsController) HandleSubscriptions(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.ProfileContainer(user, "subscriptions"))
+	memberships, err := usc.accountService.GetUserAccountRoles(user.User.UserID)
+	if err != nil {
+		return err
+
+	}
+	return render(r, w, settings.ProfileContainer(user, "subscriptions", memberships))
 	// return nil
 }
 
 func (usc *UserSettingsController) HandleTeam(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.ProfileContainer(user, "team"))
+	memberships, err := usc.accountService.GetUserAccountRoles(user.User.UserID)
+	if err != nil {
+		return err
+
+	}
+	return render(r, w, settings.ProfileContainer(user, "team", memberships))
 }
 
 func (usc *UserSettingsController) HandleFinances(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.ProfileContainer(user, "finances"))
+	memberships, err := usc.accountService.GetUserAccountRoles(user.User.UserID)
+	if err != nil {
+		return err
+
+	}
+	return render(r, w, settings.ProfileContainer(user, "finances", memberships))
 }
 
 func (usc *UserSettingsController) HandleNotifications(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.ProfileContainer(user, "notifications"))
+	memberships, err := usc.accountService.GetUserAccountRoles(user.User.UserID)
+	if err != nil {
+		return err
+
+	}
+	return render(r, w, settings.ProfileContainer(user, "notifications", memberships))
 }
 
 func (usc *UserSettingsController) HandleCleaners(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.ProfileContainer(user, "cleaners"))
+	memberships, err := usc.accountService.GetUserAccountRoles(user.User.UserID)
+	if err != nil {
+		return err
+
+	}
+	return render(r, w, settings.ProfileContainer(user, "cleaners", memberships))
 }
 
 func (usc *UserSettingsController) HandleSecurity(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
-	return render(r, w, settings.ProfileContainer(user, "security"))
+	memberships, err := usc.accountService.GetUserAccountRoles(user.User.UserID)
+	if err != nil {
+		return err
+
+	}
+	return render(r, w, settings.ProfileContainer(user, "security", memberships))
 }

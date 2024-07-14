@@ -7,15 +7,17 @@ import (
     "booking-api/view/layout"
 	"booking-api/view"
     "booking-api/view/ui"
+	"booking-api/data/response"
 )
 
-templ Index(user models.AuthenticatedUser, selected string) {
+templ Index(user models.AuthenticatedUser, selected string, memberships []response.MembershipResponse ) {
+
 	@layout.App(true) {
-		@ProfileContainer(user, selected)
+		@ProfileContainer(user, selected, memberships)
 	}
 }
 
-templ ProfileContainer(user models.AuthenticatedUser, selected string) {
+templ ProfileContainer(user models.AuthenticatedUser, selected string, memberships []response.MembershipResponse) {
 
 <div class=" w-full mx-auto md:mt-2 mt-1 flex flex-col gap-4" id="profile-container">
 			    <div class="join join-vertical md:join-horizontal">
@@ -74,7 +76,7 @@ templ ProfileContainer(user models.AuthenticatedUser, selected string) {
 					@Team(view.AuthenticatedUser(ctx))
 				}
 				if selected == "finances" {
-					@Finances(view.AuthenticatedUser(ctx))
+					@Finances(view.AuthenticatedUser(ctx), memberships)
 				}
 				if selected == "notifications" {
 					@Notifications(view.AuthenticatedUser(ctx))
@@ -90,41 +92,49 @@ templ ProfileContainer(user models.AuthenticatedUser, selected string) {
 		</div>
 }
 
-templ Finances(user models.AuthenticatedUser) {
+templ Finances(user models.AuthenticatedUser, memberships []response.MembershipResponse) {
+
 	<div class="max-w-2xl w-full mx-auto mt-8">
 		<div>
 			
-			<div>
 				<h2>Finances</h2>
-					<div class="container">
-						<div class="banner">
-						</div>
-						<div class="content">
-						<h2 id="title"></h2>
-						<p id="subtitle"></p>
-						<div>
-							<button id="sign-up-button" class="btn btn-ghost">
-							Connect With Stripe
-							</button>
-						</div>
-						<div id="embedded-onboarding-container">
-						</div>
-						<p id="error" class="error hidden">Something went wrong!</p>
-						<div id="dev-callout" class="dev-callout hidden">
-							<p id="connected-account-id" class="hidden"></p>
-							<p id="creating-connected-account" class="hidden">Creating a connected account...</p>
-						</div>
-						<div class="info-callout">
-							
-						</div>
-						</div>
-					</div>
-		<div id="error" hidden>Something went wrong!</div>
-			</div>
-		</div> 
-		<script src="/public/stripe.js" type="module"></script>
+				//request backend for this information
+                @StripeOnboarding()
+                </div>
 	</div>
 }
+
+templ StripeOnboarding() {
+<div>
+    <div>
+       <div class="container">
+          <div class="banner">
+          </div>
+          <div class="content">
+             <h2 id="title"></h2>
+             <p id="subtitle"></p>
+             <div>
+                <button id="sign-up-button" class="btn btn-ghost">
+                Connect With Stripe
+                </button>
+             </div>
+             <div id="embedded-onboarding-container">
+             </div>
+             <p id="error" class="error hidden">Something went wrong!</p>
+             <div id="dev-callout" class="dev-callout hidden">
+                <p id="connected-account-id" class="hidden"></p>
+                <p id="creating-connected-account" class="hidden">Creating a connected account...</p>
+             </div>
+             <div class="info-callout">
+             </div>
+          </div>
+          <div id="error" hidden>Something went wrong!</div>
+       </div>
+    </div>
+    <script src="/public/stripe.js" type="module"></script>
+</div>
+}
+
 templ Team(user models.AuthenticatedUser) {
 	<div class="max-w-2xl w-full mx-auto mt-8">
 		<div>

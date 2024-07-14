@@ -31,7 +31,6 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                 Bedrooms: int(rental.Bedrooms),
                 Bathrooms: int(rental.Bathrooms),
                 Amenities: rental.Amenities,
-                Photos: rental.Photos,
             }, RentalFormErrors{}, amenities)
             @ui.AddPhotoToEntityForm(ui.AddPhotoToEntityFormParams{
                     EntityID: rental.ID,
