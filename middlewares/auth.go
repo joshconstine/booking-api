@@ -20,7 +20,10 @@ func NewWithAccountSetupMiddleWare(userService services.UserService) func(http.H
 				return
 			}
 
-			user := userService.FindByUserID(authenticatedUser.User.UserID)
+			user, err := userService.FindByPublicUserID(authenticatedUser.User.UserID)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 			if user.UserID == "" {
 				http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
 				return
