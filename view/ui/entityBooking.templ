@@ -20,6 +20,7 @@ templ EntityBooking(ebr response.EntityBookingResponse) {
             <a href={templ.SafeURL(GetEntityPath(ebr))} class="flex flex-col gap-0">
                 <span class="text-lg font-bold">{ebr.Name}</span>
                 </a>
+                    @StatusBadge(ebr.Status)
         <span class="loading loading-dots htmx-indicator" id="loading"></span>
             <div class="w-16 rounded-full ">
                 <img src={ebr.Thumbnail} alt="photo" />
@@ -31,7 +32,6 @@ templ EntityBooking(ebr response.EntityBookingResponse) {
               <span class=""> - </span>
                 <span class="">{ebr.Timeblock.EndTime.Format(constants.UI_DATE_FORMAT)}</span>
                 </div>
-                    @StatusBadge(ebr.Status)
 
 
 
