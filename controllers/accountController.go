@@ -3,6 +3,7 @@ package controllers
 import (
 	"booking-api/config"
 	"booking-api/constants"
+	"booking-api/data/request"
 	"booking-api/repositories"
 	"booking-api/services"
 	"booking-api/view/settings"
@@ -23,12 +24,13 @@ import (
 )
 
 type AccountController struct {
-	AccountRepository      repositories.AccountRepository
 	BookingCostItemService services.BookingCostItemService
+	BookingPaymentService  services.BookingPaymentService
+	AccountRepository      repositories.AccountRepository
 }
 
-func NewAccountController(accountRepository repositories.AccountRepository, bookingCostItemService services.BookingCostItemService) *AccountController {
-	return &AccountController{AccountRepository: accountRepository, BookingCostItemService: bookingCostItemService}
+func NewAccountController(bookingCostItemService services.BookingCostItemService, bookingPaymentService services.BookingPaymentService, accountRepository repositories.AccountRepository) *AccountController {
+	return &AccountController{BookingCostItemService: bookingCostItemService, BookingPaymentService: bookingPaymentService, AccountRepository: accountRepository}
 }
 
 func (controller *AccountController) FindByID(ctx *gin.Context) {
@@ -152,11 +154,29 @@ func (ac *AccountController) CreateCheckoutSession(w http.ResponseWriter, r *htt
 	})
 	return nil
 }
+func (ac *AccountController) recordPayment(s *stripe.CheckoutSession) {
+	var payment request.CreateBookingPaymentRequest
+	payment.BookingID = s.Metadata["booking_id"]
+	payment.PaymentAmount = float64(s.AmountTotal)
+	payment.PaymentMethodID = constants.PAYMENT_METHOD_STRIPE_ID
+	payment.PaypalReference = &s.ID
+
+	_, err := ac.BookingPaymentService.Create(payment)
+	if err != nil {
+		log.Printf("An error occurred when recording the payment: %v", err)
+
+	}
+}
 func (ac *AccountController) RetrieveCheckoutSession(w http.ResponseWriter, r *http.Request) error {
 	//s, _ := session.Get(r.URL.Query().Get("session_id"), nil)
 	sessionId := chi.URLParam(r, "sessionId")
 
 	s, err := session.Get(sessionId, nil)
+
+	if s.Status == stripe.CheckoutSessionStatusComplete {
+		ac.recordPayment(s)
+
+	}
 
 	if err != nil {
 

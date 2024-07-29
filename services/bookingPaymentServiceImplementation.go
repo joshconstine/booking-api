@@ -20,11 +20,11 @@ func NewBookingPaymentServiceImplementation(bookingPaymentRepository repositorie
 	}
 }
 
-func (t BookingPaymentServiceImplementation) Create(bookingPayment requests.CreateBookingPaymentRequest) response.BookingPaymentResponse {
+func (t BookingPaymentServiceImplementation) Create(bookingPayment requests.CreateBookingPaymentRequest) (response.BookingPaymentResponse, error) {
 	err := t.Validate.Struct(bookingPayment)
 
 	if err != nil {
-		panic(err)
+		return response.BookingPaymentResponse{}, err
 	}
 
 	return t.bookingPaymentRepository.Create(bookingPayment)

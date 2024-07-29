@@ -46,18 +46,19 @@ func (t *BookingPaymentRepositoryImplementation) FindById(id uint) response.Book
 	return bookingPayment.MapBookingPaymentToResponse()
 }
 
-func (t *BookingPaymentRepositoryImplementation) Create(bookingPayment requests.CreateBookingPaymentRequest) response.BookingPaymentResponse {
+func (t *BookingPaymentRepositoryImplementation) Create(bookingPayment requests.CreateBookingPaymentRequest) (response.BookingPaymentResponse, error) {
 	bookingPaymentModel := models.BookingPayment{
 		BookingID:       bookingPayment.BookingID,
 		PaymentMethodID: bookingPayment.PaymentMethodID,
 		PaymentAmount:   bookingPayment.PaymentAmount,
 	}
+
 	result := t.Db.Create(&bookingPaymentModel)
 	if result.Error != nil {
-		return response.BookingPaymentResponse{}
+		return response.BookingPaymentResponse{}, result.Error
 	}
 
-	return bookingPaymentModel.MapBookingPaymentToResponse()
+	return bookingPaymentModel.MapBookingPaymentToResponse(), nil
 }
 func (t *BookingPaymentRepositoryImplementation) FindByBookingId(id string) []response.BookingPaymentResponse {
 	var bookingPayments []models.BookingPayment

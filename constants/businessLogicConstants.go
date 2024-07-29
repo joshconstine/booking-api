@@ -84,3 +84,6 @@ var SERVICE_PLAN_FULLY_MANAGED_ID uint = 3
 var SERVICE_PLAN_FULLY_MANAGED_NAME string = "Fully Managed"
 var SERVICE_PLAN_ENTERPRISE_ID uint = 4
 var SERVICE_PLAN_ENTERPRISE_NAME string = "Enterprise"
+
+// *********PAYMENT METHODS*********
+var PAYMENT_METHOD_STRIPE_ID uint = 3

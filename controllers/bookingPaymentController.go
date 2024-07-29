@@ -58,7 +58,20 @@ func (controller *BookingPaymentController) Create(ctx *gin.Context) {
 		panic(err)
 	}
 
-	result := controller.bookingPaymentService.Create(createBookingPaymentRequest)
+	result, err := controller.bookingPaymentService.Create(createBookingPaymentRequest)
+
+	if err != nil {
+		webResponse := responses.Response{
+			Code:   http.StatusInternalServerError,
+			Status: http.StatusText(http.StatusInternalServerError),
+			Data:   err.Error(),
+		}
+
+		ctx.Header("Content-Type", "application/json")
+		ctx.JSON(http.StatusInternalServerError, webResponse)
+		return
+
+	}
 
 	webResponse := responses.Response{
 		Code:   http.StatusCreated,

@@ -133,7 +133,7 @@ func SeedPaymentMethods(db *gorm.DB) {
 			Name: "Check",
 		},
 		{
-			Name: "PayPal",
+			Name: "Stripe",
 		},
 	}
 
