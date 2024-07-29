@@ -138,6 +138,9 @@ func (ac *AccountController) CreateCheckoutSession(w http.ResponseWriter, r *htt
 		},
 		UIMode:    stripe.String(string(stripe.CheckoutSessionUIModeEmbedded)),
 		ReturnURL: stripe.String(env.URL + "/confirmation/{CHECKOUT_SESSION_ID}"),
+		Metadata: map[string]string{
+			"booking_id": bookingId,
+		},
 	}
 	accountSession, err := session.New(params)
 
