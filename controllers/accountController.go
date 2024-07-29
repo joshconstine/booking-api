@@ -3,6 +3,7 @@ package controllers
 import (
 	"booking-api/constants"
 	"booking-api/repositories"
+	"booking-api/view/settings"
 	"bytes"
 	"encoding/json"
 	"io"
@@ -150,6 +151,31 @@ func (ac *AccountController) CreateAccount(w http.ResponseWriter, r *http.Reques
 	return nil
 }
 
+func (ac *AccountController) HandleAccountFinance(w http.ResponseWriter, r *http.Request) error {
+	user := GetAuthenticatedUser(r)
+	memberships, err := ac.AccountRepository.GetUserAccountRoles(user.User.UserID)
+	if err != nil {
+		return err
+	}
+	var accountID uint
+	for _, userAccountRole := range memberships {
+		if userAccountRole.Role.ID == constants.USER_ROLE_ACCOUNT_OWNER_ID {
+			accountID = userAccountRole.AccountID
+			break
+		}
+
+	}
+	accountSettings, err := ac.AccountRepository.GetAccountSettings(accountID)
+	if err != nil {
+		return err
+
+	}
+
+	if accountSettings.StripeAccountID == "" {
+		return render(r, w, settings.StripeOnboarding())
+	}
+	return render(r, w, settings.StripeAccountInfo(accountSettings.StripeAccountID))
+}
 func handleError(w http.ResponseWriter, err error) {
 	w.WriteHeader(http.StatusInternalServerError)
 	if stripeErr, ok := err.(*stripe.Error); ok {

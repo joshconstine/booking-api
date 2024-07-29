@@ -99,7 +99,7 @@ func NewWithUserMiddleWare(userService services.UserService) func(http.Handler) 
 			user := models.AuthenticatedUser{
 
 				User: response.UserResponse{
-					UserID:    uuid.MustParse(resp.ID).String(), //userData.UserID,
+					UserID:    userData.UserID,
 					Email:     resp.Email,
 					FirstName: userData.FirstName,
 					LastName:  userData.LastName,

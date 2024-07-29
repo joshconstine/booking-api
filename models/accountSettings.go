@@ -22,9 +22,10 @@ func (a *AccountSettings) TableName() string {
 
 func (a *AccountSettings) MapAccountSettingsToResponse() response.AccountSettingsResponse {
 	return response.AccountSettingsResponse{
-		ID:           a.ID,
-		AccountID:    a.AccountID,
-		ServicePlan:  a.ServicePlan.MapServicePlanToResponse(),
-		AccountOwner: a.AccountOwner.MapMembershipToResponse(),
+		ID:              a.ID,
+		AccountID:       a.AccountID,
+		ServicePlan:     a.ServicePlan.MapServicePlanToResponse(),
+		AccountOwner:    a.AccountOwner.MapMembershipToResponse(),
+		StripeAccountID: a.StripeAccountID,
 	}
 }
