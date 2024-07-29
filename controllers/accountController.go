@@ -6,6 +6,8 @@ import (
 	"booking-api/view/settings"
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"github.com/go-chi/chi/v5"
 	"github.com/stripe/stripe-go/v78"
 	"io"
 	"log"
@@ -105,18 +107,32 @@ func (ac *AccountController) CreateAccountSession(w http.ResponseWriter, r *http
 
 func (ac *AccountController) CreateCheckoutSession(w http.ResponseWriter, r *http.Request) error {
 
+	var requestBody RequestBody
+	err := json.NewDecoder(r.Body).Decode(&requestBody)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return err
+	}
+	fmt.Println(requestBody)
 	params := &stripe.CheckoutSessionParams{
 		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			&stripe.CheckoutSessionLineItemParams{
-				Price:    stripe.String("{{PRICE_ID}}"),
+				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
+					Currency:    stripe.String("usd"),
+					Product:     stripe.String("prod_QZ88Xn1RYhZjqr"),
+					ProductData: nil,
+					Recurring:   nil,
+					TaxBehavior: nil,
+					UnitAmount:  stripe.Int64(1000),
+				},
 				Quantity: stripe.Int64(1),
 			},
 		},
 		PaymentIntentData: &stripe.CheckoutSessionPaymentIntentDataParams{
 			ApplicationFeeAmount: stripe.Int64(123),
 			TransferData: &stripe.CheckoutSessionPaymentIntentDataTransferDataParams{
-				Destination: stripe.String("{{CONNECTED_ACCOUNT_ID}}"),
+				Destination: stripe.String(requestBody.Account),
 			},
 		},
 		UIMode:    stripe.String(string(stripe.CheckoutSessionUIModeEmbedded)),
@@ -200,6 +216,23 @@ func (ac *AccountController) CreateAccount(w http.ResponseWriter, r *http.Reques
 		Account string `json:"account"`
 	}{
 		Account: account.ID,
+	})
+	return nil
+}
+
+func (ac *AccountController) GetAccountForBooking(w http.ResponseWriter, r *http.Request) error {
+	bookingId := chi.URLParam(r, "bookingId")
+
+	accountID, err := ac.AccountRepository.GetAccountIDForBooking(bookingId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return err
+	}
+
+	writeJSON(w, struct {
+		AccountID string `json:"account_id"`
+	}{
+		AccountID: accountID,
 	})
 	return nil
 }

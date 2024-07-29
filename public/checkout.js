@@ -11,10 +11,10 @@ async function initialize() {
 
       const connectedAccountId = await fetchConnectedAccountId();
 //
+    console.log(connectedAccountId)
     if (!connectedAccountId) {
         return;
     }
-//
   const fetchClientSecret = async () => {
     const response = await fetch("/checkout/session", {
       method: "POST",
@@ -29,30 +29,35 @@ async function initialize() {
     return client_secret;
   };
 
+ const   secret = await fetchClientSecret()
+    console.log(secret)
   // Initialize Checkout
   const checkout = await stripeins.initEmbeddedCheckout({
     fetchClientSecret,
+
   });
 
   // Mount Checkout
+  //   showError()
   checkout.mount('#checkout');
 }
 async function fetchConnectedAccountId() {
+    const bookingId = window.location.pathname.split("/").pop();
     try {
-        const response = await fetch("/billing/account", {
-            method: "POST",
+        const response = await fetch(`/accountForBooking/${bookingId}`, {
+            method: "GET",
             headers: {
                 "Content-Type": "application/json"
             }
         });
-        const { account, error } = await response.json();
+        const { account_id, error } = await response.json();
 
         if (error) {
             showError();
             return null;
         }
-
-        return account;
+        console.log(account_id)
+        return account_id;
     } catch (err) {
         console.error("Error fetching connected account ID:", err);
         showError();
@@ -62,8 +67,6 @@ async function fetchConnectedAccountId() {
 
 function showError() {
     document.getElementById("error").classList.remove("hidden");
-    document.getElementById("sign-up-button").classList.remove("hidden");
-    document.getElementById("creating-connected-account").classList.add("hidden");
     document.getElementById("dev-callout").classList.add("hidden");
 }
 

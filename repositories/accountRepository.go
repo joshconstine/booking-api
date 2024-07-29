@@ -14,4 +14,5 @@ type AccountRepository interface {
 	GetMessagesSnapshot(accountID uint) (response.AccountMessagesSnapshot, error)
 	GetAccountSettings(accountID uint) (response.AccountSettingsResponse, error)
 	AddStripeIDToAccountSettings(accountID uint, stripeAccountID string) error
+	GetAccountIDForBooking(bookingID string) (string, error)
 }

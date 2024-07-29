@@ -92,13 +92,14 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 	router.Post("/login", controllers.Make(authController.HandleLoginCreate))
 	router.Get("/auth/callback", controllers.Make(authController.HandleAuthCallback))
 
+	router.Get("/accountForBooking/{bookingId}", controllers.Make(accountController.GetAccountForBooking))
 	router.Group(func(auth chi.Router) {
 		auth.Use(middlewares.WithAuth)
 		auth.Get("/account/setup", controllers.Make(authController.HandleAccountSetupIndex))
 		auth.Post("/account/setup", controllers.Make(authController.HandleAccountSetupCreate))
 		auth.Post("/billing/account", controllers.Make(accountController.CreateAccount))
 		auth.Post("/billing/session", controllers.Make(accountController.CreateAccountSession))
-		auth.Post("/checkout/session", controllers.Make(accountController.CreateAccountSession))
+		auth.Post("/checkout/session", controllers.Make(accountController.CreateCheckoutSession))
 
 	})
 

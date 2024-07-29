@@ -151,7 +151,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	entityBookingCostRepository := repositories.NewEntityBookingCostRepositoryImplementation(database.Instance)
 	// entityBookingCostAdjustmentRepository := repositories.NewEntityBookingCostAdjustmentRepositoryImplementation(database.Instance)
 	chatRepository := repositories.NewChatRepositoryImplementation(database.Instance)
-	accountRepository := repositories.NewAccountRepositoryImplementation(database.Instance)
+	accountRepository := repositories.NewAccountRepositoryImplementation(database.Instance, bookingRepository)
 	entityBookingPermissionRepository := repositories.NewEntityBookingPermissionRepositoryImplementation(database.Instance)
 	entityRepository := repositories.NewEntityRepositoryImplementation(database.Instance)
 	membershipRepository := repositories.NewMembershipRepositoryImplementation(database.Instance)

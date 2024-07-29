@@ -4,19 +4,20 @@ import (
 	"booking-api/constants"
 	"booking-api/data/response"
 	"booking-api/models"
+	"fmt"
 
 	"gorm.io/gorm"
 )
 
 type AccountRepositoryImplementation struct {
-	Db *gorm.DB
+	Db                              *gorm.DB
+	bookingRepositoryImplementation BookingRepository
 }
 
-func NewAccountRepositoryImplementation(db *gorm.DB) AccountRepository {
-	return &AccountRepositoryImplementation{
-		Db: db,
-	}
+func NewAccountRepositoryImplementation(db *gorm.DB, bookingRepositoryImplementation BookingRepository) *AccountRepositoryImplementation {
+	return &AccountRepositoryImplementation{Db: db, bookingRepositoryImplementation: bookingRepositoryImplementation}
 }
+
 func GetEntityNameFromIDAndType(db *gorm.DB, id uint, entityType string) string {
 	var name string
 	switch entityType {
@@ -176,4 +177,76 @@ func (repository *AccountRepositoryImplementation) AddStripeIDToAccountSettings(
 	// result = repository.Db.Save(&accountSettings)
 
 	return result.Error
+}
+
+//	func (repository *AccountRepositoryImplementation) GetAccountIDForBooking(bookingID string) (string, error) {
+//		var booking models.Booking
+//		result := repository.Db.Model(&models.Booking{}).Preload("Entities").First(&booking, bookingID)
+//
+//		if result.Error != nil {
+//			return "", result.Error
+//		}
+//
+//		var accountID uint
+//
+//		for _, entity := range booking.Entities {
+//			if entity.EntityType == constants.RENTAL_ENTITY {
+//				rentalresult := repository.Db.Model(&models.Rental{}).Where("id = ?", entity.EntityID).Pluck("account_id", &accountID)
+//				if rentalresult.Error != nil {
+//					return "error getting rental details", rentalresult.Error
+//				}
+//			} else if entity.EntityType == constants.BOAT_ENTITY {
+//				boatresult := repository.Db.Model(&models.Boat{}).Where("id = ?", entity.EntityID).Pluck("account_id", &accountID)
+//				if boatresult.Error != nil {
+//					return "error reading boat details", boatresult.Error
+//				}
+//
+//			}
+//		}
+//		var stripeAccountID string
+//
+//		stripeAccountResult := repository.Db.Model(&models.AccountSettings{}).Where("account_id = ?", accountID).Pluck("stripe_account_id", &stripeAccountID)
+//
+//		if stripeAccountResult.Error != nil {
+//			return "error reading stripe account id for account", stripeAccountResult.Error
+//		}
+//		return stripeAccountID, nil
+//
+// }
+func (repository *AccountRepositoryImplementation) GetAccountIDForBooking(bookingID string) (string, error) {
+
+	var booking response.BookingInformationResponse
+
+	booking = repository.bookingRepositoryImplementation.FindById(bookingID)
+
+	var accountID uint
+	var found bool
+
+	for _, entity := range booking.Entities {
+		if entity.EntityType == constants.RENTAL_ENTITY {
+			rentalResult := repository.Db.Model(&models.Rental{}).Where("id = ?", entity.EntityID).Pluck("account_id", &accountID)
+			if rentalResult.Error != nil {
+				return "", fmt.Errorf("error getting rental details for entity ID %v: %w", entity.EntityID, rentalResult.Error)
+			}
+			found = true
+		} else if entity.EntityType == constants.BOAT_ENTITY {
+			boatResult := repository.Db.Model(&models.Boat{}).Where("id = ?", entity.EntityID).Pluck("account_id", &accountID)
+			if boatResult.Error != nil {
+				return "", fmt.Errorf("error getting boat details for entity ID %v: %w", entity.EntityID, boatResult.Error)
+			}
+			found = true
+		}
+	}
+
+	if !found {
+		return "", fmt.Errorf("no rental or boat entity found for booking ID %v", bookingID)
+	}
+
+	var stripeAccountID string
+	stripeAccountResult := repository.Db.Model(&models.AccountSettings{}).Where("account_id = ?", accountID).Pluck("stripe_account_id", &stripeAccountID)
+	if stripeAccountResult.Error != nil {
+		return "", fmt.Errorf("error reading stripe account ID for account ID %v: %w", accountID, stripeAccountResult.Error)
+	}
+
+	return stripeAccountID, nil
 }
