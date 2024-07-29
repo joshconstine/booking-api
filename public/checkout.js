@@ -16,7 +16,8 @@ async function initialize() {
         return;
     }
   const fetchClientSecret = async () => {
-    const response = await fetch("/checkout/session", {
+    const bookingId = window.location.pathname.split("/").pop();
+    const response = await fetch(`/checkout/session/${bookingId}`,{
       method: "POST",
       body:
           JSON.stringify({

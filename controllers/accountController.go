@@ -3,6 +3,7 @@ package controllers
 import (
 	"booking-api/constants"
 	"booking-api/repositories"
+	"booking-api/services"
 	"booking-api/view/settings"
 	"bytes"
 	"encoding/json"
@@ -21,13 +22,12 @@ import (
 )
 
 type AccountController struct {
-	AccountRepository repositories.AccountRepository
+	AccountRepository      repositories.AccountRepository
+	BookingCostItemService services.BookingCostItemService
 }
 
-func NewAccountController(accountRepository repositories.AccountRepository) *AccountController {
-	return &AccountController{
-		AccountRepository: accountRepository,
-	}
+func NewAccountController(accountRepository repositories.AccountRepository, bookingCostItemService services.BookingCostItemService) *AccountController {
+	return &AccountController{AccountRepository: accountRepository, BookingCostItemService: bookingCostItemService}
 }
 
 func (controller *AccountController) FindByID(ctx *gin.Context) {
@@ -114,21 +114,13 @@ func (ac *AccountController) CreateCheckoutSession(w http.ResponseWriter, r *htt
 		return err
 	}
 	fmt.Println(requestBody)
+	bookingId := chi.URLParam(r, "bookingId")
+
+	bookingCheckoutItems := ac.BookingCostItemService.FindAllCheckoutItemsForBooking(bookingId)
+
 	params := &stripe.CheckoutSessionParams{
-		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
-		LineItems: []*stripe.CheckoutSessionLineItemParams{
-			&stripe.CheckoutSessionLineItemParams{
-				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
-					Currency:    stripe.String("usd"),
-					Product:     stripe.String("prod_QZ88Xn1RYhZjqr"),
-					ProductData: nil,
-					Recurring:   nil,
-					TaxBehavior: nil,
-					UnitAmount:  stripe.Int64(1000),
-				},
-				Quantity: stripe.Int64(1),
-			},
-		},
+		Mode:      stripe.String(string(stripe.CheckoutSessionModePayment)),
+		LineItems: bookingCheckoutItems,
 		PaymentIntentData: &stripe.CheckoutSessionPaymentIntentDataParams{
 			ApplicationFeeAmount: stripe.Int64(123),
 			TransferData: &stripe.CheckoutSessionPaymentIntentDataTransferDataParams{

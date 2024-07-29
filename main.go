@@ -156,6 +156,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	entityRepository := repositories.NewEntityRepositoryImplementation(database.Instance)
 	membershipRepository := repositories.NewMembershipRepositoryImplementation(database.Instance)
 	taxRateRepository := repositories.NewTaxRateRepositoryImplementation(database.Instance)
+	bookingCostItemRepository := repositories.NewBookingCostItemRepositoryImplementation(database.Instance)
 
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, entityRepository, membershipRepository, validate)
@@ -164,6 +165,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	boatService := services.NewBoatServiceImplementation(boatRepository, validate)
 	// bookingStatusService := services.NewBookingStatusService(bookingStatusRepository, validate)
 	bookingCostTypeService := services.NewBookingCostTypeServiceImplementation(bookingCostTypeRepository, validate)
+	bookingCostItemService := services.NewBookingCostItemServiceImplementation(bookingCostItemRepository, validate)
 	rentalService := services.NewRentalServiceImplementation(rentalRepository, validate)
 	amenityService := services.NewAmenityServiceImplementation(amenityRepository, validate)
 	// amenityTypeService := services.NewAmenityTypeServiceImplementation(amenityTypeRepository, validate)
@@ -211,7 +213,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingDurationRuleController := controllers.NewEntityBookingDurationRuleController(entityBookingDurationRuleService)
 	entityBookingController := controllers.NewEntityBookingController(entityBookingService, rentalService, boatService)
 	// userRoleController := controllers.NewUserRoleController(userRoleService)
-	accountController := controllers.NewAccountController(accountRepository)
+	accountController := controllers.NewAccountController(accountRepository, bookingCostItemService)
 	// inquiryController := controllers.NewInquiryController(inquiryRepository)
 	// entityBookingDocumentController := controllers.NewEntityBookingDocumentController(entityBookingDocumentService)
 	// entityBookingRuleController := controllers.NewEntityBookingRuleController(entityBookingRuleService)

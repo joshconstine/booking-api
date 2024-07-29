@@ -4,6 +4,7 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/repositories"
+	"github.com/stripe/stripe-go/v78"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -57,4 +58,26 @@ func (t BookingCostItemServiceImplementation) Delete(bookingCostItemId uint) boo
 	result := t.bookingCostItemRepository.Delete(bookingCostItemId)
 
 	return result
+}
+
+func (t BookingCostItemServiceImplementation) FindAllCheckoutItemsForBooking(bookingId string) []*stripe.CheckoutSessionLineItemParams {
+	result := t.bookingCostItemRepository.FindAllCostItemsForBooking(bookingId)
+
+	var items []*stripe.CheckoutSessionLineItemParams
+	for _, item := range result {
+
+		items = append(items, &stripe.CheckoutSessionLineItemParams{
+			PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
+				Currency: stripe.String("usd"),
+				ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
+					Name: stripe.String(item.BookingCostType.Name),
+				},
+				UnitAmount: stripe.Int64(int64(item.Amount * 100)),
+			},
+			Quantity: stripe.Int64(1),
+		})
+
+	}
+
+	return items
 }

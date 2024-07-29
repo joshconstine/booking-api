@@ -99,7 +99,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		auth.Post("/account/setup", controllers.Make(authController.HandleAccountSetupCreate))
 		auth.Post("/billing/account", controllers.Make(accountController.CreateAccount))
 		auth.Post("/billing/session", controllers.Make(accountController.CreateAccountSession))
-		auth.Post("/checkout/session", controllers.Make(accountController.CreateCheckoutSession))
+		auth.Post("/checkout/session/{bookingId}", controllers.Make(accountController.CreateCheckoutSession))
 
 	})
 
