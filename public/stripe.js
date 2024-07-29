@@ -65,6 +65,7 @@ fetch("/billing/account", {
         variables: {
             colorPrimary: "#635BFF",
         },
+
         },
     });
 

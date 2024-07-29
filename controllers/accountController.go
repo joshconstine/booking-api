@@ -66,6 +66,14 @@ func (ac *AccountController) CreateAccountSession(w http.ResponseWriter, r *http
 			AccountOnboarding: &stripe.AccountSessionComponentsAccountOnboardingParams{
 				Enabled: stripe.Bool(true),
 			},
+			Payments: &stripe.AccountSessionComponentsPaymentsParams{
+				Enabled: stripe.Bool(true),
+				Features: &stripe.AccountSessionComponentsPaymentsFeaturesParams{
+					RefundManagement:  stripe.Bool(true),
+					DisputeManagement: stripe.Bool(true),
+					CapturePayments:   stripe.Bool(true),
+				},
+			},
 		},
 	}
 
@@ -174,6 +182,7 @@ func (ac *AccountController) HandleAccountFinance(w http.ResponseWriter, r *http
 	if accountSettings.StripeAccountID == "" {
 		return render(r, w, settings.StripeOnboarding())
 	}
+	//TODO:: handle multople accounts be rendering some sort of parent compoentn.
 	return render(r, w, settings.StripeAccountInfo(accountSettings.StripeAccountID))
 }
 func handleError(w http.ResponseWriter, err error) {

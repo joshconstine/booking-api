@@ -109,13 +109,33 @@ templ Finances(user models.AuthenticatedUser, memberships []response.MembershipR
 				<h2>Finances</h2>
 				//request backend for this information
 				if CheckIfUserIsAdmin(memberships) {
+                    <div hx-get="/account/finance"
+                        hx-trigger="load"
+                        hx-target="#finances-container"
+                        hx-swap="outerHTML"
+                        class="bg-base-100 p-4 rounded-lg shadow-md mx-4">
+                        id="finances-container"
+                    >
 
+                    </div>
                     @StripeOnboarding()
                 }
                 </div>
 	</div>
 }
-
+templ StripeAccountInfo(accountID string) {
+    <div id="container">
+        <p id="stripe-account-id" hidden="true">{accountID}</p>
+        <p id="error" class="error hidden">Something went wrong!</p>
+             <div id="dev-callout" class="dev-callout hidden">
+                <p id="connected-account-id" class="hidden"></p>
+                <p id="creating-connected-account" class="hidden">Creating a connected account...</p>
+             </div>
+             <div class="info-callout">
+             </div>
+    <script src="/public/payments.js" type="module"></script>
+    </div>
+}
 templ StripeOnboarding() {
 <div>
     <div>
