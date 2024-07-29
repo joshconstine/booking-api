@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"booking-api/config"
 	"booking-api/constants"
 	"booking-api/repositories"
 	"booking-api/services"
@@ -118,6 +119,12 @@ func (ac *AccountController) CreateCheckoutSession(w http.ResponseWriter, r *htt
 
 	bookingCheckoutItems := ac.BookingCostItemService.FindAllCheckoutItemsForBooking(bookingId)
 
+	// load config
+	env, err := config.LoadConfig(".")
+	if err != nil {
+		fmt.Printf("error: %v", err)
+		return err
+	}
 	params := &stripe.CheckoutSessionParams{
 		Mode:      stripe.String(string(stripe.CheckoutSessionModePayment)),
 		LineItems: bookingCheckoutItems,
@@ -128,7 +135,7 @@ func (ac *AccountController) CreateCheckoutSession(w http.ResponseWriter, r *htt
 			},
 		},
 		UIMode:    stripe.String(string(stripe.CheckoutSessionUIModeEmbedded)),
-		ReturnURL: stripe.String("https://example.com/checkout/return?session_id={CHECKOUT_SESSION_ID}"),
+		ReturnURL: stripe.String(env.URL + "/confirmation/{CHECKOUT_SESSION_ID}"),
 	}
 	accountSession, err := session.New(params)
 
@@ -142,6 +149,27 @@ func (ac *AccountController) CreateCheckoutSession(w http.ResponseWriter, r *htt
 		ClientSecret string `json:"client_secret"`
 	}{
 		ClientSecret: accountSession.ClientSecret,
+	})
+	return nil
+}
+func (ac *AccountController) RetrieveCheckoutSession(w http.ResponseWriter, r *http.Request) error {
+	//s, _ := session.Get(r.URL.Query().Get("session_id"), nil)
+	sessionId := chi.URLParam(r, "sessionId")
+
+	s, err := session.Get(sessionId, nil)
+
+	if err != nil {
+
+		handleError(w, err)
+		return err
+	}
+
+	writeJSON(w, struct {
+		Status        string `json:"status"`
+		CustomerEmail string `json:"customer_email"`
+	}{
+		Status:        string(s.Status),
+		CustomerEmail: string(s.CustomerDetails.Email),
 	})
 	return nil
 }

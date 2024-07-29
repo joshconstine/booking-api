@@ -10,6 +10,7 @@ import (
 
 type EnvVars struct {
 	ENV                       string `mapstructure:"ENV"`
+	URL                       string `mapstructure:"URL"`
 	DSN                       string `mapstructure:"DSN"`
 	PORT                      string `mapstructure:"PORT"`
 	OBJECT_STORAGE_URL        string `mapstructure:"OBJECT_STORAGE_URL"`
@@ -37,6 +38,7 @@ func LoadConfig(configPath string) (config EnvVars, err error) {
 	if err != nil {
 		// Fallback to environment variables if config file is not found
 		config.ENV = os.Getenv("ENV")
+		config.URL = os.Getenv("URL")
 		config.DSN = os.Getenv("DSN")
 		config.PORT = os.Getenv("PORT")
 		config.OBJECT_STORAGE_URL = os.Getenv("OBJECT_STORAGE_URL")
@@ -65,6 +67,12 @@ func LoadConfig(configPath string) (config EnvVars, err error) {
 	if config.ENV == "" {
 		err = errors.New("ENV is required")
 		return
+	}
+
+	if config.URL == "" {
+		err = errors.New("URL is required")
+		return
+
 	}
 
 	if config.DSN == "" {
