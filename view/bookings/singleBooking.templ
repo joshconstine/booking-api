@@ -23,6 +23,7 @@ templ BookingInformationTemplate(booking response.BookingInformationResponse) {
                         <div class="flex flex-col bg-base-100 rounded-lg gap-8 ">
                             @ui.CustomerTile(booking.Customer)
                             @ui.BookingDetails(booking.Details)
+                            @ui.BookingPayment(booking.Details)
                             <div>
                                 <span>Booking Cost Items</span>
                                 <ul>

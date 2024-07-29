@@ -46,3 +46,7 @@ const fetchClientSecret = async () => {
       const container = document.getElementById("container");
       const paymentsComponent = instance.create("payments");
       container.appendChild(paymentsComponent);
+
+      const payoutsContainer = document.getElementById("payouts-container");
+      const payouts = instance.create('payouts');
+      payoutsContainer.appendChild(payouts);

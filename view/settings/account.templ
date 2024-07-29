@@ -124,7 +124,11 @@ templ Finances(user models.AuthenticatedUser, memberships []response.MembershipR
 	</div>
 }
 templ StripeAccountInfo(accountID string) {
+<div class="flex gap-4">
     <div id="container">
+    </div>
+    <div id="payouts-container">
+    </div>
         <p id="stripe-account-id" hidden="true">{accountID}</p>
         <p id="error" class="error hidden">Something went wrong!</p>
              <div id="dev-callout" class="dev-callout hidden">
@@ -134,7 +138,7 @@ templ StripeAccountInfo(accountID string) {
              <div class="info-callout">
              </div>
     <script src="/public/payments.js" type="module"></script>
-    </div>
+</div>
 }
 templ StripeOnboarding() {
 <div>

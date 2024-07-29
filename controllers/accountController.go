@@ -6,15 +6,16 @@ import (
 	"booking-api/view/settings"
 	"bytes"
 	"encoding/json"
+	"github.com/stripe/stripe-go/v78"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/stripe/stripe-go/v78"
 	"github.com/stripe/stripe-go/v78/account"
 	"github.com/stripe/stripe-go/v78/accountsession"
+	session "github.com/stripe/stripe-go/v78/checkout/session"
 )
 
 type AccountController struct {
@@ -74,6 +75,15 @@ func (ac *AccountController) CreateAccountSession(w http.ResponseWriter, r *http
 					CapturePayments:   stripe.Bool(true),
 				},
 			},
+			Payouts: &stripe.AccountSessionComponentsPayoutsParams{
+				Enabled: stripe.Bool(true),
+				Features: &stripe.AccountSessionComponentsPayoutsFeaturesParams{
+					InstantPayouts:     stripe.Bool(true),
+					StandardPayouts:    stripe.Bool(true),
+					EditPayoutSchedule: stripe.Bool(true),
+					//ExternalAccountCollection: stripe.Bool(true),
+				},
+			},
 		},
 	}
 
@@ -85,6 +95,41 @@ func (ac *AccountController) CreateAccountSession(w http.ResponseWriter, r *http
 		return err
 	}
 
+	writeJSON(w, struct {
+		ClientSecret string `json:"client_secret"`
+	}{
+		ClientSecret: accountSession.ClientSecret,
+	})
+	return nil
+}
+
+func (ac *AccountController) CreateCheckoutSession(w http.ResponseWriter, r *http.Request) error {
+
+	params := &stripe.CheckoutSessionParams{
+		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
+		LineItems: []*stripe.CheckoutSessionLineItemParams{
+			&stripe.CheckoutSessionLineItemParams{
+				Price:    stripe.String("{{PRICE_ID}}"),
+				Quantity: stripe.Int64(1),
+			},
+		},
+		PaymentIntentData: &stripe.CheckoutSessionPaymentIntentDataParams{
+			ApplicationFeeAmount: stripe.Int64(123),
+			TransferData: &stripe.CheckoutSessionPaymentIntentDataTransferDataParams{
+				Destination: stripe.String("{{CONNECTED_ACCOUNT_ID}}"),
+			},
+		},
+		UIMode:    stripe.String(string(stripe.CheckoutSessionUIModeEmbedded)),
+		ReturnURL: stripe.String("https://example.com/checkout/return?session_id={CHECKOUT_SESSION_ID}"),
+	}
+	accountSession, err := session.New(params)
+
+	if err != nil {
+		log.Printf("An error occurred when calling the Stripe API to create an account session: %v", err)
+		handleError(w, err)
+		return err
+
+	}
 	writeJSON(w, struct {
 		ClientSecret string `json:"client_secret"`
 	}{

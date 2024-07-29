@@ -23,7 +23,6 @@ if (!response.ok) {
 }
 }
 
-let connectedAccountId = null;
 
 const signUpButton = document.getElementById("sign-up-button");
 signUpButton.onclick = async () => {
@@ -32,6 +31,7 @@ document.getElementById("creating-connected-account").classList.remove("hidden")
 document.getElementById("error").classList.add("hidden");
 document.getElementById("sign-up-button").classList.add("hidden");
 
+let connectedAccountId = null;
 fetch("/billing/account", {
     method: "POST",
 })
