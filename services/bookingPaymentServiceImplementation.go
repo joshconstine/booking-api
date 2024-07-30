@@ -57,7 +57,7 @@ func (t BookingPaymentServiceImplementation) Create(bookingPayment requests.Crea
 		request.BookingStartDate = bookingDetails.BookingStartDate
 		request.PaymentDueDate = bookingDetails.PaymentDueDate
 		request.DocumentsSigned = bookingDetails.DocumentsSigned
-		request.DepositPaid = bookingDetails.DepositPaid
+		request.DepositPaid = true
 		request.GuestCount = bookingDetails.GuestCount
 
 		if bookingDetails.PaymentComplete == false {
