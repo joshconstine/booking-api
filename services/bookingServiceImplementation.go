@@ -163,7 +163,8 @@ func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInform
 	request.BookingID = bookingInformation.ID
 
 	//check if should be drafted
-	if bookingInformation.Status.ID == constants.BOOKING_STATUS_COMPLETED_ID || bookingInformation.Status.ID == constants.BOOKING_STATUS_CANCELLED_ID || len(bookingInformation.Entities) == 0 {
+	//if bookingInformation.Status.ID == constants.BOOKING_STATUS_COMPLETED_ID || bookingInformation.Status.ID == constants.BOOKING_STATUS_CANCELLED_ID || len(bookingInformation.Entities) == 0 {
+	if len(bookingInformation.Entities) == 0 {
 		return
 
 	}
@@ -179,7 +180,7 @@ func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInform
 
 	}
 
-	if bookingInformation.Details.PaymentComplete == true && bookingInformation.Details.DocumentsSigned == true {
+	if bookingInformation.Details.PaymentComplete == true && bookingInformation.Details.DocumentsSigned == true && bookingInformation.Status.ID != constants.BOOKING_STATUS_COMPLETED_ID {
 		//Check if the booking is in Progress
 		//update booking status to in progress
 		if isAtLeastOneEntityBookingInProgress(bookingInformation.Entities) {
