@@ -136,6 +136,17 @@ func (t BookingServiceImplementation) UpdateBookingStatusForBooking(request requ
 //|Cancelled  |
 //+-----------+
 
+func isAtLeastOneEntityBookingInProgress(entitiyBookings []response.EntityBookingResponse) bool {
+	result := false
+	for _, entityBooking := range entitiyBookings {
+		if entityBooking.Status.ID == constants.BOOKING_STATUS_IN_PROGRESS_ID {
+			result = true
+		}
+
+	}
+	return result
+}
+
 func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInformation response.BookingInformationResponse) {
 	//check if booking is complete
 	var request request.UpdateBookingStatusRequest
@@ -156,10 +167,17 @@ func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInform
 	if bookingInformation.Details.PaymentComplete == true && bookingInformation.Details.DocumentsSigned == true {
 		//Check if the booking is in Progress
 		//update booking status to in progress
+		if isAtLeastOneEntityBookingInProgress(bookingInformation.Entities) {
+			request.BookingStatusID = constants.BOOKING_STATUS_IN_PROGRESS_ID
+			if bookingInformation.Status.ID != constants.BOOKING_STATUS_IN_PROGRESS_ID {
+				t.UpdateBookingStatusForBooking(request)
+			}
+		} else {
 
-		request.BookingStatusID = constants.BOOKING_STATUS_CONFIRMED_ID
-		if bookingInformation.Status.ID != constants.BOOKING_STATUS_CONFIRMED_ID {
-			t.UpdateBookingStatusForBooking(request)
+			request.BookingStatusID = constants.BOOKING_STATUS_CONFIRMED_ID
+			if bookingInformation.Status.ID != constants.BOOKING_STATUS_CONFIRMED_ID {
+				t.UpdateBookingStatusForBooking(request)
+			}
 		}
 
 		//update booking status to confirmed

@@ -40,6 +40,13 @@ func (e *EntityBookingServiceImplementation) AttemptToUpdate(entityBooking reque
 func (e *EntityBookingServiceImplementation) FindAllForEntityForRange(entityType string, entityID uint, startTime *time.Time, endTime *time.Time) []response.EntityBookingResponse {
 	return e.entityBookingRepository.FindAllForEntityForRange(entityType, entityID, startTime, endTime)
 }
+func isEntityBookingInProgress(entityBooking *response.EntityBookingResponse) bool {
+	now := time.Now()
+	if entityBooking.Timeblock.StartTime.Before(now) && entityBooking.Timeblock.EndTime.After(now) {
+		return true
+	}
+	return false
+}
 func (e *EntityBookingServiceImplementation) AuditEntityBookingStatusForBooking(bookingInformation *response.BookingInformationResponse, entityBooking *response.EntityBookingResponse) error {
 
 	//check if user has permission to book this entity.
@@ -61,11 +68,21 @@ func (e *EntityBookingServiceImplementation) AuditEntityBookingStatusForBooking(
 		//Check if the booking is in Progress
 		//update booking status to in progress
 
-		entityBooking.Status.ID = constants.BOOKING_STATUS_CONFIRMED_ID
+		if isEntityBookingInProgress(entityBooking) {
+			entityBooking.Status.ID = constants.BOOKING_STATUS_IN_PROGRESS_ID
 
-		if entityBookingToAudit.Status.ID != constants.BOOKING_STATUS_CONFIRMED_ID {
-			request.BookingStatusID = constants.BOOKING_STATUS_CONFIRMED_ID
-			e.entityBookingRepository.UpdateStatus(request)
+			if entityBookingToAudit.Status.ID != constants.BOOKING_STATUS_IN_PROGRESS_ID {
+				request.BookingStatusID = constants.BOOKING_STATUS_IN_PROGRESS_ID
+				e.entityBookingRepository.UpdateStatus(request)
+			}
+		} else {
+
+			entityBooking.Status.ID = constants.BOOKING_STATUS_CONFIRMED_ID
+
+			if entityBookingToAudit.Status.ID != constants.BOOKING_STATUS_CONFIRMED_ID {
+				request.BookingStatusID = constants.BOOKING_STATUS_CONFIRMED_ID
+				e.entityBookingRepository.UpdateStatus(request)
+			}
 		}
 
 		//update booking status to confirmed
