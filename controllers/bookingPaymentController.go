@@ -101,7 +101,7 @@ func (controller *BookingPaymentController) FindByBookingId(ctx *gin.Context) {
 func (controller *BookingPaymentController) FindTotalAmountByBookingId(ctx *gin.Context) {
 	bookingId := ctx.Param("bookingId")
 
-	totalAmount := controller.bookingPaymentService.FindTotalAmountByBookingId(bookingId)
+	totalAmount := controller.bookingPaymentService.FindTotalPaidByBookingId(bookingId)
 
 	webResponse := responses.Response{
 		Code:   200,

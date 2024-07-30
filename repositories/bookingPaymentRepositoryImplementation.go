@@ -5,16 +5,17 @@ import (
 	"booking-api/data/response"
 	responses "booking-api/data/response"
 	"booking-api/models"
-
 	"gorm.io/gorm"
 )
 
 type BookingPaymentRepositoryImplementation struct {
-	Db *gorm.DB
+	BookingCostItemRepository BookingCostItemRepository
+	Db                        *gorm.DB
 }
 
-func NewBookingPaymentRepositoryImplementation(db *gorm.DB) BookingPaymentRepository {
-	return &BookingPaymentRepositoryImplementation{Db: db}
+func NewBookingPaymentRepositoryImplementation(bookingCostItemRepository BookingCostItemRepository, db *gorm.DB) *BookingPaymentRepositoryImplementation {
+
+	return &BookingPaymentRepositoryImplementation{BookingCostItemRepository: bookingCostItemRepository, Db: db}
 }
 
 func (t *BookingPaymentRepositoryImplementation) FindAll() []response.BookingPaymentResponse {
@@ -75,7 +76,7 @@ func (t *BookingPaymentRepositoryImplementation) FindByBookingId(id string) []re
 	return response
 }
 
-func (t *BookingPaymentRepositoryImplementation) FindTotalAmountByBookingId(id string) float64 {
+func (t *BookingPaymentRepositoryImplementation) FindTotalPaidByBookingId(id string) float64 {
 	var totalAmount float64
 	var bookingPayments []models.BookingPayment
 
@@ -89,4 +90,21 @@ func (t *BookingPaymentRepositoryImplementation) FindTotalAmountByBookingId(id s
 	}
 
 	return totalAmount
+}
+
+func (t *BookingPaymentRepositoryImplementation) FindTotalOutstandingAmountByBookingId(id string) float64 {
+	totalPaid := t.FindTotalPaidByBookingId(id)
+
+	return t.BookingCostItemRepository.GetTotalCostItemsForBooking(id) - totalPaid
+}
+
+func (t *BookingPaymentRepositoryImplementation) CheckIfPaymentIsCompleted(id string) bool {
+	var paymentCompleted bool
+	result := t.Db.Model(&models.BookingDetails{}).Where("booking_id = ?", id).Pluck("payment_complete", &paymentCompleted)
+
+	if result.Error != nil {
+		return false
+	}
+
+	return paymentCompleted
 }

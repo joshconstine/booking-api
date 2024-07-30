@@ -128,7 +128,7 @@ package router
 //		//bookingRouter.POST("/ui", bookingController.CreateBookingWithUserInformation)
 //
 //		bookingRouter.GET("/:bookingId/payments", bookingPaymentController.FindByBookingId)
-//		bookingRouter.GET("/:bookingId/payments/total", bookingPaymentController.FindTotalAmountByBookingId)
+//		bookingRouter.GET("/:bookingId/payments/total", bookingPaymentController.FindTotalPaidByBookingId)
 //
 //		bookingCostItemRouter := api.Group("/bookingCostItems")
 //		bookingCostItemRouter.POST("", bookingCostItemController.Create)

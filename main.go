@@ -134,7 +134,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// bedTypeRepository := repositories.NewBedTypeRepositoryImplementation(database.Instance)
 	// bookingCostItemRepository := repositories.NewBookingCostItemRepositoryImplementation(database.Instance)
 	// paymentMethodRepository := repositories.NewPaymentMethodRepositoryImplementation(database.Instance)
-	bookingPaymentRepository := repositories.NewBookingPaymentRepositoryImplementation(database.Instance)
+
 	// rentalStatusRepository := repositories.NewRentalStatusRepositoryImplementation(database.Instance)
 	photoRepository := repositories.NewPhotoRepositoryImplementation(objectStorage.Client, database.Instance)
 	entitiyPhotoRepository := repositories.NewEntityPhotoRepositoryImplementation(database.Instance)
@@ -158,6 +158,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	taxRateRepository := repositories.NewTaxRateRepositoryImplementation(database.Instance)
 	bookingCostItemRepository := repositories.NewBookingCostItemRepositoryImplementation(database.Instance)
 
+	bookingPaymentRepository := repositories.NewBookingPaymentRepositoryImplementation(bookingCostItemRepository, database.Instance)
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, entityRepository, membershipRepository, validate)
 	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
@@ -172,7 +173,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// bedTypeService := services.NewBedTypeServiceImplementation(bedTypeRepository, validate)
 	// bookingCostItemService := services.NewBookingCostItemServiceImplementation(bookingCostItemRepository, validate)
 	// paymentMethodService := services.NewPaymentMethodServiceImplementation(paymentMethodRepository, validate)
-	bookingPaymentService := services.NewBookingPaymentServiceImplementation(bookingPaymentRepository, validate)
+	bookingPaymentService := services.NewBookingPaymentServiceImplementation(bookingPaymentRepository, bookingCostItemService, validate)
 	// rentalStatusService := services.NewRentalStatusServiceImplementation(rentalStatusRepository, validate)
 	photoService := services.NewPhotoServiceImplementation(photoRepository, validate)
 	entityPhotoService := services.NewEntityPhotoServiceImplementation(entitiyPhotoRepository, validate)

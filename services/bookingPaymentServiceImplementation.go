@@ -10,16 +10,19 @@ import (
 
 type BookingPaymentServiceImplementation struct {
 	bookingPaymentRepository repositories.BookingPaymentRepository
+	BookingCostItemService   BookingCostItemService
 	Validate                 *validator.Validate
 }
 
-func NewBookingPaymentServiceImplementation(bookingPaymentRepository repositories.BookingPaymentRepository, validate *validator.Validate) BookingPaymentService {
-	return &BookingPaymentServiceImplementation{
-		bookingPaymentRepository: bookingPaymentRepository,
-		Validate:                 validate,
-	}
+func NewBookingPaymentServiceImplementation(bookingPaymentRepository repositories.BookingPaymentRepository, bookingCostItemService BookingCostItemService, validate *validator.Validate) BookingPaymentService {
+	return BookingPaymentServiceImplementation{bookingPaymentRepository: bookingPaymentRepository, BookingCostItemService: bookingCostItemService, Validate: validate}
 }
 
+func (t BookingPaymentServiceImplementation) CheckIfPaymentIsCompleted(bookingId string) bool {
+	result := t.bookingPaymentRepository.CheckIfPaymentIsCompleted(bookingId)
+
+	return result
+}
 func (t BookingPaymentServiceImplementation) Create(bookingPayment requests.CreateBookingPaymentRequest) (response.BookingPaymentResponse, error) {
 	err := t.Validate.Struct(bookingPayment)
 
@@ -49,8 +52,8 @@ func (t BookingPaymentServiceImplementation) FindByBookingId(id string) []respon
 	return result
 }
 
-func (t BookingPaymentServiceImplementation) FindTotalAmountByBookingId(id string) float64 {
-	result := t.bookingPaymentRepository.FindTotalAmountByBookingId(id)
+func (t BookingPaymentServiceImplementation) FindTotalPaidByBookingId(id string) float64 {
+	result := t.bookingPaymentRepository.FindTotalPaidByBookingId(id)
 
 	return result
 }
