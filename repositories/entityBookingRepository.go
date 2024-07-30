@@ -12,5 +12,6 @@ type EntityBookingRepository interface {
 	FindAllForBooking(bookingID string) []response.EntityBookingResponse
 	Create(entityBooking request.CreateEntityBookingRequest) response.EntityBookingResponse
 	Update(entityBooking request.UpdateEntityBookingRequest) response.EntityBookingResponse
+	UpdateStatus(request request.UpdateEntityBookingStatusRequest) error
 	FindAllForEntityForRange(entityType string, entityID uint, startTime *time.Time, endTime *time.Time) []response.EntityBookingResponse
 }

@@ -147,3 +147,16 @@ func (e *EntityBookingRepositoryImplementation) FindAllForEntityForRange(entityT
 	return bookingsMatchingRange
 
 }
+func (e *EntityBookingRepositoryImplementation) UpdateStatus(request request.UpdateEntityBookingStatusRequest) error {
+	var entityBooking models.EntityBooking
+	result := e.Db.Model(&models.EntityBooking{}).Where("id = ?", request.EntityBookingID).First(&entityBooking)
+	if result.Error != nil {
+		return result.Error
+	}
+	entityBooking.BookingStatusID = request.BookingStatusID
+	result = e.Db.Save(&entityBooking)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

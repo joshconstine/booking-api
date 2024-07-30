@@ -1,6 +1,7 @@
 package services
 
 import (
+	"booking-api/constants"
 	"time"
 
 	"booking-api/data/request"
@@ -41,11 +42,43 @@ func (e *EntityBookingServiceImplementation) FindAllForEntityForRange(entityType
 }
 func (e *EntityBookingServiceImplementation) AuditEntityBookingStatusForBooking(bookingInformation *response.BookingInformationResponse, entityBooking *response.EntityBookingResponse) error {
 
-	//check if entity is available on this day.
-	//return error if not available.
 	//check if user has permission to book this entity.
 	//return error if not allowed.
 	//check if entity can be booked by this user on this day.
+
+	var entityBookingToAudit response.EntityBookingResponse
+
+	for _, e := range bookingInformation.Entities {
+		if e.ID == entityBooking.ID {
+			entityBookingToAudit = e
+		}
+	}
+
+	var request request.UpdateEntityBookingStatusRequest
+	request.EntityBookingID = entityBookingToAudit.ID
+
+	if bookingInformation.Details.PaymentComplete == true && bookingInformation.Details.DocumentsSigned == true {
+		//Check if the booking is in Progress
+		//update booking status to in progress
+
+		entityBooking.Status.ID = constants.BOOKING_STATUS_CONFIRMED_ID
+
+		if entityBookingToAudit.Status.ID != constants.BOOKING_STATUS_CONFIRMED_ID {
+			request.BookingStatusID = constants.BOOKING_STATUS_CONFIRMED_ID
+			e.entityBookingRepository.UpdateStatus(request)
+		}
+
+		//update booking status to confirmed
+
+	} else if bookingInformation.Details.PaymentComplete == true && bookingInformation.Details.DocumentsSigned == true && bookingIsInPast(*bookingInformation) {
+
+		entityBooking.Status.ID = constants.BOOKING_STATUS_COMPLETED_ID
+
+		if entityBookingToAudit.Status.ID != constants.BOOKING_STATUS_COMPLETED_ID {
+			request.BookingStatusID = constants.BOOKING_STATUS_COMPLETED_ID
+			e.entityBookingRepository.UpdateStatus(request)
+		}
+	}
 
 	return nil
 }
