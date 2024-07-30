@@ -13,5 +13,5 @@ type BookingService interface {
 	FindById(id string) (responses.BookingInformationResponse, error)
 	UpdateBookingStatusForBooking(request request.UpdateBookingStatusRequest) error
 	AuditBookingStatusForBooking(bookingInformation responses.BookingInformationResponse)
-	AuditDocumentSignedStatusForBooking(bookingInformation responses.BookingInformationResponse)
+	AuditDocumentSignedStatusForBooking(bookingInformation *responses.BookingInformationResponse)
 }

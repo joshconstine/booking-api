@@ -135,7 +135,7 @@ func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInform
 	request.BookingID = bookingInformation.ID
 
 	//audit document signed status
-	t.AuditDocumentSignedStatusForBooking(bookingInformation)
+	t.AuditDocumentSignedStatusForBooking(&bookingInformation)
 
 	if bookingInformation.Details.PaymentComplete == true && bookingInformation.Details.DocumentsSigned == true {
 		//Check if the booking is in Progress
@@ -154,7 +154,7 @@ func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInform
 	}
 }
 
-func (t BookingServiceImplementation) AuditDocumentSignedStatusForBooking(bookingInformation response.BookingInformationResponse) {
+func (t BookingServiceImplementation) AuditDocumentSignedStatusForBooking(bookingInformation *response.BookingInformationResponse) {
 	//check if booking is complete
 	var request request.UpdateBookingDocumentsSignedRequest
 	request.BookingID = bookingInformation.ID
@@ -170,6 +170,7 @@ func (t BookingServiceImplementation) AuditDocumentSignedStatusForBooking(bookin
 
 	if documentsSigned != bookingInformation.Details.DocumentsSigned {
 		request.DocumentsSigned = documentsSigned
+		bookingInformation.Details.DocumentsSigned = documentsSigned
 		t.BookingRepository.UpdateBookingDocumentsSigned(request)
 	}
 
