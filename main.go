@@ -175,7 +175,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// bedTypeService := services.NewBedTypeServiceImplementation(bedTypeRepository, validate)
 	// bookingCostItemService := services.NewBookingCostItemServiceImplementation(bookingCostItemRepository, validate)
 	// paymentMethodService := services.NewPaymentMethodServiceImplementation(paymentMethodRepository, validate)
-	bookingPaymentService := services.NewBookingPaymentServiceImplementation(bookingPaymentRepository, bookingCostItemService, validate)
+	bookingPaymentService := services.NewBookingPaymentServiceImplementation(bookingPaymentRepository, bookingDetailsService, bookingCostItemService, validate)
 	// rentalStatusService := services.NewRentalStatusServiceImplementation(rentalStatusRepository, validate)
 	photoService := services.NewPhotoServiceImplementation(photoRepository, validate)
 	entityPhotoService := services.NewEntityPhotoServiceImplementation(entitiyPhotoRepository, validate)

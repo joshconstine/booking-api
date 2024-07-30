@@ -13,11 +13,12 @@ import (
 type BookingPaymentServiceImplementation struct {
 	bookingPaymentRepository repositories.BookingPaymentRepository
 	BookingCostItemService   BookingCostItemService
+	BookingDetailsService    BookingDetailsService
 	Validate                 *validator.Validate
 }
 
-func NewBookingPaymentServiceImplementation(bookingPaymentRepository repositories.BookingPaymentRepository, bookingCostItemService BookingCostItemService, validate *validator.Validate) BookingPaymentService {
-	return BookingPaymentServiceImplementation{bookingPaymentRepository: bookingPaymentRepository, BookingCostItemService: bookingCostItemService, Validate: validate}
+func NewBookingPaymentServiceImplementation(bookingPaymentRepository repositories.BookingPaymentRepository, bookingDetailsService BookingDetailsService, bookingCostItemService BookingCostItemService, validate *validator.Validate) *BookingPaymentServiceImplementation {
+	return &BookingPaymentServiceImplementation{bookingPaymentRepository: bookingPaymentRepository, BookingDetailsService: bookingDetailsService, BookingCostItemService: bookingCostItemService, Validate: validate}
 }
 
 func (t BookingPaymentServiceImplementation) CheckIfPaymentIsCompleted(bookingId string) bool {
@@ -38,8 +39,40 @@ func (t BookingPaymentServiceImplementation) Create(bookingPayment requests.Crea
 
 	}
 
-	return t.bookingPaymentRepository.Create(bookingPayment)
+	response, err := t.bookingPaymentRepository.Create(bookingPayment)
 
+	if err != nil {
+		return response, err
+
+	}
+
+	//check if payment is completed
+	if t.bookingPaymentRepository.FindTotalOutstandingAmountByBookingId(response.BookingID) == 0 {
+		//update booking status to paid
+		bookingDetails := t.BookingDetailsService.FindByBookingId(response.BookingID)
+
+		var request requests.UpdateBookingDetailsRequest
+		request.ID = bookingDetails.ID
+		request.PaymentComplete = true
+		request.BookingStartDate = bookingDetails.BookingStartDate
+		request.PaymentDueDate = bookingDetails.PaymentDueDate
+		request.DocumentsSigned = bookingDetails.DocumentsSigned
+		request.DepositPaid = bookingDetails.DepositPaid
+		request.GuestCount = bookingDetails.GuestCount
+
+		if bookingDetails.PaymentComplete == false {
+			bookingDetails.PaymentComplete = true
+
+			_, err := t.BookingDetailsService.Update(request)
+
+			if err != nil {
+				return response, err
+
+			}
+
+		}
+	}
+	return response, nil
 }
 
 func (t BookingPaymentServiceImplementation) FindAll() []response.BookingPaymentResponse {

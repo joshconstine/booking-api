@@ -11,5 +11,6 @@ type BookingPaymentRepository interface {
 	FindByBookingId(id string) []response.BookingPaymentResponse
 	FindTotalPaidByBookingId(id string) float64
 	CheckIfPaymentIsCompleted(id string) bool
+	FindTotalOutstandingAmountByBookingId(id string) float64
 	Create(bookingPayment requests.CreateBookingPaymentRequest) (response.BookingPaymentResponse, error)
 }

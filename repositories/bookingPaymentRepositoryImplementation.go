@@ -95,7 +95,13 @@ func (t *BookingPaymentRepositoryImplementation) FindTotalPaidByBookingId(id str
 func (t *BookingPaymentRepositoryImplementation) FindTotalOutstandingAmountByBookingId(id string) float64 {
 	totalPaid := t.FindTotalPaidByBookingId(id)
 
-	return t.BookingCostItemRepository.GetTotalCostItemsForBooking(id) - totalPaid
+	result := t.BookingCostItemRepository.GetTotalCostItemsForBooking(id) - totalPaid
+
+	if result < 0 {
+		return 0
+
+	}
+	return result
 }
 
 func (t *BookingPaymentRepositoryImplementation) CheckIfPaymentIsCompleted(id string) bool {

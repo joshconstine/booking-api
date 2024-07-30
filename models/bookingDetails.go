@@ -28,11 +28,13 @@ func (b *BookingDetails) MapBookingDetailsToResponse() response.BookingDetailsRe
 
 	response := response.BookingDetailsResponse{
 		ID:               b.ID,
+		BookingID:        b.BookingID,
 		PaymentComplete:  b.PaymentComplete,
 		DepositPaid:      b.DepositPaid,
 		PaymentDueDate:   b.PaymentDueDate,
 		DocumentsSigned:  b.DocumentsSigned,
 		BookingStartDate: b.BookingStartDate,
+		GuestCount:       b.GuestCount,
 		LocationID:       b.LocationID,
 		InvoiceID:        b.InvoiceID,
 	}
