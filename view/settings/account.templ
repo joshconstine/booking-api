@@ -103,31 +103,33 @@ templ ProfileContainer(user models.AuthenticatedUser, selected string, membershi
 
 templ Finances(user models.AuthenticatedUser, memberships []response.MembershipResponse) {
 
-	<div class="max-w-2xl w-full mx-auto mt-8">
-		<div>
-			
-				<h2>Finances</h2>
-				//request backend for this information
-				if CheckIfUserIsAdmin(memberships) {
-                    <div hx-get="/account/finance"
-                        hx-trigger="load"
-                        hx-target="#finances-container"
-                        hx-swap="outerHTML"
-                        class="bg-base-100 p-4 rounded-lg shadow-md mx-4">
-                        id="finances-container"
-                    >
+	<div class="max-w-2xl w-full mx-auto mt-8"
+	    id="finances-container"
+	>
+		<div
+		    hx-get="/settings/account/stripe-finances"
+		    hx-target="#finances-container"
+		    hx-swap="outerHTML"
+		    hx-trigger="load"
+		    hx-indicator="#loading"
+		    >
 
-                    </div>
-                    @StripeOnboarding()
-                }
-                </div>
+            <span id="loading" class="loading loading-dots loading-md htmx-indicator"></span>
+				</div>
 	</div>
 }
 templ StripeAccountInfo(accountID string) {
-<div class="flex gap-4">
+<div class="flex gap-8 w-full">
+<div class="bg-base-200  p-4 w-1/2 rounded-lg shadow-md mx-4">
+    <span class="text-xl" >Payments</span>
     <div id="container">
     </div>
+    </div>
+
+<div class="bg-base-200 p-4 w-1/2  rounded-lg shadow-md mx-4">
+    <span class="text-xl" >Payouts</span>
     <div id="payouts-container">
+    </div>
     </div>
         <p id="stripe-account-id" hidden="true">{accountID}</p>
         <p id="error" class="error hidden">Something went wrong!</p>

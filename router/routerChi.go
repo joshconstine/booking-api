@@ -130,7 +130,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		router.Put("/permission/{entityBookingPermissionID}", controllers.Make(entityBookingPermissionController.Update))
 		router.Put("/permission/{entityBookingPermissionID}/approve", controllers.Make(entityBookingPermissionController.HandleApproveBookingPermissionRequest))
 		router.Get("/bookings/{bookingID}/add-entity", controllers.Make(entityBookingController.AddEntityToBookingForm))
-		auth.Get("/settings/account/finances", controllers.Make(accountController.HandleAccountFinance))
+		auth.Get("/settings/account/stripe-finances", controllers.Make(accountController.HandleAccountFinance))
 	})
 
 	router.Group(func(owner chi.Router) {
