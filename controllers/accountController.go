@@ -158,10 +158,13 @@ func (ac *AccountController) CreateCheckoutSession(w http.ResponseWriter, r *htt
 	})
 	return nil
 }
+func convertPenniesToDollars(pennies int64) float64 {
+	return float64(pennies) / 100
+}
 func (ac *AccountController) recordPayment(s *stripe.CheckoutSession) error {
 	var payment request.CreateBookingPaymentRequest
 	payment.BookingID = s.Metadata["booking_id"]
-	payment.PaymentAmount = float64(s.AmountTotal)
+	payment.PaymentAmount = convertPenniesToDollars(s.AmountTotal)
 	payment.PaymentMethodID = constants.PAYMENT_METHOD_STRIPE_ID
 	payment.PaypalReference = &s.ID
 
