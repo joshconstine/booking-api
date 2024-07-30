@@ -8,11 +8,11 @@ import (
 templ BookingCostItem(costItem response.BookingCostItemResponse) {
 	<div class="flex flex-col gap-2">
         <div>
-            <span class="font-bold">{ costItem.BookingCostType.Name }:</span>
+            <span class="">{ costItem.BookingCostType.Name }:</span>
             <span>${ fmt.Sprintf("%.2f", costItem.Amount) }</span>
         </div>
         <div>
-            <span class="font-bold">Tax Rate:</span>
+            <span class="">Tax Rate:</span>
             <span>{ costItem.TaxRate.Name }</span>
             <span>%{ fmt.Sprintf("%.2f", costItem.TaxRate.Percentage) }</span>
         </div>

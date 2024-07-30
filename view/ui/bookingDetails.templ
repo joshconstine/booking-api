@@ -1,7 +1,6 @@
 package ui
 
 import (
-    "strconv"
 	"booking-api/data/response"
 	"booking-api/constants"
 )
@@ -37,10 +36,8 @@ templ BookingDetails(details response.BookingDetailsResponse) {
       <span>{details.PaymentDueDate.Format(constants.UI_DATE_FORMAT)}</span>
    </div>
    <div>
-      <span> Payment Start Date</span>
+      <span> Booking Start Date</span>
       <span>{details.BookingStartDate.Format(constants.UI_DATE_FORMAT)}</span>
-      <span>{strconv.Itoa(int(details.LocationID))}</span>
-      <span>{details.InvoiceID}</span>
    </div>
 </div>
 
