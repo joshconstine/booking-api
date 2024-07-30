@@ -11,5 +11,4 @@ type BookingDetailsService interface {
 	FindByBookingId(id string) responses.BookingDetailsResponse
 	Create(details models.BookingDetails) responses.BookingDetailsResponse
 	Update(details request.UpdateBookingDetailsRequest) (responses.BookingDetailsResponse, error)
-	AuditBookingDetailsForBooking(bookingID string) error
 }

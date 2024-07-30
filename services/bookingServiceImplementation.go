@@ -13,16 +13,20 @@ import (
 )
 
 type BookingServiceImplementation struct {
-	BookingRepository repositories.BookingRepository
-	UserService       UserService
-	Validate          *validator.Validate
+	BookingRepository        repositories.BookingRepository
+	BookingDetailsRepository repositories.BookingDetailsRepository
+	BookingPaymentRepository repositories.BookingPaymentRepository
+	UserService              UserService
+	Validate                 *validator.Validate
 }
 
-func NewBookingServiceImplementation(bookingRepository repositories.BookingRepository, validate *validator.Validate, userService UserService) BookingService {
+func NewBookingServiceImplementation(bookingRepository repositories.BookingRepository, bookingDetailsRepository repositories.BookingDetailsRepository, bookingPaymentRepository repositories.BookingPaymentRepository, validate *validator.Validate, userService UserService) BookingService {
 	return &BookingServiceImplementation{
-		BookingRepository: bookingRepository,
-		Validate:          validate,
-		UserService:       userService,
+		BookingRepository:        bookingRepository,
+		BookingDetailsRepository: bookingDetailsRepository,
+		BookingPaymentRepository: bookingPaymentRepository,
+		Validate:                 validate,
+		UserService:              userService,
 	}
 }
 
@@ -135,6 +139,9 @@ func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInform
 	var request request.UpdateBookingStatusRequest
 	request.BookingID = bookingInformation.ID
 
+	//audit payment status
+	t.AuditPaymentStatusForBooking(&bookingInformation)
+
 	//audit document signed status
 	t.AuditDocumentSignedStatusForBooking(&bookingInformation)
 
@@ -190,7 +197,33 @@ func (t BookingServiceImplementation) AuditDocumentSignedStatusForBooking(bookin
 	}
 
 }
+func (t BookingServiceImplementation) AuditPaymentStatusForBooking(booking *response.BookingInformationResponse) {
 
+	//Audit PaymentStatus
+
+	outstandingAmount := t.BookingPaymentRepository.FindTotalOutstandingAmountByBookingId(booking.ID)
+
+	if outstandingAmount == 0 {
+		//ensure booking status is paid
+		//update booking status to paid
+		if booking.Details.PaymentComplete == false {
+			booking.Details.PaymentComplete = true
+			_, err := t.BookingDetailsRepository.Update(request.UpdateBookingDetailsRequest{
+				ID:               booking.Details.ID,
+				PaymentComplete:  true,
+				BookingStartDate: booking.Details.BookingStartDate,
+				PaymentDueDate:   booking.Details.PaymentDueDate,
+				DocumentsSigned:  booking.Details.DocumentsSigned,
+				DepositPaid:      true,
+				GuestCount:       booking.Details.GuestCount,
+			})
+			if err != nil {
+				//return err
+			}
+
+		}
+	}
+}
 func (t BookingServiceImplementation) AuditAllBookingStatus() error {
 	bookings := t.FindAll()
 	var bookingInformation response.BookingInformationResponse

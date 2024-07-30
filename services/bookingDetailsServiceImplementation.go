@@ -10,11 +10,10 @@ import (
 type BookingDetailsServiceImplementation struct {
 	bookingDetailsRepository repositories.BookingDetailsRepository
 	bookingPaymentRepository repositories.BookingPaymentRepository
-	bookingService           BookingService
 }
 
-func NewBookingDetailsServiceImplementation(bookingDetailsRepository repositories.BookingDetailsRepository, bookingPaymentRepository repositories.BookingPaymentRepository, bookingService BookingService) *BookingDetailsServiceImplementation {
-	return &BookingDetailsServiceImplementation{bookingDetailsRepository: bookingDetailsRepository, bookingPaymentRepository: bookingPaymentRepository, bookingService: bookingService}
+func NewBookingDetailsServiceImplementation(bookingDetailsRepository repositories.BookingDetailsRepository, bookingPaymentRepository repositories.BookingPaymentRepository) BookingDetailsService {
+	return &BookingDetailsServiceImplementation{bookingDetailsRepository: bookingDetailsRepository, bookingPaymentRepository: bookingPaymentRepository}
 }
 
 func (service BookingDetailsServiceImplementation) FindById(id uint) response.BookingDetailsResponse {
@@ -34,43 +33,7 @@ func (service BookingDetailsServiceImplementation) Update(details request.Update
 		return response.BookingDetailsResponse{}, err
 
 	}
-	service.AuditBookingDetailsForBooking(result.BookingID)
 
 	return result, nil
 
-}
-
-func (service BookingDetailsServiceImplementation) AuditBookingDetailsForBooking(bookingId string) error {
-	//Get booking information
-	booking, err := service.bookingService.FindById(bookingId)
-	if err != nil {
-		return err
-	}
-
-	//Audit PaymentStatus
-	outstandingAmount := service.bookingPaymentRepository.FindTotalOutstandingAmountByBookingId(bookingId)
-	if outstandingAmount == 0 {
-		//ensure booking status is paid
-		//update booking status to paid
-		if booking.Details.PaymentComplete == false {
-			booking.Details.PaymentComplete = true
-			_, err := service.Update(request.UpdateBookingDetailsRequest{
-				ID:               booking.Details.ID,
-				PaymentComplete:  true,
-				BookingStartDate: booking.Details.BookingStartDate,
-				PaymentDueDate:   booking.Details.PaymentDueDate,
-				DocumentsSigned:  booking.Details.DocumentsSigned,
-				DepositPaid:      true,
-				GuestCount:       booking.Details.GuestCount,
-			})
-			if err != nil {
-				return err
-			}
-
-		}
-	}
-	//Audit BookingStatus
-	service.bookingService.AuditBookingStatusForBooking(booking)
-
-	return nil
 }

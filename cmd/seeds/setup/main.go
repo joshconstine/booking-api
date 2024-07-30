@@ -94,6 +94,12 @@ func SeedBookingStatus(db *gorm.DB) {
 			},
 			Name: constants.BOOKING_STATUS_CANCELLED_NAME,
 		},
+		{
+			Model: gorm.Model{
+				ID: uint(constants.BOOKING_STATUS_AWAITING_DEPOSIT_ID),
+			},
+			Name: constants.BOOKING_STATUS_AWAITING_DEPOSIT_NAME,
+		},
 	}
 
 	bookingStatusRepository := repositories.NewBookingStatusRepositoryImplementation(db)

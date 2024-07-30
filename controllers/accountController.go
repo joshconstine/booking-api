@@ -26,11 +26,12 @@ import (
 type AccountController struct {
 	BookingCostItemService services.BookingCostItemService
 	BookingPaymentService  services.BookingPaymentService
+	BookingService         services.BookingService
 	AccountRepository      repositories.AccountRepository
 }
 
-func NewAccountController(bookingCostItemService services.BookingCostItemService, bookingPaymentService services.BookingPaymentService, accountRepository repositories.AccountRepository) *AccountController {
-	return &AccountController{BookingCostItemService: bookingCostItemService, BookingPaymentService: bookingPaymentService, AccountRepository: accountRepository}
+func NewAccountController(bookingCostItemService services.BookingCostItemService, bookingPaymentService services.BookingPaymentService, bookingService services.BookingService, accountRepository repositories.AccountRepository) *AccountController {
+	return &AccountController{BookingCostItemService: bookingCostItemService, BookingPaymentService: bookingPaymentService, BookingService: bookingService, AccountRepository: accountRepository}
 }
 
 func (controller *AccountController) FindByID(ctx *gin.Context) {
@@ -168,7 +169,13 @@ func (ac *AccountController) recordPayment(s *stripe.CheckoutSession) error {
 	if err != nil {
 		return err
 	}
+	bookingInfo, err := ac.BookingService.FindById(payment.BookingID)
 
+	if err != nil {
+		return err
+
+	}
+	ac.BookingService.AuditBookingStatusForBooking(bookingInfo)
 	return nil
 }
 func (ac *AccountController) RetrieveCheckoutSession(w http.ResponseWriter, r *http.Request) error {
