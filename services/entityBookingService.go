@@ -14,4 +14,5 @@ type EntityBookingService interface {
 	AttemptToCreate(entityBooking request.CreateEntityBookingRequest) (response.EntityBookingResponse, error)
 	AttemptToUpdate(entityBooking request.UpdateEntityBookingRequest) (response.EntityBookingResponse, error)
 	FindAllForEntityForRange(entityType string, entityID uint, startTime *time.Time, endTime *time.Time) []response.EntityBookingResponse
+	AuditEntityBookingStatusForBooking(bookingInformation *response.BookingInformationResponse, entityBooking *response.EntityBookingResponse) error
 }

@@ -17,16 +17,18 @@ type BookingServiceImplementation struct {
 	BookingDetailsRepository repositories.BookingDetailsRepository
 	BookingPaymentRepository repositories.BookingPaymentRepository
 	UserService              UserService
+	EntityBookingService     EntityBookingService
 	Validate                 *validator.Validate
 }
 
-func NewBookingServiceImplementation(bookingRepository repositories.BookingRepository, bookingDetailsRepository repositories.BookingDetailsRepository, bookingPaymentRepository repositories.BookingPaymentRepository, validate *validator.Validate, userService UserService) BookingService {
+func NewBookingServiceImplementation(bookingRepository repositories.BookingRepository, bookingDetailsRepository repositories.BookingDetailsRepository, bookingPaymentRepository repositories.BookingPaymentRepository, validate *validator.Validate, userService UserService, entityBookingService EntityBookingService) BookingService {
 	return &BookingServiceImplementation{
 		BookingRepository:        bookingRepository,
 		BookingDetailsRepository: bookingDetailsRepository,
 		BookingPaymentRepository: bookingPaymentRepository,
 		Validate:                 validate,
 		UserService:              userService,
+		EntityBookingService:     entityBookingService,
 	}
 }
 
@@ -144,6 +146,12 @@ func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInform
 
 	//audit document signed status
 	t.AuditDocumentSignedStatusForBooking(&bookingInformation)
+
+	//audit each entity booking status
+	for _, entityBooking := range bookingInformation.Entities {
+		t.EntityBookingService.AuditEntityBookingStatusForBooking(&bookingInformation, &entityBooking)
+
+	}
 
 	if bookingInformation.Details.PaymentComplete == true && bookingInformation.Details.DocumentsSigned == true {
 		//Check if the booking is in Progress

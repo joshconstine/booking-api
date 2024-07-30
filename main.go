@@ -163,7 +163,9 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	bookingPaymentRepository := repositories.NewBookingPaymentRepositoryImplementation(bookingCostItemRepository, database.Instance)
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, entityRepository, membershipRepository, validate)
-	bookingService := services.NewBookingServiceImplementation(bookingRepository, bookingDetailsRepository, bookingPaymentRepository, validate, userService)
+	entityBookingPermissionService := services.NewEntityBookingPermissionServiceImplementation(entityBookingPermissionRepository)
+	entityBookingService := services.NewEntityBookingServiceImplementation(entityBookingRepository)
+	bookingService := services.NewBookingServiceImplementation(bookingRepository, bookingDetailsRepository, bookingPaymentRepository, validate, userService, entityBookingService)
 	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository, bookingPaymentRepository)
 	boatService := services.NewBoatServiceImplementation(boatRepository, validate)
 	// bookingStatusService := services.NewBookingStatusService(bookingStatusRepository, validate)
@@ -183,7 +185,6 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// roomTypeService := services.NewRoomTypeServiceImplementation(roomTypeRepository)
 	// rentalRoomService := services.NewRentalRoomServiceImplementation(rentalRoomRepository, validate)
 	// entityBookingDurationRuleService := services.NewEntityBookingDurationRuleServiceImplementation(entityBookingDurationRuleRepository)
-	entityBookingService := services.NewEntityBookingServiceImplementation(entityBookingRepository)
 	// userRoleService := services.NewUserRoleServiceImplementation(userRoleRepository)
 	// entityBookingDocumentService := services.NewEntityBookingDocumentServiceImplementation(entityBookingDocumentRepository)
 	// entityBookingRuleService := services.NewEntityBookingRuleServiceImplementation(entityBookingRuleRepository)
@@ -191,7 +192,6 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	// entityBookingCostAdjustmentService := services.NewEntityBookingCostAdjustmentServiceImplementation(entityBookingCostAdjustmentRepository)
 	chatService := services.NewChatServiceImplementation(chatRepository)
 	accountService := services.NewAccountServiceImplementation(accountRepository)
-	entityBookingPermissionService := services.NewEntityBookingPermissionServiceImplementation(entityBookingPermissionRepository)
 	invoiceService := services.NewInvoiceServiceImplementation(bookingRepository)
 
 	//Init controller

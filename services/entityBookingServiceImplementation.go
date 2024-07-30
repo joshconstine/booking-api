@@ -39,3 +39,13 @@ func (e *EntityBookingServiceImplementation) AttemptToUpdate(entityBooking reque
 func (e *EntityBookingServiceImplementation) FindAllForEntityForRange(entityType string, entityID uint, startTime *time.Time, endTime *time.Time) []response.EntityBookingResponse {
 	return e.entityBookingRepository.FindAllForEntityForRange(entityType, entityID, startTime, endTime)
 }
+func (e *EntityBookingServiceImplementation) AuditEntityBookingStatusForBooking(bookingInformation *response.BookingInformationResponse, entityBooking *response.EntityBookingResponse) error {
+
+	//check if entity is available on this day.
+	//return error if not available.
+	//check if user has permission to book this entity.
+	//return error if not allowed.
+	//check if entity can be booked by this user on this day.
+
+	return nil
+}
