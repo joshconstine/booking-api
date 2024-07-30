@@ -210,13 +210,16 @@ func (ac *AccountController) RetrieveCheckoutSession(w http.ResponseWriter, r *h
 		return err
 	}
 
-	writeJSON(w, struct {
-		Status        string `json:"status"`
-		CustomerEmail string `json:"customer_email"`
-	}{
-		Status:        string(s.Status),
-		CustomerEmail: string(s.CustomerDetails.Email),
-	})
+	//writeJSON(w, struct {
+	//	Status        string `json:"status"`
+	//	CustomerEmail string `json:"customer_email"`
+	//}{
+	//	Status:        string(s.Status),
+	//	CustomerEmail: string(s.CustomerDetails.Email),
+	//})
+	//reload the booking route
+	http.Redirect(w, r, "/bookings/"+s.Metadata["booking_id"], http.StatusSeeOther)
+
 	return nil
 }
 
