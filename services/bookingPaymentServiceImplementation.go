@@ -1,9 +1,11 @@
 package services
 
 import (
+	"booking-api/constants"
 	requests "booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/repositories"
+	"errors"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -30,6 +32,12 @@ func (t BookingPaymentServiceImplementation) Create(bookingPayment requests.Crea
 		return response.BookingPaymentResponse{}, err
 	}
 
+	// Check if payment is completed
+	if t.CheckIfPaymentIsCompleted(bookingPayment.BookingID) {
+		return response.BookingPaymentResponse{}, errors.New(constants.PAYMENT_IS_ALREADY_COMPLETED_ERROR)
+
+	}
+
 	return t.bookingPaymentRepository.Create(bookingPayment)
 
 }
@@ -53,6 +61,7 @@ func (t BookingPaymentServiceImplementation) FindByBookingId(id string) []respon
 }
 
 func (t BookingPaymentServiceImplementation) FindTotalPaidByBookingId(id string) float64 {
+
 	result := t.bookingPaymentRepository.FindTotalPaidByBookingId(id)
 
 	return result

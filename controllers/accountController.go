@@ -157,7 +157,7 @@ func (ac *AccountController) CreateCheckoutSession(w http.ResponseWriter, r *htt
 	})
 	return nil
 }
-func (ac *AccountController) recordPayment(s *stripe.CheckoutSession) {
+func (ac *AccountController) recordPayment(s *stripe.CheckoutSession) error {
 	var payment request.CreateBookingPaymentRequest
 	payment.BookingID = s.Metadata["booking_id"]
 	payment.PaymentAmount = float64(s.AmountTotal)
@@ -166,9 +166,10 @@ func (ac *AccountController) recordPayment(s *stripe.CheckoutSession) {
 
 	_, err := ac.BookingPaymentService.Create(payment)
 	if err != nil {
-		log.Printf("An error occurred when recording the payment: %v", err)
-
+		return err
 	}
+
+	return nil
 }
 func (ac *AccountController) RetrieveCheckoutSession(w http.ResponseWriter, r *http.Request) error {
 	//s, _ := session.Get(r.URL.Query().Get("session_id"), nil)
@@ -177,7 +178,19 @@ func (ac *AccountController) RetrieveCheckoutSession(w http.ResponseWriter, r *h
 	s, err := session.Get(sessionId, nil)
 
 	if s.Status == stripe.CheckoutSessionStatusComplete {
-		ac.recordPayment(s)
+		err = ac.recordPayment(s)
+		if err != nil {
+			handleError(w, err)
+
+			writeJSON(w, struct {
+				Status        string `json:"status"`
+				CustomerEmail string `json:"customer_email"`
+			}{
+				Status:        err.Error(),
+				CustomerEmail: string(s.CustomerDetails.Email),
+			})
+
+		}
 
 	}
 
