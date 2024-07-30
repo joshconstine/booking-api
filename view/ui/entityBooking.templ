@@ -14,7 +14,7 @@ func GetEntityPath(ebr response.EntityBookingResponse) string {
 
 
 templ EntityBooking(ebr response.EntityBookingResponse) {
-    <div class="flex flex-col gap-4 items-center">
+    <div class="flex flex-col gap-4 items-center bg-base-200 rounded-lg shadow-lg p-4">
     <div class="flex gap-4 items-center">
 
             <a href={templ.SafeURL(GetEntityPath(ebr))} class="flex flex-col gap-0">
@@ -22,16 +22,21 @@ templ EntityBooking(ebr response.EntityBookingResponse) {
                 </a>
                     @StatusBadge(ebr.Status)
         <span class="loading loading-dots htmx-indicator" id="loading"></span>
-            <div class="w-16 rounded-full ">
+            <div class="w-32 rounded-full ">
                 <img src={ebr.Thumbnail} alt="photo" />
             </div>
 
     </div>
-        <div class="mb-4 p-4 shadow-lg rounded-lg text-sm">
+        <div class="mb-4 p-4   text-sm">
            <span class="">{ebr.Timeblock.StartTime.Format(constants.UI_DATE_FORMAT)}</span>
               <span class=""> - </span>
                 <span class="">{ebr.Timeblock.EndTime.Format(constants.UI_DATE_FORMAT)}</span>
                 </div>
+  <ul>
+                                    for _, item := range ebr.CostItems {
+                                        @BookingCostItem(item)
+                                    }
+                                </ul>
 
 
 

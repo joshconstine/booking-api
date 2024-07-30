@@ -46,11 +46,9 @@ templ BookingInformationTemplate(booking response.BookingInformationResponse) {
                         </div>
                         }
                         <div class="flex flex-col gap-8">
-                            <ul>
                                 for _, entityBooking := range booking.Entities {
                                     @ui.EntityBooking(entityBooking)
                                 }
-                            </ul>
                         </div>
                     </div>
                 </div>
