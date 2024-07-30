@@ -187,3 +187,11 @@ func (controller *BookingController) HandleCreateInvoiceForBooking(w http.Respon
 	return nil
 
 }
+
+func (controller *BookingController) HandleAuditBookingStautsTrigger(w http.ResponseWriter, r *http.Request) error {
+	err := controller.bookingService.AuditAllBookingStatus()
+	if err != nil {
+		return err
+	}
+	return nil
+}

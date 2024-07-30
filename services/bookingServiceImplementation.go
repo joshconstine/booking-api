@@ -7,6 +7,7 @@ import (
 	"booking-api/pkg/email"
 	"booking-api/repositories"
 	"fmt"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -148,12 +149,26 @@ func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInform
 
 		//update booking status to confirmed
 
-	} else if bookingInformation.Details.PaymentComplete == true {
+	} else if bookingInformation.Details.PaymentComplete == true && bookingInformation.Details.DocumentsSigned == true && bookingIsInPast(bookingInformation) {
+		if bookingInformation.Status.ID != constants.BOOKING_STATUS_COMPLETED_ID {
+			request.BookingStatusID = constants.BOOKING_STATUS_COMPLETED_ID
+			t.UpdateBookingStatusForBooking(request)
+		}
 
-	} else {
 	}
 }
+func bookingIsInPast(bookingInformation response.BookingInformationResponse) bool {
+	var today = time.Now()
+	isInPast := true
 
+	for _, entity := range bookingInformation.Entities {
+		if entity.Timeblock.EndTime.After(today) {
+			isInPast = false
+		}
+
+	}
+	return isInPast
+}
 func (t BookingServiceImplementation) AuditDocumentSignedStatusForBooking(bookingInformation *response.BookingInformationResponse) {
 	//check if booking is complete
 	var request request.UpdateBookingDocumentsSignedRequest
@@ -174,4 +189,15 @@ func (t BookingServiceImplementation) AuditDocumentSignedStatusForBooking(bookin
 		t.BookingRepository.UpdateBookingDocumentsSigned(request)
 	}
 
+}
+
+func (t BookingServiceImplementation) AuditAllBookingStatus() error {
+	bookings := t.FindAll()
+	var bookingInformation response.BookingInformationResponse
+	for _, booking := range bookings {
+		bookingInformation, _ = t.FindById(booking.ID)
+		t.AuditBookingStatusForBooking(bookingInformation)
+
+	}
+	return nil
 }

@@ -36,6 +36,11 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		home.Index().Render(r.Context(), w)
 	})
 
+	router.Get("/audit-statuses", func(w http.ResponseWriter, r *http.Request) {
+		bookingController.HandleAuditBookingStautsTrigger(w, r)
+
+	})
+
 	router.Get("/learn", func(w http.ResponseWriter, r *http.Request) {
 		learn.Index().Render(r.Context(), w)
 	})
