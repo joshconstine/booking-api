@@ -40,9 +40,11 @@ templ BookingInformationTemplate(booking response.BookingInformationResponse) {
                                 </ul>
                             </div>
                         </div>
+                        if !booking.Details.PaymentComplete {
                         <div class="flex flex-col bg-base-100 rounded-lg gap-8 ">
                             @ui.BookingPayment(booking.Details)
                         </div>
+                        }
                         <div class="flex flex-col gap-8">
                             <ul>
                                 for _, entityBooking := range booking.Entities {
