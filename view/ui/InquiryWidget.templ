@@ -1,0 +1,97 @@
+
+
+package ui
+
+import (
+    "booking-api/data/response"
+    "strconv"
+)
+
+
+func GetURLPath(id uint) string {
+	path := "/permission/"
+	path +=  strconv.Itoa(int(id))
+	return path
+	
+}
+func GetApproveURLPath(id uint) string {
+  path := "/permission/"
+  path +=  strconv.Itoa(int(id))
+  path += "/approve"
+  return path
+  
+}
+templ InquiryWidget(inquiryInfo response.AccountInquiriesSnapshot) {
+
+   <div id="arrival_widget" class="card  bg-white  p-4 text-xs font-normal min-w-72">
+        
+        <div class="card-header flex gap-4 items-center">
+          <span class=" card-title">Inquiries</span>
+          @Notification(inquiryInfo.Notifications)
+        </div>
+     <div class="divider m-0 py-0"></div>
+        <div class="">
+          for _, inquiry := range inquiryInfo.Inquiries {
+            @InquirySnapshot(inquiry)
+          }
+        </div>
+
+
+				 
+    </div>
+}
+
+templ InquirySnapshot(Info response.InquirySnapshotResponse) {
+  <div class="flex flex-col gap-2">
+    @ChatSnapshot(Info.Chat)
+    
+    for _, permission := range Info.PermissionRequests {
+      @PermissionRequestSnapshot(permission)
+    }
+     <div class="divider m-0 py-0"></div>
+  </div>
+}
+
+
+templ PermissionRequestSnapshot(Info response.EntityBookingPermissionResponse) {
+  <div class=" flex w-full justify-between items-center">
+    <span id={"loading_" + strconv.Itoa(int(Info.ID))} class="loading loading-dots loading-md htmx-indicator"></span>
+    <span class="whitespace-nowrap text-lg">{Info.Entity.Name}</span>
+    <div id={"permission_actions_" + strconv.Itoa(int(Info.ID))} class="flex gap-2">
+
+    <div>
+
+      <button class="btn btn-primary btn-xs btn-outline py-1 px-1 w-20"
+        hx-put={templ.JoinStringErrs(string(templ.SafeURL(GetApproveURLPath(Info.ID))))}
+        hx-target={"#permission_actions_" + strconv.Itoa(int(Info.ID))}
+        hx-swap="outerHTML"
+        hx-indicator={"#loading_" + strconv.Itoa(int(Info.ID))}
+        >
+        <div class="flex gap-2 items-center">
+          <i class="fa-solid fa-check"></i>
+          <span class="text-xs">Approve</span>
+        </div>
+      </button>
+    </div>
+    <div>
+
+      <button class="btn btn-warning btn-xs btn-outline py-1 px-1 w-20">
+        <div class="flex gap-2 items-center">
+          <i class="fa-solid fa-wrench"></i>
+          <span class="text-xs">Adjust</span>
+        </div>
+      </button>
+    </div>
+    <div>
+      <button class="btn btn-secondary btn-xs btn-outline py-1 px-1 w-20"
+        hx-put={templ.JoinStringErrs(string(templ.SafeURL(GetURLPath(Info.ID))))}
+      >
+        <div class="flex gap-2 items-center">
+          <i class="fa-solid fa-x"></i>
+          <span class="text-xs"  >Decline</span>
+        </div>
+      </button>
+    </div>
+    </div>
+  </div>
+}

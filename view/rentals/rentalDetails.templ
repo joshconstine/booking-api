@@ -1,0 +1,18 @@
+package home
+
+
+import (
+    "strconv"
+
+)
+
+templ RentalDetails(rental RentalFormParams) {
+   <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Overview</h2>
+                <p>{rental.Description}</p>
+                <p><strong>Bedrooms:</strong> {strconv.Itoa((int(rental.Bedrooms)))}</p>
+                <p><strong>Bathrooms:</strong> {strconv.Itoa((int(rental.Bathrooms)))}</p>
+                <p><strong>Status:</strong>
+				</p>
+            </div>
+            }

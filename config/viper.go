@@ -9,6 +9,8 @@ import (
 )
 
 type EnvVars struct {
+	ENV                       string `mapstructure:"ENV"`
+	URL                       string `mapstructure:"URL"`
 	DSN                       string `mapstructure:"DSN"`
 	PORT                      string `mapstructure:"PORT"`
 	OBJECT_STORAGE_URL        string `mapstructure:"OBJECT_STORAGE_URL"`
@@ -16,8 +18,12 @@ type EnvVars struct {
 	OBJECT_STORAGE_SECRET     string `mapstructure:"OBJECT_STORAGE_SECRET"`
 	OBJECT_STORAGE_BUCKET     string `mapstructure:"OBJECT_STORAGE_BUCKET"`
 	SEND_GRID_KEY             string `mapstructure:"SEND_GRID_KEY"`
-	PAYPAL_CLIENT_ID          string `mapstructure:"PAYPAL_CLIENT_ID"`
-	PAYPAL_CLIENT_SECRET      string `mapstructure:"PAYPAL_CLIENT_SECRET"`
+	// PAYPAL_CLIENT_ID          string `mapstructure:"PAYPAL_CLIENT_ID"`
+	// PAYPAL_CLIENT_SECRET      string `mapstructure:"PAYPAL_CLIENT_SECRET"`
+	SUPABASE_URL    string `mapstructure:"SUPABASE_URL"`
+	SUPABASE_SECRET string `mapstructure:"SUPABASE_SECRET"`
+	SESSION_SECRET  string `mapstructure: "SESSION_SECRET"`
+	STRIPE_KEY      string `mapstructure: "STRIPE_KEY"`
 }
 
 func LoadConfig(configPath string) (config EnvVars, err error) {
@@ -31,6 +37,8 @@ func LoadConfig(configPath string) (config EnvVars, err error) {
 	err = viper.ReadInConfig()
 	if err != nil {
 		// Fallback to environment variables if config file is not found
+		config.ENV = os.Getenv("ENV")
+		config.URL = os.Getenv("URL")
 		config.DSN = os.Getenv("DSN")
 		config.PORT = os.Getenv("PORT")
 		config.OBJECT_STORAGE_URL = os.Getenv("OBJECT_STORAGE_URL")
@@ -38,10 +46,15 @@ func LoadConfig(configPath string) (config EnvVars, err error) {
 		config.OBJECT_STORAGE_ACCESS_KEY = os.Getenv("OBJECT_STORAGE_ACCESS_KEY")
 		config.OBJECT_STORAGE_SECRET = os.Getenv("OBJECT_STORAGE_SECRET")
 		config.SEND_GRID_KEY = os.Getenv("SEND_GRID_KEY")
-		config.PAYPAL_CLIENT_ID = os.Getenv("PAYPAL_CLIENT_ID")
-		config.PAYPAL_CLIENT_SECRET = os.Getenv("PAYPAL_CLIENT_SECRET")
+		// // config.PAYPAL_CLIENT_ID = os.Getenv("PAYPAL_CLIENT_ID")
+		// config.PAYPAL_CLIENT_SECRET = os.Getenv("PAYPAL_CLIENT_SECRET")
+		config.SUPABASE_URL = os.Getenv("SUPABASE_URL")
+		config.SUPABASE_SECRET = os.Getenv("SUPABASE_SECRET")
+		config.SESSION_SECRET = os.Getenv("SESSION_SECRET")
+		config.STRIPE_KEY = os.Getenv("STRIPE_KEY")
 
-		if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" || config.SEND_GRID_KEY == "" || config.PAYPAL_CLIENT_ID == "" || config.PAYPAL_CLIENT_SECRET == "" {
+		if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" || config.SEND_GRID_KEY == "" || config.SUPABASE_URL == "" || config.SUPABASE_SECRET == "" || config.SESSION_SECRET == "" || config.ENV == "" || config.STRIPE_KEY == "" {
+			// if config.DSN == "" || config.PORT == "" || config.OBJECT_STORAGE_URL == "" || config.OBJECT_STORAGE_ACCESS_KEY == "" || config.OBJECT_STORAGE_SECRET == "" || config.OBJECT_STORAGE_BUCKET == "" || config.SEND_GRID_KEY == "" || config.PAYPAL_CLIENT_ID == "" || config.PAYPAL_CLIENT_SECRET == "" || config.SUPABASE_URL == "" || config.SUPABASE_SECRET == "" || config.SESSION_SECRET == "" || config.ENV == "" || config.STRIPE_KEY == "" {
 			return config, fmt.Errorf("error loading config, %v", err)
 		}
 		return config, nil
@@ -50,6 +63,17 @@ func LoadConfig(configPath string) (config EnvVars, err error) {
 	err = viper.Unmarshal(&config)
 
 	// validate config here
+
+	if config.ENV == "" {
+		err = errors.New("ENV is required")
+		return
+	}
+
+	if config.URL == "" {
+		err = errors.New("URL is required")
+		return
+
+	}
 
 	if config.DSN == "" {
 		err = errors.New("DSN is required")
@@ -82,12 +106,28 @@ func LoadConfig(configPath string) (config EnvVars, err error) {
 		err = errors.New("SEND_GRID_KEY is required")
 	}
 
-	if config.PAYPAL_CLIENT_ID == "" {
-		err = errors.New("PAYPAL_CLIENT_ID is required")
+	// if config.PAYPAL_CLIENT_ID == "" {
+	// 	err = errors.New("PAYPAL_CLIENT_ID is required")
+	// }
+
+	// if config.PAYPAL_CLIENT_SECRET == "" {
+	// 	err = errors.New("PAYPAL_CLIENT_SECRET is required")
+	// }
+
+	if config.SUPABASE_URL == "" {
+		err = errors.New("SUPABASE_URL is required")
 	}
 
-	if config.PAYPAL_CLIENT_SECRET == "" {
-		err = errors.New("PAYPAL_CLIENT_SECRET is required")
+	if config.SUPABASE_SECRET == "" {
+		err = errors.New("SUPABASE_SECRET is required")
+	}
+
+	if config.SESSION_SECRET == "" {
+		err = errors.New("SESSION_SECRET is required")
+	}
+
+	if config.STRIPE_KEY == "" {
+		err = errors.New("STRIPE_KEY is required")
 	}
 
 	return

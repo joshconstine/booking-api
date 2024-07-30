@@ -1,0 +1,80 @@
+
+
+package ui
+
+import (
+    "booking-api/data/response"
+    
+)
+
+templ BookingArrivalWidget(Bookings []response.BookingSnapshotResponse) {
+
+   <div id="arrival_widget" class="card  bg-white   p-4 text-xs font-normal">
+        
+        <div class="card-header">
+           
+        </div>
+<div class="">
+  <table class="table table-xs">
+    <!-- head -->
+   <div  class="flex gap-1 text-sm items-center card-header">
+      <span class="card-title">Today</span>
+      <div class="divider divider-horizontal"></div>
+      <span class="card-title">Arriving(5)</span>
+      <div class="divider divider-horizontal"></div>
+        <div class="dropdown dropdown-hover">
+            <div tabindex="0" role="button" class="btn btn-ghost">
+                <i class="fa-solid fa-sliders"></i>
+                <span class="card-title">
+                  Filter
+                </span>
+            </div>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                <li><a>Arriving</a></li>
+                <li><a>Checking out</a></li>
+                <li><a>Checked in</a></li>
+            </ul>
+        </div>
+      </div>
+     <div class="divider m-0 py-0"></div>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Guests</th>
+        <th>Rental</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- row 1 -->
+                for _, booking := range Bookings {
+      <tr class="hover">
+        <td>
+				  <a href={templ.SafeURL(GetPath(booking.ID))}>
+           {booking.Name}
+        
+        </a>
+        </td>
+      
+        <td>
+            5
+        </td>
+        <td>
+            for _, entity := range booking.BookedEntities {
+                <span>{entity.Name}</span>
+
+            }
+        </td>
+      
+
+      </tr>
+	}
+   
+    </tbody>
+  </table>
+</div>
+
+
+				 
+    </div>
+}
+

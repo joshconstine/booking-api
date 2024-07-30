@@ -1,0 +1,107 @@
+
+package ui
+
+templ PaymentWidget() {
+   <div id="payment_widget" class="card bg-gray-200 border-2 border-zinc-500 p-4 text-xs font-normal">
+    <div class="card-header flex  items-center">
+      <div class="flex gap-1 text-sm items-center w-1/2">
+          <span class="card-title">April Payments</span>
+          <div class="divider divider-horizontal mx-0"></div>
+          <span class="card-title">Paid(12)</span>
+          <div class="divider divider-horizontal mx-0"></div>
+          <div class="dropdown dropdown-hover">
+              <div tabindex="0" role="button" class="btn btn-ghost">
+                  <i class="fa-solid fa-sliders"></i>
+                  <span class="card-title">Filter</span>
+              </div>
+              <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                  <li><a><i class="fa-solid fa-money-check-dollar"></i>Paid</a></li>
+                  <li><a><i class="fa-solid fa-money-bill-transfer"></i>Processing</a></li>
+                  <li><a><i class="fa-solid fa-clock"></i>Outstanding</a></li>
+                  <li><a><i class="fa-solid fa-circle-exclamation"></i>Overdue</a></li>
+              </ul>
+          </div>
+      </div>
+
+      <div class="divider divider-horizontal mx-0"></div>
+
+        <div class="card-header flex justify-between items-center w-1/2">
+            <span class="card-title">Gross Payments</span>
+            <button class="btn btn-sm border-2 border-zinc-500"><i class="fa-solid fa-plus"></i>Add goal</button>
+        </div>
+    </div>
+    <div class="divider m-0 py-0"></div>
+
+    <div class="flex">
+        <table class="table table-xs min-w-1/2">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Payments</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- row 1 -->
+                <tr class="hover">
+                    <td>4/22</td>
+                    <td>Joshua Constine</td>
+                    <td>1/1 Payments</td>
+                    <td>$4,567.99</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="divider divider-horizontal mx-0"></div>
+
+        <div class="flex flex-col gap-2 items-center" >
+           <div class="stats stats-vertical lg:stats-horizontal shadow">
+                <div class="stat">
+                    <div class="w-full flex justify-end">
+                            <div class="dropdown dropdown-hover">
+                                <div tabindex="1" role="button" class="">
+                                    <i class="fa-regular fa-circle-question"></i>
+                                </div>
+                                <ul tabindex="1" class="dropdown-content z-[2] menu p-2 shadow bg-base-100 rounded-box w-52">
+                                    <span>
+                                        Includes all payments made during April
+                                    </span>
+                                    <span>
+                                        -Including tips, late fees, taxes, and any discounts that were applied
+                                    </span>
+                                    <span>
+                                        -Does not include deduction of business expenses
+                                    </span>
+                                </ul>
+                            </div>
+                    </div>
+                    <div class="stat-title">April</div>
+                    <div class="stat-value text-[16px]">$12,342</div>
+                    <div class="stat-asc text-xs">22% over last year</div>
+                </div>
+                
+                <div class="stat ">
+                    <div class="stat-title">Outstanding</div>
+                    <div class="stat-value text-[16px]">$4,200</div>
+                    // <div class="stat-desc">↗</div>
+                </div>
+                
+                <div class="stat ">
+                    <div class="stat-title">2024 Projected</div>
+                    <div class="stat-value text-[16px]">123,200</div>
+                    // <div class="stat-desc">↘︎ 90 (14%)</div>
+                </div>
+            </div>
+            <div class="flex gap-4 items-center text-md">
+                <span> You're 5433 away from reaching your 2024 gross revenue goal!</span>
+
+                <div>
+                    <div class="radial-progress text-success border-success" style="--value:60;" role="progressbar">60%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+} 
+

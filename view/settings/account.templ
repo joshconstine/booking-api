@@ -1,0 +1,379 @@
+package settings
+
+import (
+	
+	"booking-api/models"
+
+    "booking-api/view/layout"
+	"booking-api/view"
+    "booking-api/view/ui"
+	"booking-api/data/response"
+	"booking-api/constants"
+)
+
+templ Index(user models.AuthenticatedUser, selected string, memberships []response.MembershipResponse ) {
+
+	@layout.App(true) {
+		@ProfileContainer(user, selected, memberships)
+	}
+}
+
+func CheckIfUserIsAdmin(memberships []response.MembershipResponse) bool {
+    for _, membership := range memberships {
+        if membership.Role.ID == constants.USER_ROLE_ACCOUNT_OWNER_ID {
+            return true
+        }
+    }
+    return false
+}
+templ ProfileContainer(user models.AuthenticatedUser, selected string, memberships []response.MembershipResponse) {
+
+<div class=" w-full mx-auto md:mt-2 mt-1 flex flex-col gap-4" id="profile-container">
+			    <div class="join join-vertical md:join-horizontal">
+					if selected == "profile" {
+						<button hx-get="/settings/account/profile" hx-target="#profile-container" class="join-item btn  btn-xs md:btn-md bg-branded-400">Profile</button>
+					} else {
+						<button hx-get="/settings/account/profile" hx-target="#profile-container" class="join-item btn  btn-xs md:btn-md btn-ghost">Profile</button>
+					}
+					if selected == "subscriptions" {
+						<button class="join-item btn btn-ghost btn-xs md:btn-md bg-branded-400" hx-get="/settings/account/subscriptions" hx-target="#profile-container">Subscription</button>
+					} else {
+						<button class="join-item btn btn-ghost btn-xs md:btn-md" hx-get="/settings/account/subscriptions" hx-target="#profile-container">Subscription</button>
+					}
+					if selected == "team" {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost bg-branded-400 btn-xs md:btn-md" hx-get="/settings/account/team">Team</button>
+					} else {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost btn-xs md:btn-md" hx-get="/settings/account/team">Team</button>
+					}
+					if selected == "finances" {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost bg-branded-400 btn-xs md:btn-md" hx-get="/settings/account/finances">Finances</button>
+					} else {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost btn-xs md:btn-md" hx-get="/settings/account/finances">Finances</button>
+					}
+					if selected == "notifications" {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost bg-branded-400 btn-xs md:btn-md" hx-get="/settings/account/notifications">Notifications</button>
+					} else {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost btn-xs md:btn-md" hx-get="/settings/account/notifications">Notifications</button>
+					}
+					if selected == "cleaners" {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost bg-branded-400 btn-xs md:btn-md" hx-get="/settings/account/cleaners">Cleaners</button>
+					} else {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost btn-xs md:btn-md" hx-get="/settings/account/cleaners">Cleaners</button>
+					}
+					if selected == "security" {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost bg-branded-400 btn-xs md:btn-md" hx-get="/settings/account/security">Log in/Security</button>
+					} else {
+						<button hx-target="#profile-container" class="join-item btn btn-ghost btn-xs md:btn-md" hx-get="/settings/account/security">Log in/Security</button>
+					}
+					
+					// <button hx-get="/settings/account/profile" hx-target="#profile-container" class="{{if eq selected "profile"}}bg-branded-800{{end}}">Profile</button>
+					// <button class="join-item btn btn-ghost {{if eq selected "subscriptions"}}bg-branded-800{{end}}" hx-get="/settings/account/subscriptions" hx-target="#profile-container">Subscription</button>
+					// <button hx-target="#profile-container" class="join-item btn btn-ghost {{if eq selected "team"}}bg-branded-800{{end}}" hx-get="/settings/account/team">Team</button>
+					// <button hx-target="#profile-container" class="join-item btn btn-ghost {{if eq selected "finances"}}bg-branded-800{{end}}" hx-get="/settings/account/finances">Finances</button>
+					// <button hx-target="#profile-container" class="join-item btn btn-ghost {{if eq selected "notifications"}}bg-branded-800{{end}}" hx-get="/settings/account/notifications">Notifications</button>
+					// <button hx-target="#profile-container" class="join-item btn btn-ghost {{if eq selected "cleaners"}}bg-branded-800{{end}}" hx-get="/settings/account/cleaners">Cleaners</button>
+					// <button hx-target="#profile-container" class="join-item btn btn-ghost {{if eq selected "security"}}bg-branded-800{{end}}" hx-get="/settings/account/security">Log in/Security</button>
+				</div>
+				<div>
+				if selected == "profile" {
+					@Profile(view.AuthenticatedUser(ctx))
+				}
+				if selected == "subscriptions" {
+					@Subscription(view.AuthenticatedUser(ctx))
+				}
+				if selected == "team" {
+					@Team(view.AuthenticatedUser(ctx))
+				}
+				if selected == "finances" {
+					@Finances(view.AuthenticatedUser(ctx), memberships)
+				}
+				if selected == "notifications" {
+					@Notifications(view.AuthenticatedUser(ctx))
+				}
+				if selected == "cleaners" {
+					@Cleaners(view.AuthenticatedUser(ctx))
+				}
+				if selected == "security" {
+					@Security(view.AuthenticatedUser(ctx))
+				}
+
+				</div>
+		</div>
+}
+
+templ Finances(user models.AuthenticatedUser, memberships []response.MembershipResponse) {
+
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+				<h2>Finances</h2>
+				//request backend for this information
+				if CheckIfUserIsAdmin(memberships) {
+                    <div hx-get="/account/finance"
+                        hx-trigger="load"
+                        hx-target="#finances-container"
+                        hx-swap="outerHTML"
+                        class="bg-base-100 p-4 rounded-lg shadow-md mx-4">
+                        id="finances-container"
+                    >
+
+                    </div>
+                    @StripeOnboarding()
+                }
+                </div>
+	</div>
+}
+templ StripeAccountInfo(accountID string) {
+<div class="flex gap-4">
+    <div id="container">
+    </div>
+    <div id="payouts-container">
+    </div>
+        <p id="stripe-account-id" hidden="true">{accountID}</p>
+        <p id="error" class="error hidden">Something went wrong!</p>
+             <div id="dev-callout" class="dev-callout hidden">
+                <p id="connected-account-id" class="hidden"></p>
+                <p id="creating-connected-account" class="hidden">Creating a connected account...</p>
+             </div>
+             <div class="info-callout">
+             </div>
+    <script src="/public/payments.js" type="module"></script>
+</div>
+}
+templ StripeOnboarding() {
+<div>
+    <div>
+       <div class="container">
+          <div class="banner">
+          </div>
+          <div class="content">
+             <h2 id="title"></h2>
+             <p id="subtitle"></p>
+             <div>
+                <button id="sign-up-button" class="btn btn-ghost">
+                Connect With Stripe
+                </button>
+             </div>
+             <div id="embedded-onboarding-container">
+             </div>
+             <p id="error" class="error hidden">Something went wrong!</p>
+             <div id="dev-callout" class="dev-callout hidden">
+                <p id="connected-account-id" class="hidden"></p>
+                <p id="creating-connected-account" class="hidden">Creating a connected account...</p>
+             </div>
+             <div class="info-callout">
+             </div>
+          </div>
+          <div id="error" hidden>Something went wrong!</div>
+       </div>
+    </div>
+    <script src="/public/stripe.js" type="module"></script>
+</div>
+}
+
+templ Team(user models.AuthenticatedUser) {
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+			<div>
+				<h2>Team</h2>
+				<p>Manage your team</p>
+			</div>
+		</div>
+	</div>
+}
+
+templ Notifications(user models.AuthenticatedUser) {
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+			<div>
+				<h2>Notifications</h2>
+				<p>Manage your notifications</p>
+			</div>
+		</div>
+	</div>
+}
+
+templ Cleaners(user models.AuthenticatedUser) {
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+			<div>
+				<h2>Cleaners</h2>
+				<p>Manage your cleaners</p>
+			</div>
+		</div>
+	</div>
+}
+
+templ Security(user models.AuthenticatedUser) {
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+			<div>
+				<h2>Security</h2>
+				<p>Manage your security</p>
+			</div>
+		</div>
+	</div>
+}
+
+
+templ Subscription(user models.AuthenticatedUser) {
+	<div class="max-w-2xl w-full mx-auto mt-8">
+		<div>
+			
+			<div>
+				<h2>Subscription pro plan</h2>
+				<p>Upgrade your subscription</p>
+			</div>
+		</div>
+	</div>
+}
+
+templ Profile(user models.AuthenticatedUser) {
+<div class="mx-auto mt-2 gap-4 md:gap-8 flex">
+
+    <div class="bg-base-100 p-4 rounded-lg shadow-md mx-4">
+        <form hx-put="/settings/account/profile" hx-swap="outerHTML">
+            <div class="flex flex-col gap-4 w-full items-center">
+				<dd class="sm:col-span-2 sm:mt-0">
+					<div class="avatar ">
+						<div class="w-32 rounded-full avatar">
+							<img src={view.AuthenticatedUser(ctx).User.ProfilePicture} alt="avatar" />
+						</div>
+
+					</div>
+					// <input type="file" name="profilePicture" />
+				</dd>
+				<div class="flex flex-col gap-1 w-full">
+
+					<dt class="">Preferred Name</dt>
+
+					<dd class="sm:col-span-2 sm:mt-0">
+						// if params.Success {
+						// @ui.Toast("First Name updated successfully")
+						// }
+						<input class="input input-bordered w-full " value={ user.User.PreferredName } name="preferredName" />
+						// if len(errors.PrefferedName) > 0 {
+						// <div class="text-sm text-error mt-1">{ errors.PrefferedName }</div>
+						// }
+					</dd>
+				</div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <div class="bg-base-100 p-4 rounded-lg shadow-md mx-4">
+            @ProfileForm(ProfileParams{
+            Username: user.User.Username,
+            FirstName: user.User.FirstName,
+            LastName: user.User.LastName,
+            Email: user.User.Email,
+            PhoneNumber: user.User.PhoneNumber,
+            }, ProfileErrors{})
+        </div>
+    </div>
+</div>
+}
+
+type ProfileParams struct {
+	FirstName string
+	LastName string
+	Username string
+	Email string
+	PhoneNumber string
+
+	Success  bool
+
+}
+
+
+
+type ProfileErrors struct {
+	Username string
+	FirstName string
+	LastName string
+}
+
+templ ProfileForm(params ProfileParams, errors ProfileErrors) {
+	<form
+		hx-put="/settings/account/profile"
+		hx-swap="outerHTML"
+	>
+		<div class="flex flex-col gap-4">
+			<span class="text-lg font-semibold border-b border-gray-700 pb-2">Personal Information</span>
+			
+			<div class="flex w-full flex-col md:flex-row gap-4">
+				<div class="flex flex-col gap-1 w-full">
+
+					<dt class="">First Name</dt>
+
+					<dd class="sm:col-span-2 sm:mt-0">
+						if params.Success {
+							@ui.Toast("First Name updated successfully")
+						}
+						<input
+							class="input input-bordered w-full "
+							value={ params.FirstName }
+							name="firstName"
+						/>
+						if len(errors.FirstName) > 0 {
+							<div class="text-sm text-error mt-1">{ errors.FirstName }</div>
+						}
+					</dd>
+				</div>
+
+				<div class="flex flex-col gap-1 w-full">
+				<dt>Last Name</dt>
+				<dd class="sm:col-span-2 sm:mt-0">
+					<input
+						class="input input-bordered w-full "
+						value={ params.LastName }
+						name="lastName"
+					/>
+				</dd>
+				if len(errors.LastName) > 0 {
+					<div class="text-sm text-error mt-1">{ errors.LastName }</div>
+				}
+				</div>
+			</div>
+			<div class="flex w-full flex-col md:flex-row gap-4">
+				<div class="flex flex-col gap-1 w-full">
+				<dt class="">Username</dt>
+
+				<dd class="sm:col-span-2 sm:mt-0">
+					if params.Success {
+						@ui.Toast("Username updated successfully")
+					}
+					<input
+						class="input input-bordered w-full "
+						value={ params.Username }
+						name="username"
+					/>
+					if len(errors.Username) > 0 {
+						<div class="text-sm text-error mt-1">{ errors.Username }</div>
+					}
+				</dd>
+				</div>
+				<div class="flex flex-col gap-1 w-full">
+
+				<dt>Phone Number</dt>
+				<dd class="sm:col-span-2 sm:mt-0">
+					<input
+						class="input input-bordered w-full "
+						value={ params.PhoneNumber }
+						name="phoneNumber"
+					/>
+				</dd>
+			</div>
+			</div>
+				<dd class="flex w-full gap-2 items-center justify-end">
+					<button type="reset" class="btn" >Reset</button>
+					<button class="btn bg-branded-400">Save</button>
+				</dd>
+
+		</div>
+	</form>
+}

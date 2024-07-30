@@ -1,0 +1,100 @@
+package home
+
+import (
+    "booking-api/view/layout"
+    "booking-api/data/response"
+	"strconv"
+
+    "booking-api/view/ui"
+)
+
+func CreateGetBookingFormUrl(id int) string {
+    return "/entityBookingForm/rentals/"  + strconv.Itoa(id)
+}
+
+func GetIdsFromAmens(amenities []response.AmenityResponse) []int {
+    var ids []int
+    for _, amen := range amenities {
+        ids = append(ids, int(amen.ID))
+    }
+    return ids
+}
+// RentalInformationResponse renders a page with detailed information about a specific rental
+templ RentalAdmin(rental response.RentalInformationResponse, amenities []response.SortedAmenityResponse) {
+    @layout.App(true) {
+        <div class="w-full max-w-screen-xl mx-auto py-12">
+            <h1 class="text-3xl font-bold text-center mb-8">{rental.Name}</h1>
+            @RentalForm(RentalFormParams{
+                RentalID: rental.ID,
+                Name: rental.Name,
+                Description: rental.Description,
+                Bedrooms: int(rental.Bedrooms),
+                Bathrooms: int(rental.Bathrooms),
+                Amenities: rental.Amenities,
+            }, RentalFormErrors{}, amenities)
+            @ui.AddPhotoToEntityForm(ui.AddPhotoToEntityFormParams{
+                    EntityID: rental.ID,
+                    EntityType:"rentals",
+                })
+              @RentalDetails(RentalFormParams{
+                    RentalID: rental.ID,
+                    Name: rental.Name,
+                    Description: rental.Description,
+                    Bedrooms: int(rental.Bedrooms),
+                    Bathrooms: int(rental.Bathrooms),
+                })
+                <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Rooms</h2>
+				<div>
+
+                for _, room := range rental.RentalRooms {
+                    <div class="mb-3">
+                        <h3 class="text-xl font-semibold">{room.Name} - {room.RoomType.Name}</h3>
+                        <p>{room.Description}</p>
+                        <p><strong>Floor:</strong> {strconv.Itoa((room.Floor))}</p>
+
+						<div>
+						<strong>Beds:</strong>
+
+							for _, bed := range room.Beds {
+								<p>{bed.Name} </p>
+
+							}
+						</div>
+                    </div>
+
+                @ui.EntityPhotoList(room.Photos)
+
+
+                }
+            </div>
+            </div>
+            @ui.AmenityList(rental.Amenities)
+            <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Photos</h2>
+				<div>
+                @ui.EntityPhotoList(rental.Photos)
+            </div>
+            </div>
+            <div id="target-form"></div>
+            <div class="mb-4 p-4 shadow-lg rounded-lg w-96">
+                <h2 class="text-2xl font-semibold mb-4">Booking Information</h2>
+                <button class="btn bg-branded-400" hx-get={CreateGetBookingFormUrl(int(rental.ID))} hx-swap="outerHTML" hx-target="#target-form"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <p><strong>Costs:</strong> <div>
+                    @ui.EntityBookingCostList(rental.BookingCostItems)
+			</div>
+					</p>
+
+                <p><strong>Adjustments:</strong>
+
+				</p>
+            </div>
+        </div>
+
+
+    }
+	}
+

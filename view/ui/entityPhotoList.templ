@@ -1,0 +1,19 @@
+package ui 
+
+import (
+	response "booking-api/data/response"
+)
+templ EntityPhotoList(photos []response.EntityPhotoResponse) {
+    <div>
+        <h1>Photos</h1>
+        <ul>
+            for _, photo := range photos {
+                <li class="max-w-16 max-h-8">
+                    <img src={photo.Photo.URL} alt="img" class="rounded-md mb-2 w-32 h-16"/>
+                </li>
+            }
+            
+        </ul>
+    </div>
+}
+

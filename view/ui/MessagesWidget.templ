@@ -1,0 +1,33 @@
+
+
+package ui
+
+import (
+  "booking-api/data/response"
+    
+)
+
+templ MessagesWidget(MessagesInfo response.AccountMessagesSnapshot) {
+
+<div id="arrival_widget" class="card  min-w-72 bg-white   p-4 text-xs font-normal">
+        
+        <div class="card-header flex justify-between items-center">
+           <div class="flex items-center gap-4">
+            <span class=" card-title">Messages</span>
+            @Notification(MessagesInfo.Notifications)
+          </div>
+					<button class="btn btn-sm border-2 border-zinc-500 ">
+          
+        <i class="fa-solid fa-paper-plane"></i>
+          Send message</button>
+        </div>
+     <div class="divider m-0 py-0"></div>
+      for _, chat := range MessagesInfo.Chats {
+        <div class="flex flex-col gap-2">
+          @ChatSnapshot(chat)
+          <div class="divider m-0 py-0"></div>
+        </div>
+      }			 
+    </div>
+}
+

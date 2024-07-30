@@ -1,0 +1,23 @@
+
+package home 
+
+import (
+	"booking-api/view/layout"
+	
+	ui "booking-api/view/ui"
+	response "booking-api/data/response"
+	"booking-api/constants"
+)
+
+
+templ Index( InquiryInfo response.AccountInquiriesSnapshot, messages response.AccountMessagesSnapshot) {
+	@layout.App(true) {
+		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
+			<h2 class="text-xl font-semibold mb-6 ">{constants.APPLICATION_NAME} inbox</h2>
+            <div>
+				@ui.InquiryWidget(InquiryInfo)
+				@ui.MessagesWidget(messages)
+			</div>
+		</div>
+	}
+}

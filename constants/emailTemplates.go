@@ -1,0 +1,3 @@
+package constants
+
+var EMAIL_TEMPLATE_BOOKING_CONFIRMATION string = "d-2e7a756e9e1e4184ba71da45a812975c"

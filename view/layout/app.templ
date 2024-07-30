@@ -1,0 +1,33 @@
+package layout
+
+import "booking-api/view/ui"
+
+templ App(nav bool) {
+	<!DOCTYPE html>
+	// <html lang="en" data-theme="dark">
+	<html lang="en" data-theme="light">
+		<head>
+			<title>My Good Rental</title>
+			// <link rel="icon" type="image/x-icon" href="/public/favicon.ico"/>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<link rel="icon" type="image/x-icon" href="/public/favicon.png"/>
+			<link rel="stylesheet" href="/public/styles.css"/>
+			<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+			<script src="https://unpkg.com/htmx.org@1.9.9" defer></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+		//	<script src="https://cdn.jsdelivr.net/npm/stripe@15.5.0/cjs/stripe.cjs.node.min.js"></script>
+            <script src="https://js.stripe.com/v3/"></script>
+			// <script src="https://cdn.jsdelivr.net/npm/@stripe/connect-js" type="module" ></script>
+		</head>
+		<body class=" flex flex-col bg-branded-100 min-h-screen font-averta">
+			if nav {
+				@ui.Navigation()
+			}
+			{ children... }
+			if nav {
+				@ui.Footer()
+			}
+		</body>
+	</html>
+}

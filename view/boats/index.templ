@@ -1,0 +1,36 @@
+package home 
+
+import (
+	"booking-api/view/layout"
+	"booking-api/data/response"
+	"strconv"
+	
+)
+
+
+func GetPath(id int) string {
+	path := "/boats/"
+	path += strconv.Itoa(id)
+	return path
+	
+}
+
+templ Index(boats []response.BoatResponse) {
+	@layout.App(true) {
+		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
+			<h2 class="text-xl font-semibold mb-6 ">boats</h2>
+			<ul class="flex gap-4 flex-wrap">
+
+			for _, boat := range boats {
+				<div class="w-32">
+					<a href={templ.SafeURL(GetPath(int(boat.ID)))}>
+						<li>{ boat.Name }</li>
+						<img src={ boat.Thumbnail } alt={ boat.Name }  />
+					</a>
+				</div>
+  			}
+			</ul>
+			
+		</div>
+	}
+}

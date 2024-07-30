@@ -1,0 +1,225 @@
+package auth
+
+import (
+   supabase "github.com/nedpals/supabase-go"
+	"booking-api/view/layout"
+)
+
+templ AccountSetup() {
+	@layout.App(true) {
+		<div class="max-w-xl bg-base-300 px-6 py-12 w-full mx-auto mt-4 rounded-xl">
+			<h1 class="text-xl font-black mb-8 text-center">Setup your account</h1>
+			@AccountSetupForm(AccountSetupParams{}, AccountSetupErrors{})
+		</div>
+	}
+}
+
+type AccountSetupErrors struct {
+	Username string
+}
+
+type AccountSetupParams struct {
+	Username string
+	FirstName string
+	LastName string
+	PhoneNumber string
+	
+}
+
+templ AccountSetupForm(parmas AccountSetupParams, errors AccountSetupErrors) {
+	<form
+		hx-post="/account/setup"
+		hx-swap="outerHTML"
+	>
+		<label class="form-control w-full max-w-xs">
+			<div class="label">
+				<span class="label-text">Enter your username</span>
+			</div>
+			<input class="input input-bordered" type="text" name="username"/>
+			<div class="label">
+				if len(errors.Username) > 0 {
+					<span class="label-text text-error">{ errors.Username }</span>
+				}
+			</div>
+
+		</label>
+		<label class="form-control w-full max-w-xs">
+			<div class="label">
+				<span class="label-text">Enter your first name</span>
+			</div>
+			<input class="input input-bordered" type="text" name="firstName"/>
+		</label>
+		<label class="form-control w-full max-w-xs">
+			<div class="label">
+				<span class="label-text">Enter your last name</span>
+			</div>
+			<input class="input input-bordered" type="text" name="lastName"/>
+		</label>
+
+		<label class="form-control w-full max-w-xs">
+			<div class="label">
+				<span class="label-text">Enter your phone number</span>
+			</div>
+			<input class="input input-bordered" type="text" name="phoneNumber"/>
+		</label>
+
+		
+		<button class="btn btn-primary bg-branded-800">setup account <i class="fa-solid fa-arrow-right"></i></button>
+	</form>
+}
+
+templ Login() {
+	@layout.App(false) {
+		<div class="flex flex-col w-full items-center">
+			<div class="w-full flex px-8 py-8">
+			<a href="/">
+				<div class="flex gap-4 items-center">
+					<i class="fa-solid fa-arrow-left font-4xl text-branded-800"></i>
+					<div class="w-20 h-20">
+						<img src="/public/images/mono.svg" alt="logo" />
+					</div>
+
+				</div>
+			</a>
+			</div>
+			<div class="flex justify-center mt-[calc(100vh-100vh+8rem)] bg-base-100 rounded-lg p-4">
+				<div class="max-w-md w-full py-12 px-8 rounded-xl flex items-center gap-4 flex-col">
+					<img src="/public/images/logotagline.svg"  alt="logo" />
+					// <h1 class="text-center text-xl font-black mb-10">Login</h1>
+					<div  class="join">
+						<a  class="btn w-32 btn-sm join-item">Sign-Up</a>
+						<a  class="btn  w-32 btn-sm join-item ">Login</a>
+					</div>
+					@LoginForm(supabase.UserCredentials{}, LoginErrors{})
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ Signup() {
+	@layout.App(false) {
+		<div class="flex justify-center mt-[calc(100vh-100vh+8rem)] w-full items-center">
+			<img src="/public/images/logotagline.svg" alt="logo" />
+			<div class="max-w-md w-full py-12 px-8 rounded-xl">
+				<h1 class="text-center text-xl font-black mb-10">Signup</h1>
+				@SignupForm(SignupParams{}, SignupErrors{})
+			</div>
+		</div>
+	}
+}
+
+templ SignupSuccess(email string) {
+	<div>A confirmation email has been sent to: <span class="font-semibold text-success">{ email }</span></div>
+}
+
+type SignupParams struct {
+	Email           string
+	Password        string
+	ConfirmPassword string
+}
+
+type SignupErrors struct {
+	Email           string
+	Password        string
+	ConfirmPassword string
+}
+
+templ SignupForm(params SignupParams, errors SignupErrors) {
+	<form
+		hx-post="/signup"
+		hx-swap="outerHTML"
+		class="space-y-4"
+	>
+		<div class="w-full">
+			<div class="label">
+				<span class="label-text">Email address</span>
+			</div>
+			<input type="email" value={ params.Email } name="email" autocomplete="off" required placeholder="Type here" class="input input-bordered w-full"/>
+			if len(errors.Email) > 0 {
+				<div class="label">
+					<span class="label-text-alt text-error">{ errors.Email }</span>
+				</div>
+			}
+		</div>
+		<div class="w-full">
+			<div class="label">
+				<span class="label-text">Password</span>
+			</div>
+			<input type="password" name="password" required autocomplete="off" class="input input-bordered w-full"/>
+			if len(errors.Password) > 0 {
+				<div class="label">
+					<span class="label-text-alt text-error">{ errors.Password }</span>
+				</div>
+			}
+		</div>
+		<div class="w-full">
+			<div class="label">
+				<span class="label-text">Confirm Password</span>
+			</div>
+			<input type="password" name="confirmPassword" required autocomplete="off" class="input input-bordered w-full"/>
+			if len(errors.Password) > 0 {
+				<div class="label">
+					<span class="label-text-alt text-error">{ errors.ConfirmPassword }</span>
+				</div>
+			}
+		</div>
+		<button type="submit" class="btn btn-primary w-full bg-branded-800">login <i class="fa-solid fa-arrow-right"></i></button>
+	</form>
+}
+
+type LoginErrors struct {
+	Email              string
+	Password           string
+	InvalidCredentials string
+}
+
+templ LoginForm(creds supabase.UserCredentials, errors LoginErrors) {
+	<form
+		hx-post="/login"
+		hx-swap="outerHTML"
+		class="space-y-4"
+	>
+		<div class="w-full join join-vertical">
+			<div class="input input-bordered w-full join-item flex items-center gap-2">
+					<i class="fa-regular fa-envelope" class="h-8"></i>
+			<div class=" flex flex-col gap-1">
+				<span class="text-xs">Email address</span>
+			<input type="email" value={ creds.Email } name="email" autocomplete="off" required placeholder="Enter valid email address"  class="w-96"/>
+			</div>
+			if len(errors.Email) > 0 {
+				<div class="label">
+					<span class="label-text-alt text-error">{ errors.Email }</span>
+				</div>
+			}
+			</div>
+			// <div class="input input-bordered w-full join-item flex items-center gap-2">
+			// 	// <i class="fa-solid fa-key" class="h-8"></i>
+			// 	// <div class=" flex flex-col gap-1">
+			// 	// 		<span class="text-xs">Password</span>
+			// 	// <input type="password" value={ creds.Password } name="password" autocomplete="off" required placeholder="Enter your password" />
+			// 	// </div>
+			// 	if len(errors.Email) > 0 {
+			// 		<div class="label">
+			// 			<span class="label-text-alt text-error">{ errors.Password }</span>
+			// 		</div>
+			// 	}
+			// </div>
+		</div>
+		<button type="submit" class="btn bg-branded-400 w-full">Sign in</button>
+		<div class="divider">OR</div>
+		<a href="/login/provider/google" class="btn btn-outline w-full">login with Google <i class="fa-brands fa-google"></i></a>
+	</form>
+}
+
+templ MagicLinkSuccess(email string) {
+	<div>An email to log you in has been sent to <span class="text-info">{ email }</span></div>
+}
+
+templ CallbackScript() {
+	<script>
+		var url = window.location.href;
+		var newURL = url.replace("#", "?")
+		window.location = newURL
+	</script>
+}

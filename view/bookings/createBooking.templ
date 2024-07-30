@@ -1,0 +1,110 @@
+
+package home
+
+import (
+    "booking-api/view/layout"
+    "booking-api/data/request"
+    "booking-api/data/response"
+)
+
+// RentalInformationResponse renders a page with detailed information about a specific rental
+templ CreateBookingPage() {
+    @layout.App(true) {
+                <div class="max-w-xl bg-base-300 px-6 py-4 w-full mx-auto mt-4 rounded-xl">
+                        <h1 class="text-xl font-black ">Create a booking for a customer</h1>
+                   @BookingUserInformationForm(  request.CreateBookingWithUserInformationRequest{}, BookingUserInformationErrors{})
+
+                </div>
+                 
+         }
+}
+type BookingUserInformationErrors struct {
+    FirstName string
+    LastName string
+    Email string
+}
+
+templ BookingUserInformationForm(params  request.CreateBookingWithUserInformationRequest, errors BookingUserInformationErrors) {
+    <form
+     hx-post="/api/userFindOrCreate"
+    hx-indicator="#loading"
+ hx-swap="outerHTML"
+      class="w-full flex flex-col gap-2">
+
+        <div class="flex flex-col gap-2">
+            <label for="firstName">
+                First Name
+            </label>
+            <input type="text" name="firstName" id="firstName" required class="input input-bordered" />
+            if len(errors.FirstName) > 0 {
+                <div class="text-sm text-error mt-1">{ errors.FirstName }</div>
+            }
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="lastName">
+                Last Name
+            </label>
+            <input type="text" name="lastName" id="lastName" required class="input input-bordered" />
+            if len(errors.LastName) > 0 {
+                <div class="text-sm text-error mt-1">{ errors.LastName }</div>
+            }
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="email">
+                Email
+            </label>
+            <input type="email" name="email" id="email" required class="input input-bordered" />
+            if len(errors.Email) > 0 {
+                <div class="text-sm text-error mt-1">{ errors.Email }</div>
+            }
+        </div>
+        <div class="flex gap-2 w-full justify-end">
+            <button class="btn btn-borderd" >Save Draft</button>
+            <button class="btn bg-branded-400" type="submit">Create Booking</button>
+            <span id="loading" class="loading loading-dots loading-md htmx-indicator"></span>
+        </div>
+
+    </form>
+}
+
+templ BookingConfirmation(bookingId string) {
+        <div class="max-w-xl bg-base-300 px-6 py-4 w-full mx-auto mt-4 rounded-xl">
+            <h1 class="text-xl font-black ">Booking Confirmation</h1>
+            <p class="text-lg">Your booking has been successfully created</p>
+            <p class="text-lg">Booking ID: { bookingId }</p>
+        </div>
+}
+
+templ GuestConfirmationDialog(params  request.CreateBookingWithUserInformationRequest, userToConfirm response.PublicUserResponse){
+
+    <div  class="flex flex-col gap-8" >
+            <div class="">
+                <p class="text-lg font-bold">It Looks like we found an account for  {userToConfirm.PreferredName}</p>
+
+            </div>
+            <div class="flex flex-col gap-4">
+                <p>Is this who you are looking for?</p>
+                <div class="avatar ">
+						<div class="w-32 rounded-full avatar">
+							<img src={userToConfirm.ProfilePicture} alt="avatar" />
+						</div>
+
+					</div>
+                <span>{userToConfirm.Email}</span>
+                <span>{userToConfirm.PreferredName} {userToConfirm.LastName}</span>`
+            </div>
+            <div class="flex w-full items-center gap-4">
+            <form
+               action="/api/booking"
+                method="POST"
+                >
+                <input type="hidden" name="firstName" value={params.FirstName} />
+                <input type="hidden" name="lastName" value={params.LastName} />
+                <input type="hidden" name="email" value={params.Email} />
+
+                <button class="btn bg-branded-400" id="confirm-guest">Yes</button>
+                </form>
+                <button class="btn" id="cancel-guest">Cancel</button>
+            </div>
+    </div>
+}

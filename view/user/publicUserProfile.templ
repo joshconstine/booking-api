@@ -1,0 +1,19 @@
+package home
+
+import (
+    "booking-api/view/layout"
+   response      "booking-api/data/response"
+
+    "booking-api/view/ui"
+)
+
+templ PublicUserProfile(user response.UserResponse) {
+    @layout.App(true) {
+        <div class="w-full max-w-screen-xl mx-auto py-12">
+            @ui.CustomerTile(user)
+        </div>
+
+
+    }
+	}
+

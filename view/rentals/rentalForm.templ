@@ -1,0 +1,136 @@
+package home
+
+import (
+    "strconv"
+
+    "booking-api/view/ui"
+	"booking-api/data/response"
+
+)
+
+type RentalFormParams struct {
+RentalID uint
+Name string
+Description string
+Bedrooms int
+Bathrooms int
+Success bool
+Amenities []response.AmenityResponse
+}
+
+type RentalFormErrors struct {
+Name string
+Description string
+Bedrooms string
+Bathrooms string
+}
+
+func  CreateRentalUpdateUrl(id uint) string {
+    return "/rentals/" + strconv.Itoa(int(id))
+}
+func contains(s []response.AmenityResponse, e int) bool {
+    for _, a := range s {
+        if int(a.ID) == e {
+            return true
+        }
+    }
+    return false
+}
+
+func getIsChecked(b bool) string {
+    if b {
+        return "checked"
+    }
+    return ""
+}
+
+templ RentalForm(params RentalFormParams, errors RentalFormErrors, amenities []response.SortedAmenityResponse) {
+   <form
+   hx-put={CreateRentalUpdateUrl(params.RentalID)}
+   hx-swap="outerHTML"
+   class="flex flex-col gap-4 w-full max-w-screen-3xl mx-auto p-4 shadow-lg rounded-lg"
+   >
+   <div class="w-full flex gap-4 items-center">
+      <div class="max-w-96">
+         <div class="flex flex-col gap-1 w-full">
+            <dt class="">Rental Name</dt>
+            <dd class="sm:col-span-2 sm:mt-0">
+               if params.Success {
+               @ui.Toast("Rental Name updated successfully")
+               }
+               <input
+                  class="input input-bordered w-full "
+                  value={ params.Name }
+                  name="name"
+                  />
+               if len(errors.Name) > 0 {
+               <div class="text-sm text-error mt-1">{ errors.Name }</div>
+               }
+            </dd>
+            <dt class="">Description</dt>
+            <dd class="sm:col-span-2 sm:mt-0">
+               <textarea
+                  rows="10"
+                  class="textarea textarea-bordered w-full "
+                  name="description"
+                  >{ params.Description }</textarea>
+               if len(errors.Description) > 0 {
+               <div class="text-sm text-error mt-1">{ errors.Description }</div>
+               }
+            </dd>
+            <dt class="">Bedrooms
+            </dt>
+               <dd class="sm:col-span-2 sm:mt-0">
+                  <input
+                  class="input input-bordered w-full "
+                  value={ strconv.Itoa(params.Bedrooms) }
+                  name="bedrooms"
+                    type="number"
+                  />
+                  if len(errors.Bedrooms) > 0 {
+                  <div class="text-sm text-error mt-1">{ errors.Bedrooms }</div>
+                  }
+               </dd>
+               <dt class="">Bathrooms
+               </dt>
+               <dd class="sm:col-span-2 sm:mt-0">
+                  <input
+                  class="input input-bordered w-full "
+                  value={ strconv.Itoa(params.Bathrooms) }
+                  name="bathrooms"
+                  type="number"
+                  />
+                  if len(errors.Bathrooms) > 0 {
+                  <div class="text-sm text-error mt-1">{ errors.Bathrooms }</div>
+                  }
+               </dd>
+         </div>
+      </div>
+       <div class="w-full">
+          <span>photo input</span>
+       </div>
+   </div>
+   <div class="flex gap-4 flex-wrap w-full">
+      for _, amenityType := range amenities {
+      <div class="flex flex-col  gap-1">
+         <h2 class="text-2xl font-semibold mb-4">{ amenityType.TypeName }</h2>
+         for _, amenity := range amenityType.Amenities {
+         <dt class="">Amenity: { amenity.Name }</dt>
+         <dd class="sm:col-span-2 sm:mt-0">
+            <input
+            type="checkbox"
+            name="amenities"
+            value={ strconv.Itoa(int(amenity.ID)) }
+            checked={  getIsChecked(contains(params.Amenities, int(amenity.ID)) ) }
+            />
+         </dd>
+         }
+      </div>
+      }
+   </div>
+   <dd class="flex w-full gap-2 items-center justify-end">
+      <button type="reset" class="btn" >Reset</button>
+      <button class="btn bg-branded-400">Save</button>
+   </dd>
+</form>
+}

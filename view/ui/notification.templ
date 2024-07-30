@@ -1,0 +1,10 @@
+package ui
+
+import "strconv"
+
+templ Notification(Count uint) {
+	<div class="badge badge-sm badge-secondary">
+        <i class="fa-solid fa-plus "></i>
+    	<span>{strconv.Itoa(int(Count))}</span>
+	</div>
+}

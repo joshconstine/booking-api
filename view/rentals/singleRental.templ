@@ -1,0 +1,77 @@
+package home
+
+import (
+    "booking-api/view/layout"
+    "booking-api/data/response"
+	"strconv"
+	
+    "booking-api/view/ui"
+)
+
+// RentalInformationResponse renders a page with detailed information about a specific rental
+templ RentalInformationResponse(rental response.RentalInformationResponse) {
+    @layout.App(true) {
+        <div class="w-full max-w-screen-xl mx-auto py-12">
+            <h1 class="text-3xl font-bold text-center mb-8">{rental.Name}</h1>
+                @RentalDetails(RentalFormParams{
+                    RentalID: rental.ID,
+                    Name: rental.Name,
+                    Description: rental.Description,
+                    Bedrooms: int(rental.Bedrooms),
+                    Bathrooms: int(rental.Bathrooms),
+                })
+
+            <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Rooms</h2>
+				<div>
+
+                for _, room := range rental.RentalRooms {
+                    <div class="mb-3">
+                        <h3 class="text-xl font-semibold">{room.Name} - {room.RoomType.Name}</h3>
+                        <p>{room.Description}</p>
+                        <p><strong>Floor:</strong> {strconv.Itoa((room.Floor))}</p>
+                        
+						<div>
+						<strong>Beds:</strong>
+						 
+							for _, bed := range room.Beds {
+								<p>{bed.Name} </p>
+							
+							}
+						</div>
+                    </div>
+					
+                @ui.EntityPhotoList(room.Photos)
+
+                }
+            </div>
+            </div>
+            <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Amenities</h2>
+                for _, amenity := range rental.Amenities {
+                    <p>{amenity.Name} - {amenity.AmenityType.Name}</p>
+                }
+            </div>
+            <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Photos</h2>
+				<div>
+                @ui.EntityPhotoList(rental.Photos)
+            </div>
+            </div>
+            <div class="mb-4 p-4 shadow-lg rounded-lg">
+                <h2 class="text-2xl font-semibold mb-4">Booking Information</h2>
+                <p><strong>Costs:</strong> <div>
+                    @ui.EntityBookingCostList(rental.BookingCostItems)
+			</div>
+					</p>
+
+                <p><strong>Adjustments:</strong> 
+				
+				</p>
+            </div>
+        </div>
+
+
+    }
+	}
+

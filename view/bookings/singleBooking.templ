@@ -1,0 +1,56 @@
+package home
+
+import (
+    "booking-api/view/layout"
+     response "booking-api/data/response"
+	
+	"booking-api/view/ui"
+)
+
+// RentalInformationResponse renders a page with detailed information about a specific rental
+templ BookingInformationTemplate(booking response.BookingInformationResponse) {
+    @layout.App(true) {
+                <div class="flex flex-col gap-2  mx-8 w-full my-8">
+                    <div class="flex gap-8 items-center">
+                        <h1 class="text-2xl font-bold">
+                            {booking.ID}
+                        </h1>
+
+                        @ui.StatusBadge(booking.Status)
+                        @ui.BookingActions(booking)
+                    </div>
+                    <div class="flex w-full gap-8">
+                        <div class="flex flex-col bg-base-100 rounded-lg gap-8 ">
+                            @ui.CustomerTile(booking.Customer)
+                            @ui.BookingDetails(booking.Details)
+                            <div>
+                                <span>Booking Cost Items</span>
+                                <ul>
+                                    for _, item := range booking.CostItems {
+                                        @ui.BookingCostItem(item)
+                                    }
+                                </ul>
+                            </div>
+                             <div>
+                                <span>Booking Payments</span>
+                                <ul>
+                                    for _, item := range booking.Payments {
+                                        @ui.BookingPaymentItem(item)
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="flex flex-col bg-base-100 rounded-lg gap-8 ">
+                            @ui.BookingPayment(booking.Details)
+                        </div>
+                        <div class="flex flex-col gap-8">
+                            <ul>
+                                for _, entityBooking := range booking.Entities {
+                                    @ui.EntityBooking(entityBooking)
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+         }
+}
