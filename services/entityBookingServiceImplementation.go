@@ -47,6 +47,21 @@ func isEntityBookingInProgress(entityBooking *response.EntityBookingResponse) bo
 	}
 	return false
 }
+func checkIfBookingIsCompleted(request *response.EntityBookingResponse) bool {
+	res := true
+	if request.Status.ID != constants.BOOKING_STATUS_COMPLETED_ID {
+		if request.Status.ID != constants.BOOKING_STATUS_CANCELLED_ID {
+			if request.Timeblock.EndTime.Before(time.Now()) {
+				res = true
+			} else {
+				res = false
+			}
+		} else {
+			res = false
+		}
+	}
+	return res
+}
 func (e *EntityBookingServiceImplementation) AuditEntityBookingStatusForBooking(bookingInformation *response.BookingInformationResponse, entityBooking *response.EntityBookingResponse) error {
 
 	//check if user has permission to book this entity.
@@ -92,6 +107,13 @@ func (e *EntityBookingServiceImplementation) AuditEntityBookingStatusForBooking(
 		entityBooking.Status.ID = constants.BOOKING_STATUS_COMPLETED_ID
 
 		if entityBookingToAudit.Status.ID != constants.BOOKING_STATUS_COMPLETED_ID {
+			request.BookingStatusID = constants.BOOKING_STATUS_COMPLETED_ID
+			e.entityBookingRepository.UpdateStatus(request)
+		}
+	}
+	if checkIfBookingIsCompleted(&entityBookingToAudit) {
+		entityBooking.Status.ID = constants.BOOKING_STATUS_COMPLETED_ID
+		if bookingInformation.Status.ID != constants.BOOKING_STATUS_COMPLETED_ID {
 			request.BookingStatusID = constants.BOOKING_STATUS_COMPLETED_ID
 			e.entityBookingRepository.UpdateStatus(request)
 		}

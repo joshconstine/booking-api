@@ -146,6 +146,16 @@ func isAtLeastOneEntityBookingInProgress(entitiyBookings []response.EntityBookin
 	}
 	return result
 }
+func areAllEntityBookingsCompleted(entitiyBookings []response.EntityBookingResponse) bool {
+	result := true
+	for _, entityBooking := range entitiyBookings {
+		if entityBooking.Status.ID != constants.BOOKING_STATUS_COMPLETED_ID {
+			result = false
+		}
+
+	}
+	return result
+}
 
 func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInformation response.BookingInformationResponse) {
 	//check if booking is complete
@@ -185,6 +195,14 @@ func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInform
 	} else if bookingInformation.Details.PaymentComplete == true && bookingInformation.Details.DocumentsSigned == true && bookingIsInPast(bookingInformation) {
 		if bookingInformation.Status.ID != constants.BOOKING_STATUS_COMPLETED_ID {
 			request.BookingStatusID = constants.BOOKING_STATUS_COMPLETED_ID
+			t.UpdateBookingStatusForBooking(request)
+		}
+
+	}
+
+	if areAllEntityBookingsCompleted(bookingInformation.Entities) {
+		request.BookingStatusID = constants.BOOKING_STATUS_COMPLETED_ID
+		if bookingInformation.Status.ID != constants.BOOKING_STATUS_COMPLETED_ID {
 			t.UpdateBookingStatusForBooking(request)
 		}
 
