@@ -113,3 +113,7 @@ func (t BookingServiceImplementation) GetSnapshot(request request.GetBookingSnap
 	result := t.BookingRepository.GetSnapshot(request)
 	return result
 }
+
+func (t BookingServiceImplementation) UpdateBookingStatusForBooking(request request.UpdateBookingStatusRequest) error {
+	return t.BookingRepository.UpdateBookingStatusForBooking(request)
+}

@@ -13,4 +13,5 @@ type BookingRepository interface {
 	Create(booking *request.CreateBookingRequest) (string, error)
 	Update(booking models.Booking) models.Booking
 	CheckIfEntitiesCanBeBooked(request *request.CreateBookingRequest) (bool, error)
+	UpdateBookingStatusForBooking(request request.UpdateBookingStatusRequest) error
 }

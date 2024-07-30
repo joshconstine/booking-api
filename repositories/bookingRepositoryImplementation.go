@@ -407,3 +407,11 @@ func (t *bookingRepositoryImplementation) CheckIfEntitiesCanBeBooked(request *re
 
 	return true, nil
 }
+
+func (repo *bookingRepositoryImplementation) UpdateBookingStatusForBooking(statusRequest request.UpdateBookingStatusRequest) error {
+	result := repo.Db.Model(&models.Booking{}).Where("id = ?", statusRequest.BookingID).Update("booking_status_id", statusRequest.BookingStatusID)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

@@ -163,8 +163,8 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	bookingPaymentRepository := repositories.NewBookingPaymentRepositoryImplementation(bookingCostItemRepository, database.Instance)
 	//Init Service
 	userService := services.NewUserServiceImplementation(userRepository, entityRepository, membershipRepository, validate)
-	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository)
 	bookingService := services.NewBookingServiceImplementation(bookingRepository, validate, userService)
+	bookingDetailsService := services.NewBookingDetailsServiceImplementation(bookingDetailsRepository, bookingPaymentRepository, bookingService)
 	boatService := services.NewBoatServiceImplementation(boatRepository, validate)
 	// bookingStatusService := services.NewBookingStatusService(bookingStatusRepository, validate)
 	bookingCostTypeService := services.NewBookingCostTypeServiceImplementation(bookingCostTypeRepository, validate)
