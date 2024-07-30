@@ -29,7 +29,15 @@ func (service BookingDetailsServiceImplementation) Create(details models.Booking
 }
 
 func (service BookingDetailsServiceImplementation) Update(details request.UpdateBookingDetailsRequest) (response.BookingDetailsResponse, error) {
-	return service.bookingDetailsRepository.Update(details)
+	result, err := service.bookingDetailsRepository.Update(details)
+	if err != nil {
+		return response.BookingDetailsResponse{}, err
+
+	}
+	service.AuditBookingDetailsForBooking(result.BookingID)
+
+	return result, nil
+
 }
 
 func (service BookingDetailsServiceImplementation) AuditBookingDetailsForBooking(bookingId string) error {
@@ -62,33 +70,7 @@ func (service BookingDetailsServiceImplementation) AuditBookingDetailsForBooking
 		}
 	}
 	//Audit BookingStatus
+	service.bookingService.AuditBookingStatusForBooking(booking)
 
 	return nil
-}
-
-//+-----------+
-//|name       |
-//+-----------+
-//|Drafted    |
-//|Requested  |
-//|Confirmed  |
-//|In Progress|
-//|Completed  |
-//|Cancelled  |
-//+-----------+
-
-func AuditBookingStatus(bookingInformation response.BookingInformationResponse) {
-	//check if booking is complete
-	if bookingInformation.Details.PaymentComplete == true && bookingInformation.Details.DocumentsSigned == true {
-		//Check if the booking is in Progress
-		//update booking status to in progress
-
-		//update booking status to confirmed
-
-	} else if bookingInformation.Details.PaymentComplete == true {
-
-		//update booking status to payment confirmed
-	} else {
-		//update booking status to pending
-	}
 }

@@ -415,3 +415,11 @@ func (repo *bookingRepositoryImplementation) UpdateBookingStatusForBooking(statu
 	}
 	return nil
 }
+
+func (repo *bookingRepositoryImplementation) UpdateBookingDocumentsSigned(request request.UpdateBookingDocumentsSignedRequest) error {
+	result := repo.Db.Model(&models.BookingDetails{}).Where("booking_id = ?", request.BookingID).Update("documents_signed", request.DocumentsSigned)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

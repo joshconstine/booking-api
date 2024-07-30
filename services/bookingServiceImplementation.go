@@ -117,3 +117,60 @@ func (t BookingServiceImplementation) GetSnapshot(request request.GetBookingSnap
 func (t BookingServiceImplementation) UpdateBookingStatusForBooking(request request.UpdateBookingStatusRequest) error {
 	return t.BookingRepository.UpdateBookingStatusForBooking(request)
 }
+
+//+-----------+
+//|name       |
+//+-----------+
+//|Drafted    |
+//|Requested  |
+//|Confirmed  |
+//|In Progress|
+//|Completed  |
+//|Cancelled  |
+//+-----------+
+
+func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInformation response.BookingInformationResponse) {
+	//check if booking is complete
+	var request request.UpdateBookingStatusRequest
+	request.BookingID = bookingInformation.ID
+
+	//audit document signed status
+	t.AuditDocumentSignedStatusForBooking(bookingInformation)
+
+	if bookingInformation.Details.PaymentComplete == true && bookingInformation.Details.DocumentsSigned == true {
+		//Check if the booking is in Progress
+		//update booking status to in progress
+
+		request.BookingStatusID = constants.BOOKING_STATUS_CONFIRMED_ID
+		if bookingInformation.Status.ID != constants.BOOKING_STATUS_CONFIRMED_ID {
+			t.UpdateBookingStatusForBooking(request)
+		}
+
+		//update booking status to confirmed
+
+	} else if bookingInformation.Details.PaymentComplete == true {
+
+	} else {
+	}
+}
+
+func (t BookingServiceImplementation) AuditDocumentSignedStatusForBooking(bookingInformation response.BookingInformationResponse) {
+	//check if booking is complete
+	var request request.UpdateBookingDocumentsSignedRequest
+	request.BookingID = bookingInformation.ID
+
+	var documentsSigned bool
+	documentsSigned = true
+
+	for _, document := range bookingInformation.Documents {
+		if document.Signed == false && document.RequiresSignature == true {
+			documentsSigned = false
+		}
+	}
+
+	if documentsSigned != bookingInformation.Details.DocumentsSigned {
+		request.DocumentsSigned = documentsSigned
+		t.BookingRepository.UpdateBookingDocumentsSigned(request)
+	}
+
+}

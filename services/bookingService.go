@@ -12,4 +12,6 @@ type BookingService interface {
 	GetSnapshot(request request.GetBookingSnapshotRequest) []responses.BookingSnapshotResponse
 	FindById(id string) (responses.BookingInformationResponse, error)
 	UpdateBookingStatusForBooking(request request.UpdateBookingStatusRequest) error
+	AuditBookingStatusForBooking(bookingInformation responses.BookingInformationResponse)
+	AuditDocumentSignedStatusForBooking(bookingInformation responses.BookingInformationResponse)
 }
