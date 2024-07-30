@@ -162,6 +162,11 @@ func (t BookingServiceImplementation) AuditBookingStatusForBooking(bookingInform
 	var request request.UpdateBookingStatusRequest
 	request.BookingID = bookingInformation.ID
 
+	//check if should be drafted
+	if bookingInformation.Status.ID == constants.BOOKING_STATUS_COMPLETED_ID || bookingInformation.Status.ID == constants.BOOKING_STATUS_CANCELLED_ID || len(bookingInformation.Entities) == 0 {
+		return
+
+	}
 	//audit payment status
 	t.AuditPaymentStatusForBooking(&bookingInformation)
 
@@ -242,6 +247,25 @@ func (t BookingServiceImplementation) AuditDocumentSignedStatusForBooking(bookin
 
 }
 func (t BookingServiceImplementation) AuditPaymentStatusForBooking(booking *response.BookingInformationResponse) {
+
+	//check if there are cost items
+	if len(booking.CostItems) == 0 {
+		if booking.Details.PaymentComplete == true || booking.Details.DepositPaid == true {
+			_, err := t.BookingDetailsRepository.Update(request.UpdateBookingDetailsRequest{
+				ID:               booking.Details.ID,
+				PaymentComplete:  false,
+				BookingStartDate: booking.Details.BookingStartDate,
+				PaymentDueDate:   booking.Details.PaymentDueDate,
+				DocumentsSigned:  booking.Details.DocumentsSigned,
+				DepositPaid:      false,
+				GuestCount:       booking.Details.GuestCount,
+			})
+			if err != nil {
+				//return err
+			}
+		}
+		return
+	}
 
 	//Audit PaymentStatus
 
