@@ -11,4 +11,5 @@ type BookingDetailsRepository interface {
 	FindByBookingId(id string) response.BookingDetailsResponse
 	Create(details models.BookingDetails) response.BookingDetailsResponse
 	Update(details request.UpdateBookingDetailsRequest) (response.BookingDetailsResponse, error)
+	UpdatePaymentCompleteStatus(bookingId string, status bool)
 }

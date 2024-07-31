@@ -4,7 +4,6 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
-
 	"gorm.io/gorm"
 )
 
@@ -52,7 +51,7 @@ func (t *bookingDetailsRepositoryImplementation) Update(details request.UpdateBo
 
 	existingDetails := t.FindById(details.ID)
 
-	bookingDetails.ID = details.ID
+	bookingDetails.ID = existingDetails.ID
 	bookingDetails.BookingID = existingDetails.BookingID
 	bookingDetails.PaymentComplete = details.PaymentComplete
 	bookingDetails.DepositPaid = details.DepositPaid
@@ -67,4 +66,12 @@ func (t *bookingDetailsRepositoryImplementation) Update(details request.UpdateBo
 	}
 
 	return bookingDetails.MapBookingDetailsToResponse(), nil
+}
+
+func (t *bookingDetailsRepositoryImplementation) UpdatePaymentCompleteStatus(bookingId string, status bool) {
+	result := t.Db.Model(&models.BookingDetails{}).Where("booking_id = ?", bookingId).Update("payment_complete", status)
+	if result.Error != nil {
+		return
+	}
+
 }

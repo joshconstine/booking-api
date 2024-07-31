@@ -265,6 +265,7 @@ func (t BookingServiceImplementation) AuditPaymentStatusForBooking(booking *resp
 				//return err
 			}
 		}
+
 		return
 	}
 
@@ -277,19 +278,12 @@ func (t BookingServiceImplementation) AuditPaymentStatusForBooking(booking *resp
 		//update booking status to paid
 		if booking.Details.PaymentComplete == false {
 			booking.Details.PaymentComplete = true
-			_, err := t.BookingDetailsRepository.Update(request.UpdateBookingDetailsRequest{
-				ID:               booking.Details.ID,
-				PaymentComplete:  true,
-				BookingStartDate: booking.Details.BookingStartDate,
-				PaymentDueDate:   booking.Details.PaymentDueDate,
-				DocumentsSigned:  booking.Details.DocumentsSigned,
-				DepositPaid:      true,
-				GuestCount:       booking.Details.GuestCount,
-			})
-			if err != nil {
-				//return err
-			}
-
+			t.BookingDetailsRepository.UpdatePaymentCompleteStatus(booking.ID, true)
+		}
+	} else {
+		if booking.Details.PaymentComplete == true {
+			booking.Details.PaymentComplete = false
+			t.BookingDetailsRepository.UpdatePaymentCompleteStatus(booking.ID, false)
 		}
 	}
 }

@@ -10,11 +10,12 @@ import (
 )
 
 type EntityBookingServiceImplementation struct {
-	entityBookingRepository repositories.EntityBookingRepository
+	entityBookingRepository  repositories.EntityBookingRepository
+	bookingDetailsRepository repositories.BookingDetailsRepository
 }
 
-func NewEntityBookingServiceImplementation(entityBookingRepository repositories.EntityBookingRepository) EntityBookingService {
-	return &EntityBookingServiceImplementation{entityBookingRepository: entityBookingRepository}
+func NewEntityBookingServiceImplementation(entityBookingRepository repositories.EntityBookingRepository, bookingDetailsRepository repositories.BookingDetailsRepository) EntityBookingService {
+	return &EntityBookingServiceImplementation{entityBookingRepository: entityBookingRepository, bookingDetailsRepository: bookingDetailsRepository}
 }
 
 func (e *EntityBookingServiceImplementation) FindAllForEntity(entityType string, entityID uint) []response.EntityBookingResponse {
@@ -30,7 +31,14 @@ func (e *EntityBookingServiceImplementation) FindAllForBooking(bookingID string)
 }
 
 func (e *EntityBookingServiceImplementation) AttemptToCreate(entityBooking request.CreateEntityBookingRequest) (response.EntityBookingResponse, error) {
-	return e.entityBookingRepository.Create(entityBooking), nil
+	res := e.entityBookingRepository.Create(entityBooking)
+
+	if res.ID != 0 {
+
+		e.bookingDetailsRepository.UpdatePaymentCompleteStatus(res.BookingID, false)
+	}
+	return res, nil
+
 }
 
 func (e *EntityBookingServiceImplementation) AttemptToUpdate(entityBooking request.UpdateEntityBookingRequest) (response.EntityBookingResponse, error) {

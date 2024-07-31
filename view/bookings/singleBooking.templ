@@ -3,10 +3,17 @@ package home
 import (
     "booking-api/view/layout"
      response "booking-api/data/response"
-	
+	"strconv"
 	"booking-api/view/ui"
 )
 
+func getTotalCostItems(booking response.BookingInformationResponse) string {
+    total := float64(0)
+    for _, item := range booking.CostItems {
+        total += item.Amount
+    }
+    return strconv.FormatFloat(total, 'f', 2, 64)
+}
 // RentalInformationResponse renders a page with detailed information about a specific rental
 templ BookingInformationTemplate(booking response.BookingInformationResponse) {
     @layout.App(true) {
@@ -24,12 +31,8 @@ templ BookingInformationTemplate(booking response.BookingInformationResponse) {
                             @ui.CustomerTile(booking.Customer)
                             @ui.BookingDetails(booking.Details)
                             <div>
-                                <span>Booking Cost Items</span>
-                                <ul>
-                                    for _, item := range booking.CostItems {
-                                        @ui.BookingCostItem(item)
-                                    }
-                                </ul>
+                                <span>Total Cost</span>
+                                <span>{getTotalCostItems(booking)}</span>
                             </div>
                              <div>
                                 <span>Booking Payments</span>
