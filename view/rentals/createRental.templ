@@ -22,7 +22,7 @@ templ CreateRental( params request.CreateRentalStep1Params, errors request.Creat
         <div class="w-full flex items-start max-w-screen-md">
             <h1 class="text-3xl font-bold text-center ml-2 ">Step 1-Tell us about your rental</h1>
         </div>
-        <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto">
+        <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto rounded-lg">
             <div class="w-full justify-between flex">
                 <h2 class="text-xl font-bold">Rental information</h2>
                 <span class="text-gray-500 text-sm">information can be changed later</span>
@@ -146,7 +146,7 @@ rentals?
                    </div>
 
         </div>
-        <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto">
+        <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto rounded-lg">
              <h2 class="text-xl font-bold">Ammenities</h2>
              <div class="w-full flex gap-16 flex-wrap">
               <div class="flex gap-4 flex-wrap w-full">
@@ -175,7 +175,7 @@ rentals?
                </div>
              </div>
         </div>
-        <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto">
+        <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto  rounded-lg">
             <div class="w-full justify-between flex">
                 <h2 class="text-xl font-bold">Photos</h2>
                 <span class="text-gray-500 text-sm">Set thumbnail photo for entire listing</span>
@@ -192,9 +192,10 @@ rentals?
             <input hidden="true" type="file" id="file" name="file" multiple="true" />
 
         </div>
-         <div class="w-full flex items-end max-w-screen-md">
-            <a class="text-xl  mr-2 ">Next step: Tell us about the rooms <i class="fa-solid fa-arrow-right-long"></i></a>
+        <div class="w-full flex justify-end items-end max-w-screen-md">
+            <a class="text-xl mr-2">Next step: Tell us about the rooms <i class="fa-solid fa-arrow-right-long"></i></a>
         </div>
+
         <script>
             document.getElementById('photoUpload').addEventListener('click', function() {
                 document.getElementById('file').click();
