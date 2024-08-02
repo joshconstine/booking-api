@@ -4923,8 +4923,8 @@ details.collapse summary::-webkit-details-marker {
   height: 5rem;
 }
 
-.h-64 {
-  height: 16rem;
+.h-40 {
+  height: 10rem;
 }
 
 .h-8 {
@@ -4955,16 +4955,16 @@ details.collapse summary::-webkit-details-marker {
   width: 8rem;
 }
 
+.w-40 {
+  width: 10rem;
+}
+
 .w-48 {
   width: 12rem;
 }
 
 .w-52 {
   width: 13rem;
-}
-
-.w-64 {
-  width: 16rem;
 }
 
 .w-72 {
@@ -5364,6 +5364,10 @@ details.collapse summary::-webkit-details-marker {
 
 .text-\[16px\] {
   font-size: 16px;
+}
+
+.text-\[8px\] {
+  font-size: 8px;
 }
 
 .text-lg {
