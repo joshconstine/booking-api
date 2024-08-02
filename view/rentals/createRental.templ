@@ -3,11 +3,14 @@ package home
 import (
     "booking-api/view/layout"
 
+	"booking-api/data/request"
 )
 
 
+
+
 // RentalInformationResponse renders a page with detailed information about a specific rental
-templ CreateRental() {
+templ CreateRental( params request.CreateRentalStep1Params, errors request.CreateRentalStep1Errors) {
     @layout.App(true) {
     <div class="flex flex-col gap-4 md:mt-4 mt-1 items-center w-full">
         <div class=" px-8 w-full flex justify-between items-center">
@@ -17,11 +20,129 @@ templ CreateRental() {
         <div class="w-full flex items-start max-w-screen-md">
             <h1 class="text-3xl font-bold text-center ml-2 ">Step 1-Tell us about your rental</h1>
         </div>
-        <div class="bg-white shadow-lg flex-col flex gap-2 p-4 max-w-screen-md w-full mx-auto">
+        <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto">
             <div class="w-full justify-between flex">
                 <h2 class="text-xl font-bold">Rental information</h2>
-                <span class="text-gray-500">information can be changed later</span>
+                <span class="text-gray-500 text-sm">information can be changed later</span>
             </div>
+             <div class="flex flex-col gap-2 w-full">
+                <label for="name" class="font-semibold">
+                   Rental Name
+                </label>
+                <input type="text" name="name" id="name" required class="input input-bordered" />
+                if len(errors.Name) > 0 {
+                    <div class="text-sm text-error mt-1">{ errors.Name }</div>
+                }
+            </div>
+            <div class="flex flex-col gap-2 w-full">
+                <label for="address" class="font-semibold">
+                   Address
+                </label>
+                <input type="text" name="address" id="address" required class="input input-bordered" />
+                if len(errors.Address) > 0 {
+                    <div class="text-sm text-error mt-1">{ errors.Address }</div>
+                }
+            </div>
+            <div class="w-full flex justify-between flex-col md:flex-row gap-20">
+                  <div class="flex flex-col gap-2 w-full">
+                    <label for="bedrooms" class="font-semibold">
+                      Number of bedrooms
+                    </label>
+                    <input type="text" name="bedrooms" id="bedrooms" required class="input input-bordered" />
+                    if len(errors.Bedrooms) > 0 {
+                        <div class="text-sm text-error mt-1">{ errors.Bedrooms }</div>
+                    }
+                  </div>
+
+                  <div class="flex flex-col gap-2 w-full">
+                    <label for="bathrooms" class="font-semibold">
+                      Number of bathrooms
+                    </label>
+                    <input type="text" name="bathrooms" id="bathrooms" required class="input input-bordered" />
+                    if len(errors.Bathrooms) > 0 {
+                        <div class="text-sm text-error mt-1">{ errors.Bathrooms }</div>
+                    }
+                  </div>
+            </div>
+            <div class="w-full flex justify-between flex-col md:flex-row gap-20">
+                  <div class="flex flex-col gap-2 w-full">
+                    <label for="guests" class="font-semibold">
+                      How many guests?
+                    </label>
+                    <input type="text" name="guests" id="guests" required class="input input-bordered" />
+                    if len(errors.Guests ) > 0 {
+                        <div class="text-sm text-error mt-1">{ errors.Guests }</div>
+                    }
+                  </div>
+
+                  <div class="flex flex-col gap-1 w-full">
+                    <label for="allowInstantBooking" class="font-semibold">
+                         How will you confirm bookings?
+                    </label>
+                    //radio group , Instantbooking , Accept/decline requests
+                    <div class="flex gap-2 items-center">
+                        <input type="radio" name="allowInstantBooking" id="allowInstantBooking" required class="radio" />
+                        <label for="allowInstantBooking">Instant booking</label>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <input type="radio" name="allowInstantBooking" id="acceptDecline" required class="radio" />
+                        <label for="acceptDecline">Accept/decline requests</label>
+                    </div>
+
+                  </div>
+            </div>
+             <div class="w-full flex justify-between flex-col md:flex-row gap-20">
+                  <div class="flex flex-col gap-2 w-full">
+                    <label for="allowPets" class="font-semibold">
+                        Are pets allowed?
+                    </label>
+                      <div class="flex flex-col gap-1 w-full">
+                        //radio group , Instantbooking , Accept/decline requests
+                        <div class="flex gap-2 items-center">
+                            <input type="radio" name="allowPets" id="allowPets" required class="radio" />
+                            <label for="allowPets">Yes</label>
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <input type="radio" name="allowPets" id="allowPetsNo" required class="radio " />
+                            <label for="allowPetsNo">No</label>
+                        </div>
+
+                      </div>
+                  </div>
+
+                  <div class="flex flex-col gap-1 w-full">
+                    <label for="parentProperty" class="font-semibold">
+                         Is this rental a part of a larger properties with multiple
+rentals?
+                    </label>
+                    //radio group , Instantbooking , Accept/decline requests
+                    <div class="flex gap-2 items-center">
+                        <input type="radio" name="parentProperty" id="parentProperty" required class="radio" />
+                        <label for="parentProperty">Yes</label>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <input type="radio" name="parentProperty" id="parentPropertyNo" required class="radio" />
+                        <label for="parentPropertyNo">No</label>
+                    </div>
+
+                  </div>
+            </div>
+                  <div class="flex flex-col gap-1 w-full">
+                    <label for="description" class="font-semibold">
+
+                            Description
+                    </label>
+                    <textarea
+                    rows="6"
+                    name="description"
+                    class="textarea textarea-bordered w-full "
+                    >
+                      </textarea>
+                      if len(errors.Description ) > 0 {
+                        <div class="text-sm text-error mt-1">{ errors.Description }</div>
+                    }
+                   </div>
+
         </div>
     </div>
 

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/services"
 	rentals "booking-api/view/rentals"
@@ -63,8 +64,9 @@ func (controller *RentalController) FindById(ctx *gin.Context) {
 }
 
 func (controller *RentalController) Create(w http.ResponseWriter, r *http.Request) error {
-
-	return rentals.CreateRental().Render(r.Context(), w)
+	params := request.CreateRentalStep1Params{}
+	errors := request.CreateRentalStep1Errors{}
+	return rentals.CreateRental(params, errors).Render(r.Context(), w)
 }
 
 func (controller *RentalController) Update(w http.ResponseWriter, r *http.Request) error {
