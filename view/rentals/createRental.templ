@@ -9,7 +9,10 @@ import (
 )
 
 
-
+//amenity_{amenity.ID}
+func GetAmenityId(amenity response.AmenityResponse) string {
+    return "amenity_" + strconv.Itoa(int(amenity.ID))
+}
 
 // RentalInformationResponse renders a page with detailed information about a specific rental
 templ CreateRental( params request.CreateRentalStep1Params, errors request.CreateRentalStep1Errors, amenities []response.SortedAmenityResponse) {
@@ -160,7 +163,7 @@ rentals?
                              <div class="flex items-center">
                                 <input
                                 type="checkbox"
-                                name="amenities"
+                                name={ GetAmenityId(amenity) }
 
                                 class="checkbox checkbox-sm"
                                 value={ strconv.Itoa(int(amenity.ID)) }
