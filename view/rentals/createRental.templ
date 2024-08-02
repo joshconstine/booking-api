@@ -2,17 +2,19 @@ package home
 
 import (
     "booking-api/view/layout"
+    "strconv"
 
 	"booking-api/data/request"
+	"booking-api/data/response"
 )
 
 
 
 
 // RentalInformationResponse renders a page with detailed information about a specific rental
-templ CreateRental( params request.CreateRentalStep1Params, errors request.CreateRentalStep1Errors) {
+templ CreateRental( params request.CreateRentalStep1Params, errors request.CreateRentalStep1Errors, amenities []response.SortedAmenityResponse) {
     @layout.App(true) {
-    <div class="flex flex-col gap-4 md:mt-4 mt-1 items-center w-full">
+    <div class="flex flex-col gap-4 md:mt-4 mt-1 items-center w-full pb-[300px] overflow">
         <div class=" px-8 w-full flex justify-between items-center">
             <a class="btn btn-outline rounded-full btn-sm">Questions?</a>
             <a class="btn btn-outline rounded-full btn-sm">Save and exit</a>
@@ -143,6 +145,35 @@ rentals?
                     }
                    </div>
 
+        </div>
+        <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto">
+             <h2 class="text-xl font-bold">Ammenities</h2>
+             <div class="w-full flex gap-16 flex-wrap">
+              <div class="flex gap-4 flex-wrap w-full">
+                  for _, amenityType := range amenities {
+                  <div class="flex flex-col  gap-1">
+                     <h2 class=" font-semibold ">{ amenityType.TypeName }</h2>
+                     <div class="flex flex-col gap-1 w-full">
+                         for _, amenity := range amenityType.Amenities {
+                             <div class="flex items-center">
+                                <input
+                                type="checkbox"
+                                name="amenities"
+
+                                class="checkbox checkbox-sm"
+                                value={ strconv.Itoa(int(amenity.ID)) }
+                                checked={  getIsChecked(contains(params.Amenities, int(amenity.ID)) ) }
+                                />
+                                <label for="amenities" class="">
+                                    { amenity.Name }
+                                </label>
+                             </div>
+                         }
+                     </div>
+                  </div>
+                  }
+               </div>
+             </div>
         </div>
     </div>
 

@@ -4246,6 +4246,11 @@ details.collapse summary::-webkit-details-marker {
   padding: 0px;
 }
 
+[type="checkbox"].checkbox-sm {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
 .divider-horizontal {
   flex-direction: column;
 }
@@ -5094,6 +5099,10 @@ details.collapse summary::-webkit-details-marker {
   gap: 0.25rem;
 }
 
+.gap-16 {
+  gap: 4rem;
+}
+
 .gap-2 {
   gap: 0.5rem;
 }
@@ -5308,6 +5317,10 @@ details.collapse summary::-webkit-details-marker {
 
 .pb-4 {
   padding-bottom: 1rem;
+}
+
+.pb-\[300px\] {
+  padding-bottom: 300px;
 }
 
 .pr-8 {

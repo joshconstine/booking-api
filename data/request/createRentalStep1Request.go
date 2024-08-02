@@ -1,5 +1,9 @@
 package request
 
+import (
+	"booking-api/data/response"
+)
+
 type CreateRentalStep1Params struct {
 	Name                string
 	Address             string
@@ -10,7 +14,7 @@ type CreateRentalStep1Params struct {
 	AllowInstantBooking bool
 	AllowPets           bool
 	ParentProperty      bool
-	Amenities           []uint
+	Amenities           []response.AmenityResponse
 	Success             bool
 }
 
