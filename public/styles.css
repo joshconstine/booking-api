@@ -4923,6 +4923,10 @@ details.collapse summary::-webkit-details-marker {
   height: 5rem;
 }
 
+.h-64 {
+  height: 16rem;
+}
+
 .h-8 {
   height: 2rem;
 }
@@ -4957,6 +4961,10 @@ details.collapse summary::-webkit-details-marker {
 
 .w-52 {
   width: 13rem;
+}
+
+.w-64 {
+  width: 16rem;
 }
 
 .w-72 {
@@ -5409,6 +5417,11 @@ details.collapse summary::-webkit-details-marker {
 .text-black {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.text-branded-400 {
+  --tw-text-opacity: 1;
+  color: rgb(178 194 193 / var(--tw-text-opacity));
 }
 
 .text-branded-800 {
