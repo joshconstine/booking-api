@@ -180,8 +180,8 @@ rentals?
                 <h2 class="text-xl font-bold">Photos</h2>
                 <span class="text-gray-500 text-sm">Set thumbnail photo for entire listing</span>
             </div>
-            <div class="w-full gap-8 flex-wrap flex" >
-                <div class="rounded-lg w-64 h-64 flex-col gap-1 border-gray-700 border-2 flex items-center justify-center">
+            <div id="previewContainer" class="w-full gap-8 flex-wrap flex ">
+                <div class="rounded-lg w-64 h-64 flex-col gap-1 border-gray-700 cursor-pointer border-2 flex items-center justify-center"  id="photoUpload" >
                     <i class="fa-light fa-cloud-arrow-up bd-branded-400"></i>
                    <span class="text-branded-400 underline">Upload a file</span>
                     <span class="">or drag and drop</span>
@@ -191,9 +191,40 @@ rentals?
             <input hidden="true" type="file" id="file" name="file" />
 
         </div>
-         <div class="w-full flex items-start max-w-screen-md">
+         <div class="w-full flex items-end max-w-screen-md">
             <a class="text-xl  mr-2 ">Next step: Tell us about the rooms <i class="fa-solid fa-arrow-right-long"></i></a>
         </div>
+        <script>
+            document.getElementById('photoUpload').addEventListener('click', function() {
+                document.getElementById('file').click();
+            });
+             document.getElementById('file').addEventListener('change', function(event) {
+                var previewContainer = document.getElementById('previewContainer');
+                var files = event.target.files;
+
+                // Clear any existing previews
+                previewContainer.innerHTML = '';
+
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+
+                    if (file.type.startsWith('image/')) {
+                        var reader = new FileReader();
+
+                        reader.onload = function(e) {
+                            var img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.classList.add('rounded-lg', 'w-64', 'h-64', 'object-cover');
+                            previewContainer.appendChild(img);
+                        }
+
+                        reader.readAsDataURL(file);
+                    } else {
+                        alert('Please upload an image file.');
+                    }
+                }
+            });
+        </script>
     </div>
 
 
