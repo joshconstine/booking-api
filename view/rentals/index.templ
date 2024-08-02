@@ -18,7 +18,13 @@ func GetPath(id int) string {
 templ Index(rentals []response.RentalResponse) {
 	@layout.App(true) {
 		<div class="w-full max-w-screen-xl mx-auto text-center py-12">
-			<h2 class="text-xl font-semibold mb-6 ">Rentals</h2>
+		<div class="flex w-full justify-between mx-1 md:mx-8 items-center">
+			<h2 class="text-3xl font-semibold mb-6 ">Rentals</h2>
+			<a class="btn bg-branded-800 text-white" href="/rentals/new">
+                    <i class="fa-solid fa-plus"></i>
+			Add Rental</a>
+		</div>
+
 			<ul class=" flex gap-4 flex-wrap">
 				for _, rental := range rentals {
 					<div class="w-32">
