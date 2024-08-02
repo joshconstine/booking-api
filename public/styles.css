@@ -4394,6 +4394,11 @@ details.collapse summary::-webkit-details-marker {
   position: absolute;
 }
 
+[type="radio"].radio-sm {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
 .stats-vertical {
   grid-auto-flow: row;
 }
