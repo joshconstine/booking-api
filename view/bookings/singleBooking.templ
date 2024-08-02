@@ -17,7 +17,7 @@ func getTotalCostItems(booking response.BookingInformationResponse) string {
 // RentalInformationResponse renders a page with detailed information about a specific rental
 templ BookingInformationTemplate(booking response.BookingInformationResponse) {
     @layout.App(true) {
-                <div class="flex flex-col gap-2 md:flex-row flex-col flex-wrap  mx-2 md:mx-8 my-2    md:my-8">
+                <div class="flex flex-col gap-2  mx-2 md:mx-8 my-2  ">
                     <div class="flex gap-8 items-center">
                         <h1 class="text-2xl font-bold">
                             {booking.ID}
