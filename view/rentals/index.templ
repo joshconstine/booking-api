@@ -27,12 +27,7 @@ templ Index(rentals []response.RentalResponse) {
 
 			<ul class=" flex gap-4 flex-wrap">
 				for _, rental := range rentals {
-					<div class="w-32">
-						<a href={templ.SafeURL(GetPath(int(rental.ID)))}>
-							<li>{ rental.Name }</li>
-							<img src={ rental.Thumbnail } alt={ rental.Name }  />
-						</a>
-					</div>
+				    @RentalCard(rental)
 				}
 			</ul>
 		</div>
