@@ -140,7 +140,9 @@ func SeedBoooking(db *gorm.DB) {
 	// create booking
 
 	userRepository := repositories.NewUserRepositoryImplementation(db)
-	userService := services.NewUserServiceImplementation(userRepository, nil)
+	entityRepository := repositories.NewEntityRepositoryImplementation(db)
+	membershipRepositroy := repositories.NewMembershipRepositoryImplementation(db)
+	userService := services.NewUserServiceImplementation(userRepository, entityRepository, membershipRepositroy, nil)
 	person := gofakeit.Person()
 
 	/***************** Insert a new user *****************/
@@ -171,7 +173,12 @@ func SeedBoooking(db *gorm.DB) {
 	}
 
 	bookingRepository := repositories.NewBookingRepositoryImplementation(db)
-	bookingService := services.NewBookingServiceImplementation(bookingRepository, nil, userService)
+	bookingDetailsRepository := repositories.NewBookingDetailsRepositoryImplementation(db)
+	bookingCostItemRepository := repositories.NewBookingCostItemRepositoryImplementation(db)
+	bookingPaymentsRepository := repositories.NewBookingPaymentRepositoryImplementation(bookingCostItemRepository, db)
+	entityBookingRepository := repositories.NewEntityBookingRepositoryImplementation(db)
+	entityBookingService := services.NewEntityBookingServiceImplementation(entityBookingRepository, bookingDetailsRepository)
+	bookingService := services.NewBookingServiceImplementation(bookingRepository, bookingDetailsRepository, bookingPaymentsRepository, nil, userService, entityBookingService)
 
 	bid, err := bookingService.Create(&bookingToCreate)
 	if err != nil {
@@ -196,9 +203,16 @@ func SeedBoookingWithConflicts(db *gorm.DB) {
 	}
 
 	bookingRepository := repositories.NewBookingRepositoryImplementation(db)
+	bookingDetailsRepository := repositories.NewBookingDetailsRepositoryImplementation(db)
 	userRepository := repositories.NewUserRepositoryImplementation(db)
-	userService := services.NewUserServiceImplementation(userRepository, nil)
-	bookingService := services.NewBookingServiceImplementation(bookingRepository, nil, userService)
+	membershipRepository := repositories.NewMembershipRepositoryImplementation(db)
+	entityRepository := repositories.NewEntityRepositoryImplementation(db)
+	bookingCostIemRepository := repositories.NewBookingCostItemRepositoryImplementation(db)
+	bookingPaymentsRepository := repositories.NewBookingPaymentRepositoryImplementation(bookingCostIemRepository, db)
+	entityBookingRepository := repositories.NewEntityBookingRepositoryImplementation(db)
+	entityBookingService := services.NewEntityBookingServiceImplementation(entityBookingRepository, bookingDetailsRepository)
+	userService := services.NewUserServiceImplementation(userRepository, entityRepository, membershipRepository, nil)
+	bookingService := services.NewBookingServiceImplementation(bookingRepository, bookingDetailsRepository, bookingPaymentsRepository, nil, userService, entityBookingService)
 
 	bid, err := bookingService.Create(&bookingToCreate)
 	if err != nil {
@@ -254,7 +268,9 @@ func SeedChat(db *gorm.DB) {
 
 func InsertNewUser(db *gorm.DB) (request.CreateUserRequest, error) {
 	userRepository := repositories.NewUserRepositoryImplementation(db)
-	userService := services.NewUserServiceImplementation(userRepository, nil)
+	membershipRepository := repositories.NewMembershipRepositoryImplementation(db)
+	entityRepository := repositories.NewEntityRepositoryImplementation(db)
+	userService := services.NewUserServiceImplementation(userRepository, entityRepository, membershipRepository, nil)
 
 	var userToBook = request.CreateUserRequest{
 		Email:       gofakeit.Email(),

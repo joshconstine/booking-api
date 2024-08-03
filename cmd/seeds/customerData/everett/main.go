@@ -205,7 +205,8 @@ var accountsToCreate = []CreateAccountRequest{
 }
 
 func SeedAccountsFromInput(db *gorm.DB) {
-	accountRepository := repositories.NewAccountRepositoryImplementation(db)
+	bookingRepository := repositories.NewBookingRepositoryImplementation(db)
+	accountRepository := repositories.NewAccountRepositoryImplementation(db, bookingRepository)
 	for _, accountInput := range accountsToCreate {
 		accountRepository.Create(accountInput.MapAccountRequestToAccount())
 
