@@ -39,6 +39,16 @@ func (t *RentalServiceImplementation) Create(rental request.CreateRentalRequest)
 	return t.RentalRepository.Create(rental)
 }
 
+func (t *RentalServiceImplementation) CreateStep1(rental request.CreateRentalStep1Params) (response.RentalResponse, error) {
+	err := t.Validate.Struct(rental)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return t.RentalRepository.CreateStep1(rental)
+}
+
 func (t *RentalServiceImplementation) Update(rental request.UpdateRentalRequest) (response.RentalResponse, error) {
 	err := t.Validate.Struct(rental)
 

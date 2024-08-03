@@ -29,7 +29,7 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                 Name: rental.Name,
                 Description: rental.Description,
                 Bedrooms: int(rental.Bedrooms),
-                Bathrooms: int(rental.Bathrooms),
+                Bathrooms: rental.Bathrooms,
                 Amenities: rental.Amenities,
             }, RentalFormErrors{}, amenities)
             @ui.AddPhotoToEntityForm(ui.AddPhotoToEntityFormParams{
@@ -41,7 +41,7 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                     Name: rental.Name,
                     Description: rental.Description,
                     Bedrooms: int(rental.Bedrooms),
-                    Bathrooms: int(rental.Bathrooms),
+                    Bathrooms: rental.Bathrooms,
                 })
                 <div class="mb-4 p-4 shadow-lg rounded-lg">
                 <h2 class="text-2xl font-semibold mb-4">Rooms</h2>

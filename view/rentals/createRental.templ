@@ -17,7 +17,7 @@ func GetAmenityId(amenity response.AmenityResponse) string {
 // RentalInformationResponse renders a page with detailed information about a specific rental
 templ CreateRental( params request.CreateRentalStep1Params, errors request.CreateRentalStep1Errors, amenities []response.SortedAmenityResponse) {
     @layout.App(true) {
-    <form id="step1Form"  hx-post="/api/rentals" hx-swap="outerHTML"  hx-indicator="#loading"
+    <form id="step1Form"  hx-post="/rentals/new" hx-swap="outerHTML"  hx-indicator="#loading"
     >
     <div class="flex flex-col gap-4 md:mt-4 mt-1 items-center w-full pb-[300px] overflow">
         <div class=" px-8 w-full flex justify-between items-center">

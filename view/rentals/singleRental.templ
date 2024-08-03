@@ -18,7 +18,7 @@ templ RentalInformationResponse(rental response.RentalInformationResponse) {
                     Name: rental.Name,
                     Description: rental.Description,
                     Bedrooms: int(rental.Bedrooms),
-                    Bathrooms: int(rental.Bathrooms),
+                    Bathrooms: rental.Bathrooms,
                 })
 
             <div class="mb-4 p-4 shadow-lg rounded-lg">
