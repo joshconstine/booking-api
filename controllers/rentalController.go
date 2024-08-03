@@ -5,6 +5,7 @@ import (
 	"booking-api/data/response"
 	"booking-api/services"
 	rentals "booking-api/view/rentals"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -63,11 +64,43 @@ func (controller *RentalController) FindById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (controller *RentalController) Create(w http.ResponseWriter, r *http.Request) error {
+func (controller *RentalController) CreateForm(w http.ResponseWriter, r *http.Request) error {
 	params := request.CreateRentalStep1Params{}
 	errors := request.CreateRentalStep1Errors{}
 	amenities := controller.amenityService.FindAllSorted()
 	return rentals.CreateRental(params, errors, amenities).Render(r.Context(), w)
+}
+func (controller *RentalController) Create(w http.ResponseWriter, r *http.Request) error {
+	params := request.CreateRentalStep1Params{}
+	bedroomsInt, _ := strconv.Atoi(r.FormValue("bedrooms"))
+
+	params.Name = r.FormValue("name")
+	params.Address = r.FormValue("address")
+	params.Description = r.FormValue("description")
+	params.Bedrooms = uint(bedroomsInt)
+	params.Bathrooms, _ = strconv.ParseFloat(r.FormValue("bathrooms"), 32)
+	params.Guests, _ = strconv.Atoi(r.FormValue("guests"))
+	params.AllowInstantBooking, _ = strconv.ParseBool(r.FormValue("allowInstantBooking"))
+	params.AllowPets, _ = strconv.ParseBool(r.FormValue("allowPets"))
+	params.ParentProperty, _ = strconv.ParseBool(r.FormValue("parentProperty"))
+
+	errors := request.CreateRentalStep1Errors{}
+
+	rental, err := controller.rentalService.CreateStep1(params)
+	if err != nil {
+		errors.Name = "Rental could not be created"
+	}
+
+	fmt.Println(rental)
+	if errors.Name != "" {
+		amenities := controller.amenityService.FindAllSorted()
+		return rentals.CreateRental(params, errors, amenities).Render(r.Context(), w)
+	}
+
+	http.Redirect(w, r, "/rentals", http.StatusSeeOther)
+
+	//return rentals.RentalDetails().Render(r.Context(), w)
+	return nil
 }
 
 func (controller *RentalController) Update(w http.ResponseWriter, r *http.Request) error {
@@ -77,14 +110,14 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 
 	id, _ := strconv.Atoi(rentalId)
 	bedroomsInt, _ := strconv.Atoi(bedrooms)
-	bathroomsInt, _ := strconv.Atoi(bathrooms)
+	bathroomsFloat, _ := strconv.ParseFloat(bathrooms, 64)
 
 	params := rentals.RentalFormParams{
 		RentalID:    uint(id),
 		Name:        r.FormValue("name"),
 		Description: r.FormValue("description"),
 		Bedrooms:    bedroomsInt,
-		Bathrooms:   bathroomsInt,
+		Bathrooms:   bathroomsFloat,
 	}
 
 	rental, err := controller.rentalService.UpdateRental(params)
@@ -98,7 +131,7 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 		Name:        rental.Name,
 		Description: rental.Description,
 		Bedrooms:    int(rental.Bedrooms),
-		Bathrooms:   int(rental.Bathrooms),
+		Bathrooms:   rental.Bathrooms,
 
 		Success: true,
 	}

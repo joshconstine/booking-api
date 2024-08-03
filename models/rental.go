@@ -10,11 +10,11 @@ import (
 
 type Rental struct {
 	gorm.Model
-	Name        string `gorm:"not null"`
-	LocationID  uint   `gorm:"not null"`
-	Bedrooms    uint   `gorm:"not null"`
-	Bathrooms   uint   `gorm:"not null"`
-	AccountID   uint   `gorm:"not null"`
+	Name        string  `gorm:"not null"`
+	LocationID  uint    `gorm:"not null"`
+	Bedrooms    uint    `gorm:"not null"`
+	Bathrooms   float64 `gorm:"not null"`
+	AccountID   uint    `gorm:"not null"`
 	Description string
 
 	Location     Location

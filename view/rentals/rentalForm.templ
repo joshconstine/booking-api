@@ -6,6 +6,7 @@ import (
     "booking-api/view/ui"
 	"booking-api/data/response"
 
+	"fmt"
 )
 
 type RentalFormParams struct {
@@ -13,7 +14,7 @@ RentalID uint
 Name string
 Description string
 Bedrooms int
-Bathrooms int
+Bathrooms float64
 Success bool
 Amenities []response.AmenityResponse
 }
@@ -96,7 +97,7 @@ templ RentalForm(params RentalFormParams, errors RentalFormErrors, amenities []r
                <dd class="sm:col-span-2 sm:mt-0">
                   <input
                   class="input input-bordered w-full "
-                  value={ strconv.Itoa(params.Bathrooms) }
+                  value={fmt.Sprintf("%f", params.Bathrooms)}
                   name="bathrooms"
                   type="number"
                   />

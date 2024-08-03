@@ -99,6 +99,17 @@ func (r *RentalRepositoryImplementation) Create(rental request.CreateRentalReque
 	return rentalModel.MapRentalsToResponse(), nil
 }
 
+func (r *RentalRepositoryImplementation) CreateStep1(rental request.CreateRentalStep1Params) (response.RentalResponse, error) {
+
+	rentalModel := rental.MapCreateRentalStep1ToRental()
+	result := r.Db.Create(&rentalModel)
+	if result.Error != nil {
+		return response.RentalResponse{}, result.Error
+	}
+
+	return rentalModel.MapRentalsToResponse(), nil
+}
+
 func (r *RentalRepositoryImplementation) Update(rental request.UpdateRentalRequest) (response.RentalResponse, error) {
 	var rentalToUpdate models.Rental
 	result := r.Db.Where("id = ?", rental.ID).First(&rentalToUpdate)
@@ -128,7 +139,7 @@ func (r *RentalRepositoryImplementation) UpdateRental(rental rentals.RentalFormP
 
 	rentalToUpdate.Name = rental.Name
 	rentalToUpdate.Bedrooms = uint(rental.Bedrooms)
-	rentalToUpdate.Bathrooms = uint(rental.Bathrooms)
+	rentalToUpdate.Bathrooms = rental.Bathrooms
 	rentalToUpdate.Description = rental.Description
 
 	result = r.Db.Save(&rentalToUpdate)
