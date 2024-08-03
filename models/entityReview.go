@@ -8,6 +8,7 @@ type EntityReview struct {
 	gorm.Model
 	EntityID   uint    `gorm:"not null"`
 	EntityType string  `gorm:"not null"`
+	UserID     string  `gorm:"not null"`
 	Rating     float64 `gorm:"not null"`
 	Message    string
 }
