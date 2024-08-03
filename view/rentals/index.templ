@@ -29,6 +29,7 @@ templ Index(rentals []response.RentalResponse) {
                     for _, rental := range rentals {
                         @RentalCard(rental)
                     }
+                    @CreateRentalCard()
                 </ul>
 		</div>
 	}
