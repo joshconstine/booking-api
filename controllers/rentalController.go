@@ -129,6 +129,14 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 	errors := request.CreateRentalStep1Errors{}
 	//
 	var amenities []int
+	for key, _ := range r.Form {
+		if len(key) > 8 && key[:8] == "amenity_" {
+			id := key[8:]
+			amenityId, _ := strconv.Atoi(id)
+			amenities = append(amenities, amenityId)
+		}
+
+	}
 	//for key, value := range r.Form {
 	//	if key[:8] == "amenity_" {
 	//		amenityId, _ := strconv.Atoi(value[0])
