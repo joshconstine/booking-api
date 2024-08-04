@@ -40,12 +40,14 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                     <h1 class="text-3xl font-bold text-center">{rental.Name}</h1>
                         if rental.RentalStatus.IsClean {
 
-                            <div class="btn bg-green-500 btn-sm rounded-full">
+                            <div class=" bg-green-500 btn-sm rounded-full flex items-center gap-1">
                                 <span class="text-white text-sm">Clean</span>
+                                <input type="checkbox" class="toggle toggle-success" checked="checked" />
                             </div>
                         } else {
-                            <div class="btn bg-red-500 btn-sm rounded-full">
+                            <div class=" bg-red-500 btn-sm rounded-full flex items-center gap-1">
                                 <span class="text-white text-sm">Dirty</span>
+                                <input type="checkbox" class="toggle toggle-error"  />
                             </div>
                         }
                 </div>
