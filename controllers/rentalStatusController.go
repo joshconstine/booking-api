@@ -4,6 +4,8 @@ import (
 	requests "booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/services"
+	"booking-api/view/ui"
+	"github.com/go-chi/chi/v5"
 	"net/http"
 	"strconv"
 
@@ -48,25 +50,20 @@ func (controller *RentalStatusController) FindByRentalId(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (controller *RentalStatusController) UpdateStatusForRentalId(ctx *gin.Context) {
-	var updateRentalStatusRequest requests.UpdateRentalStatusRequest
-	var response response.Response
-	err := ctx.ShouldBindJSON(&updateRentalStatusRequest)
+func (controller *RentalStatusController) ToggleCleanStatusForRental(w http.ResponseWriter, r *http.Request) error {
 
-	if err != nil {
-		response.Code = http.StatusBadRequest
-		response.Status = "Bad Request"
-		response.Data = err.Error()
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
+	var updateRentalStatusRequest requests.UpdateRentalStatusRequest
+
+	var rentalID = chi.URLParam(r, "rentalId")
+
+	// Convert the rentalID to an integer
+	rentalIDInt, _ := strconv.Atoi(rentalID)
+
+	updateRentalStatusRequest.RentalID = uint(rentalIDInt)
+
+	currentStatus := controller.rentalStatusService.FindByRentalId(updateRentalStatusRequest.RentalID)
+	updateRentalStatusRequest.IsClean = !currentStatus.IsClean
 
 	rentalStatus := controller.rentalStatusService.UpdateStatusForRentalId(updateRentalStatusRequest.RentalID, updateRentalStatusRequest.IsClean)
-
-	response.Code = http.StatusOK
-	response.Status = "Ok"
-	response.Data = rentalStatus
-
-	ctx.JSON(http.StatusOK, response)
-
+	return ui.RentalStatusBadge(rentalStatus, uint(rentalIDInt)).Render(r.Context(), w)
 }

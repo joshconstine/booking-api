@@ -3,6 +3,7 @@ package repositories
 import (
 	responses "booking-api/data/response"
 	"booking-api/models"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -51,6 +52,7 @@ func (r *RentalStatusRepositoryImplementation) UpdateStatusForRentalId(rentalId 
 	}
 
 	rentalStatus.IsClean = isClean
+	rentalStatus.CreatedAt = time.Now()
 	result = r.Db.Save(&rentalStatus)
 	if result.Error != nil {
 		return responses.RentalStatusResponse{}

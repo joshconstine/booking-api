@@ -20,7 +20,7 @@ import (
 )
 
 func NewChiRouter(authController *controllers.AuthController, rentalsController *controllers.RentalController, bookingController *controllers.BookingController, boatsController *controllers.BoatController, userSettingsController *controllers.UserSettingsController,
-	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController, entityBookingPermissionController *controllers.EntityBookingPermissionController, photoController *controllers.PhotoController, accountController *controllers.AccountController, userController *controllers.UserController, entityBookingController *controllers.EntityBookingController, membershipRepository repositories.MembershipRepository, entityRepository repositories.EntityRepository, entityBookingCostController *controllers.EntityBookingCostController) *chi.Mux {
+	userService *services.UserService, adminController *controllers.AdminController, chatController *controllers.ChatController, entityBookingPermissionController *controllers.EntityBookingPermissionController, photoController *controllers.PhotoController, accountController *controllers.AccountController, userController *controllers.UserController, entityBookingController *controllers.EntityBookingController, membershipRepository repositories.MembershipRepository, entityRepository repositories.EntityRepository, entityBookingCostController *controllers.EntityBookingCostController, rentalStatusController *controllers.RentalStatusController) *chi.Mux {
 
 	router := chi.NewMux()
 
@@ -138,6 +138,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 		auth.Get("/settings/account/stripe-finances", controllers.Make(accountController.HandleAccountFinance))
 		auth.Get("/rentals/new", controllers.Make(rentalsController.CreateForm))
 		auth.Post("/rentals/new", controllers.Make(rentalsController.Create))
+		auth.Put("/rentals/{rentalId}/status", controllers.Make(rentalStatusController.ToggleCleanStatusForRental))
 	})
 
 	router.Group(func(owner chi.Router) {

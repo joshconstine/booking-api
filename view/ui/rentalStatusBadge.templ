@@ -1,0 +1,47 @@
+package ui
+
+import (
+	"booking-api/data/response"
+    "strconv"
+)
+
+func getbadgeClass(isClean bool) string {
+    if isClean {
+        return "badge badge-success flex items-center gap-1"
+    }
+    return "badge badge-error flex items-center gap-1"
+}
+func getChecked(isClean bool) string {
+    if isClean {
+        return "checked"
+    }
+    return ""
+}
+func getText(isClean bool) string {
+    if isClean {
+        return "Clean"
+    }
+    return "Dirty"
+}
+
+func getPath(id uint) string {
+    path := "/rentals/"
+    path += strconv.Itoa(int(id))
+    path += "/status"
+    return path
+
+}
+templ RentalStatusBadge(rentalStatus response.RentalStatusResponse, rentalId uint) {
+	<div class={getbadgeClass(rentalStatus.IsClean)} id="rentalStatusBadge"
+
+                hx-put={string(templ.SafeURL(getPath(rentalId)))}
+                hx-trigger="click"
+                hx-target="#rentalStatusBadge"
+                hx-swap="outerHTML"
+	>
+            <span class="text-white text-sm">{getText(rentalStatus.IsClean)}</span>
+            <input
+            type="checkbox" class="toggle toggle-success" checked={getChecked(rentalStatus.IsClean)} />
+	</div>
+}
+
