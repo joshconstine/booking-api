@@ -7,16 +7,17 @@ import (
 
 func getbadgeClass(isClean bool) string {
     if isClean {
-        return "badge badge-success flex items-center gap-1"
+        return " rounded-full px-2 py-1 bg-green-500 flex items-center gap-1"
     }
-    return "badge badge-error flex items-center gap-1"
+    return " rounded-full px-2 py-1 bg-red-500 flex items-center gap-1"
 }
-func getChecked(isClean bool) string {
+func getInputClass(isClean bool) string {
     if isClean {
-        return "checked"
+        return "toggle toggle-success"
     }
-    return ""
+    return "toggle toggle-error toggle-off"
 }
+
 func getText(isClean bool) string {
     if isClean {
         return "Clean"
@@ -40,8 +41,13 @@ templ RentalStatusBadge(rentalStatus response.RentalStatusResponse, rentalId uin
                 hx-swap="outerHTML"
 	>
             <span class="text-white text-sm">{getText(rentalStatus.IsClean)}</span>
+            if rentalStatus.IsClean {
             <input
-            type="checkbox" class="toggle toggle-success" checked={getChecked(rentalStatus.IsClean)} />
+            type="checkbox" class={getInputClass(rentalStatus.IsClean)} checked />
+            } else {
+            <input
+            type="checkbox" class={getInputClass(rentalStatus.IsClean)}  />
+            }
 	</div>
 }
 
