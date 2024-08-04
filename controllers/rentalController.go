@@ -73,13 +73,14 @@ func (controller *RentalController) CreateForm(w http.ResponseWriter, r *http.Re
 func (controller *RentalController) Create(w http.ResponseWriter, r *http.Request) error {
 	params := request.CreateRentalStep1Params{}
 	bedroomsInt, _ := strconv.Atoi(r.FormValue("bedrooms"))
+	guestsInt, _ := strconv.Atoi(r.FormValue("guests"))
 
 	params.Name = r.FormValue("name")
 	params.Address = r.FormValue("address")
 	params.Description = r.FormValue("description")
 	params.Bedrooms = uint(bedroomsInt)
 	params.Bathrooms, _ = strconv.ParseFloat(r.FormValue("bathrooms"), 32)
-	params.Guests, _ = strconv.Atoi(r.FormValue("guests"))
+	params.Guests = uint(guestsInt)
 	params.AllowInstantBooking, _ = strconv.ParseBool(r.FormValue("allowInstantBooking"))
 	params.AllowPets, _ = strconv.ParseBool(r.FormValue("allowPets"))
 	params.ParentProperty, _ = strconv.ParseBool(r.FormValue("parentProperty"))

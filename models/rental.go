@@ -14,6 +14,7 @@ type Rental struct {
 	LocationID  uint    `gorm:"not null"`
 	Bedrooms    uint    `gorm:"not null"`
 	Bathrooms   float64 `gorm:"not null"`
+	Guests      uint    `gorm:"not null"`
 	AccountID   uint    `gorm:"not null"`
 	Description string
 
@@ -77,6 +78,7 @@ func (r *Rental) MapRentalToInformationResponse() response.RentalInformationResp
 	response.Name = r.Name
 	response.Bedrooms = r.Bedrooms
 	response.Bathrooms = r.Bathrooms
+	response.Guests = r.Guests
 	response.Description = r.Description
 	response.Location = r.Location.MapLocationToResponse()
 	response.RentalStatus = r.RentalStatus.MapRentalStatusToResponse()

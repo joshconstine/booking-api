@@ -6,6 +6,7 @@ import (
 	"strconv"
 
     "booking-api/view/ui"
+	"booking-api/data/request"
 )
 
 func CreateGetBookingFormUrl(id int) string {
@@ -68,18 +69,24 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                 </div>
             </div>
             @ui.EntityPhotoList(rental.Photos)
-            @RentalForm(RentalFormParams{
-                RentalID: rental.ID,
+
+            @RentalForm(request.CreateRentalStep1Params{
+                RentalID: &rental.ID,
                 Name: rental.Name,
                 Description: rental.Description,
-                Bedrooms: int(rental.Bedrooms),
+                Bedrooms: rental.Bedrooms,
                 Bathrooms: rental.Bathrooms,
                 Amenities: rental.Amenities,
+                Guests: rental.Guests,
+                AllowInstantBooking: rental.BookingRule.AllowInstantBooking,
+                AllowPets: rental.BookingRule.AllowPets,
+                Success: false,
+                ParentProperty: false,
             }, RentalFormErrors{}, amenities)
-            @ui.AddPhotoToEntityForm(ui.AddPhotoToEntityFormParams{
-                    EntityID: rental.ID,
-                    EntityType:"rentals",
-                })
+        //    @ui.AddPhotoToEntityForm(ui.AddPhotoToEntityFormParams{
+          //          EntityID: rental.ID,
+            //        EntityType:"rentals",
+              //  })
               @RentalDetails(RentalFormParams{
                     RentalID: rental.ID,
                     Name: rental.Name,

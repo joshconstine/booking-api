@@ -7,6 +7,7 @@ import (
 	"booking-api/data/response"
 
 	"fmt"
+	"booking-api/data/request"
 )
 
 type RentalFormParams struct {
@@ -26,8 +27,8 @@ Bedrooms string
 Bathrooms string
 }
 
-func  CreateRentalUpdateUrl(id uint) string {
-    return "/rentals/" + strconv.Itoa(int(id))
+func  CreateRentalUpdateUrl(id *uint) string {
+    return "/rentals/" + strconv.Itoa(int(*id))
 }
 func contains(s []response.AmenityResponse, e int) bool {
     for _, a := range s {
@@ -45,7 +46,7 @@ func getIsChecked(b bool) string {
     return ""
 }
 
-templ RentalForm(params RentalFormParams, errors RentalFormErrors, amenities []response.SortedAmenityResponse) {
+templ RentalForm(params request.CreateRentalStep1Params, errors RentalFormErrors, amenities []response.SortedAmenityResponse) {
    <form
    hx-put={CreateRentalUpdateUrl(params.RentalID)}
    hx-swap="outerHTML"
@@ -84,7 +85,7 @@ templ RentalForm(params RentalFormParams, errors RentalFormErrors, amenities []r
                <dd class="sm:col-span-2 sm:mt-0">
                   <input
                   class="input input-bordered w-full "
-                  value={ strconv.Itoa(params.Bedrooms) }
+                  value={ strconv.Itoa(int(params.Bedrooms)) }
                   name="bedrooms"
                     type="number"
                   />

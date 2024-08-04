@@ -7,12 +7,13 @@ import (
 )
 
 type CreateRentalStep1Params struct {
+	RentalID            *uint
 	Name                string
 	Address             string
 	Description         string
 	Bedrooms            uint
 	Bathrooms           float64
-	Guests              int
+	Guests              uint
 	AllowInstantBooking bool
 	AllowPets           bool
 	ParentProperty      bool
