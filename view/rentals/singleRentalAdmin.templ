@@ -38,7 +38,7 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
             <div class="max-w-screen-2xl flex-2 flex-grow w-screen-2xl ">
                 <div class=" flex gap-4 items-center w-full">
                     <h1 class="text-3xl font-bold text-center">{rental.Name}</h1>
-                    @ui.RentalStatusBadge(rental.RentalStatus, rental.ID))
+                    @ui.RentalStatusBadge(rental.RentalStatus, rental.ID)
                 </div>
                 <span>Property information</span>
             </div>  <aside class="flex-1">
