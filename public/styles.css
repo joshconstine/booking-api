@@ -4987,10 +4987,6 @@ details.collapse summary::-webkit-details-marker {
   height: 100%;
 }
 
-.max-h-8 {
-  max-height: 2rem;
-}
-
 .min-h-screen {
   min-height: 100vh;
 }
@@ -5045,10 +5041,6 @@ details.collapse summary::-webkit-details-marker {
 
 .min-w-full {
   min-width: 100%;
-}
-
-.max-w-16 {
-  max-width: 4rem;
 }
 
 .max-w-2xl {
