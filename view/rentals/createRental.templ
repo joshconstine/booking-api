@@ -19,6 +19,7 @@ templ CreateRental( params request.CreateRentalStep1Params, errors request.Creat
     @layout.App(true) {
     <form id="step1Form"  hx-post="/rentals/new" hx-swap="outerHTML"  hx-indicator="#loading"
     >
+    <input type="hidden" name="accountID" value={strconv.Itoa(int(params.AccountID))} />
     <div class="flex flex-col gap-4 md:mt-4 mt-1 items-center w-full pb-[300px] overflow">
         <div class=" px-8 w-full flex justify-between items-center">
             <a class="btn btn-outline rounded-full btn-sm">Questions?</a>

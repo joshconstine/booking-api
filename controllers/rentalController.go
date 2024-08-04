@@ -74,11 +74,14 @@ func (controller *RentalController) Create(w http.ResponseWriter, r *http.Reques
 	params := request.CreateRentalStep1Params{}
 	bedroomsInt, _ := strconv.Atoi(r.FormValue("bedrooms"))
 	guestsInt, _ := strconv.Atoi(r.FormValue("guests"))
+	accountID := r.FormValue("accountID")
+	accountIDInt, _ := strconv.Atoi(accountID)
 
 	params.Name = r.FormValue("name")
 	params.Address = r.FormValue("address")
 	params.Description = r.FormValue("description")
 	params.Bedrooms = uint(bedroomsInt)
+	params.AccountID = uint(accountIDInt)
 	params.Bathrooms, _ = strconv.ParseFloat(r.FormValue("bathrooms"), 32)
 	params.Guests = uint(guestsInt)
 	params.AllowInstantBooking, _ = strconv.ParseBool(r.FormValue("allowInstantBooking"))
@@ -86,6 +89,10 @@ func (controller *RentalController) Create(w http.ResponseWriter, r *http.Reques
 	params.ParentProperty, _ = strconv.ParseBool(r.FormValue("parentProperty"))
 
 	errors := request.CreateRentalStep1Errors{}
+
+	amenities := getAmenitiesFromRequest(r)
+
+	params.Amenities = amenities
 
 	rental, err := controller.rentalService.CreateStep1(params)
 	if err != nil {
@@ -128,28 +135,10 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 
 	errors := request.CreateRentalStep1Errors{}
 	//
-	var amenities []int
-	for key, _ := range r.Form {
-		if len(key) > 8 && key[:8] == "amenity_" {
-			id := key[8:]
-			amenityId, _ := strconv.Atoi(id)
-			amenities = append(amenities, amenityId)
-		}
 
-	}
-	//for key, value := range r.Form {
-	//	if key[:8] == "amenity_" {
-	//		amenityId, _ := strconv.Atoi(value[0])
-	//		amenities = append(amenities, amenityId)
-	//	}
-	//}
-	var amenity response.AmenityResponse
-	for _, amenityId := range amenities {
-		amenity.ID = uint(amenityId)
-		params.Amenities = append(params.Amenities, amenity)
+	amenities := getAmenitiesFromRequest(r)
 
-	}
-
+	params.Amenities = amenities
 	_, err := controller.rentalService.UpdateRental(params)
 
 	amenitiesSorted := controller.amenityService.FindAllSorted()
@@ -160,7 +149,23 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 
 	return rentals.RentalForm(params, errors, amenitiesSorted).Render(r.Context(), w)
 }
+func getAmenitiesFromRequest(r *http.Request) []response.AmenityResponse {
+	var amenities []uint
+	for key, value := range r.Form {
+		if len(key) > 8 && key[:8] == "amenity_" {
+			amenityId, _ := strconv.Atoi(value[0])
+			amenities = append(amenities, uint(amenityId))
+		}
+	}
+	var responseAmenities []response.AmenityResponse
+	var amenity response.AmenityResponse
+	for _, amenityId := range amenities {
+		amenity.ID = uint(amenityId)
+		responseAmenities = append(responseAmenities, amenity)
 
+	}
+	return responseAmenities
+}
 func (controller *RentalController) HandleRentalDetail(w http.ResponseWriter, r *http.Request) error {
 
 	// dateParam := chi.URLParam(r, "date")

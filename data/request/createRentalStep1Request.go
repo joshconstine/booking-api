@@ -3,6 +3,7 @@ package request
 import (
 	"booking-api/data/response"
 	"booking-api/models"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -72,5 +73,14 @@ func (rental *CreateRentalStep1Params) MapCreateRentalStep1ToRental() models.Ren
 			},
 		},
 	}
+
+	for _, amenity := range rental.Amenities {
+		rentalModel.Amenities = append(rentalModel.Amenities, models.Amenity{
+			Model: gorm.Model{
+				ID: amenity.ID,
+			},
+		})
+	}
+
 	return rentalModel
 }
