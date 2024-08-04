@@ -7,6 +7,7 @@ type RentalInformationResponse struct {
 	Bathrooms    float64              `json:"bathrooms"`
 	Guests       uint                 `json:"guests"`
 	Description  string               `json:"description"`
+	Address      string               `json:"address"`
 	Location     LocationResponse     `json:"location"`
 	RentalStatus RentalStatusResponse `json:"rentalStatus"`
 	RentalRooms  []RentalRoomResponse `json:"rentalRooms"`

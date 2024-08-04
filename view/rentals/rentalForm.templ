@@ -69,7 +69,7 @@ templ RentalForm(params request.CreateRentalStep1Params, errors request.CreateRe
                 <label for="address" class="font-semibold">
                    Address
                 </label>
-                <input type="text" name="address" value={params.Address}id="address" required class="input input-bordered" />
+                <input type="text" name="address" value={params.Address} id="address" required class="input input-bordered" />
                 if len(errors.Address) > 0 {
                     <div class="text-sm text-error mt-1">{ errors.Address }</div>
                 }
