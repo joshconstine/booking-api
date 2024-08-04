@@ -31,8 +31,11 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                     <a class="btn  btn-md">Public view</a>
                     <a class="btn btn-outline rounded-full btn-sm">Save and exit</a>
                 </div>
-            </div>
-            <div class="max-w-screen-2xl w-screen-2xl items-start flex flex-col gap-4">
+            </div> <div class="w-full flex flex-wrap mx-auto gap-4">
+                 <aside class="flex-1">
+
+                 </aside>
+            <div class="max-w-screen-2xl flex-2 flex-grow w-screen-2xl ">
                 <div class=" flex gap-4 items-center w-full">
                     <h1 class="text-3xl font-bold text-center">{rental.Name}</h1>
                         if rental.RentalStatus.IsClean {
@@ -47,7 +50,10 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                         }
                 </div>
                 <span>Property information</span>
-            </div>
+            </div>  <aside class="flex-1">
+
+                 </aside>
+                 </div>
            <div class="w-full flex flex-wrap mx-auto gap-4">
                  <aside class="flex-1">
 
