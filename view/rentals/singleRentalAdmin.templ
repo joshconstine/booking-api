@@ -33,41 +33,45 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                 </div>
             </div>
             <div class="max-w-screen-2xl  flex flex-col gap-4">
-            <div class=" flex gap-4 items-center w-full">
-                <h1 class="text-3xl font-bold text-center">{rental.Name}</h1>
-                    if rental.RentalStatus.IsClean {
+                <div class=" flex gap-4 items-center w-full">
+                    <h1 class="text-3xl font-bold text-center">{rental.Name}</h1>
+                        if rental.RentalStatus.IsClean {
 
-                        <div class="btn bg-green-500 btn-sm rounded-full">
-                            <span class="text-white text-sm">Clean</span>
-                        </div>
-                    } else {
-                        <div class="btn bg-red-500 btn-sm rounded-full">
-                            <span class="text-white text-sm">Dirty</span>
-                        </div>
-                    }
-            </div>
-            <span>Property information</span>
-
-            <div class="w-full flex  gap-4">
-                    <div class="w-full h-72 rounded-lg bg-branded-400">
-                        <img class="w-full h-full object-cover rounded-lg" src={rental.Photos[0].Photo.URL } alt="rental photo" />
-                    </div>
-                    <div class="flex flex-col gap-2 w-64">
-                        <button class="bg-branded-400 btn items-center flex">
-                            <span>Property info</span>
-                            <i class="fa-regular fa-house"></i>
-                        </button>
-                        <button class="items-center gap-2 btn flex">
-                            <span>Rooms info</span>
-                           <i class="fa-regular fa-bed"></i>
-                        </button>
-                        <button class="items-center gap-2 btn flex ">
-                            <span>Availability/Pricing</span>
-                            <i class="fa-kit fa-regular-calendar-circle-dollar"></i>
-                        </button>
-                    </div>
+                            <div class="btn bg-green-500 btn-sm rounded-full">
+                                <span class="text-white text-sm">Clean</span>
+                            </div>
+                        } else {
+                            <div class="btn bg-red-500 btn-sm rounded-full">
+                                <span class="text-white text-sm">Dirty</span>
+                            </div>
+                        }
                 </div>
+                <span>Property information</span>
             </div>
+           <div class="w-full flex flex-wrap mx-auto gap-4">
+                 <aside class="flex-1">
+
+                 </aside>
+                <div class="w-full  flex-grow max-w-screen-md h-72 flex-2 rounded-lg bg-branded-400 justify-self-center align-self-center">
+                    <img class="w-full h-full object-cover rounded-lg" src={rental.Photos[0].Photo.URL} alt="rental photo" />
+                </div>
+                <aside class="flex flex-col gap-2 w-64 flex-1">
+                    <button class="bg-branded-400 btn items-center flex">
+                        <span>Property info</span>
+                        <i class="fa-regular fa-house"></i>
+                    </button>
+                    <button class="items-center gap-2 btn flex">
+                        <span>Rooms info</span>
+                        <i class="fa-regular fa-bed"></i>
+                    </button>
+                    <button class="items-center gap-2 btn flex">
+                        <span>Availability/Pricing</span>
+                        <i class="fa-kit fa-regular-calendar-circle-dollar"></i>
+                    </button>
+                </aside>
+                //<div class="flex-grow"></div>
+            </div>
+
             @ui.EntityPhotoList(rental.Photos)
 
             @RentalForm(request.CreateRentalStep1Params{
@@ -83,11 +87,6 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                 Success: false,
                 ParentProperty: false,
             }, request.CreateRentalStep1Errors{}, amenities)
-        //    @ui.AddPhotoToEntityForm(ui.AddPhotoToEntityFormParams{
-          //          EntityID: rental.ID,
-            //        EntityType:"rentals",
-              //  })
-
 
 
 
