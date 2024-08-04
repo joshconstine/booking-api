@@ -108,36 +108,49 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 	rentalId := chi.URLParam(r, "rentalId")
 	bedrooms := r.FormValue("bedrooms")
 	bathrooms := r.FormValue("bathrooms")
+	address := r.FormValue("address")
 
 	id, _ := strconv.Atoi(rentalId)
 	bedroomsInt, _ := strconv.Atoi(bedrooms)
 	bathroomsFloat, _ := strconv.ParseFloat(bathrooms, 64)
+	guests := r.FormValue("guests")
 
-	params := rentals.RentalFormParams{
+	guestsInt, _ := strconv.Atoi(guests)
+	params := request.CreateRentalStep1Params{
 		RentalID:    uint(id),
 		Name:        r.FormValue("name"),
 		Description: r.FormValue("description"),
-		Bedrooms:    bedroomsInt,
+		Bedrooms:    uint(bedroomsInt),
+		Address:     address,
+		Guests:      uint(guestsInt),
 		Bathrooms:   bathroomsFloat,
 	}
 
-	rental, err := controller.rentalService.UpdateRental(params)
+	errors := request.CreateRentalStep1Errors{}
+	//
+	var amenities []int
+	//for key, value := range r.Form {
+	//	if key[:8] == "amenity_" {
+	//		amenityId, _ := strconv.Atoi(value[0])
+	//		amenities = append(amenities, amenityId)
+	//	}
+	//}
+	var amenity response.AmenityResponse
+	for _, amenityId := range amenities {
+		amenity.ID = uint(amenityId)
+		params.Amenities = append(params.Amenities, amenity)
 
+	}
+
+	_, err := controller.rentalService.UpdateRental(params)
+
+	amenitiesSorted := controller.amenityService.FindAllSorted()
 	if err != nil {
 		return err
 
 	}
 
-	params = rentals.RentalFormParams{
-		Name:        rental.Name,
-		Description: rental.Description,
-		Bedrooms:    int(rental.Bedrooms),
-		Bathrooms:   rental.Bathrooms,
-
-		Success: true,
-	}
-
-	return rentals.RentalDetails(params).Render(r.Context(), w)
+	return rentals.RentalForm(params, errors, amenitiesSorted).Render(r.Context(), w)
 }
 
 func (controller *RentalController) HandleRentalDetail(w http.ResponseWriter, r *http.Request) error {

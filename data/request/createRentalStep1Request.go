@@ -7,7 +7,7 @@ import (
 )
 
 type CreateRentalStep1Params struct {
-	RentalID            *uint
+	RentalID            uint
 	Name                string
 	Address             string
 	Description         string

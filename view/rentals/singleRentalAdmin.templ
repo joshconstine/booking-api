@@ -72,7 +72,7 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
             @ui.EntityPhotoList(rental.Photos)
 
             @RentalForm(request.CreateRentalStep1Params{
-                RentalID: &rental.ID,
+                RentalID: rental.ID,
                 Name: rental.Name,
                 Description: rental.Description,
                 Bedrooms: rental.Bedrooms,

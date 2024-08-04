@@ -26,8 +26,8 @@ Bedrooms string
 Bathrooms string
 }
 
-func  CreateRentalUpdateUrl(id *uint) string {
-    return "/rentals/" + strconv.Itoa(int(*id))
+func  CreateRentalUpdateUrl(id uint) string {
+    return "/rentals/" + strconv.Itoa(int(id))
 }
 func contains(s []response.AmenityResponse, e int) bool {
     for _, a := range s {

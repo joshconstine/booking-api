@@ -4,8 +4,6 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/repositories"
-	rentals "booking-api/view/rentals"
-
 	"github.com/go-playground/validator/v10"
 )
 
@@ -59,7 +57,7 @@ func (t *RentalServiceImplementation) Update(rental request.UpdateRentalRequest)
 	return t.RentalRepository.Update(rental)
 }
 
-func (t *RentalServiceImplementation) UpdateRental(rental rentals.RentalFormParams) (response.RentalResponse, error) {
+func (t *RentalServiceImplementation) UpdateRental(rental request.CreateRentalStep1Params) (response.RentalResponse, error) {
 	err := t.Validate.Struct(rental)
 
 	if err != nil {

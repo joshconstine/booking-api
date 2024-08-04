@@ -5,7 +5,6 @@ import (
 	"booking-api/data/response"
 	"booking-api/models"
 	"booking-api/pkg/database"
-	rentals "booking-api/view/rentals"
 	"log"
 
 	"gorm.io/gorm"
@@ -130,7 +129,7 @@ func (r *RentalRepositoryImplementation) Update(rental request.UpdateRentalReque
 	return rentalToUpdate.MapRentalsToResponse(), nil
 }
 
-func (r *RentalRepositoryImplementation) UpdateRental(rental rentals.RentalFormParams) (response.RentalResponse, error) {
+func (r *RentalRepositoryImplementation) UpdateRental(rental request.CreateRentalStep1Params) (response.RentalResponse, error) {
 	var rentalToUpdate models.Rental
 	result := r.Db.Where("id = ?", rental.RentalID).First(&rentalToUpdate)
 	if result.Error != nil {
@@ -141,6 +140,18 @@ func (r *RentalRepositoryImplementation) UpdateRental(rental rentals.RentalFormP
 	rentalToUpdate.Bedrooms = uint(rental.Bedrooms)
 	rentalToUpdate.Bathrooms = rental.Bathrooms
 	rentalToUpdate.Description = rental.Description
+	rentalToUpdate.Address = rental.Address
+	rentalToUpdate.Guests = rental.Guests
+
+	rentalToUpdate.Amenities = []models.Amenity{}
+	for _, amenity := range rental.Amenities {
+		rentalToUpdate.Amenities = append(rentalToUpdate.Amenities, models.Amenity{
+			Model: gorm.Model{
+				ID: amenity.ID,
+			},
+		})
+
+	}
 
 	result = r.Db.Save(&rentalToUpdate)
 	if result.Error != nil {
