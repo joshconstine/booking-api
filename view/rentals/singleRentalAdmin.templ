@@ -31,9 +31,9 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                     <a class="btn btn-outline rounded-full btn-sm">Save and exit</a>
                 </div>
             </div>
-            <div class="max-w-screen-xl flex flex-col gap-4">
-            <div class=" flex gap-4 items-center">
-                <h1 class="text-3xl font-bold text-center mb-8">{rental.Name}</h1>
+            <div class="max-w-screen-2xl  flex flex-col gap-4">
+            <div class=" flex gap-4 items-center w-full">
+                <h1 class="text-3xl font-bold text-center">{rental.Name}</h1>
                     if rental.RentalStatus.IsClean {
 
                         <div class="btn bg-green-500 btn-sm rounded-full">
@@ -46,24 +46,28 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                     }
             </div>
             <span>Property information</span>
-            <div class="w-full gap-8">
-                <div class="w-full h-72 rounded-lg bg-branded-400">
-                    <img class="w-full h-full object-cover rounded-lg" src={rental.Photos[0].Photo.URL } alt="rental photo" />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <button class="bg-branded-400 items-center flex">
-                        <span>Property info</span>
-                        <i class="fa-regular fa-house"></i>
-                    </button>
-                    <button class="items-center gap-2 flex">
-                        <span>Rooms info</span>
-                       <i class="fa-regular fa-bed"></i>
-                    </button>
-                    <button class="items-center gap-2 flex">
-                        <span>Availability/Pricing</span>
-                        <i class="fa-kit fa-regular-calendar-circle-dollar"></i>                    </button>
+
+            <div class="w-full flex  gap-4">
+                    <div class="w-full h-72 rounded-lg bg-branded-400">
+                        <img class="w-full h-full object-cover rounded-lg" src={rental.Photos[0].Photo.URL } alt="rental photo" />
+                    </div>
+                    <div class="flex flex-col gap-2 w-64">
+                        <button class="bg-branded-400 btn items-center flex">
+                            <span>Property info</span>
+                            <i class="fa-regular fa-house"></i>
+                        </button>
+                        <button class="items-center gap-2 btn flex">
+                            <span>Rooms info</span>
+                           <i class="fa-regular fa-bed"></i>
+                        </button>
+                        <button class="items-center gap-2 btn flex ">
+                            <span>Availability/Pricing</span>
+                            <i class="fa-kit fa-regular-calendar-circle-dollar"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
+            <div class="max-w-screen-md flex flex-col gap-4">
             @RentalForm(RentalFormParams{
                 RentalID: rental.ID,
                 Name: rental.Name,
