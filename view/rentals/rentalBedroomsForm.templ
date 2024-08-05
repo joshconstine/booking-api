@@ -13,9 +13,9 @@ func CreateRentalRoomFormUrl(id uint) string {
 }
 templ RentalBedroomsForm( params request.CreateRentalStep2Params, errors request.CreateRentalStep2Errors, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
 
-           <div class="w-full flex flex-wrap mx-auto gap-4">
-                 <aside class="flex-1">
-                     <button class="bg-branded-400 btn items-center flex">
+           <div class="w-full px-4 flex flex-wrap justify-center mx-auto gap-4">
+                 <aside class="flex-1 flex-col ">
+                     <button class="bg-branded-400 btn w-full items-center flex">
                         <span>Add room</span>
                         <i class="fa-solid fa-plus"></i>
                     </button>

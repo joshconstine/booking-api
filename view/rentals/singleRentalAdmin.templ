@@ -74,7 +74,9 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                 //<div class="flex-grow"></div>
             </div>
 
-    <div id="rental-form">
+    <div id="rental-form"
+        class="w-full"
+    >
             @ui.EntityPhotoList(rental.Photos)
             @RentalForm(request.CreateRentalStep1Params{
                 RentalID: rental.ID,
