@@ -56,21 +56,7 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                 <div class="w-full  flex-grow max-w-screen-md h-72 flex-2 rounded-lg bg-branded-400 justify-self-center align-self-center">
                     <img class="w-full h-full object-cover rounded-lg" src={rental.Photos[0].Photo.URL} alt="rental photo" />
                 </div>
-                <aside class="flex flex-col gap-2 w-64 flex-1">
-                    <button class="bg-branded-400 btn items-center flex">
-                        <span>Property info</span>
-                        <i class="fa-regular fa-house"></i>
-                    </button>
-                    <div class="items-center gap-2 btn flex"  hx-trigger="click" hx-get={string(templ.SafeURL(CreateGetBedroomFormUrl(int(rental.ID))))}  type="button" hx-target="#rental-form">
-
-                        <span>Rooms info</span>
-                        <i class="fa-regular fa-bed"></i>
-                    </div>
-                    <button class="items-center gap-2 btn flex">
-                        <span>Availability/Pricing</span>
-                        <i class="fa-kit fa-regular-calendar-circle-dollar"></i>
-                    </button>
-                </aside>
+                @RentalAside(rental.ID)
                 //<div class="flex-grow"></div>
             </div>
 
@@ -100,5 +86,23 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
 
 
     }
-	}
+}
+
+templ RentalAside(rentalId uint) {
+  <aside class="flex flex-col gap-2 w-64 flex-1">
+                    <button class="bg-branded-400 btn items-center flex">
+                        <span>Property info</span>
+                        <i class="fa-regular fa-house"></i>
+                    </button>
+                    <div class="items-center gap-2 btn flex"  hx-trigger="click" hx-get={string(templ.SafeURL(CreateGetBedroomFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
+
+                        <span>Rooms info</span>
+                        <i class="fa-regular fa-bed"></i>
+                    </div>
+                    <button class="items-center gap-2 btn flex">
+                        <span>Availability/Pricing</span>
+                        <i class="fa-kit fa-regular-calendar-circle-dollar"></i>
+                    </button>
+                </aside>
+}
 
