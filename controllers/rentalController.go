@@ -116,6 +116,8 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 	bedrooms := r.FormValue("bedrooms")
 	bathrooms := r.FormValue("bathrooms")
 	address := r.FormValue("address")
+	allowPets := r.FormValue("allowPets")
+	allowInstantBooking := r.FormValue("allowInstantBooking")
 
 	id, _ := strconv.Atoi(rentalId)
 	bedroomsInt, _ := strconv.Atoi(bedrooms)
