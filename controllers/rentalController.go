@@ -77,15 +77,48 @@ func (controller *RentalController) CreateForm(w http.ResponseWriter, r *http.Re
 
 func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.Request) error {
 	rentalId := chi.URLParam(r, "rentalId")
+	room := chi.URLParam(r, "roomId")
 	params := request.CreateRentalStep2Params{}
 	errors := request.CreateRentalStep2Errors{}
 	rentalIdInt, _ := strconv.Atoi(rentalId)
+	roomInt, _ := strconv.Atoi(room)
 	rentalRooms := controller.rentalRoomService.FindByRentalId(uint(rentalIdInt))
 	params.Rooms = rentalRooms
 	params.RentalID = uint(rentalIdInt)
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
-	return rentals.RentalBedroomsForm(params, errors, roomTypes, bedTypes).Render(r.Context(), w)
+	var roomForm request.RentalRoomCreateRequest
+
+	if roomInt == 0 {
+		if len(rentalRooms) > 0 {
+			roomInt = int(rentalRooms[0].ID)
+		}
+	}
+
+	if roomInt != 0 {
+		for _, r := range rentalRooms {
+			if r.ID == uint(roomInt) {
+
+				roomForm = request.RentalRoomCreateRequest{
+					Name:             r.Name,
+					Description:      r.Description,
+					Floor:            r.Floor,
+					RentalRoomTypeID: r.RoomType.ID,
+				}
+
+				for _, bed := range r.Beds {
+					roomForm.Beds = append(roomForm.Beds, int(bed.ID))
+				}
+
+				for _, photo := range r.Photos {
+					roomForm.Photos = append(roomForm.Photos, int(photo.ID))
+
+				}
+			}
+		}
+	}
+
+	return rentals.RentalBedroomsForm(params, roomForm, errors, roomTypes, bedTypes).Render(r.Context(), w)
 }
 func (controller *RentalController) Create(w http.ResponseWriter, r *http.Request) error {
 	params := request.CreateRentalStep1Params{}
@@ -129,7 +162,8 @@ func (controller *RentalController) Create(w http.ResponseWriter, r *http.Reques
 	params.RentalID = uint(rentalIdInt)
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
-	return rentals.RentalBedroomsForm(step2params, step2errors, roomTypes, bedTypes).Render(r.Context(), w)
+	bedroomForm := request.RentalRoomCreateRequest{Name: "Bedroom 1"}
+	return rentals.RentalBedroomsForm(step2params, bedroomForm, step2errors, roomTypes, bedTypes).Render(r.Context(), w)
 	//http.Redirect(w, r, "/rentals", http.StatusSeeOther)
 
 	//return rentals.RentalDetails().Render(r.Context(), w)
