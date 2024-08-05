@@ -75,6 +75,16 @@ func (controller *RentalController) CreateForm(w http.ResponseWriter, r *http.Re
 	return rentals.CreateRental(params, errors, amenities).Render(r.Context(), w)
 }
 
+func (controller *RentalController) InformationForm(w http.ResponseWriter, r *http.Request) error {
+
+	rentalId := chi.URLParam(r, "rentalId")
+	id, _ := strconv.Atoi(rentalId)
+
+	rental := controller.rentalService.FindById(uint(id))
+
+	amenities := controller.amenityService.FindAllSorted()
+	return rentals.RentalInformationForm(rental, amenities).Render(r.Context(), w)
+}
 func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.Request) error {
 	rentalId := chi.URLParam(r, "rentalId")
 	room := chi.URLParam(r, "roomId")

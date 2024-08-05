@@ -16,6 +16,9 @@ func CreateGetBookingFormUrl(id int) string {
 func CreateGetBedroomFormUrl(id int) string {
     return "/rentals/" + strconv.Itoa(id) + "/bedrooms"
 }
+func CreateGetInformationFormUrl(id int) string {
+    return "/rentals/" + strconv.Itoa(id) + "/information"
+}
 func GetIdsFromAmens(amenities []response.AmenityResponse) []int {
     var ids []int
     for _, amen := range amenities {
@@ -88,12 +91,32 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
     }
 }
 
+templ RentalInformationForm(rental response.RentalInformationResponse, amenities []response.SortedAmenityResponse) {
+<div class="w-full">
+ @ui.EntityPhotoList(rental.Photos)
+            @RentalForm(request.CreateRentalStep1Params{
+                RentalID: rental.ID,
+                Name: rental.Name,
+                Description: rental.Description,
+                Bedrooms: rental.Bedrooms,
+                Bathrooms: rental.Bathrooms,
+                Amenities: rental.Amenities,
+                Address: rental.Address,
+                Guests: rental.Guests,
+                AllowInstantBooking: rental.BookingRule.AllowInstantBooking,
+                AllowPets: rental.BookingRule.AllowPets,
+                Success: false,
+                ParentProperty: false,
+            }, request.CreateRentalStep1Errors{}, amenities)
+</div>
+}
+
 templ RentalAside(rentalId uint) {
   <aside class="flex flex-col gap-2 w-64 flex-1">
-                    <button class="bg-branded-400 btn items-center flex">
+                    <div class="items-center gap-2 btn flex"  hx-trigger="click" hx-get={string(templ.SafeURL(CreateGetInformationFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
                         <span>Property info</span>
                         <i class="fa-regular fa-house"></i>
-                    </button>
+                    </div>
                     <div class="items-center gap-2 btn flex"  hx-trigger="click" hx-get={string(templ.SafeURL(CreateGetBedroomFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
 
                         <span>Rooms info</span>
