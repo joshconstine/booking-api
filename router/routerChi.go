@@ -151,6 +151,12 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 			rentalsController.HandleRentalAdminDetail(w, r)
 		})
 
+		owner.Get("/rentals/{rentalId}/bedrooms", func(w http.ResponseWriter, r *http.Request) {
+			ctx := context.WithValue(r.Context(), "entityType", constants.RENTAL_ENTITY)
+			ctx = context.WithValue(ctx, "entityID", chi.URLParam(r, "rentalId"))
+			r = r.WithContext(ctx)
+			rentalsController.BedroomForm(w, r)
+		})
 		owner.Get("/entityBookingForm/{entityType}/{entityID}", controllers.Make(entityBookingCostController.GetEntityBookingCostForm))
 		owner.Put("/entityBookingCost", controllers.Make(entityBookingCostController.Create))
 		owner.Put("/entityPhotos", controllers.Make(photoController.AddPhotoForm))

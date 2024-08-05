@@ -13,6 +13,9 @@ func CreateGetBookingFormUrl(id int) string {
     return "/entityBookingForm/rentals/"  + strconv.Itoa(id)
 }
 
+func CreateGetBedroomFormUrl(id int) string {
+    return "/rentals/" + strconv.Itoa(id) + "/bedrooms"
+}
 func GetIdsFromAmens(amenities []response.AmenityResponse) []int {
     var ids []int
     for _, amen := range amenities {
@@ -58,10 +61,11 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                         <span>Property info</span>
                         <i class="fa-regular fa-house"></i>
                     </button>
-                    <button class="items-center gap-2 btn flex">
+                    <div class="items-center gap-2 btn flex"  hx-trigger="click" hx-get={string(templ.SafeURL(CreateGetBedroomFormUrl(int(rental.ID))))}  type="button" hx-target="#rental-form">
+
                         <span>Rooms info</span>
                         <i class="fa-regular fa-bed"></i>
-                    </button>
+                    </div>
                     <button class="items-center gap-2 btn flex">
                         <span>Availability/Pricing</span>
                         <i class="fa-kit fa-regular-calendar-circle-dollar"></i>
@@ -71,7 +75,7 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
             </div>
 
             @ui.EntityPhotoList(rental.Photos)
-
+    <div id="rental-form">
             @RentalForm(request.CreateRentalStep1Params{
                 RentalID: rental.ID,
                 Name: rental.Name,
@@ -86,6 +90,7 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
                 Success: false,
                 ParentProperty: false,
             }, request.CreateRentalStep1Errors{}, amenities)
+    </div>
 
 
 

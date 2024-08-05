@@ -47,6 +47,7 @@ func getIsChecked(b bool) string {
 
 templ RentalForm(params request.CreateRentalStep1Params, errors request.CreateRentalStep1Errors, amenities []response.SortedAmenityResponse) {
    <form
+
    hx-put={CreateRentalUpdateUrl(params.RentalID)}
    hx-swap="outerHTML"
    hx-indicator="#loading"
