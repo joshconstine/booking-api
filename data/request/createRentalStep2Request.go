@@ -1,8 +1,10 @@
 package request
 
+import "booking-api/data/response"
+
 type CreateRentalStep2Params struct {
 	RentalID uint
-	Rooms    []RentalRoomCreateRequest
+	Rooms    []response.RentalRoomResponse
 	Success  bool
 }
 

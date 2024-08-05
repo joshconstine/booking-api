@@ -16,14 +16,15 @@ import (
 )
 
 type RentalController struct {
-	rentalService   services.RentalService
-	amenityService  services.AmenityService
-	roomTypeService services.RoomTypeService
-	bedTypeService  services.BedTypeService
+	rentalService     services.RentalService
+	amenityService    services.AmenityService
+	roomTypeService   services.RoomTypeService
+	bedTypeService    services.BedTypeService
+	rentalRoomService services.RentalRoomService
 }
 
-func NewRentalController(rentalService services.RentalService, amenityService services.AmenityService, roomTypeService services.RoomTypeService, bedTypeService services.BedTypeService) *RentalController {
-	return &RentalController{rentalService: rentalService, amenityService: amenityService, roomTypeService: roomTypeService, bedTypeService: bedTypeService}
+func NewRentalController(rentalService services.RentalService, amenityService services.AmenityService, roomTypeService services.RoomTypeService, bedTypeService services.BedTypeService, rentalRoomService services.RentalRoomService) *RentalController {
+	return &RentalController{rentalService: rentalService, amenityService: amenityService, roomTypeService: roomTypeService, bedTypeService: bedTypeService, rentalRoomService: rentalRoomService}
 
 }
 
@@ -79,6 +80,8 @@ func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.R
 	params := request.CreateRentalStep2Params{}
 	errors := request.CreateRentalStep2Errors{}
 	rentalIdInt, _ := strconv.Atoi(rentalId)
+	rentalRooms := controller.rentalRoomService.FindByRentalId(uint(rentalIdInt))
+	params.Rooms = rentalRooms
 	params.RentalID = uint(rentalIdInt)
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()

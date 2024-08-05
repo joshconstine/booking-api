@@ -40,6 +40,18 @@ func (r *RentalRoomRepositoryImplementation) FindById(id uint) response.RentalRo
 	}
 	return rentalRoom.MapRentalRoomToResponse()
 }
+func (r *RentalRoomRepositoryImplementation) FindByRentalId(rentalId uint) []response.RentalRoomResponse {
+	var rentalRoom []models.RentalRoom
+	result := r.Db.Preload("Photos.Photo").Preload("Beds").Where("rental_id = ?", rentalId).Find(&rentalRoom)
+	if result.Error != nil {
+		return []response.RentalRoomResponse{}
+	}
+	var rentalRoomResponses []response.RentalRoomResponse
+	for _, room := range rentalRoom {
+		rentalRoomResponses = append(rentalRoomResponses, room.MapRentalRoomToResponse())
+	}
+	return rentalRoomResponses
+}
 
 func (r *RentalRoomRepositoryImplementation) Create(rentalRoom request.RentalRoomCreateRequest) response.RentalRoomResponse {
 	rentalRoomModel := models.RentalRoom{

@@ -142,7 +142,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	entitiyPhotoRepository := repositories.NewEntityPhotoRepositoryImplementation(database.Instance)
 	// locationRepository := repositories.NewLocationRepositoryImplementation(database.Instance)
 	roomTypeRepository := repositories.NewRoomTypeRepositoryImplementation(database.Instance)
-	// rentalRoomRepository := repositories.NewRentalRoomRepositoryImplementation(database.Instance)
+	rentalRoomRepository := repositories.NewRentalRoomRepositoryImplementation(database.Instance)
 	// entityBookingDurationRuleRepository := repositories.NewEntityBookingDurationRuleRepositoryImplementation(database.Instance)
 	entityBookingRepository := repositories.NewEntityBookingRepositoryImplementation(database.Instance)
 	// userRoleRepository := repositories.NewUserRoleRepositoryImplementation(database.Instance)
@@ -193,6 +193,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	chatService := services.NewChatServiceImplementation(chatRepository)
 	accountService := services.NewAccountServiceImplementation(accountRepository)
 	invoiceService := services.NewInvoiceServiceImplementation(bookingRepository)
+	rentalRoomService := services.NewRentalRoomServiceImplementation(rentalRoomRepository, validate)
 
 	//Init controller
 	authController := controllers.NewAuthController(userService, sb.ClientInstance)
@@ -201,7 +202,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	userController := controllers.NewUserController(userService)
 	// bookingStatusController := controllers.NewBookingStatusController(bookingStatusService)
 	// bookingCostTypeController := controllers.NewBookingCostTypeController(bookingCostTypeService)
-	rentalController := controllers.NewRentalController(rentalService, amenityService, roomTypeService, bedTypeService)
+	rentalController := controllers.NewRentalController(rentalService, amenityService, roomTypeService, bedTypeService, rentalRoomService)
 	// amenityController := controllers.NewAmenityController(amenityService)
 	// amenityTypeController := controllers.NewAmenityTypeController(amenityTypeService)
 	// bedTypeController := controllers.NewBedTypeController(bedTypeService)

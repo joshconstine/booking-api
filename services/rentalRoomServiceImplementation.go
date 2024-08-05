@@ -29,6 +29,10 @@ func (r *RentalRoomServiceImplementation) FindById(id uint) response.RentalRoomR
 	return r.RentalRoomRepository.FindById(id)
 }
 
+func (r *RentalRoomServiceImplementation) FindByRentalId(rentalId uint) []response.RentalRoomResponse {
+	return r.RentalRoomRepository.FindByRentalId(rentalId)
+}
+
 func (r *RentalRoomServiceImplementation) Create(rentalRoom request.RentalRoomCreateRequest) (response.RentalRoomResponse, error) {
 
 	err := r.Validate.Struct(rentalRoom)
