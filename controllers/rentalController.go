@@ -126,13 +126,15 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 
 	guestsInt, _ := strconv.Atoi(guests)
 	params := request.CreateRentalStep1Params{
-		RentalID:    uint(id),
-		Name:        r.FormValue("name"),
-		Description: r.FormValue("description"),
-		Bedrooms:    uint(bedroomsInt),
-		Address:     address,
-		Guests:      uint(guestsInt),
-		Bathrooms:   bathroomsFloat,
+		RentalID:            uint(id),
+		Name:                r.FormValue("name"),
+		Description:         r.FormValue("description"),
+		Bedrooms:            uint(bedroomsInt),
+		Address:             address,
+		Guests:              uint(guestsInt),
+		Bathrooms:           bathroomsFloat,
+		AllowPets:           allowPets == "checked",
+		AllowInstantBooking: allowInstantBooking == "checked",
 	}
 
 	errors := request.CreateRentalStep1Errors{}
