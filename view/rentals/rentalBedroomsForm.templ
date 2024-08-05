@@ -11,68 +11,21 @@ import (
 func CreateRentalRoomFormUrl(id uint) string {
     return "/rentalRooms/rentals/"  + strconv.Itoa(int(id))
 }
-// RentalInformationResponse renders a page with detailed information about a specific rental
 templ RentalBedroomsForm( params request.CreateRentalStep2Params, errors request.CreateRentalStep2Errors, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
-    <form id="step1Form"  hx-post={string(templ.SafeURL(CreateRentalRoomFormUrl(params.RentalID)))} hx-swap="outerHTML"  hx-indicator="#loading"
 
-    >
            <div class="w-full flex flex-wrap mx-auto gap-4">
                  <aside class="flex-1">
-
+                     <button class="bg-branded-400 btn items-center flex">
+                        <span>Add room</span>
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
                  </aside>
-             //   <div class="w-full  flex-grow max-w-screen-md h-72 flex-2 rounded-lg bg-branded-400 justify-self-center align-self-center">
-
                @RentalRoomForm(request.RentalRoomCreateRequest{}, request.RentalRoomCreateRequestError{}, roomTypes, bedTypes)
                 <aside class="flex flex-col gap-2 w-64 flex-1">
-                    <button class="bg-branded-400 btn items-center flex">
-                        <span>Property info</span>
-                        <i class="fa-regular fa-house"></i>
-                    </button>
-                    <button class="items-center gap-2 btn flex">
-                        <span>Rooms info</span>
-                        <i class="fa-regular fa-bed"></i>
-                    </button>
-                    <button class="items-center gap-2 btn flex">
-                        <span>Availability/Pricing</span>
-                        <i class="fa-kit fa-regular-calendar-circle-dollar"></i>
-                    </button>
+
+
                 </aside>
-                //<div class="flex-grow"></div>
             </div>
-        <div class="w-full flex justify-end items-end max-w-screen-md">
-            <span id="loading" class="loading loading-dots loading-md htmx-indicator"></span>
-            <button type="submit" class="text-xl mr-2">Next step: Tell us about availability and pricing <i class="fa-solid fa-arrow-right-long"></i></button>
-        </div>
 
-        <script>
-            document.getElementById('photoUpload').addEventListener('click', function() {
-                document.getElementById('file').click();
-            });
-             document.getElementById('file').addEventListener('change', function(event) {
-                var previewContainer = document.getElementById('previewContainer');
-                var files = event.target.files;
-
-
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
-
-                    if (file.type.startsWith('image/')) {
-                        var reader = new FileReader();
-
-                        reader.onload = function(e) {
-                            var img = document.createElement('img');
-                            img.src = e.target.result;
-                            img.classList.add('rounded-lg', 'w-40', 'h-40', 'object-cover');
-                            previewContainer.insertBefore(img, previewContainer.firstChild);
-                        }
-
-                        reader.readAsDataURL(file);
-                    } else {
-                        alert('Please upload an image file.');
-                    }
-                }
-            });
-        </script>
-    </form>
 
 }

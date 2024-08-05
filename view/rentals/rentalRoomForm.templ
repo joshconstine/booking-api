@@ -37,6 +37,40 @@ templ RentalRoomForm( params request.RentalRoomCreateRequest, errors request.Ren
                 }
             </div>
            </div>
+           <div class="flex w-full gap-4">
+             <div class="flex flex-col gap-2 w-full">
+                <label for="numberOfBeds" class="font-semibold">
+                   Number of Beds
+                </label>
+                <input type="number" name="number_of_beds" id="number_of_beds" required class="input input-bordered" defaultValue="1"/>
+            </div>
+           </div>
+           <div class="flex w-full gap-4">
+             <div class="flex flex-col gap-2 w-full">
+                <label for="floor" class="font-semibold">
+                     Floor
+                </label>
+                <input type="number" name="floor" id="floor" required class="input input-bordered" defaultValue="1"/>
+            </div>
+           </div>
+           <div class=" w-full ">
+                  <div class="flex flex-col gap-1 w-full">
+                    <label for="description" class="font-semibold">
+
+                            Description
+                    </label>
+                    <textarea
+                    value={params.Description}
+                    rows="6"
+                    name="description"
+                    class="textarea textarea-bordered w-full "
+                    >
+                      </textarea>
+                      if len(errors.Description ) > 0 {
+                        <div class="text-sm text-error mt-1">{ errors.Description }</div>
+                    }
+                   </div>
+               </div>
     </div>
 
 
