@@ -1,7 +1,6 @@
 package home
 
 import (
-    "booking-api/view/layout"
     "strconv"
 
 	"booking-api/data/request"
@@ -14,19 +13,9 @@ func CreateRentalRoomFormUrl(id uint) string {
 }
 // RentalInformationResponse renders a page with detailed information about a specific rental
 templ RentalBedroomsForm( params request.CreateRentalStep2Params, errors request.CreateRentalStep2Errors, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
-    @layout.App(true) {
-    <form id="step1Form"  hx-post={string(templ.SafeURL(CreateRentalRoomFormUrl(params.RentalID)))}hx-swap="outerHTML"  hx-indicator="#loading"
+    <form id="step1Form"  hx-post={string(templ.SafeURL(CreateRentalRoomFormUrl(params.RentalID)))} hx-swap="outerHTML"  hx-indicator="#loading"
 
     >
-    <div class="flex flex-col gap-4 md:mt-4 mt-1 items-center w-full pb-[300px] overflow">
-        <div class=" px-8 w-full flex justify-between items-center">
-            <a class="btn btn-outline rounded-full btn-sm">Questions?</a>
-            <a class="btn btn-outline rounded-full btn-sm">Save and exit</a>
-        </div>
-        <div class="w-full flex items-start max-w-screen-md">
-            <h1 class="text-3xl font-bold text-center ml-2 ">Step 2-Tell us about the rooms</h1>
-        </div>
-
            <div class="w-full flex flex-wrap mx-auto gap-4">
                  <aside class="flex-1">
 
@@ -84,10 +73,6 @@ templ RentalBedroomsForm( params request.CreateRentalStep2Params, errors request
                 }
             });
         </script>
-    </div>
-        </form>
+    </form>
 
-
-    }
-	}
-
+}
