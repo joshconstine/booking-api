@@ -16,12 +16,15 @@ import (
 )
 
 type RentalController struct {
-	rentalService  services.RentalService
-	amenityService services.AmenityService
+	rentalService   services.RentalService
+	amenityService  services.AmenityService
+	roomTypeService services.RoomTypeService
+	bedTypeService  services.BedTypeService
 }
 
-func NewRentalController(rentalService services.RentalService, amenityService services.AmenityService) *RentalController {
-	return &RentalController{rentalService: rentalService, amenityService: amenityService}
+func NewRentalController(rentalService services.RentalService, amenityService services.AmenityService, roomTypeService services.RoomTypeService, bedTypeService services.BedTypeService) *RentalController {
+	return &RentalController{rentalService: rentalService, amenityService: amenityService, roomTypeService: roomTypeService, bedTypeService: bedTypeService}
+
 }
 
 type RentalListTemplateData struct {
@@ -70,6 +73,17 @@ func (controller *RentalController) CreateForm(w http.ResponseWriter, r *http.Re
 	amenities := controller.amenityService.FindAllSorted()
 	return rentals.CreateRental(params, errors, amenities).Render(r.Context(), w)
 }
+
+func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.Request) error {
+	rentalId := chi.URLParam(r, "rentalId")
+	params := request.CreateRentalStep2Params{}
+	errors := request.CreateRentalStep2Errors{}
+	rentalIdInt, _ := strconv.Atoi(rentalId)
+	params.RentalID = uint(rentalIdInt)
+	roomTypes := controller.roomTypeService.FindAll()
+	bedTypes := controller.bedTypeService.FindAll()
+	return rentals.RentalBedroomsForm(params, errors, roomTypes, bedTypes).Render(r.Context(), w)
+}
 func (controller *RentalController) Create(w http.ResponseWriter, r *http.Request) error {
 	params := request.CreateRentalStep1Params{}
 	bedroomsInt, _ := strconv.Atoi(r.FormValue("bedrooms"))
@@ -105,7 +119,15 @@ func (controller *RentalController) Create(w http.ResponseWriter, r *http.Reques
 		return rentals.CreateRental(params, errors, amenities).Render(r.Context(), w)
 	}
 
-	http.Redirect(w, r, "/rentals", http.StatusSeeOther)
+	rentalId := chi.URLParam(r, "rentalId")
+	step2params := request.CreateRentalStep2Params{}
+	step2errors := request.CreateRentalStep2Errors{}
+	rentalIdInt, _ := strconv.Atoi(rentalId)
+	params.RentalID = uint(rentalIdInt)
+	roomTypes := controller.roomTypeService.FindAll()
+	bedTypes := controller.bedTypeService.FindAll()
+	return rentals.RentalBedroomsForm(step2params, step2errors, roomTypes, bedTypes).Render(r.Context(), w)
+	//http.Redirect(w, r, "/rentals", http.StatusSeeOther)
 
 	//return rentals.RentalDetails().Render(r.Context(), w)
 	return nil

@@ -1,0 +1,44 @@
+package home
+
+import (
+    "strconv"
+
+	"booking-api/data/request"
+	"booking-api/data/response"
+)
+
+
+// RentalInformationResponse renders a page with detailed information about a specific rental
+templ RentalRoomForm( params request.RentalRoomCreateRequest, errors request.RentalRoomCreateRequestError, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
+        <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md flex-grow w-full mx-auto rounded-lg">
+            <div class="w-full justify-between flex">
+                <h2 class="text-xl font-bold">{params.Name}</h2>
+                <span class="text-gray-500 text-sm">information can be changed later</span>
+            </div>
+           <div class="flex w-full gap-4">
+             <div class="flex flex-col gap-2 w-full">
+                <label for="name" class="font-semibold">
+                   Room Type
+                </label>
+                <select name="room_type_id" id="room_type_id" required class="select select-bordered">
+                    <option value="">Select Room Type</option>
+                    for _, roomType := range roomTypes {
+                        <option value={strconv.Itoa(int(roomType.ID))}>{roomType.Name}</option>
+                    }
+                </select>
+            </div>
+             <div class="flex flex-col gap-2 w-full">
+                <label for="name" class="font-semibold">
+                   Room Name
+                </label>
+                <input type="text" name="name" id="name" required class="input input-bordered" />
+                if len(errors.Name) > 0 {
+                    <div class="text-sm text-error mt-1">{ errors.Name }</div>
+                }
+            </div>
+           </div>
+    </div>
+
+
+}
+

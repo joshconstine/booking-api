@@ -7,5 +7,11 @@ type CreateRentalStep2Params struct {
 }
 
 type CreateRentalStep2Errors struct {
-	Rooms []RentalRoomCreateRequest
+	Rooms []RentalRoomCreateRequestError
+}
+
+type RentalRoomCreateRequestError struct {
+	Name        string
+	Description string
+	Floor       string
 }
