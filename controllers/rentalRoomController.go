@@ -91,7 +91,6 @@ func NewRentalRoomController(rentalRoomService services.RentalRoomService, roomT
 //}
 
 func (controller *RentalRoomController) Update(w http.ResponseWriter, r *http.Request) error {
-	var updateRentalRoomRequest request.UpdateRentalRoomRequest
 
 	rentalId := chi.URLParam(r, "rentalId")
 	room := chi.URLParam(r, "roomId")
@@ -109,7 +108,7 @@ func (controller *RentalRoomController) Update(w http.ResponseWriter, r *http.Re
 	updateParams.Photos = []int{}
 	updateParams.Beds = []int{}
 
-	_, err := controller.rentalRoomService.Update(updateRentalRoomRequest)
+	_, err := controller.rentalRoomService.Update(updateParams)
 
 	if err != nil {
 		return err
