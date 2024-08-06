@@ -45,7 +45,12 @@ templ RentalBedroomsForm( params request.CreateRentalStep2Params, roomForm reque
               <div class=" flex justify-between  max-w-screen-md w-full mx-auto ">
             <div class="flex gap-4">
                 <button type="button" class="btn" ><i class="fa-regular fa-trash text-red-600"></i>Delete listing</button>
-                <button type="reset" class="btn" ><i class="fa-regular fa-trash text-red-600"></i>Delete room</button>
+
+                <button type="button"
+                        hx-indicator="#loading"
+                        hx-target="#rental-form"
+                        hx-delete={CreateRentalRoomFormUrlForRoom(params.RentalID, roomForm.ID)} class="btn" ><i class="fa-regular fa-trash text-red-600"></i>
+                    Delete room</button>
 
             </div>
             <div class="flex gap-4">
@@ -83,13 +88,11 @@ templ RentalBedroomsFormCreate( params request.CreateRentalStep2Params, roomForm
               <div class=" flex justify-between  max-w-screen-md w-full mx-auto ">
             <div class="flex gap-4">
                 <button type="button" class="btn" ><i class="fa-regular fa-trash text-red-600"></i>Delete listing</button>
-                <button type="reset" class="btn" ><i class="fa-regular fa-trash text-red-600"></i>Delete room</button>
 
             </div>
             <div class="flex gap-4">
                 <span id="loading" class="loading loading-dots loading-md htmx-indicator"></span>
 
-                //<button class="btn bg-white">Save changes to draft</button>
                 <button class="btn bg-white">Save</button>
 
 

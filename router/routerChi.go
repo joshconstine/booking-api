@@ -175,6 +175,12 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 			r = r.WithContext(ctx)
 			rentalRoomController.Update(w, r)
 		})
+		owner.Delete("/rentals/{rentalId}/bedrooms/{roomId}", func(w http.ResponseWriter, r *http.Request) {
+			ctx := context.WithValue(r.Context(), "entityType", constants.RENTAL_ENTITY)
+			ctx = context.WithValue(ctx, "entityID", chi.URLParam(r, "rentalId"))
+			r = r.WithContext(ctx)
+			rentalRoomController.Delete(w, r)
+		})
 		owner.Post("/rentals/{rentalId}/bedrooms", func(w http.ResponseWriter, r *http.Request) {
 			ctx := context.WithValue(r.Context(), "entityType", constants.RENTAL_ENTITY)
 			ctx = context.WithValue(ctx, "entityID", chi.URLParam(r, "rentalId"))

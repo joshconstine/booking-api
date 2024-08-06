@@ -105,3 +105,8 @@ func (r *RentalRoomRepositoryImplementation) Update(rentalRoom request.UpdateRen
 
 	return rentalRoomModel.MapRentalRoomToResponse()
 }
+
+func (r *RentalRoomRepositoryImplementation) Delete(id uint) error {
+	result := r.Db.Delete(&models.RentalRoom{}, id)
+	return result.Error
+}

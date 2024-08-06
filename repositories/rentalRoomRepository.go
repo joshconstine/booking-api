@@ -11,4 +11,5 @@ type RentalRoomRepository interface {
 	FindByRentalId(rentalId uint) []response.RentalRoomResponse
 	Create(rentalRoom request.RentalRoomCreateRequest) response.RentalRoomResponse
 	Update(rentalRoom request.UpdateRentalRoomRequest) response.RentalRoomResponse
+	Delete(id uint) error
 }

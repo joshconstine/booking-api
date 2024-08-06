@@ -56,3 +56,8 @@ func (r *RentalRoomServiceImplementation) Update(rentalRoom request.UpdateRental
 	return r.RentalRoomRepository.Update(rentalRoom), nil
 
 }
+
+func (r *RentalRoomServiceImplementation) Delete(id uint) error {
+	return r.RentalRoomRepository.Delete(id)
+
+}
