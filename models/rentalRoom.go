@@ -14,7 +14,7 @@ type RentalRoom struct {
 	Floor       int
 	RoomTypeID  uint
 	RoomType    RoomType
-	Beds        []BedType     `gorm:"many2many:rental_room_beds;"`
+	Beds        []Bed
 	Photos      []EntityPhoto `gorm:"polymorphic:Entity"`
 }
 
@@ -33,7 +33,7 @@ func (r *RentalRoom) MapRentalRoomToResponse() response.RentalRoomResponse {
 	response.RoomType = r.RoomType.MapRoomTypeToResponse()
 
 	for _, bed := range r.Beds {
-		response.Beds = append(response.Beds, bed.MapBedTypeToResponse())
+		response.Beds = append(response.Beds, bed.MapBedToResponse())
 	}
 
 	for _, photo := range r.Photos {

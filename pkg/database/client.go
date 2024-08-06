@@ -102,6 +102,7 @@ func Migrate() {
 
 	Instance.AutoMigrate(&models.Chat{})
 	Instance.AutoMigrate(&models.ChatMessage{})
+	Instance.AutoMigrate(&models.Bed{})
 
 	log.Println("Database Migration Completed!")
 }

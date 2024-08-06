@@ -70,10 +70,8 @@ func (r *RentalRoomRepositoryImplementation) Create(rentalRoom request.RentalRoo
 	}
 
 	for _, bed := range rentalRoom.Beds {
-		rentalRoomModel.Beds = append(rentalRoomModel.Beds, models.BedType{
-			Model: gorm.Model{
-				ID: uint(bed),
-			},
+		rentalRoomModel.Beds = append(rentalRoomModel.Beds, models.Bed{
+			BedTypeID: uint(bed),
 		})
 	}
 
@@ -119,10 +117,9 @@ func (r *RentalRoomRepositoryImplementation) AddBedToRoom(roomId uint, bedId uin
 
 	}
 
-	rentalRoom.Beds = append(rentalRoom.Beds, models.BedType{
-		Model: gorm.Model{
-			ID: bedId,
-		},
+	rentalRoom.Beds = append(rentalRoom.Beds, models.Bed{
+		BedTypeID:    bedId,
+		RentalRoomID: roomId,
 	})
 
 	result = r.Db.Save(&rentalRoom)
