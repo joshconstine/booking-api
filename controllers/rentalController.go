@@ -99,12 +99,12 @@ func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.R
 	bedTypes := controller.bedTypeService.FindAll()
 	var roomForm request.RentalRoomCreateRequest
 
+	//If no room is selected, select the first room
 	if roomInt == 0 {
 		if len(rentalRooms) > 0 {
 			roomInt = int(rentalRooms[0].ID)
 		}
 	}
-
 	if roomInt != 0 {
 		for _, r := range rentalRooms {
 			if r.ID == uint(roomInt) {

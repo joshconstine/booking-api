@@ -7,6 +7,12 @@ import (
 	"booking-api/data/response"
 )
 
+func GetSelected(selected uint, current uint) bool {
+    if selected == current {
+        return true
+    }
+    return false
+}
 
 // RentalInformationResponse renders a page with detailed information about a specific rental
 templ RentalRoomForm( params request.RentalRoomCreateRequest, errors request.RentalRoomCreateRequestError, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
@@ -20,10 +26,14 @@ templ RentalRoomForm( params request.RentalRoomCreateRequest, errors request.Ren
                 <label for="name" class="font-semibold" >
                    Room Type
                 </label>
-                <select name="room_type_id" id="room_type_id" required class="select select-bordered"value={strconv.Itoa(int(params.RentalRoomTypeID))}>
+                <select name="room_type_id" id="room_type_id" required class="select select-bordered">
                     <option value="">Select Room Type</option>
                     for _, roomType := range roomTypes {
-                        <option value={strconv.Itoa(int(roomType.ID))}>{roomType.Name}</option>
+                        if GetSelected(roomType.ID, params.RentalRoomTypeID) {
+                            <option value={strconv.Itoa(int(roomType.ID))} selected>{roomType.Name}</option>
+                        } else {
+                            <option value={strconv.Itoa(int(roomType.ID))} >{roomType.Name}</option>
+                        }
                     }
                 </select>
             </div>

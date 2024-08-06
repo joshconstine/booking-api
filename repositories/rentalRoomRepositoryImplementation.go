@@ -42,7 +42,7 @@ func (r *RentalRoomRepositoryImplementation) FindById(id uint) response.RentalRo
 }
 func (r *RentalRoomRepositoryImplementation) FindByRentalId(rentalId uint) []response.RentalRoomResponse {
 	var rentalRoom []models.RentalRoom
-	result := r.Db.Preload("Photos.Photo").Preload("Beds").Where("rental_id = ?", rentalId).Find(&rentalRoom)
+	result := r.Db.Preload("Photos.Photo").Preload("Beds").Preload("RoomType").Where("rental_id = ?", rentalId).Find(&rentalRoom)
 	if result.Error != nil {
 		return []response.RentalRoomResponse{}
 	}
