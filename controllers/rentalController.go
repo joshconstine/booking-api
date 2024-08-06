@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"booking-api/constants"
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/services"
@@ -85,13 +86,22 @@ func (controller *RentalController) InformationForm(w http.ResponseWriter, r *ht
 	amenities := controller.amenityService.FindAllSorted()
 	return rentals.RentalInformationForm(rental, amenities).Render(r.Context(), w)
 }
+
+func makeBedroomName(existingBedrooms []response.RentalRoomResponse) string {
+	count := 1
+	for _, room := range existingBedrooms {
+		if room.RoomType.ID == constants.ROOM_TYPE_BEDROOM_ID {
+			count++
+		}
+	}
+	return "Bedroom " + strconv.Itoa(count)
+}
+
 func (controller *RentalController) NewBedroomForm(w http.ResponseWriter, r *http.Request) error {
 	rentalId := chi.URLParam(r, "rentalId")
-	room := chi.URLParam(r, "roomId")
 	params := request.CreateRentalStep2Params{}
 	errors := request.CreateRentalStep2Errors{}
 	rentalIdInt, _ := strconv.Atoi(rentalId)
-	roomInt, _ := strconv.Atoi(room)
 	rentalRooms := controller.rentalRoomService.FindByRentalId(uint(rentalIdInt))
 	params.Rooms = rentalRooms
 	params.RentalID = uint(rentalIdInt)
@@ -99,37 +109,12 @@ func (controller *RentalController) NewBedroomForm(w http.ResponseWriter, r *htt
 	bedTypes := controller.bedTypeService.FindAll()
 	var roomForm request.UpdateRentalRoomRequest
 
-	//If no room is selected, select the first room
-	if roomInt == 0 {
-		if len(rentalRooms) > 0 {
-			roomInt = int(rentalRooms[0].ID)
-		}
+	roomForm = request.UpdateRentalRoomRequest{
+		RentalID:         uint(rentalIdInt),
+		Name:             makeBedroomName(rentalRooms),
+		Floor:            1,
+		RentalRoomTypeID: constants.ROOM_TYPE_BEDROOM_ID,
 	}
-	if roomInt != 0 {
-		for _, r := range rentalRooms {
-			if r.ID == uint(roomInt) {
-
-				roomForm = request.UpdateRentalRoomRequest{
-					ID:               r.ID,
-					RentalID:         uint(rentalIdInt),
-					Name:             r.Name,
-					Description:      r.Description,
-					Floor:            r.Floor,
-					RentalRoomTypeID: r.RoomType.ID,
-				}
-
-				for _, bed := range r.Beds {
-					roomForm.Beds = append(roomForm.Beds, int(bed.ID))
-				}
-
-				for _, photo := range r.Photos {
-					roomForm.Photos = append(roomForm.Photos, int(photo.ID))
-
-				}
-			}
-		}
-	}
-
 	return rentals.RentalBedroomsFormCreate(params, roomForm, errors, roomTypes, bedTypes).Render(r.Context(), w)
 }
 func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.Request) error {
