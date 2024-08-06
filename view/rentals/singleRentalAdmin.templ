@@ -113,13 +113,16 @@ templ RentalInformationForm(rental response.RentalInformationResponse, amenities
 
 templ RentalAside(rentalId uint) {
   <aside class="flex flex-col gap-2 w-64 flex-1">
-                    <div class="items-center gap-2 btn flex"  hx-trigger="click" hx-get={string(templ.SafeURL(CreateGetInformationFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
+                    <div class="items-center gap-2 btn flex"  hx-indicator="#propInfo" hx-trigger="click" hx-get={string(templ.SafeURL(CreateGetInformationFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
+                 <span id="propInfo" class="loading loading-dots loading-md htmx-indicator"></span>
                         <span>Property info</span>
                         <i class="fa-regular fa-house"></i>
                     </div>
-                    <div class="items-center gap-2 btn flex"  hx-trigger="click" hx-get={string(templ.SafeURL(CreateGetBedroomFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
+                    <div class="items-center gap-2 btn flex"  hx-trigger="click" hx-indicator="#roomInfo" hx-get={string(templ.SafeURL(CreateGetBedroomFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
 
-                        <span>Rooms info</span>
+                 <span id="roomInfo" class="loading loading-dots loading-md htmx-indicator"></span>
+
+                        <span >Rooms info</span>
                         <i class="fa-regular fa-bed"></i>
                     </div>
                     <button class="items-center gap-2 btn flex">
