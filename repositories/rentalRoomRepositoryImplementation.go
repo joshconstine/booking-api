@@ -112,17 +112,20 @@ func (r *RentalRoomRepositoryImplementation) Delete(id uint) error {
 }
 
 func (r *RentalRoomRepositoryImplementation) AddBedToRoom(roomId uint, bedId uint) error {
-	result := r.Db.Model(&models.RentalRoom{
-		Model: gorm.Model{
-			ID: roomId,
-		},
-	}).Association("Beds").Append(&models.BedType{
+	var rentalRoom models.RentalRoom
+	result := r.Db.Preload("Beds").Where("id = ?", roomId).First(&rentalRoom)
+	if result.Error != nil {
+		return result.Error
+
+	}
+
+	rentalRoom.Beds = append(rentalRoom.Beds, models.BedType{
 		Model: gorm.Model{
 			ID: bedId,
 		},
 	})
-	if result.Error != nil {
-		return result
-	}
+
+	result = r.Db.Save(&rentalRoom)
+
 	return nil
 }

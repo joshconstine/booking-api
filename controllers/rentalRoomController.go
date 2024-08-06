@@ -208,6 +208,7 @@ func (controller *RentalRoomController) AddBedToRoom(w http.ResponseWriter, r *h
 	updateParams.Floor, _ = strconv.Atoi(r.FormValue("floor"))
 	updateParams.RentalRoomTypeID = uint(rentalRoomTypeID)
 	updateParams.Photos = []int{}
+	updateParams.Beds = []int{}
 	err := controller.rentalRoomService.AddBedToRoom(uint(roomInt), constants.BED_TYPE_TWIN_ID)
 
 	if err != nil {
@@ -219,6 +220,15 @@ func (controller *RentalRoomController) AddBedToRoom(w http.ResponseWriter, r *h
 	rentalRooms := controller.rentalRoomService.FindByRentalId(uint(rentalIdInt))
 	params.Rooms = rentalRooms
 	params.RentalID = uint(rentalIdInt)
+
+	for _, room := range rentalRooms {
+		if room.ID == uint(roomInt) {
+
+			for _, bed := range room.Beds {
+				updateParams.Beds = append(updateParams.Beds, int(bed.ID))
+			}
+		}
+	}
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
 
