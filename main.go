@@ -213,7 +213,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	photoController := controllers.NewPhotoController(photoService, entityPhotoService)
 	// locationController := controllers.NewLocationController(locationService)
 	// roomTypeController := controllers.NewRoomTypeController(roomTypeService)
-	// rentalRoomController := controllers.NewRentalRoomController(rentalRoomService)
+	rentalRoomController := controllers.NewRentalRoomController(rentalRoomService, roomTypeService, bedTypeService)
 	// entityBookingDurationRuleController := controllers.NewEntityBookingDurationRuleController(entityBookingDurationRuleService)
 	entityBookingController := controllers.NewEntityBookingController(entityBookingService, rentalService, boatService)
 	// userRoleController := controllers.NewUserRoleController(userRoleService)
@@ -233,7 +233,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 
 	chatController := controllers.NewChatController(chatService, userService, accountService)
 
-	chirouter := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController, photoController, accountController, userController, entityBookingController, membershipRepository, entityRepository, entityBookingCostController, rentalStatusController)
+	chirouter := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController, photoController, accountController, userController, entityBookingController, membershipRepository, entityRepository, entityBookingCostController, rentalStatusController, rentalRoomController)
 
 	// ginRouter := router.InitRouter(routes)
 

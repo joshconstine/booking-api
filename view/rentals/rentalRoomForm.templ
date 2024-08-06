@@ -15,7 +15,7 @@ func GetSelected(selected uint, current uint) bool {
 }
 
 // RentalInformationResponse renders a page with detailed information about a specific rental
-templ RentalRoomForm( params request.RentalRoomCreateRequest, errors request.RentalRoomCreateRequestError, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
+templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.RentalRoomCreateRequestError, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
         <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md flex-grow w-full mx-auto rounded-lg">
             <div class="w-full justify-between flex">
                 <h2 class="text-xl font-bold">{params.Name}</h2>

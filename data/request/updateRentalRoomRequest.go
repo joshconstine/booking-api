@@ -1,7 +1,7 @@
 package request
 
 type UpdateRentalRoomRequest struct {
-	ID               string `json:"id"`
+	ID               uint   `json:"id"`
 	Name             string `json:"name"`
 	Description      string `json:"description"`
 	Floor            int    `json:"floor"`

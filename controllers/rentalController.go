@@ -97,7 +97,7 @@ func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.R
 	params.RentalID = uint(rentalIdInt)
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
-	var roomForm request.RentalRoomCreateRequest
+	var roomForm request.UpdateRentalRoomRequest
 
 	//If no room is selected, select the first room
 	if roomInt == 0 {
@@ -109,7 +109,9 @@ func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.R
 		for _, r := range rentalRooms {
 			if r.ID == uint(roomInt) {
 
-				roomForm = request.RentalRoomCreateRequest{
+				roomForm = request.UpdateRentalRoomRequest{
+					ID:               r.ID,
+					RentalID:         uint(rentalIdInt),
 					Name:             r.Name,
 					Description:      r.Description,
 					Floor:            r.Floor,
@@ -172,7 +174,7 @@ func (controller *RentalController) Create(w http.ResponseWriter, r *http.Reques
 	params.RentalID = uint(rentalIdInt)
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
-	bedroomForm := request.RentalRoomCreateRequest{Name: "Bedroom 1"}
+	bedroomForm := request.UpdateRentalRoomRequest{Name: "Bedroom 1"}
 	return rentals.RentalBedroomsForm(step2params, bedroomForm, step2errors, roomTypes, bedTypes).Render(r.Context(), w)
 	//http.Redirect(w, r, "/rentals", http.StatusSeeOther)
 
