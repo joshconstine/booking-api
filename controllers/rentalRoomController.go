@@ -123,3 +123,47 @@ func (controller *RentalRoomController) Update(w http.ResponseWriter, r *http.Re
 
 	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
 }
+
+func (controller *RentalRoomController) Create(w http.ResponseWriter, r *http.Request) error {
+
+	rentalId := chi.URLParam(r, "rentalId")
+	rentalIdInt, _ := strconv.Atoi(rentalId)
+
+	var createRequest request.RentalRoomCreateRequest
+	rentalRoomTypeID, _ := strconv.Atoi(r.FormValue("room_type_id"))
+	createRequest.RentalID = uint(rentalIdInt)
+	createRequest.Name = r.FormValue("name")
+	createRequest.Description = r.FormValue("description")
+	createRequest.Floor, _ = strconv.Atoi(r.FormValue("floor"))
+	createRequest.RentalRoomTypeID = uint(rentalRoomTypeID)
+	createRequest.Photos = []int{}
+	createRequest.Beds = []int{}
+
+	result, err := controller.rentalRoomService.Create(createRequest)
+
+	if err != nil {
+		return err
+	}
+
+	updateParams := request.UpdateRentalRoomRequest{
+		ID:          result.ID,
+		Name:        result.Name,
+		Description: result.Description,
+		Floor:       result.Floor,
+		RentalID:    uint(rentalIdInt),
+	}
+
+	for _, beds := range result.Beds {
+		updateParams.Beds = append(updateParams.Beds, int(beds.ID))
+	}
+
+	params := request.CreateRentalStep2Params{}
+	errors := request.CreateRentalStep2Errors{}
+	rentalRooms := controller.rentalRoomService.FindByRentalId(uint(rentalIdInt))
+	params.Rooms = rentalRooms
+	params.RentalID = uint(rentalIdInt)
+	roomTypes := controller.roomTypeService.FindAll()
+	bedTypes := controller.bedTypeService.FindAll()
+
+	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
+}

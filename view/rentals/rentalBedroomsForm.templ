@@ -16,12 +16,55 @@ func CreateRentalRoomFormUrlForRoom(rentalId uint, roomId uint) string {
     return "/rentals/" + strconv.Itoa(int(rentalId)) + "/bedrooms/" + strconv.Itoa(int(roomId))
 }
 
+func CreateRentalRoomFormUrlForNewRoom(rentalId uint) string {
+return "/rentals/" + strconv.Itoa(int(rentalId)) + "/bedrooms"
+}
+
 templ RentalBedroomsForm( params request.CreateRentalStep2Params, roomForm request.UpdateRentalRoomRequest, errors request.CreateRentalStep2Errors, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
     <form
             hx-put={CreateRentalRoomFormUrlForRoom(params.RentalID, roomForm.ID)}
             hx-target="#rental-form"
             hx-indicator="#loading"
-            class="flex flex-col gap-4">
+            class="flex flex-col gap-4"
+    >
+           <div class="w-full px-4 flex flex-wrap justify-center mx-auto gap-4">
+                 <aside class="flex-1 flex-col ">
+                    @BedroomButtons(params.Rooms, params.RentalID)
+                 </aside>
+               @RentalRoomForm(roomForm, request.RentalRoomCreateRequestError{}, roomTypes, bedTypes)
+                <aside class="flex flex-col gap-2 w-64 flex-1">
+
+
+                </aside>
+            </div>
+              <div class=" flex justify-between  max-w-screen-md w-full mx-auto ">
+            <div class="flex gap-4">
+                <button type="button" class="btn" ><i class="fa-regular fa-trash text-red-600"></i>Delete listing</button>
+                <button type="reset" class="btn" ><i class="fa-regular fa-trash text-red-600"></i>Delete room</button>
+
+            </div>
+            <div class="flex gap-4">
+                <span id="loading" class="loading loading-dots loading-md htmx-indicator"></span>
+
+                //<button class="btn bg-white">Save changes to draft</button>
+                <button class="btn bg-white">Save</button>
+
+
+            </div>
+        </div>
+    </form>
+
+
+}
+templ RentalBedroomsFormCreate( params request.CreateRentalStep2Params, roomForm request.UpdateRentalRoomRequest, errors request.CreateRentalStep2Errors, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
+    <form
+            hx-post={CreateRentalRoomFormUrlForNewRoom(params.RentalID)}
+            hx-target="#rental-form"
+            hx-indicator="#loading"
+            class="flex flex-col gap-4"
+
+    >
+
            <div class="w-full px-4 flex flex-wrap justify-center mx-auto gap-4">
                  <aside class="flex-1 flex-col ">
                     @BedroomButtons(params.Rooms, params.RentalID)
@@ -53,7 +96,6 @@ templ RentalBedroomsForm( params request.CreateRentalStep2Params, roomForm reque
 }
 
 
-
 func CreateGetBedroomFormUrlForRoom(rentalId uint, roomId uint) string {
     return "/rentals/" + strconv.Itoa(int(rentalId)) + "/bedrooms/" + strconv.Itoa(int(roomId))
 }
@@ -72,9 +114,10 @@ templ BedroomButtons(rooms []response.RentalRoomResponse, rentalId uint) {
                 <i class="fa-solid fa-chevron-right"></i>
             </div>
         }
-        <button class=" btn w-full items-center flex justify-end">
+        <div class="justify-end w-full items-center gap-2 btn flex"  hx-trigger="click" hx-indicator="#addNew" hx-get={string(templ.SafeURL(CreateRentalRoomFormUrlForNewRoom(rentalId)))}  type="button" hx-target="#rental-form">
+            <span id="addNew" class="loading loading-dots loading-md htmx-indicator"></span>
                         <span>Add room</span>
                         <i class="fa-solid fa-plus"></i>
-                    </button>
+            </div>
     </div>
 }
