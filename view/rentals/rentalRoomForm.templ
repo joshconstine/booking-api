@@ -26,7 +26,7 @@ templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.Ren
                 <label for="name" class="font-semibold" >
                    Room Type
                 </label>
-                <select name="room_type_id" id="room_type_id" required class="select select-bordered">
+                <select name="room_type_id" id="room_type_id" required class="select select-bordered w-64">
                     <option value="">Select Room Type</option>
                     for _, roomType := range roomTypes {
                         if GetSelected(roomType.ID, params.RentalRoomTypeID) {
@@ -47,14 +47,8 @@ templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.Ren
                 }
             </div>
            </div>
-           <div class="flex w-full gap-4">
-             <div class="flex flex-col gap-2 w-full">
-                <label for="numberOfBeds" class="font-semibold">
-                   Number of Beds
-                </label>
-                <input type="number" name="number_of_beds" id="number_of_beds" required class="input input-bordered" value={strconv.Itoa(len(params.Beds))}/>
-            </div>
-           </div>
+            @BedForm(params, errors, bedTypes)
+
            <div class="flex w-full gap-4">
              <div class="flex flex-col gap-2 w-full">
                 <label for="floor" class="font-semibold">
@@ -81,8 +75,42 @@ templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.Ren
                     }
                    </div>
                </div>
+
     </div>
 
 
 }
 
+
+templ BedForm(params request.UpdateRentalRoomRequest, errors request.RentalRoomCreateRequestError, bedTypes []response.BedTypeResponse) {
+    <div class="flex w-full gap-4">
+        for i, bed := range params.Beds{
+            <div class="flex flex-col gap-2 w-full">
+                <label for="bed_type_id" class="font-semibold">
+                    Bed {strconv.Itoa(i+1)} Type
+                </label>
+                @BedSelect(bedTypes, bed)
+            </div>
+        }
+        <button type="button" class="btn" id="add-bed"
+                hx-post={string(templ.SafeURL(GetAddBedUrl(params.RentalID, params.ID)))}
+                hx-target="#rental-form"
+                hx-indicator={GetLoadingId(params.ID, true)}
+        >Add Bed</button>
+
+    </div>
+}
+
+
+templ BedSelect(bedTypes []response.BedTypeResponse, selected int) {
+    <select name="bed_type_id" id="bed_type_id" required class="select select-bordered w-64">
+        <option value="">Select Bed Type</option>
+        for _, bedType := range bedTypes {
+            if GetSelected(bedType.ID, uint(selected)) {
+                <option value={strconv.Itoa(int(bedType.ID))} selected>{bedType.Name}</option>
+            } else {
+                <option value={strconv.Itoa(int(bedType.ID))} >{bedType.Name}</option>
+            }
+        }
+    </select>
+}

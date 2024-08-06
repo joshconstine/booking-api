@@ -110,3 +110,19 @@ func (r *RentalRoomRepositoryImplementation) Delete(id uint) error {
 	result := r.Db.Delete(&models.RentalRoom{}, id)
 	return result.Error
 }
+
+func (r *RentalRoomRepositoryImplementation) AddBedToRoom(roomId uint, bedId uint) error {
+	result := r.Db.Model(&models.RentalRoom{
+		Model: gorm.Model{
+			ID: roomId,
+		},
+	}).Association("Beds").Append(&models.BedType{
+		Model: gorm.Model{
+			ID: bedId,
+		},
+	})
+	if result.Error != nil {
+		return result
+	}
+	return nil
+}

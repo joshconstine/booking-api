@@ -25,6 +25,10 @@ func CreateRentalRoomFormUrlForCreateNewRoom(rentalId uint) string {
 return "/rentals/" + strconv.Itoa(int(rentalId)) + "/bedrooms/new"
 }
 
+func GetAddBedUrl(rentalId uint, roomId uint) string {
+return "/rentals/" + strconv.Itoa(int(rentalId)) + "/bedrooms/" + strconv.Itoa(int(roomId)) + "/beds"
+}
+
 templ RentalBedroomsForm( params request.CreateRentalStep2Params, roomForm request.UpdateRentalRoomRequest, errors request.CreateRentalStep2Errors, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
     <form
             hx-put={CreateRentalRoomFormUrlForRoom(params.RentalID, roomForm.ID)}

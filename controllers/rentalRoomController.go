@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"booking-api/constants"
 	"booking-api/data/request"
 	"booking-api/services"
 	rentals "booking-api/view/rentals"
@@ -189,4 +190,37 @@ func (controller *RentalRoomController) Delete(w http.ResponseWriter, r *http.Re
 	bedTypes := controller.bedTypeService.FindAll()
 
 	return rentals.RentalBedroomsForm(params, request.UpdateRentalRoomRequest{}, errors, roomTypes, bedTypes).Render(r.Context(), w)
+}
+
+func (controller *RentalRoomController) AddBedToRoom(w http.ResponseWriter, r *http.Request) error {
+
+	rentalId := chi.URLParam(r, "rentalId")
+	room := chi.URLParam(r, "roomId")
+	rentalIdInt, _ := strconv.Atoi(rentalId)
+	roomInt, _ := strconv.Atoi(room)
+
+	var updateParams request.UpdateRentalRoomRequest
+	rentalRoomTypeID, _ := strconv.Atoi(r.FormValue("room_type_id"))
+	updateParams.ID = uint(roomInt)
+	updateParams.RentalID = uint(rentalIdInt)
+	updateParams.Name = r.FormValue("name")
+	updateParams.Description = r.FormValue("description")
+	updateParams.Floor, _ = strconv.Atoi(r.FormValue("floor"))
+	updateParams.RentalRoomTypeID = uint(rentalRoomTypeID)
+	updateParams.Photos = []int{}
+	err := controller.rentalRoomService.AddBedToRoom(uint(roomInt), constants.BED_TYPE_TWIN_ID)
+
+	if err != nil {
+		return err
+	}
+	params := request.CreateRentalStep2Params{}
+
+	errors := request.CreateRentalStep2Errors{}
+	rentalRooms := controller.rentalRoomService.FindByRentalId(uint(rentalIdInt))
+	params.Rooms = rentalRooms
+	params.RentalID = uint(rentalIdInt)
+	roomTypes := controller.roomTypeService.FindAll()
+	bedTypes := controller.bedTypeService.FindAll()
+
+	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
 }

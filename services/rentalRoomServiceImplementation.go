@@ -61,3 +61,7 @@ func (r *RentalRoomServiceImplementation) Delete(id uint) error {
 	return r.RentalRoomRepository.Delete(id)
 
 }
+
+func (r *RentalRoomServiceImplementation) AddBedToRoom(roomId uint, bedId uint) error {
+	return r.RentalRoomRepository.AddBedToRoom(roomId, bedId)
+}

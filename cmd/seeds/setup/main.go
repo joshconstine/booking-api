@@ -238,7 +238,7 @@ func SeedBedTypes(db *gorm.DB) {
 
 		{
 			Model: gorm.Model{
-				ID: 1,
+				ID: constants.BED_TYPE_TWIN_ID,
 			},
 			Name: "Twin",
 		},
