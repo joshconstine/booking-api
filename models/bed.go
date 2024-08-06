@@ -14,7 +14,8 @@ type Bed struct {
 
 func (b *Bed) MapBedToResponse() response.BedResponse {
 	return response.BedResponse{
-		ID:   b.ID,
-		Name: b.BedType.Name,
+		ID:        b.ID,
+		BedTypeID: b.BedTypeID,
+		Name:      b.BedType.Name,
 	}
 }

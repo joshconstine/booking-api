@@ -3,6 +3,7 @@ package controllers
 import (
 	"booking-api/constants"
 	"booking-api/data/request"
+	"booking-api/data/response"
 	"booking-api/services"
 	rentals "booking-api/view/rentals"
 	"github.com/go-chi/chi/v5"
@@ -107,7 +108,7 @@ func (controller *RentalRoomController) Update(w http.ResponseWriter, r *http.Re
 	updateParams.Floor, _ = strconv.Atoi(r.FormValue("floor"))
 	updateParams.RentalRoomTypeID = uint(rentalRoomTypeID)
 	updateParams.Photos = []int{}
-	updateParams.Beds = []int{}
+	updateParams.Beds = []response.BedResponse{}
 
 	_, err := controller.rentalRoomService.Update(updateParams)
 
@@ -152,10 +153,7 @@ func (controller *RentalRoomController) Create(w http.ResponseWriter, r *http.Re
 		Description: result.Description,
 		Floor:       result.Floor,
 		RentalID:    uint(rentalIdInt),
-	}
-
-	for _, beds := range result.Beds {
-		updateParams.Beds = append(updateParams.Beds, int(beds.ID))
+		Beds:        result.Beds,
 	}
 
 	params := request.CreateRentalStep2Params{}
@@ -208,7 +206,7 @@ func (controller *RentalRoomController) AddBedToRoom(w http.ResponseWriter, r *h
 	updateParams.Floor, _ = strconv.Atoi(r.FormValue("floor"))
 	updateParams.RentalRoomTypeID = uint(rentalRoomTypeID)
 	updateParams.Photos = []int{}
-	updateParams.Beds = []int{}
+	updateParams.Beds = []response.BedResponse{}
 	err := controller.rentalRoomService.AddBedToRoom(uint(roomInt), constants.BED_TYPE_TWIN_ID)
 
 	if err != nil {
@@ -225,7 +223,7 @@ func (controller *RentalRoomController) AddBedToRoom(w http.ResponseWriter, r *h
 		if room.ID == uint(roomInt) {
 
 			for _, bed := range room.Beds {
-				updateParams.Beds = append(updateParams.Beds, int(bed.ID))
+				updateParams.Beds = append(updateParams.Beds, bed)
 			}
 		}
 	}

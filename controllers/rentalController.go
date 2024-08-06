@@ -148,10 +148,7 @@ func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.R
 					Description:      r.Description,
 					Floor:            r.Floor,
 					RentalRoomTypeID: r.RoomType.ID,
-				}
-
-				for _, bed := range r.Beds {
-					roomForm.Beds = append(roomForm.Beds, int(bed.ID))
+					Beds:             r.Beds,
 				}
 
 				for _, photo := range r.Photos {

@@ -83,13 +83,13 @@ templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.Ren
 
 
 templ BedForm(params request.UpdateRentalRoomRequest, errors request.RentalRoomCreateRequestError, bedTypes []response.BedTypeResponse) {
-    <div class="flex w-full gap-4">
+    <div class="flex w-full flex-wrap gap-4">
         for i, bed := range params.Beds{
             <div class="flex flex-col gap-2 w-full">
                 <label for="bed_type_id" class="font-semibold">
                     Bed {strconv.Itoa(i+1)} Type
                 </label>
-                @BedSelect(bedTypes, bed)
+                @BedSelect(bedTypes, bed.BedTypeID)
             </div>
         }
         <button type="button" class="btn" id="add-bed"
@@ -102,11 +102,11 @@ templ BedForm(params request.UpdateRentalRoomRequest, errors request.RentalRoomC
 }
 
 
-templ BedSelect(bedTypes []response.BedTypeResponse, selected int) {
+templ BedSelect(bedTypes []response.BedTypeResponse, selected uint) {
     <select name="bed_type_id" id="bed_type_id" required class="select select-bordered w-64">
         <option value="">Select Bed Type</option>
         for _, bedType := range bedTypes {
-            if GetSelected(bedType.ID, uint(selected)) {
+            if GetSelected(bedType.ID, selected) {
                 <option value={strconv.Itoa(int(bedType.ID))} selected>{bedType.Name}</option>
             } else {
                 <option value={strconv.Itoa(int(bedType.ID))} >{bedType.Name}</option>
