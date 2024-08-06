@@ -155,6 +155,7 @@ func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.R
 					roomForm.Photos = append(roomForm.Photos, int(photo.ID))
 
 				}
+
 			}
 		}
 	}

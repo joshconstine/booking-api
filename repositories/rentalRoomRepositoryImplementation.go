@@ -109,6 +109,12 @@ func (r *RentalRoomRepositoryImplementation) Delete(id uint) error {
 	return result.Error
 }
 
+func (r *RentalRoomRepositoryImplementation) DeleteBed(id uint) error {
+
+	result := r.Db.Delete(&models.Bed{}, id)
+
+	return result.Error
+}
 func (r *RentalRoomRepositoryImplementation) AddBedToRoom(roomId uint, bedId uint) error {
 	var rentalRoom models.RentalRoom
 	result := r.Db.Preload("Beds").Where("id = ?", roomId).First(&rentalRoom)

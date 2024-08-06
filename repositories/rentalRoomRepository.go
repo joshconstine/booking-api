@@ -13,4 +13,5 @@ type RentalRoomRepository interface {
 	Create(rentalRoom request.RentalRoomCreateRequest) response.RentalRoomResponse
 	Update(rentalRoom request.UpdateRentalRoomRequest) response.RentalRoomResponse
 	Delete(id uint) error
+	DeleteBed(id uint) error
 }

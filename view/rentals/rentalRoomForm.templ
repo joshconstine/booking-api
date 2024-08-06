@@ -14,7 +14,6 @@ func GetSelected(selected uint, current uint) bool {
     return false
 }
 
-// RentalInformationResponse renders a page with detailed information about a specific rental
 templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.RentalRoomCreateRequestError, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
         <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md flex-grow w-full mx-auto rounded-lg">
             <div class="w-full justify-between flex">
@@ -86,9 +85,13 @@ templ BedForm(params request.UpdateRentalRoomRequest, errors request.RentalRoomC
     <div class="flex w-full flex-wrap gap-4">
         for i, bed := range params.Beds{
             <div class="flex flex-col gap-2 w-full">
+                <div class="flex gap-4 ">
+
                 <label for="bed_type_id" class="font-semibold">
                     Bed {strconv.Itoa(i+1)} Type
                 </label>
+                    @RemoveBedButton(i, params.ID, params.RentalID)
+                </div>
                 @BedSelect(bedTypes, bed.BedTypeID)
             </div>
         }
@@ -100,10 +103,21 @@ templ BedForm(params request.UpdateRentalRoomRequest, errors request.RentalRoomC
 
     </div>
 }
+func GetRemoveBedUrl(rentalID uint, bedID uint) string {
+    return "/rentals/" + strconv.Itoa(int(rentalID)) + "/beds/" + strconv.Itoa(int(bedID))
+}
 
-
+templ RemoveBedButton(index int, bedID uint, rentalID uint) {
+    <button type="button" class="btn btn-error"
+            hx-delete={string(templ.SafeURL(GetRemoveBedUrl( rentalID, bedID)))}
+            hx-target="#rental-form"
+            hx-indicator={GetLoadingId(bedID, true)}
+    >Remove
+    </button>
+}
 templ BedSelect(bedTypes []response.BedTypeResponse, selected uint) {
     <select name="bed_type_id" id="bed_type_id" required class="select select-bordered w-64">
+
         <option value="">Select Bed Type</option>
         for _, bedType := range bedTypes {
             if GetSelected(bedType.ID, selected) {

@@ -13,4 +13,5 @@ type RentalRoomService interface {
 	Create(rentalRoom request.RentalRoomCreateRequest) (response.RentalRoomResponse, error)
 	Update(rentalRoom request.UpdateRentalRoomRequest) (response.RentalRoomResponse, error)
 	Delete(id uint) error
+	DeleteBed(id uint) error
 }

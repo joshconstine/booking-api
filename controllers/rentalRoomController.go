@@ -232,3 +232,26 @@ func (controller *RentalRoomController) AddBedToRoom(w http.ResponseWriter, r *h
 
 	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
 }
+func (controller *RentalRoomController) DeleteBed(w http.ResponseWriter, r *http.Request) error {
+
+	rentalId := chi.URLParam(r, "rentalId")
+	bedId := chi.URLParam(r, "bedId")
+	rentalIdInt, _ := strconv.Atoi(rentalId)
+	bedIdInt, _ := strconv.Atoi(bedId)
+
+	err := controller.rentalRoomService.DeleteBed(uint(bedIdInt))
+
+	if err != nil {
+		return err
+	}
+
+	params := request.CreateRentalStep2Params{}
+	errors := request.CreateRentalStep2Errors{}
+	rentalRooms := controller.rentalRoomService.FindByRentalId(uint(rentalIdInt))
+	params.Rooms = rentalRooms
+	params.RentalID = uint(rentalIdInt)
+	roomTypes := controller.roomTypeService.FindAll()
+	bedTypes := controller.bedTypeService.FindAll()
+
+	return rentals.RentalBedroomsForm(params, request.UpdateRentalRoomRequest{}, errors, roomTypes, bedTypes).Render(r.Context(), w)
+}
