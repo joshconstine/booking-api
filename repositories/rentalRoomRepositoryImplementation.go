@@ -95,7 +95,7 @@ func (r *RentalRoomRepositoryImplementation) Update(rentalRoom request.UpdateRen
 	rentalRoomModel.Name = rentalRoom.Name
 	rentalRoomModel.Description = rentalRoom.Description
 	rentalRoomModel.Floor = rentalRoom.Floor
-	rentalRoomModel.RoomTypeID = rentalRoom.RoomTypeID
+	rentalRoomModel.RoomTypeID = rentalRoom.RentalRoomTypeID
 
 	result = r.Db.Save(&rentalRoomModel)
 	if result.Error != nil {
