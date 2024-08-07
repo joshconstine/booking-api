@@ -28,6 +28,9 @@ return "/rentals/" + strconv.Itoa(int(rentalId)) + "/bedrooms/new"
 func GetAddBedUrl(rentalId uint, roomId uint) string {
 return "/rentals/" + strconv.Itoa(int(rentalId)) + "/bedrooms/" + strconv.Itoa(int(roomId)) + "/beds"
 }
+func GetRentalRoomFormWithQuery(rentalId uint, roomId uint) string {
+return "/rentals/" + strconv.Itoa(int(rentalId)) + "/admin/rooms" + "?roomId=" + strconv.Itoa(int(roomId))
+}
 
 templ RentalBedroomsForm( params request.CreateRentalStep2Params, roomForm request.UpdateRentalRoomRequest, errors request.CreateRentalStep2Errors, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
     <form
@@ -120,13 +123,17 @@ func GetLoadingId(id  uint, addtarget  bool)string {
 templ BedroomButtons(rooms []response.RentalRoomResponse, rentalId uint) {
     <div class="flex flex-col gap-2">
         for _, room := range rooms {
-            <div class="justify-end w-full items-center gap-2 btn flex"  hx-trigger="click" hx-indicator={GetLoadingId(room.ID, true)} hx-get={string(templ.SafeURL(CreateGetBedroomFormUrlForRoom(rentalId, room.ID)))}  type="button" hx-target="#rental-form">
+            <div class="justify-end w-full items-center gap-2 btn flex"  hx-trigger="click" hx-indicator={GetLoadingId(room.ID, true)} hx-get={string(templ.SafeURL(CreateGetBedroomFormUrlForRoom(rentalId, room.ID)))}  type="button" hx-target="#rental-form"
+                hx-push-url={string(templ.SafeURL(GetRentalRoomFormWithQuery(rentalId, room.ID)))}
+            >
                  <span id={GetLoadingId(room.ID, false)} class="loading loading-dots loading-md htmx-indicator"></span>
                 <span>{room.Name}</span>
                 <i class="fa-solid fa-chevron-right"></i>
             </div>
         }
-        <div class="justify-end w-full items-center gap-2 btn flex"  hx-trigger="click" hx-indicator="#addNew" hx-get={string(templ.SafeURL(CreateRentalRoomFormUrlForCreateNewRoom(rentalId)))}  type="button" hx-target="#rental-form">
+        <div class="justify-end w-full items-center gap-2 btn flex"  hx-trigger="click" hx-indicator="#addNew" hx-get={string(templ.SafeURL(CreateRentalRoomFormUrlForCreateNewRoom(rentalId)))}  type="button" hx-target="#rental-form"
+            hx-push-url={string(templ.SafeURL(BuildAdminRoomUrl(int(rentalId))))}
+        >
             <span id="addNew" class="loading loading-dots loading-md htmx-indicator"></span>
                         <span>Add room</span>
                         <i class="fa-solid fa-plus"></i>
