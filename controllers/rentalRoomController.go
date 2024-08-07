@@ -109,14 +109,13 @@ func getBedsFromRequest(r *http.Request) []response.BedResponse {
 	}
 	return Beds
 }
-func (controller *RentalRoomController) Update(w http.ResponseWriter, r *http.Request) error {
-
+func setupParamsFromForm(r *http.Request) request.UpdateRentalRoomRequest {
+	var updateParams request.UpdateRentalRoomRequest
 	rentalId := chi.URLParam(r, "rentalId")
 	room := chi.URLParam(r, "roomId")
 	rentalIdInt, _ := strconv.Atoi(rentalId)
 	roomInt, _ := strconv.Atoi(room)
 
-	var updateParams request.UpdateRentalRoomRequest
 	rentalRoomTypeID, _ := strconv.Atoi(r.FormValue("room_type_id"))
 	updateParams.ID = uint(roomInt)
 	updateParams.RentalID = uint(rentalIdInt)
@@ -127,6 +126,14 @@ func (controller *RentalRoomController) Update(w http.ResponseWriter, r *http.Re
 	updateParams.Photos = []int{}
 
 	updateParams.Beds = getBedsFromRequest(r)
+	return updateParams
+}
+func (controller *RentalRoomController) Update(w http.ResponseWriter, r *http.Request) error {
+
+	rentalId := chi.URLParam(r, "rentalId")
+	rentalIdInt, _ := strconv.Atoi(rentalId)
+
+	updateParams := setupParamsFromForm(r)
 
 	_, err := controller.rentalRoomService.Update(updateParams)
 
@@ -257,6 +264,7 @@ func (controller *RentalRoomController) DeleteBed(w http.ResponseWriter, r *http
 	rentalIdInt, _ := strconv.Atoi(rentalId)
 	bedIdInt, _ := strconv.Atoi(bedId)
 
+	updateParams := setupParamsFromForm(r)
 	err := controller.rentalRoomService.DeleteBed(uint(bedIdInt))
 
 	if err != nil {
@@ -271,5 +279,5 @@ func (controller *RentalRoomController) DeleteBed(w http.ResponseWriter, r *http
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
 
-	return rentals.RentalBedroomsForm(params, request.UpdateRentalRoomRequest{}, errors, roomTypes, bedTypes).Render(r.Context(), w)
+	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
 }

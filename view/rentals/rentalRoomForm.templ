@@ -90,7 +90,7 @@ templ BedForm(params request.UpdateRentalRoomRequest, errors request.RentalRoomC
                 <label for="bed_type_id" class="font-semibold">
                     Bed {strconv.Itoa(i+1)} Type
                 </label>
-                    @RemoveBedButton(i, params.ID, params.RentalID)
+                    @RemoveBedButton(i, bed.ID, params.RentalID)
                 </div>
                 @BedSelect(bedTypes, bed.BedTypeID, bed.ID)
             </div>
