@@ -131,6 +131,29 @@ func (controller *RentalController) NewBedroomForm(w http.ResponseWriter, r *htt
 	}
 	return rentals.RentalBedroomsFormCreate(params, roomForm, errors, roomTypes, bedTypes).Render(r.Context(), w)
 }
+func GetParamsFromRooms(rooms []response.RentalRoomResponse, roomID *int, rentalID uint) request.UpdateRentalRoomRequest {
+	var roomForm request.UpdateRentalRoomRequest
+	for _, r := range rooms {
+		if r.ID == uint(*roomID) {
+			roomForm = request.UpdateRentalRoomRequest{
+				ID:               r.ID,
+				RentalID:         rentalID,
+				Name:             r.Name,
+				Description:      r.Description,
+				Floor:            r.Floor,
+				RentalRoomTypeID: r.RoomType.ID,
+				Beds:             r.Beds,
+			}
+
+			for _, photo := range r.Photos {
+				roomForm.Photos = append(roomForm.Photos, int(photo.ID))
+
+			}
+
+		}
+	}
+	return roomForm
+}
 func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.Request) error {
 	rentalId := chi.URLParam(r, "rentalId")
 	room := chi.URLParam(r, "roomId")
@@ -145,34 +168,13 @@ func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.R
 	bedTypes := controller.bedTypeService.FindAll()
 	var roomForm request.UpdateRentalRoomRequest
 
-	//If no room is selected, select the first room
 	if roomInt == 0 {
 		if len(rentalRooms) > 0 {
 			roomInt = int(rentalRooms[0].ID)
 		}
 	}
-	if roomInt != 0 {
-		for _, r := range rentalRooms {
-			if r.ID == uint(roomInt) {
+	roomForm = GetParamsFromRooms(rentalRooms, &roomInt, uint(rentalIdInt))
 
-				roomForm = request.UpdateRentalRoomRequest{
-					ID:               r.ID,
-					RentalID:         uint(rentalIdInt),
-					Name:             r.Name,
-					Description:      r.Description,
-					Floor:            r.Floor,
-					RentalRoomTypeID: r.RoomType.ID,
-					Beds:             r.Beds,
-				}
-
-				for _, photo := range r.Photos {
-					roomForm.Photos = append(roomForm.Photos, int(photo.ID))
-
-				}
-
-			}
-		}
-	}
 	if len(params.Rooms) == 0 {
 
 		return rentals.RentalBedroomsFormCreate(params, roomForm, errors, roomTypes, bedTypes).Render(r.Context(), w)
@@ -335,16 +337,16 @@ func (controller *RentalController) HandleRentalAdminDetailRooms(w http.Response
 	params.Rooms = rentalRooms
 	params.RentalID = uint(rentalIdInt)
 
-	room := chi.URLParam(r, "roomId")
+	room := r.URL.Query().Get("roomId")
 	roomInt, _ := strconv.Atoi(room)
-	for _, room := range rentalRooms {
-		if room.ID == uint(roomInt) {
-
-			for _, bed := range room.Beds {
-				updateParams.Beds = append(updateParams.Beds, bed)
-			}
+	//If no room is selected, select the first room
+	if roomInt == 0 {
+		if len(rentalRooms) > 0 {
+			roomInt = int(rentalRooms[0].ID)
 		}
 	}
+	updateParams = GetParamsFromRooms(rentalRooms, &roomInt, uint(rentalIdInt))
+
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
 	return rentals.RentalAdminRooms(rental, params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
