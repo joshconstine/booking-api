@@ -311,6 +311,16 @@ func (controller *RentalController) HandleRentalAdminDetail(w http.ResponseWrite
 	amenities := controller.amenityService.FindAllSorted()
 	return rentals.RentalAdmin(rental, amenities).Render(r.Context(), w)
 }
+func (controller *RentalController) HandleRentalAdminDetailAvailability(w http.ResponseWriter, r *http.Request) error {
+
+	rentalId := chi.URLParam(r, "rentalId")
+	id, _ := strconv.Atoi(rentalId)
+
+	rental := controller.rentalService.FindById(uint(id))
+	params := request.CreateRentalStep3Params{}
+	errors := request.CreateRentalStep3Errors{}
+	return rentals.RentalAdminAvailability(rental, params, errors).Render(r.Context(), w)
+}
 
 func (controller *RentalController) HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {
 	// user := view.getAuthenticatedUser(r)
