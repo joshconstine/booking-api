@@ -9,11 +9,12 @@ import (
 )
 
 type RentalRoomRepositoryImplementation struct {
-	Db *gorm.DB
+	Db            *gorm.DB
+	bedRepository BedRepository
 }
 
-func NewRentalRoomRepositoryImplementation(db *gorm.DB) RentalRoomRepository {
-	return &RentalRoomRepositoryImplementation{Db: db}
+func NewRentalRoomRepositoryImplementation(db *gorm.DB, bedRepository BedRepository) RentalRoomRepository {
+	return &RentalRoomRepositoryImplementation{Db: db, bedRepository: bedRepository}
 }
 
 func (r *RentalRoomRepositoryImplementation) FindAll() []response.RentalRoomResponse {
@@ -96,7 +97,25 @@ func (r *RentalRoomRepositoryImplementation) Update(rentalRoom request.UpdateRen
 
 	rentalRoomModel.RoomTypeID = rentalRoom.RentalRoomTypeID
 
-	result = r.Db.Updates(&rentalRoomModel)
+	for _, bed := range rentalRoom.Beds {
+		newBed := models.Bed{
+			Model: gorm.Model{
+				ID: bed.ID,
+			},
+			BedTypeID:    bed.BedTypeID,
+			RentalRoomID: rentalRoom.ID,
+			BedType: models.BedType{
+				Model: gorm.Model{
+					ID: bed.BedTypeID,
+				},
+			},
+		}
+		_ = r.bedRepository.Update(newBed)
+
+		rentalRoomModel.Beds = append(rentalRoomModel.Beds, newBed)
+	}
+
+	result = r.Db.Save(&rentalRoomModel)
 	if result.Error != nil {
 		return response.RentalRoomResponse{}
 	}

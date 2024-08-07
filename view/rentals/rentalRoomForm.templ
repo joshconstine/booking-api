@@ -92,7 +92,7 @@ templ BedForm(params request.UpdateRentalRoomRequest, errors request.RentalRoomC
                 </label>
                     @RemoveBedButton(i, params.ID, params.RentalID)
                 </div>
-                @BedSelect(bedTypes, bed.BedTypeID)
+                @BedSelect(bedTypes, bed.BedTypeID, bed.ID)
             </div>
         }
         <button type="button" class="btn" id="add-bed"
@@ -107,6 +107,10 @@ func GetRemoveBedUrl(rentalID uint, bedID uint) string {
     return "/rentals/" + strconv.Itoa(int(rentalID)) + "/beds/" + strconv.Itoa(int(bedID))
 }
 
+func GetBedTypeSelector(bedID uint) string {
+    return "bed_type_id_" + strconv.Itoa(int(bedID))
+}
+
 templ RemoveBedButton(index int, bedID uint, rentalID uint) {
     <button type="button" class="btn btn-error"
             hx-delete={string(templ.SafeURL(GetRemoveBedUrl( rentalID, bedID)))}
@@ -115,8 +119,8 @@ templ RemoveBedButton(index int, bedID uint, rentalID uint) {
     >Remove
     </button>
 }
-templ BedSelect(bedTypes []response.BedTypeResponse, selected uint) {
-    <select name="bed_type_id" id="bed_type_id" required class="select select-bordered w-64">
+templ BedSelect(bedTypes []response.BedTypeResponse, selected uint, bedID uint) {
+    <select name={string(templ.SafeURL(GetBedTypeSelector(bedID)))} id={string(templ.SafeURL(GetBedTypeSelector(bedID)))}  required class="select select-bordered w-64">
 
         <option value="">Select Bed Type</option>
         for _, bedType := range bedTypes {

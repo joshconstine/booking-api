@@ -92,6 +92,23 @@ func NewRentalRoomController(rentalRoomService services.RentalRoomService, roomT
 //	ctx.JSON(http.StatusOK, webResponse)
 //}
 
+func getBedsFromRequest(r *http.Request) []response.BedResponse {
+	var Beds []response.BedResponse
+	keyLead := "bed_type_id_"
+	charLen := len(keyLead)
+	for key, value := range r.Form {
+		if len(key) > charLen && key[:charLen] == "bed_type_id_" {
+			bedID := key[charLen:]
+			bedIDInt, _ := strconv.Atoi(bedID)
+			bedType := value[0]
+			bedTypeIDInt, _ := strconv.Atoi(bedType)
+			//Beds = append(Beds, response.BedResponse{ID: 0, BedTypeID: uint(bedIDInt)})
+			Beds = append(Beds, response.BedResponse{ID: uint(bedIDInt), BedTypeID: uint(bedTypeIDInt)})
+		}
+
+	}
+	return Beds
+}
 func (controller *RentalRoomController) Update(w http.ResponseWriter, r *http.Request) error {
 
 	rentalId := chi.URLParam(r, "rentalId")
@@ -108,7 +125,8 @@ func (controller *RentalRoomController) Update(w http.ResponseWriter, r *http.Re
 	updateParams.Floor, _ = strconv.Atoi(r.FormValue("floor"))
 	updateParams.RentalRoomTypeID = uint(rentalRoomTypeID)
 	updateParams.Photos = []int{}
-	updateParams.Beds = []response.BedResponse{}
+
+	updateParams.Beds = getBedsFromRequest(r)
 
 	_, err := controller.rentalRoomService.Update(updateParams)
 
