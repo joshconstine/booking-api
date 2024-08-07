@@ -19,6 +19,9 @@ func CreateGetBedroomFormUrl(id int) string {
 func CreateGetInformationFormUrl(id int) string {
     return "/rentals/" + strconv.Itoa(id) + "/information"
 }
+func CreateGetAvailabilityFormUrl(id int) string {
+    return "/rentals/" + strconv.Itoa(id) + "/availability"
+}
 func GetIdsFromAmens(amenities []response.AmenityResponse) []int {
     var ids []int
     for _, amen := range amenities {
@@ -93,7 +96,7 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
 
 templ RentalInformationForm(rental response.RentalInformationResponse, amenities []response.SortedAmenityResponse) {
 <div class="w-full">
- @ui.EntityPhotoList(rental.Photos)
+            @ui.EntityPhotoList(rental.Photos)
             @RentalForm(request.CreateRentalStep1Params{
                 RentalID: rental.ID,
                 Name: rental.Name,
@@ -111,6 +114,37 @@ templ RentalInformationForm(rental response.RentalInformationResponse, amenities
 </div>
 }
 
+templ RentalAvailabilityForm(params request.CreateRentalStep3Params, errors request.CreateRentalStep3Errors){
+
+<form
+
+   hx-swap="outerHTML"
+   hx-indicator="#loading"
+   class="flex flex-col gap-4 w-full max-w-screen-3xl mx-auto p-4 shadow-lg rounded-lg"
+   >
+        <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto rounded-lg">
+            <div class="w-full justify-between flex">
+                <h2 class="text-xl font-bold">Availability</h2>
+                <span class="text-gray-500 text-sm">information can be changed later</span>
+            </div>
+             <div class="flex flex-col gap-2 w-full">
+                <label for="name" class="font-semibold">
+                  Open all year round?
+                </label>
+                   <div class="flex gap-2 items-center">
+                        if params.OpenYearRound {
+                            <input type="radio" name="openYearRound" id="allowInstantBooking" value="checked" required class="radio radio-sm" checked />
+                            <label for="allowInstantBooking">Yes</label>
+
+                        } else {
+                            <input type="radio" name="openYearRound" id="allowInstantBooking"  required class="radio radio-sm" />
+                            <label for="allowInstantBooking">No</label>
+                        }
+                    </div>
+            </div>
+        </div>
+</form>
+}
 templ RentalAside(rentalId uint) {
   <aside class="flex flex-col gap-2 w-64 flex-1">
                     <div class="items-center gap-2 btn flex"  hx-indicator="#propInfo" hx-trigger="click" hx-get={string(templ.SafeURL(CreateGetInformationFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
@@ -125,10 +159,12 @@ templ RentalAside(rentalId uint) {
                         <span >Rooms info</span>
                         <i class="fa-regular fa-bed"></i>
                     </div>
-                    <button class="items-center gap-2 btn flex">
+      <div class="items-center gap-2 btn flex"  hx-trigger="click" hx-indicator="#availInfo" hx-get={string(templ.SafeURL(CreateGetAvailabilityFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
+
+          <span id="availInfo" class="loading loading-dots loading-md htmx-indicator"></span>
                         <span>Availability/Pricing</span>
                         <i class="fa-kit fa-regular-calendar-circle-dollar"></i>
-                    </button>
+                    </div>
                 </aside>
 }
 

@@ -87,6 +87,20 @@ func (controller *RentalController) InformationForm(w http.ResponseWriter, r *ht
 	return rentals.RentalInformationForm(rental, amenities).Render(r.Context(), w)
 }
 
+func (controller *RentalController) AvailabilityForm(w http.ResponseWriter, r *http.Request) error {
+
+	rentalId := chi.URLParam(r, "rentalId")
+	id, _ := strconv.Atoi(rentalId)
+
+	rental := controller.rentalService.FindById(uint(id))
+
+	params := request.CreateRentalStep3Params{
+		RentalID: rental.ID,
+	}
+	var errors request.CreateRentalStep3Errors
+
+	return rentals.RentalAvailabilityForm(params, errors).Render(r.Context(), w)
+}
 func makeBedroomName(existingBedrooms []response.RentalRoomResponse) string {
 	count := 1
 	for _, room := range existingBedrooms {
