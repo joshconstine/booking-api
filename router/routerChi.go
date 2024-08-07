@@ -163,7 +163,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 			ctx = context.WithValue(ctx, "entityID", chi.URLParam(r, "rentalId"))
 			ctx = context.WithValue(ctx, constants.RENTAL_FORM_CONTEXT, constants.RENTAL_FORM_ROOM_INFORMATION)
 			r = r.WithContext(ctx)
-			rentalsController.HandleRentalAdminDetail(w, r)
+			rentalsController.HandleRentalAdminDetailRooms(w, r)
 		})
 		owner.Get("/rentals/{rentalId}/admin/availability", func(w http.ResponseWriter, r *http.Request) {
 			ctx := context.WithValue(r.Context(), "entityType", constants.RENTAL_ENTITY)

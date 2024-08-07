@@ -322,6 +322,34 @@ func (controller *RentalController) HandleRentalAdminDetailAvailability(w http.R
 	return rentals.RentalAdminAvailability(rental, params, errors).Render(r.Context(), w)
 }
 
+func (controller *RentalController) HandleRentalAdminDetailRooms(w http.ResponseWriter, r *http.Request) error {
+
+	rentalId := chi.URLParam(r, "rentalId")
+	rentalIdInt, _ := strconv.Atoi(rentalId)
+
+	rental := controller.rentalService.FindById(uint(rentalIdInt))
+	var updateParams request.UpdateRentalRoomRequest
+	params := request.CreateRentalStep2Params{}
+	errors := request.CreateRentalStep2Errors{}
+	rentalRooms := controller.rentalRoomService.FindByRentalId(uint(rentalIdInt))
+	params.Rooms = rentalRooms
+	params.RentalID = uint(rentalIdInt)
+
+	room := chi.URLParam(r, "roomId")
+	roomInt, _ := strconv.Atoi(room)
+	for _, room := range rentalRooms {
+		if room.ID == uint(roomInt) {
+
+			for _, bed := range room.Beds {
+				updateParams.Beds = append(updateParams.Beds, bed)
+			}
+		}
+	}
+	roomTypes := controller.roomTypeService.FindAll()
+	bedTypes := controller.bedTypeService.FindAll()
+	return rentals.RentalAdminRooms(rental, params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
+
+}
 func (controller *RentalController) HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {
 	// user := view.getAuthenticatedUser(r)
 	// account, err := db.GetAccountByUserID(user.ID)
