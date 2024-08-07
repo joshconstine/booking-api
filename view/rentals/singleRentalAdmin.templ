@@ -127,21 +127,7 @@ templ RentalAvailabilityForm(params request.CreateRentalStep3Params, errors requ
                 <h2 class="text-xl font-bold">Availability</h2>
                 <span class="text-gray-500 text-sm">information can be changed later</span>
             </div>
-             <div class="flex flex-col gap-2 w-full">
-                <label for="name" class="font-semibold">
-                  Open all year round?
-                </label>
-                   <div class="flex gap-2 items-center">
-                        if params.OpenYearRound {
-                            <input type="radio" name="openYearRound" id="allowInstantBooking" value="checked" required class="radio radio-sm" checked />
-                            <label for="allowInstantBooking">Yes</label>
-
-                        } else {
-                            <input type="radio" name="openYearRound" id="allowInstantBooking"  required class="radio radio-sm" />
-                            <label for="allowInstantBooking">No</label>
-                        }
-                    </div>
-            </div>
+            @ui.BooleanField(params.OpenYearRound, "openYearRound", "Yes", "No", "Open all year round?")
         </div>
 </form>
 }

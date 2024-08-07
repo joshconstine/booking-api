@@ -1,0 +1,32 @@
+package ui
+
+import (
+)
+
+templ BooleanField(value bool, name string, yesText string, noText string, label string) {
+<div class="flex flex-col gap-1 w-full">
+    <label for="allowInstantBooking" class="font-semibold">
+        {label}
+    </label>
+    //radio group , Instantbooking , Accept/decline requests
+    <div class="flex gap-2 items-center">
+        if value{
+        <input type="radio" name={name} id={name} value="checked" required class="radio radio-sm" checked />
+        } else {
+        <input type="radio" name={name} id={name}  required class="radio radio-sm" />
+        }
+        <label for={name}>{yesText}</label>
+    </div>
+    <div class="flex gap-2 items-center">
+
+        if value {
+        <input type="radio" name={name} id="helper" value="checked" required class="radio radio-sm" checked />
+        } else {
+        <input type="radio" name={name} id="helper" required class="radio radio-sm" />
+        }
+        <label for="helper">{noText}</label>
+    </div>
+
+</div>
+
+}
