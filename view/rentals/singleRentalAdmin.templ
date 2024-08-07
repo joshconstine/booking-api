@@ -167,9 +167,16 @@ templ RentalAvailabilityForm(params request.CreateRentalStep3Params, errors requ
         </div>
 </form>
 }
+
+func BuildAdminAvailabilityUrl(id int) string {
+    return "/rentals/" + strconv.Itoa(id) + "/admin/availability"
+}
+func BuildAdminInformationUrl(id int) string {
+return "/rentals/" + strconv.Itoa(id) + "/admin/information"
+}
 templ RentalAside(rentalId uint) {
   <aside class="flex flex-col gap-2 w-64 flex-1">
-                    <div class="items-center gap-2 btn flex"  hx-indicator="#propInfo" hx-trigger="click" hx-get={string(templ.SafeURL(CreateGetInformationFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
+                    <div class="items-center gap-2 btn flex"  hx-indicator="#propInfo" hx-trigger="click" hx-push-url={string(templ.SafeURL(BuildAdminInformationUrl(int(rentalId))))}  hx-get={string(templ.SafeURL(CreateGetInformationFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
                  <span id="propInfo" class="loading loading-dots loading-md htmx-indicator"></span>
                         <span>Property info</span>
                         <i class="fa-regular fa-house"></i>
@@ -181,9 +188,11 @@ templ RentalAside(rentalId uint) {
                         <span >Rooms info</span>
                         <i class="fa-regular fa-bed"></i>
                     </div>
-      <div class="items-center gap-2 btn flex"  hx-trigger="click" hx-indicator="#availInfo" hx-get={string(templ.SafeURL(CreateGetAvailabilityFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form">
-
-          <span id="availInfo" class="loading loading-dots loading-md htmx-indicator"></span>
+      <div class="items-center gap-2 btn flex"  hx-trigger="click" hx-indicator="#availInfo" hx-get={string(templ.SafeURL(CreateGetAvailabilityFormUrl(int(rentalId))))}  type="button" hx-target="#rental-form"
+        hx-push-url={string(templ.SafeURL(BuildAdminAvailabilityUrl(int(rentalId))))}
+      >
+          <span id="availInfo" class="loading loading-dots loading-md htmx-indicator"
+          ></span>
                         <span>Availability/Pricing</span>
                         <i class="fa-kit fa-regular-calendar-circle-dollar"></i>
                     </div>
