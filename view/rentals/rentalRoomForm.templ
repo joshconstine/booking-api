@@ -90,7 +90,7 @@ templ BedForm(params request.UpdateRentalRoomRequest, errors request.RentalRoomC
                 <label for="bed_type_id" class="font-semibold">
                     Bed {strconv.Itoa(i+1)} Type
                 </label>
-                    @RemoveBedButton(i, bed.ID, params.RentalID)
+                    @RemoveBedButton(i, bed.ID, params.RentalID, params.ID)
                 </div>
                 @BedSelect(bedTypes, bed.BedTypeID, bed.ID)
             </div>
@@ -103,17 +103,17 @@ templ BedForm(params request.UpdateRentalRoomRequest, errors request.RentalRoomC
 
     </div>
 }
-func GetRemoveBedUrl(rentalID uint, bedID uint) string {
-    return "/rentals/" + strconv.Itoa(int(rentalID)) + "/beds/" + strconv.Itoa(int(bedID))
+func GetRemoveBedUrl(rentalID uint, bedID uint, roomID uint) string {
+    return "/rentals/" + strconv.Itoa(int(rentalID)) + "/beds/" + strconv.Itoa(int(bedID)) + "?roomId=" + strconv.Itoa(int(roomID))
 }
 
 func GetBedTypeSelector(bedID uint) string {
     return "bed_type_id_" + strconv.Itoa(int(bedID))
 }
 
-templ RemoveBedButton(index int, bedID uint, rentalID uint) {
+templ RemoveBedButton(index int, bedID uint, rentalID uint, roomID uint) {
     <button type="button" class="btn btn-error"
-            hx-delete={string(templ.SafeURL(GetRemoveBedUrl( rentalID, bedID)))}
+            hx-delete={string(templ.SafeURL(GetRemoveBedUrl( rentalID, bedID, roomID)))}
             hx-target="#rental-form"
             hx-indicator={GetLoadingId(bedID, true)}
     >Remove

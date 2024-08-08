@@ -264,7 +264,9 @@ func (controller *RentalRoomController) DeleteBed(w http.ResponseWriter, r *http
 	rentalIdInt, _ := strconv.Atoi(rentalId)
 	bedIdInt, _ := strconv.Atoi(bedId)
 
-	updateParams := setupParamsFromForm(r)
+	room := r.URL.Query().Get("roomId")
+	roomInt, _ := strconv.Atoi(room)
+
 	err := controller.rentalRoomService.DeleteBed(uint(bedIdInt))
 
 	if err != nil {
@@ -279,5 +281,6 @@ func (controller *RentalRoomController) DeleteBed(w http.ResponseWriter, r *http
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
 
+	updateParams := GetParamsFromRooms(rentalRooms, &roomInt, uint(rentalIdInt))
 	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
 }
