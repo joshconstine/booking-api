@@ -173,12 +173,13 @@ func (controller *RentalRoomController) Create(w http.ResponseWriter, r *http.Re
 	}
 
 	updateParams := request.UpdateRentalRoomRequest{
-		ID:          result.ID,
-		Name:        result.Name,
-		Description: result.Description,
-		Floor:       result.Floor,
-		RentalID:    uint(rentalIdInt),
-		Beds:        result.Beds,
+		ID:               result.ID,
+		Name:             result.Name,
+		Description:      result.Description,
+		Floor:            result.Floor,
+		RentalID:         uint(rentalIdInt),
+		Beds:             result.Beds,
+		RentalRoomTypeID: createRequest.RentalRoomTypeID,
 	}
 
 	params := request.CreateRentalStep2Params{}

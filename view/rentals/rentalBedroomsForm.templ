@@ -132,7 +132,7 @@ templ BedroomButtons(rooms []response.RentalRoomResponse, rentalId uint) {
             </div>
         }
         <div class="justify-end w-full items-center gap-2 btn flex"  hx-trigger="click" hx-indicator="#addNew" hx-get={string(templ.SafeURL(CreateRentalRoomFormUrlForCreateNewRoom(rentalId)))}  type="button" hx-target="#rental-form"
-            hx-push-url={string(templ.SafeURL(BuildAdminRoomUrl(int(rentalId))))}
+            hx-push-url={string(templ.SafeURL(CreateGetCreateRoomUrl(int(rentalId))))}
         >
             <span id="addNew" class="loading loading-dots loading-md htmx-indicator"></span>
                         <span>Add room</span>
