@@ -64,11 +64,12 @@ templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.Ren
                             Description
                     </label>
                     <textarea
-                    value={params.Description}
+
                     rows="6"
                     name="description"
                     class="textarea textarea-bordered w-full "
                     >
+                        {params.Description}
                       </textarea>
                       if len(errors.Description ) > 0 {
                         <div class="text-sm text-error mt-1">{ errors.Description }</div>
