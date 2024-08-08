@@ -95,11 +95,15 @@ templ BedForm(params request.UpdateRentalRoomRequest, errors request.RentalRoomC
                 @BedSelect(bedTypes, bed.BedTypeID, bed.ID)
             </div>
         }
+        <div class="flex gap-4 items-center">
+
         <button type="button" class="btn" id="add-bed"
                 hx-post={string(templ.SafeURL(GetAddBedUrl(params.RentalID, params.ID)))}
                 hx-target="#rental-form"
-                hx-indicator={GetLoadingId(params.ID, true)}
+                hx-indicator="#addBed"
         >Add Bed</button>
+        <span id="addBed" class="loading loading-dots loading-md htmx-indicator"></span>
+        </div>
 
     </div>
 }
