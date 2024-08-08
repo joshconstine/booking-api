@@ -64,6 +64,16 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 	router.Get("/rentals", func(w http.ResponseWriter, r *http.Request) {
 		comboController.HandleHomeIndex(w, r)
 	})
+	router.Get("/rentals/cards", func(w http.ResponseWriter, r *http.Request) {
+		comboController.HandleAllCards(w, r)
+	})
+	router.Get("/rentals/property/cards", func(w http.ResponseWriter, r *http.Request) {
+		comboController.HandlePropertyRentalCards(w, r)
+	})
+	router.Get("/rentals/boat/cards", func(w http.ResponseWriter, r *http.Request) {
+
+		comboController.HandleBoatRentalCards(w, r)
+	})
 	router.Get("/rentals/property", func(w http.ResponseWriter, r *http.Request) {
 		rentalsController.HandleHomeIndex(w, r)
 	})

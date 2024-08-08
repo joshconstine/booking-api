@@ -83,3 +83,22 @@ func (controller *ComboController) HandleHomeIndex(w http.ResponseWriter, r *htt
 
 	return rentals.Index(boatData, rentalData).Render(r.Context(), w)
 }
+func (controller *ComboController) HandleAllCards(w http.ResponseWriter, r *http.Request) error {
+
+	boatData := controller.boatService.FindAll()
+	rentalData := controller.rentalService.FindAll()
+
+	return rentals.RentalAndBoatCards(boatData, rentalData).Render(r.Context(), w)
+}
+func (controller *ComboController) HandlePropertyRentalCards(w http.ResponseWriter, r *http.Request) error {
+
+	rentalData := controller.rentalService.FindAll()
+
+	return rentals.PropertyRentalCards(rentalData).Render(r.Context(), w)
+}
+func (controller *ComboController) HandleBoatRentalCards(w http.ResponseWriter, r *http.Request) error {
+
+	boatData := controller.boatService.FindAll()
+
+	return rentals.BoatRentalCards(boatData).Render(r.Context(), w)
+}
