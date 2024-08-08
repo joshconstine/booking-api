@@ -111,13 +111,23 @@ func GetBedTypeSelector(bedID uint) string {
     return "bed_type_id_" + strconv.Itoa(int(bedID))
 }
 
+func GetSelectorForDeleteBed(bedID uint, addtarget bool) string {
+    if addtarget {
+        return "#delete-bed" + strconv.Itoa(int(bedID))
+    }
+    return "delete-bed" + strconv.Itoa(int(bedID))
+}
+
 templ RemoveBedButton(index int, bedID uint, rentalID uint, roomID uint) {
-    <button type="button" class="btn btn-error"
+<div class="flex gap-4 items-center">
+    <div type="button" class=""
             hx-delete={string(templ.SafeURL(GetRemoveBedUrl( rentalID, bedID, roomID)))}
             hx-target="#rental-form"
-            hx-indicator={GetLoadingId(bedID, true)}
-    >Remove
-    </button>
+           hx-indicator={GetSelectorForDeleteBed(bedID, true)}
+    ><i class="fa-solid fa-square-minus"></i>
+    </div>
+    <span id={string(templ.SafeURL(GetSelectorForDeleteBed(bedID, false)))} class="loading loading-dots loading-md htmx-indicator"></span>
+</div>
 }
 templ BedSelect(bedTypes []response.BedTypeResponse, selected uint, bedID uint) {
     <select name={string(templ.SafeURL(GetBedTypeSelector(bedID)))} id={string(templ.SafeURL(GetBedTypeSelector(bedID)))}  required class="select select-bordered w-64">
