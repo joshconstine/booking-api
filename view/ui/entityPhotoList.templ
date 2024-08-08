@@ -11,7 +11,7 @@ templ EntityPhotoList(photos []response.EntityPhotoResponse) {
             </div>
             <div id="previewContainer" class="w-full gap-4 flex-wrap flex ">
               for _, photo := range photos {
-                <div class="rounded-lg w-40 h-40 flex-col gap-1 border-gray-700 cursor-pointer border-2 flex items-center justify-center"  id="photoUpload" >
+                <div class="rounded-lg w-40 h-40 flex-col gap-1 border-gray-700 cursor-pointer border-2 flex items-center justify-center"   >
                     <img src={photo.Photo.URL} alt="img" class="rounded-lg w-40 h-40 object-cover"/>
                 </div>
                 }
@@ -24,7 +24,35 @@ templ EntityPhotoList(photos []response.EntityPhotoResponse) {
                 </div>
             </div>
             <input hidden="true" type="file" id="file" name="file" multiple="true" />
+        <script>
+            document.getElementById('photoUpload').addEventListener('click', function() {
+                document.getElementById('file').click();
+            });
+            document.getElementById('file').addEventListener('change', function(event) {
+                var previewContainer = document.getElementById('previewContainer');
+                var files = event.target.files;
 
+
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+
+                    if (file.type.startsWith('image/')) {
+                        var reader = new FileReader();
+
+                        reader.onload = function(e) {
+                            var img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.classList.add('rounded-lg', 'w-40', 'h-40', 'object-cover');
+                            previewContainer.insertBefore(img, previewContainer.firstChild);
+                        }
+
+                        reader.readAsDataURL(file);
+                    } else {
+                        alert('Please upload an image file.');
+                    }
+                }
+            });
+        </script>
         </div>
 }
 

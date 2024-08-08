@@ -6,6 +6,7 @@ import (
 	"booking-api/data/response"
 
 	"booking-api/data/request"
+    "booking-api/view/ui"
 	"fmt"
 )
 
@@ -45,12 +46,18 @@ func getIsChecked(b bool) string {
     return ""
 }
 
-templ RentalForm(params request.CreateRentalStep1Params, errors request.CreateRentalStep1Errors, amenities []response.SortedAmenityResponse) {
+templ RentalForm(params request.CreateRentalStep1Params, errors request.CreateRentalStep1Errors, amenities []response.SortedAmenityResponse, photos []response.EntityPhotoResponse) {
    <form
 
    hx-put={CreateRentalUpdateUrl(params.RentalID)}
    hx-swap="outerHTML"
    hx-indicator="#loading"
+   class="flex flex-col gap-4 w-full"
+   >
+
+       @ui.EntityPhotoList(photos)
+       <div
+
    class="flex flex-col gap-4 w-full max-w-screen-3xl mx-auto p-4 shadow-lg rounded-lg"
    >
         <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto rounded-lg">
@@ -257,5 +264,6 @@ templ RentalForm(params request.CreateRentalStep1Params, errors request.CreateRe
 
             </div>
         </div>
+</div>
 </form>
 }

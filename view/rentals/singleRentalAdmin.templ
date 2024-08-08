@@ -237,7 +237,6 @@ templ RentalAdminRoomsCreate(rental response.RentalInformationResponse, params r
 }
 templ RentalInformationForm(rental response.RentalInformationResponse, amenities []response.SortedAmenityResponse) {
 <div class="w-full">
-            @ui.EntityPhotoList(rental.Photos)
             @RentalForm(request.CreateRentalStep1Params{
                 RentalID: rental.ID,
                 Name: rental.Name,
@@ -251,7 +250,7 @@ templ RentalInformationForm(rental response.RentalInformationResponse, amenities
                 AllowPets: rental.BookingRule.AllowPets,
                 Success: false,
                 ParentProperty: false,
-            }, request.CreateRentalStep1Errors{}, amenities)
+            }, request.CreateRentalStep1Errors{}, amenities, rental.Photos)
 </div>
 }
 

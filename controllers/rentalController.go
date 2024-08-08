@@ -265,6 +265,7 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 
 	params.Amenities = amenities
 	_, err := controller.rentalService.UpdateRental(params)
+	rental := controller.rentalService.FindById(params.RentalID)
 
 	amenitiesSorted := controller.amenityService.FindAllSorted()
 	if err != nil {
@@ -272,7 +273,7 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 
 	}
 
-	return rentals.RentalForm(params, errors, amenitiesSorted).Render(r.Context(), w)
+	return rentals.RentalForm(params, errors, amenitiesSorted, rental.Photos).Render(r.Context(), w)
 }
 func getAmenitiesFromRequest(r *http.Request) []response.AmenityResponse {
 	var amenities []uint
