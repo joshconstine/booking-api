@@ -119,56 +119,9 @@ templ RentalForm(params request.CreateRentalStep1Params, errors request.CreateRe
                     @ui.BooleanField(params.AllowInstantBooking, "allowInstantBooking", "acceptDecline","Instant booking", "Accept/decline requests", "How will you confirm bookings?")
             </div>
              <div class="w-full flex justify-between flex-col md:flex-row gap-20">
-                  <div class="flex flex-col gap-2 w-full">
-                    <label for="allowPets" class="font-semibold">
-                        Are pets allowed?
-                    </label>
-                      <div class="flex flex-col gap-1 w-full">
-                        //radio group , Instantbooking , Accept/decline requests
-                        <div class="flex gap-2 items-center">
-                            if params.AllowPets {
-                                <input type="radio" name="allowPets" id="allowPets" value="checked" required class="radio radio-sm" checked />
-                            } else {
-                                <input type="radio" name="allowPets" id="allowPets" required class="radio radio-sm" />
-                            }
-                            <label for="allowPets">Yes</label>
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            if !params.AllowPets {
-                                <input type="radio" name="allowPets" id="allowPetsNo" value="checked" required class="radio  radio-sm" checked />
-                            } else {
-                                <input type="radio" name="allowPets" id="allowPetsNo" required class="radio  radio-sm" />
-                            }
-                            <label for="allowPetsNo">No</label>
-                        </div>
+                    @ui.BooleanField(params.AllowPets, "allowPets", "allowPetsNo","Yes", "No", "Are pets allowed?")
 
-                      </div>
-                  </div>
-
-                  <div class="flex flex-col gap-1 w-full">
-                    <label for="parentProperty" class="font-semibold">
-                         Is this rental a part of a larger properties with multiple
-                        rentals?
-                    </label>
-                    //radio group , Instantbooking , Accept/decline requests
-                    <div class="flex gap-2 items-center">
-                        if params.ParentProperty {
-                            <input type="radio" name="parentProperty" id="parentProperty" value="checked" required class="radio radio-sm" checked />
-                        } else {
-                            <input type="radio" name="parentProperty" id="parentProperty" required class="radio radio-sm" />
-                        }
-                        <label for="parentProperty">Yes</label>
-                    </div>
-                    <div class="flex gap-2 items-center">
-                        if !params.ParentProperty {
-                            <input type="radio" name="parentProperty" id="parentPropertyNo" value="checked" required class="radio radio-sm" checked />
-                        } else {
-                            <input type="radio" name="parentProperty" id="parentPropertyNo" required class="radio radio-sm" />
-                        }
-                        <label for="parentPropertyNo">No</label>
-                    </div>
-
-                  </div>
+                 @ui.BooleanField(params.ParentProperty, "parentProperty", "parentPropertyNo","Yes", "No", "Is this rental a part of a larger properties with multiple rentals?")
             </div>
                   <div class="flex flex-col gap-1 w-full">
                     <label for="description" class="font-semibold">
