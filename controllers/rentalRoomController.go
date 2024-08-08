@@ -12,13 +12,14 @@ import (
 )
 
 type RentalRoomController struct {
-	rentalRoomService services.RentalRoomService
-	roomTypeService   services.RoomTypeService
-	bedTypeService    services.BedTypeService
+	rentalRoomService  services.RentalRoomService
+	roomTypeService    services.RoomTypeService
+	bedTypeService     services.BedTypeService
+	entityPhotoService services.EntityPhotoService
 }
 
-func NewRentalRoomController(rentalRoomService services.RentalRoomService, roomTypeService services.RoomTypeService, bedTypeService services.BedTypeService) *RentalRoomController {
-	return &RentalRoomController{rentalRoomService: rentalRoomService, roomTypeService: roomTypeService, bedTypeService: bedTypeService}
+func NewRentalRoomController(rentalRoomService services.RentalRoomService, roomTypeService services.RoomTypeService, bedTypeService services.BedTypeService, entityPhotoService services.EntityPhotoService) *RentalRoomController {
+	return &RentalRoomController{rentalRoomService: rentalRoomService, roomTypeService: roomTypeService, bedTypeService: bedTypeService, entityPhotoService: entityPhotoService}
 }
 
 //func (controller *RentalRoomController) FindAll(ctx *gin.Context) {
@@ -148,7 +149,8 @@ func (controller *RentalRoomController) Update(w http.ResponseWriter, r *http.Re
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
 
-	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
+	photos := controller.entityPhotoService.FindAllEntityPhotosForEntity(constants.RENTAL_ENTITY, uint(rentalIdInt))
+	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes, photos).Render(r.Context(), w)
 }
 
 func (controller *RentalRoomController) Create(w http.ResponseWriter, r *http.Request) error {
@@ -190,7 +192,8 @@ func (controller *RentalRoomController) Create(w http.ResponseWriter, r *http.Re
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
 
-	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
+	photos := controller.entityPhotoService.FindAllEntityPhotosForEntity(constants.RENTAL_ENTITY, uint(rentalIdInt))
+	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes, photos).Render(r.Context(), w)
 }
 func (controller *RentalRoomController) Delete(w http.ResponseWriter, r *http.Request) error {
 
@@ -263,7 +266,8 @@ func (controller *RentalRoomController) AddBedToRoom(w http.ResponseWriter, r *h
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
 
-	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
+	photos := controller.entityPhotoService.FindAllEntityPhotosForEntity(constants.RENTAL_ENTITY, uint(rentalIdInt))
+	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes, photos).Render(r.Context(), w)
 }
 func (controller *RentalRoomController) DeleteBed(w http.ResponseWriter, r *http.Request) error {
 
@@ -290,5 +294,6 @@ func (controller *RentalRoomController) DeleteBed(w http.ResponseWriter, r *http
 	bedTypes := controller.bedTypeService.FindAll()
 
 	updateParams := GetParamsFromRooms(rentalRooms, &roomInt, uint(rentalIdInt))
-	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
+	photos := controller.entityPhotoService.FindAllEntityPhotosForEntity(constants.RENTAL_ENTITY, uint(rentalIdInt))
+	return rentals.RentalBedroomsForm(params, updateParams, errors, roomTypes, bedTypes, photos).Render(r.Context(), w)
 }

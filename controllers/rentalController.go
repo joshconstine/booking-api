@@ -182,8 +182,9 @@ func (controller *RentalController) BedroomForm(w http.ResponseWriter, r *http.R
 
 		return rentals.RentalBedroomsFormCreate(params, roomForm, errors, roomTypes, bedTypes).Render(r.Context(), w)
 	}
+	photos := controller.entityPhotoService.FindAllEntityPhotosForEntity(constants.RENTAL_ENTITY, uint(rentalIdInt))
 
-	return rentals.RentalBedroomsForm(params, roomForm, errors, roomTypes, bedTypes).Render(r.Context(), w)
+	return rentals.RentalBedroomsForm(params, roomForm, errors, roomTypes, bedTypes, photos).Render(r.Context(), w)
 }
 func (controller *RentalController) Create(w http.ResponseWriter, r *http.Request) error {
 	params := request.CreateRentalStep1Params{}
@@ -228,7 +229,8 @@ func (controller *RentalController) Create(w http.ResponseWriter, r *http.Reques
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
 	bedroomForm := request.UpdateRentalRoomRequest{Name: "Bedroom 1"}
-	return rentals.RentalBedroomsForm(step2params, bedroomForm, step2errors, roomTypes, bedTypes).Render(r.Context(), w)
+	photos := controller.entityPhotoService.FindAllEntityPhotosForEntity(constants.RENTAL_ENTITY, uint(rentalIdInt))
+	return rentals.RentalBedroomsForm(step2params, bedroomForm, step2errors, roomTypes, bedTypes, photos).Render(r.Context(), w)
 	//http.Redirect(w, r, "/rentals", http.StatusSeeOther)
 
 	//return rentals.RentalDetails().Render(r.Context(), w)

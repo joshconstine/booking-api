@@ -11,4 +11,5 @@ type UpdateRentalRoomRequest struct {
 	RentalRoomTypeID uint                   `json:"rental_room_type_id"`
 	Photos           []int                  `json:"photos"`
 	Beds             []response.BedResponse `json:"beds"`
+	PhotoForm        RoomPhotoFormParams    `json:"photoForm"`
 }

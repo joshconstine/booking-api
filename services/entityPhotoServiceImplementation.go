@@ -25,6 +25,12 @@ func (t EntityPhotoServiceImplementation) FindAllForEntity(entity string, entity
 	return result
 }
 
+func (t EntityPhotoServiceImplementation) FindAllEntityPhotosForEntity(entity string, entityID uint) []response.EntityPhotoResponse {
+	result := t.EntityPhotoRepository.FindAllEntityPhotosForEntity(entity, entityID)
+
+	return result
+}
+
 func (t EntityPhotoServiceImplementation) AddPhotoToEntity(photoID uint, entity string, entityID uint) response.PhotoResponse {
 	result := t.EntityPhotoRepository.AddPhotoToEntity(photoID, entity, entityID)
 

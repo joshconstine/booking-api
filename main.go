@@ -214,7 +214,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	photoController := controllers.NewPhotoController(photoService, entityPhotoService)
 	// locationController := controllers.NewLocationController(locationService)
 	// roomTypeController := controllers.NewRoomTypeController(roomTypeService)
-	rentalRoomController := controllers.NewRentalRoomController(rentalRoomService, roomTypeService, bedTypeService)
+	rentalRoomController := controllers.NewRentalRoomController(rentalRoomService, roomTypeService, bedTypeService, entityPhotoService)
 	// entityBookingDurationRuleController := controllers.NewEntityBookingDurationRuleController(entityBookingDurationRuleService)
 	entityBookingController := controllers.NewEntityBookingController(entityBookingService, rentalService, boatService)
 	// userRoleController := controllers.NewUserRoleController(userRoleService)

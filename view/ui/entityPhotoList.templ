@@ -2,6 +2,7 @@ package ui
 
 import (
 	response "booking-api/data/response"
+    request "booking-api/data/request"
 )
 templ EntityPhotoList(photos []response.EntityPhotoResponse) {
     <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto  rounded-lg">
@@ -56,3 +57,56 @@ templ EntityPhotoList(photos []response.EntityPhotoResponse) {
         </div>
 }
 
+templ RoomPhotoForm(photos []response.EntityPhotoResponse, roomPhotoFormParams request.RoomPhotoFormParams) {
+
+<div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto  rounded-lg">
+    <div class="w-full justify-between flex items-center">
+        <h2 class="text-xl font-bold">Photos</h2>
+        <span class="text-gray-500 text-sm">Select photos from your gallery to attribute to this room and set thumbnail photo for this room</span>
+    </div>
+    <div id="previewContainer" class="w-full gap-4 flex-wrap flex ">
+        for _, photo := range photos {
+        <div class="rounded-lg w-40 h-40 flex-col gap-1 border-gray-700 cursor-pointer border-2 flex items-center justify-center"   >
+            <img src={photo.Photo.URL} alt="img" class="rounded-lg w-40 h-40 object-cover"/>
+        </div>
+        }
+        <div class="rounded-lg w-40 h-40 flex-col gap-1 border-gray-700 cursor-pointer border-2 flex items-center justify-center"  id="photoUpload" >
+            <i class="fa-light fa-cloud-arrow-up bd-branded-400"></i>
+            <span class="text-branded-400 underline text-sm">Upload a file</span>
+            <span class=" text-sm">or drag and drop</span>
+            <span class="text-[8px] ">PNG or JPEG up to 10mb</span>
+
+        </div>
+    </div>
+    <input hidden="true" type="file" id="file" name="photo" multiple="true" />
+    <script>
+        document.getElementById('photoUpload').addEventListener('click', function() {
+            document.getElementById('file').click();
+        });
+        document.getElementById('file').addEventListener('change', function(event) {
+            var previewContainer = document.getElementById('previewContainer');
+            var files = event.target.files;
+
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+
+                if (file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('rounded-lg', 'w-40', 'h-40', 'object-cover');
+                        previewContainer.insertBefore(img, previewContainer.firstChild);
+                    }
+
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please upload an image file.');
+                }
+            }
+        });
+    </script>
+</div>
+}

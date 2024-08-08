@@ -5,6 +5,7 @@ import (
 
 	"booking-api/data/request"
 	"booking-api/data/response"
+"booking-api/view/ui"
 )
 
 
@@ -32,7 +33,7 @@ func GetRentalRoomFormWithQuery(rentalId uint, roomId uint) string {
 return "/rentals/" + strconv.Itoa(int(rentalId)) + "/admin/rooms" + "?roomId=" + strconv.Itoa(int(roomId))
 }
 
-templ RentalBedroomsForm( params request.CreateRentalStep2Params, roomForm request.UpdateRentalRoomRequest, errors request.CreateRentalStep2Errors, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
+templ RentalBedroomsForm( params request.CreateRentalStep2Params, roomForm request.UpdateRentalRoomRequest, errors request.CreateRentalStep2Errors, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse, rentalPhotos []response.EntityPhotoResponse) {
     <form
             hx-put={CreateRentalRoomFormUrlForRoom(params.RentalID, roomForm.ID)}
             hx-target="#rental-form"
@@ -44,6 +45,7 @@ templ RentalBedroomsForm( params request.CreateRentalStep2Params, roomForm reque
                     @BedroomButtons(params.Rooms, params.RentalID)
                  </aside>
                @RentalRoomForm(roomForm, request.RentalRoomCreateRequestError{}, roomTypes, bedTypes, true)
+               @ui.RoomPhotoForm(rentalPhotos, roomForm.PhotoForm)
                 <aside class="flex flex-col gap-2 w-64 flex-1">
 
 
