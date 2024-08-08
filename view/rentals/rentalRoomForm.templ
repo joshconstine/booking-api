@@ -14,7 +14,7 @@ func GetSelected(selected uint, current uint) bool {
     return false
 }
 
-templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.RentalRoomCreateRequestError, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
+templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.RentalRoomCreateRequestError, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse, showBedButton bool) {
         <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md flex-grow w-full mx-auto rounded-lg">
             <div class="w-full justify-between flex">
                 <h2 class="text-xl font-bold">{params.Name}</h2>
@@ -46,8 +46,9 @@ templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.Ren
                 }
             </div>
            </div>
+            if showBedButton {
                 @BedForm(params, errors, bedTypes)
-
+}
            <div class="flex w-full gap-4">
              <div class="flex flex-col gap-2 w-full">
                 <label for="floor" class="font-semibold">

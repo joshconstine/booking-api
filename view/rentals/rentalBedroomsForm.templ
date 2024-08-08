@@ -43,7 +43,7 @@ templ RentalBedroomsForm( params request.CreateRentalStep2Params, roomForm reque
                  <aside class="flex-1 flex-col ">
                     @BedroomButtons(params.Rooms, params.RentalID)
                  </aside>
-               @RentalRoomForm(roomForm, request.RentalRoomCreateRequestError{}, roomTypes, bedTypes)
+               @RentalRoomForm(roomForm, request.RentalRoomCreateRequestError{}, roomTypes, bedTypes, true)
                 <aside class="flex flex-col gap-2 w-64 flex-1">
 
 
@@ -86,7 +86,7 @@ templ RentalBedroomsFormCreate( params request.CreateRentalStep2Params, roomForm
                  <aside class="flex-1 flex-col ">
                     @BedroomButtons(params.Rooms, params.RentalID)
                  </aside>
-               @RentalRoomForm(roomForm, request.RentalRoomCreateRequestError{}, roomTypes, bedTypes)
+               @RentalRoomForm(roomForm, request.RentalRoomCreateRequestError{}, roomTypes, bedTypes, false)
                 <aside class="flex flex-col gap-2 w-64 flex-1">
 
 
