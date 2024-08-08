@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-chi/chi/v5"
@@ -17,15 +18,17 @@ import (
 )
 
 type RentalController struct {
-	rentalService     services.RentalService
-	amenityService    services.AmenityService
-	roomTypeService   services.RoomTypeService
-	bedTypeService    services.BedTypeService
-	rentalRoomService services.RentalRoomService
+	rentalService      services.RentalService
+	amenityService     services.AmenityService
+	roomTypeService    services.RoomTypeService
+	bedTypeService     services.BedTypeService
+	rentalRoomService  services.RentalRoomService
+	photoService       services.PhotoService
+	entityPhotoService services.EntityPhotoService
 }
 
-func NewRentalController(rentalService services.RentalService, amenityService services.AmenityService, roomTypeService services.RoomTypeService, bedTypeService services.BedTypeService, rentalRoomService services.RentalRoomService) *RentalController {
-	return &RentalController{rentalService: rentalService, amenityService: amenityService, roomTypeService: roomTypeService, bedTypeService: bedTypeService, rentalRoomService: rentalRoomService}
+func NewRentalController(rentalService services.RentalService, amenityService services.AmenityService, roomTypeService services.RoomTypeService, bedTypeService services.BedTypeService, rentalRoomService services.RentalRoomService, photoService services.PhotoService, entityPhotoService services.EntityPhotoService) *RentalController {
+	return &RentalController{rentalService: rentalService, amenityService: amenityService, roomTypeService: roomTypeService, bedTypeService: bedTypeService, rentalRoomService: rentalRoomService, photoService: photoService, entityPhotoService: entityPhotoService}
 
 }
 
@@ -233,14 +236,44 @@ func (controller *RentalController) Create(w http.ResponseWriter, r *http.Reques
 }
 
 func (controller *RentalController) Update(w http.ResponseWriter, r *http.Request) error {
+
+	timeout := 20 * time.Second
+	var cancelFn func()
+	if timeout > 0 {
+		// ctx, cancelFn = ctx.WithTimeout(ctx, timeout)
+	}
+
+	if cancelFn != nil {
+		defer cancelFn()
+	}
+	err := r.ParseMultipartForm(10 * 1024 * 1024) // 10 MB limit
+	if err != nil {
+		http.Error(w, "Failed to parse multipart form", http.StatusInternalServerError)
+
+	}
+
+	err = r.ParseForm()
+
+	file, header, err := r.FormFile("photo")
+	if err != nil {
+		http.Error(w, "Failed to get file from form", http.StatusInternalServerError)
+		// return "", err
+		w.Write([]byte("Failed to get file from form"))
+
+	}
+	defer file.Close()
 	rentalId := chi.URLParam(r, "rentalId")
+	id, _ := strconv.Atoi(rentalId)
+
+	photoResult := controller.photoService.AddPhoto(&file, header, constants.RENTAL_ENTITY, id)
+	_ = controller.entityPhotoService.AddPhotoToEntity(photoResult.ID, constants.RENTAL_ENTITY, uint(id))
+
 	bedrooms := r.FormValue("bedrooms")
 	bathrooms := r.FormValue("bathrooms")
 	address := r.FormValue("address")
 	allowPets := r.FormValue("allowPets")
 	allowInstantBooking := r.FormValue("allowInstantBooking")
 
-	id, _ := strconv.Atoi(rentalId)
 	bedroomsInt, _ := strconv.Atoi(bedrooms)
 	bathroomsFloat, _ := strconv.ParseFloat(bathrooms, 64)
 	guests := r.FormValue("guests")
@@ -259,12 +292,11 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 	}
 
 	errors := request.CreateRentalStep1Errors{}
-	//
 
 	amenities := getAmenitiesFromRequest(r)
 
 	params.Amenities = amenities
-	_, err := controller.rentalService.UpdateRental(params)
+	_, err = controller.rentalService.UpdateRental(params)
 	rental := controller.rentalService.FindById(params.RentalID)
 
 	amenitiesSorted := controller.amenityService.FindAllSorted()

@@ -203,7 +203,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	userController := controllers.NewUserController(userService)
 	// bookingStatusController := controllers.NewBookingStatusController(bookingStatusService)
 	// bookingCostTypeController := controllers.NewBookingCostTypeController(bookingCostTypeService)
-	rentalController := controllers.NewRentalController(rentalService, amenityService, roomTypeService, bedTypeService, rentalRoomService)
+	rentalController := controllers.NewRentalController(rentalService, amenityService, roomTypeService, bedTypeService, rentalRoomService, photoService, entityPhotoService)
 	// amenityController := controllers.NewAmenityController(amenityService)
 	// amenityTypeController := controllers.NewAmenityTypeController(amenityTypeService)
 	// bedTypeController := controllers.NewBedTypeController(bedTypeService)

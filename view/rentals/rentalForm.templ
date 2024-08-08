@@ -52,6 +52,7 @@ templ RentalForm(params request.CreateRentalStep1Params, errors request.CreateRe
    hx-put={CreateRentalUpdateUrl(params.RentalID)}
    hx-swap="outerHTML"
    hx-indicator="#loading"
+   hx-encoding="multipart/form-data"
    class="flex flex-col gap-4 w-full"
    >
 
