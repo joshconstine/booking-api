@@ -45,12 +45,12 @@ templ RentalBedroomsForm( params request.CreateRentalStep2Params, roomForm reque
                     @BedroomButtons(params.Rooms, params.RentalID)
                  </aside>
                @RentalRoomForm(roomForm, request.RentalRoomCreateRequestError{}, roomTypes, bedTypes, true)
-               @ui.RoomPhotoForm(rentalPhotos, roomForm.PhotoForm)
                 <aside class="flex flex-col gap-2 w-64 flex-1">
 
 
                 </aside>
             </div>
+              @ui.RoomPhotoForm(rentalPhotos, roomForm.PhotoForm)
               <div class=" flex justify-between  max-w-screen-md w-full mx-auto ">
             <div class="flex gap-4">
                 <button type="button" class="btn" ><i class="fa-regular fa-trash text-red-600"></i>Delete listing</button>
