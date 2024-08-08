@@ -424,5 +424,5 @@ func (controller *RentalController) HandleHomeIndex(w http.ResponseWriter, r *ht
 
 	rentalData := controller.rentalService.FindAll()
 
-	return rentals.Index(rentalData).Render(r.Context(), w)
+	return rentals.IndexRentals(rentalData).Render(r.Context(), w)
 }

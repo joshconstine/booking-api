@@ -4,6 +4,7 @@ import (
 	"booking-api/view/layout"
 	"booking-api/data/response"
 	"strconv"
+   boats  "booking-api/view/boats"
 	
 )
 
@@ -16,15 +17,15 @@ func GetPath(id int) string {
 	
 }
 
-templ Index(rentals []response.RentalResponse) {
+templ Index(boatResponse []response.BoatResponse, rentals []response.RentalResponse) {
 	@layout.App(true) {
 		<div class="w-full max-w-screen-2xl mx-auto text-center py-8 px-auto flex items-center justify-center flex-col gap-4">
             <div class="flex w-full justify-between mx-1 md:mx-8 items-center px-4">
                 <h2 class="text-2xl font-bold  ">Your Rentals</h2>
                 <div class="flex items-center gap-4">
-                    <div class="btn hover:bg-branded-400 bg-branded-400 " >
-                    Property rentals</div>
-                    <a class="btn " href="/allRentals">
+                    <a class="btn " href="/rentals/property" >
+                    Property rentals</a>
+                    <a class="btn hover:bg-branded-400 bg-branded-400  " >
                     All rentals</a>
                 </div>
             </div>
@@ -33,8 +34,34 @@ templ Index(rentals []response.RentalResponse) {
                     for _, rental := range rentals {
                         @RentalCard(rental)
                     }
+                    for _, boat := range boatResponse {
+                        @boats.BoatCard(boat)
+                    }
                     @CreateRentalCard()
                 </ul>
 		</div>
 	}
+}
+
+templ IndexRentals( rentals []response.RentalResponse) {
+@layout.App(true) {
+<div class="w-full max-w-screen-2xl mx-auto text-center py-8 px-auto flex items-center justify-center flex-col gap-4">
+    <div class="flex w-full justify-between mx-1 md:mx-8 items-center px-4">
+        <h2 class="text-2xl font-bold  ">Your Rentals</h2>
+        <div class="flex items-center gap-4">
+            <div class="btn   hover:bg-branded-400 bg-branded-400" >
+                Property rentals</div>
+            <a class="btn" href="/rentals">
+                All rentals</a>
+        </div>
+    </div>
+
+    <ul class=" flex flex-wrap px-4 justify-center gap-4 flex-col md:flex-row items-center">
+        for _, rental := range rentals {
+        @RentalCard(rental)
+        }
+        @CreateRentalCard()
+    </ul>
+</div>
+}
 }

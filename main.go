@@ -227,6 +227,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 	userSettingsController := controllers.NewUserSettingsController(userService, accountService)
 	adminController := controllers.NewAdminController(userService, bookingService, accountService)
 	entityBookingPermissionController := controllers.NewEntityBookingPermissionController(entityBookingPermissionService)
+	comboController := controllers.NewComboController(boatService, rentalService)
 	//Router
 	// router := router.NewRouter(boatController, bookingController, userController,
 	// 	bookingStatusController, bookingCostTypeController, rentalController, amenityController, bedTypeController, amenityTypeController, bookingCostItemController, paymentMethodController, bookingPaymentController, rentalStatusController, photoController, locationController, rentalRoomController, roomTypeController, entityBookingDurationRuleController, entityBookingController, userRoleController, accountController, inquiryController, entityBookingDocumentController, entityBookingRuleController, entityBookingCostController, entityBookingCostAdjustmentController)
@@ -234,7 +235,7 @@ func buildServer(env config.EnvVars) (*chi.Mux, func(), error) {
 
 	chatController := controllers.NewChatController(chatService, userService, accountService)
 
-	chirouter := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController, photoController, accountController, userController, entityBookingController, membershipRepository, entityRepository, entityBookingCostController, rentalStatusController, rentalRoomController)
+	chirouter := router.NewChiRouter(authController, rentalController, bookingController, boatController, userSettingsController, &userService, adminController, chatController, entityBookingPermissionController, photoController, accountController, userController, entityBookingController, membershipRepository, entityRepository, entityBookingCostController, rentalStatusController, rentalRoomController, comboController)
 
 	// ginRouter := router.InitRouter(routes)
 
