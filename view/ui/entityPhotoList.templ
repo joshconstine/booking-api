@@ -57,6 +57,20 @@ templ EntityPhotoList(photos []response.EntityPhotoResponse) {
         </div>
 }
 
+func getClassForPhoto(photo response.EntityPhotoResponse, roomPhotoFormParams request.RoomPhotoFormParams) string {
+    if photo.ID == roomPhotoFormParams.ThumbnailID {
+        return "rounded-lg w-40 h-40 flex-col gap-1 border-gray-700 cursor-pointer border-2 flex items-center justify-center"
+    }
+    return "rounded-lg w-40 h-40 flex-col gap-1 border-gray-700 cursor-pointer border-2 flex items-center justify-center"
+}
+templ RoomPhotoFormPhoto(photo response.EntityPhotoResponse, roomPhotoFormParams request.RoomPhotoFormParams) {
+
+    <div class={getClassForPhoto(photo, roomPhotoFormParams)} >
+        <img src={photo.Photo.URL} alt="img" class="rounded-lg w-40 h-40 object-cover"/>
+    </div>
+}
+
+
 templ RoomPhotoForm(photos []response.EntityPhotoResponse, roomPhotoFormParams request.RoomPhotoFormParams) {
 
 <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md flex-grow w-full mx-auto rounded-lg">
@@ -66,9 +80,7 @@ templ RoomPhotoForm(photos []response.EntityPhotoResponse, roomPhotoFormParams r
     </div>
     <div id="previewContainer" class="w-full gap-4 flex-wrap flex ">
         for _, photo := range photos {
-        <div class="rounded-lg w-40 h-40 flex-col gap-1 border-gray-700 cursor-pointer border-2 flex items-center justify-center"   >
-            <img src={photo.Photo.URL} alt="img" class="rounded-lg w-40 h-40 object-cover"/>
-        </div>
+            @RoomPhotoFormPhoto(photo, roomPhotoFormParams)
         }
         <div class="rounded-lg w-40 h-40 flex-col gap-1 border-gray-700 cursor-pointer border-2 flex items-center justify-center"  id="photoUpload" >
             <i class="fa-light fa-cloud-arrow-up bd-branded-400"></i>
