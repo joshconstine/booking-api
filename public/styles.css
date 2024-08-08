@@ -5356,11 +5356,6 @@ details.collapse summary::-webkit-details-marker {
   border-bottom-width: 1px;
 }
 
-.border-branded-400 {
-  --tw-border-opacity: 1;
-  border-color: rgb(178 194 193 / var(--tw-border-opacity));
-}
-
 .border-gray-700 {
   --tw-border-opacity: 1;
   border-color: rgb(55 65 81 / var(--tw-border-opacity));

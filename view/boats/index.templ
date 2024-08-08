@@ -22,12 +22,7 @@ templ Index(boats []response.BoatResponse) {
 			<ul class="flex gap-4 flex-wrap">
 
 			for _, boat := range boats {
-				<div class="w-32">
-					<a href={templ.SafeURL(GetPath(int(boat.ID)))}>
-						<li>{ boat.Name }</li>
-						<img src={ boat.Thumbnail } alt={ boat.Name }  />
-					</a>
-				</div>
+				@BoatCard(boat)
   			}
 			</ul>
 			
