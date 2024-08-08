@@ -212,7 +212,14 @@ func (controller *RentalRoomController) Delete(w http.ResponseWriter, r *http.Re
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
 
-	return rentals.RentalBedroomsForm(params, request.UpdateRentalRoomRequest{}, errors, roomTypes, bedTypes).Render(r.Context(), w)
+	roomForm := request.UpdateRentalRoomRequest{
+		RentalID:         uint(rentalIdInt),
+		Name:             makeBedroomName(rentalRooms),
+		Floor:            1,
+		RentalRoomTypeID: constants.ROOM_TYPE_BEDROOM_ID,
+	}
+	return rentals.RentalBedroomsFormCreate(params, roomForm, errors, roomTypes, bedTypes).Render(r.Context(), w)
+
 }
 
 func (controller *RentalRoomController) AddBedToRoom(w http.ResponseWriter, r *http.Request) error {
