@@ -237,7 +237,7 @@ func (controller *RentalController) Create(w http.ResponseWriter, r *http.Reques
 
 func (controller *RentalController) Update(w http.ResponseWriter, r *http.Request) error {
 
-	timeout := 20 * time.Second
+	timeout := 30 * time.Second
 	var cancelFn func()
 	if timeout > 0 {
 		// ctx, cancelFn = ctx.WithTimeout(ctx, timeout)
@@ -254,19 +254,24 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 
 	err = r.ParseForm()
 
-	file, header, err := r.FormFile("photo")
-	if err != nil {
-		http.Error(w, "Failed to get file from form", http.StatusInternalServerError)
-		// return "", err
-		w.Write([]byte("Failed to get file from form"))
-
-	}
-	defer file.Close()
 	rentalId := chi.URLParam(r, "rentalId")
 	id, _ := strconv.Atoi(rentalId)
+	// Process multiple files
+	files := r.MultipartForm.File["photo"]
+	for _, fileHeader := range files {
+		file, err := fileHeader.Open()
+		if err != nil {
+			http.Error(w, "Failed to open file", http.StatusInternalServerError)
+			return err
+		}
+		defer file.Close()
 
-	photoResult := controller.photoService.AddPhoto(&file, header, constants.RENTAL_ENTITY, id)
-	_ = controller.entityPhotoService.AddPhotoToEntity(photoResult.ID, constants.RENTAL_ENTITY, uint(id))
+		rentalId := chi.URLParam(r, "rentalId")
+		id, _ := strconv.Atoi(rentalId)
+
+		photoResult := controller.photoService.AddPhoto(&file, fileHeader, constants.RENTAL_ENTITY, id)
+		_ = controller.entityPhotoService.AddPhotoToEntity(photoResult.ID, constants.RENTAL_ENTITY, uint(id))
+	}
 
 	bedrooms := r.FormValue("bedrooms")
 	bathrooms := r.FormValue("bathrooms")
