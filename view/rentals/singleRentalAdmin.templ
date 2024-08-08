@@ -63,7 +63,7 @@ templ RentalAdmin(rental response.RentalInformationResponse, amenities []respons
 
                  </aside>
                 <div class="w-full  flex-grow max-w-screen-md h-72 flex-2 rounded-lg bg-branded-400 justify-self-center align-self-center">
-                    <img class="w-full h-full object-cover rounded-lg" src={rental.Photos[0].Photo.URL} alt="rental photo" />
+                    <img class="w-full h-full object-cover rounded-lg" src={rental.Photos[0].Photo.URL} alt="rental photo"  id="preview"/>
                 </div>
                 @RentalAside(rental.ID)
                 //<div class="flex-grow"></div>
