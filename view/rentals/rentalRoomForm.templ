@@ -46,7 +46,7 @@ templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.Ren
                 }
             </div>
            </div>
-            @BedForm(params, errors, bedTypes)
+                @BedForm(params, errors, bedTypes)
 
            <div class="flex w-full gap-4">
              <div class="flex flex-col gap-2 w-full">
@@ -82,9 +82,9 @@ templ RentalRoomForm( params request.UpdateRentalRoomRequest, errors request.Ren
 
 
 templ BedForm(params request.UpdateRentalRoomRequest, errors request.RentalRoomCreateRequestError, bedTypes []response.BedTypeResponse) {
-    <div class="flex w-full flex-wrap gap-4">
+    <div class="flex w-full flex-wrap gap-4 items-end">
         for i, bed := range params.Beds{
-            <div class="flex flex-col gap-2 w-full">
+            <div class="flex flex-col gap-2">
                 <div class="flex gap-4 ">
 
                 <label for="bed_type_id" class="font-semibold">
@@ -134,7 +134,7 @@ templ RemoveBedButton(index int, bedID uint, rentalID uint, roomID uint) {
 </div>
 }
 templ BedSelect(bedTypes []response.BedTypeResponse, selected uint, bedID uint) {
-    <select name={string(templ.SafeURL(GetBedTypeSelector(bedID)))} id={string(templ.SafeURL(GetBedTypeSelector(bedID)))}  required class="select select-bordered w-64">
+    <select name={string(templ.SafeURL(GetBedTypeSelector(bedID)))} id={string(templ.SafeURL(GetBedTypeSelector(bedID)))}  required class="select select-bordered w-40">
 
         <option value="">Select Bed Type</option>
         for _, bedType := range bedTypes {
