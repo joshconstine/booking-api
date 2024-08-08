@@ -184,6 +184,57 @@ templ RentalAdminRooms(rental response.RentalInformationResponse, params request
 }
 }
 
+
+templ RentalAdminRoomsCreate(rental response.RentalInformationResponse, params request.CreateRentalStep2Params, roomForm   request.UpdateRentalRoomRequest, errors request.CreateRentalStep2Errors, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
+@layout.App(true) {
+<div class="flex flex-col gap-4 md:mt-4 mt-1 items-center w-full pb-[300px] overflow">
+    <div class=" px-8 w-full flex justify-between items-center">
+        <a class="btn btn-outline rounded-full btn-sm">Questions?</a>
+        <div class="flex items-center gap-2">
+            <a class="btn btn-md bg-branded-400">Admin view</a>
+            <a class="btn  btn-md">Public view</a>
+            <a class="btn btn-outline rounded-full btn-sm">Save and exit</a>
+        </div>
+    </div> <div class="w-full flex flex-wrap mx-auto gap-4">
+        <aside class="flex-1">
+
+        </aside>
+        <div class="max-w-screen-2xl flex-2 flex-grow w-screen-2xl ">
+            <div class=" flex gap-4 items-center w-full">
+                <h1 class="text-3xl font-bold text-center">{rental.Name}</h1>
+                @ui.RentalStatusBadge(rental.RentalStatus, rental.ID)
+            </div>
+            <span>Property information</span>
+        </div>
+        <aside class="flex-1">
+
+        </aside>
+    </div>
+    <div class="w-full flex flex-wrap mx-auto gap-4">
+        <aside class="flex-1">
+
+        </aside>
+        <div class="w-full  flex-grow max-w-screen-md h-72 flex-2 rounded-lg bg-branded-400 justify-self-center align-self-center">
+            <img class="w-full h-full object-cover rounded-lg" src={rental.Photos[0].Photo.URL} alt="rental photo" />
+        </div>
+        @RentalAside(rental.ID)
+        //<div class="flex-grow"></div>
+    </div>
+
+    <div id="rental-form"
+         class="w-full"
+    >
+        @RentalBedroomsFormCreate(params, roomForm, errors, roomTypes, bedTypes)
+
+    </div>
+
+
+
+</div>
+
+
+}
+}
 templ RentalInformationForm(rental response.RentalInformationResponse, amenities []response.SortedAmenityResponse) {
 <div class="w-full">
             @ui.EntityPhotoList(rental.Photos)

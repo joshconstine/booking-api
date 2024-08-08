@@ -325,7 +325,6 @@ func (controller *RentalController) HandleRentalAdminDetailAvailability(w http.R
 }
 
 func (controller *RentalController) HandleRentalAdminDetailRooms(w http.ResponseWriter, r *http.Request) error {
-
 	rentalId := chi.URLParam(r, "rentalId")
 	rentalIdInt, _ := strconv.Atoi(rentalId)
 
@@ -350,6 +349,29 @@ func (controller *RentalController) HandleRentalAdminDetailRooms(w http.Response
 	roomTypes := controller.roomTypeService.FindAll()
 	bedTypes := controller.bedTypeService.FindAll()
 	return rentals.RentalAdminRooms(rental, params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
+
+}
+func (controller *RentalController) HandleRentalAdminDetailRoomsCreate(w http.ResponseWriter, r *http.Request) error {
+	rentalId := chi.URLParam(r, "rentalId")
+	rentalIdInt, _ := strconv.Atoi(rentalId)
+
+	rental := controller.rentalService.FindById(uint(rentalIdInt))
+	params := request.CreateRentalStep2Params{}
+	errors := request.CreateRentalStep2Errors{}
+	rentalRooms := controller.rentalRoomService.FindByRentalId(uint(rentalIdInt))
+	params.Rooms = rentalRooms
+	params.RentalID = uint(rentalIdInt)
+
+	updateParams := request.UpdateRentalRoomRequest{
+		RentalID:         uint(rentalIdInt),
+		Name:             makeBedroomName(rentalRooms),
+		Floor:            1,
+		RentalRoomTypeID: constants.ROOM_TYPE_BEDROOM_ID,
+	}
+
+	roomTypes := controller.roomTypeService.FindAll()
+	bedTypes := controller.bedTypeService.FindAll()
+	return rentals.RentalAdminRoomsCreate(rental, params, updateParams, errors, roomTypes, bedTypes).Render(r.Context(), w)
 
 }
 func (controller *RentalController) HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {
