@@ -3,6 +3,7 @@ package ui
 import (
 	response "booking-api/data/response"
     request "booking-api/data/request"
+    "strconv"
 )
 templ EntityPhotoList(photos []response.EntityPhotoResponse) {
     <div class="bg-white shadow-lg flex-col flex gap-2 p-8 max-w-screen-md w-full mx-auto  rounded-lg">
@@ -63,10 +64,29 @@ func getClassForPhoto(photo response.EntityPhotoResponse, roomPhotoFormParams re
     }
     return "rounded-lg w-40 h-40 flex-col gap-1 border-gray-700 cursor-pointer border-2 flex items-center justify-center"
 }
+func getPhotoIDNameSelector(photo response.EntityPhotoResponse) string {
+    return "photo_" + strconv.Itoa(int(photo.ID))
+}
+func getValueForPhoto(photo response.EntityPhotoResponse, roomPhotoFormParams request.RoomPhotoFormParams) string {
+
+    for _, id := range roomPhotoFormParams.SelectedPhotoIDs {
+        if id == photo.ID {
+            return "true"
+        }
+    }
+
+    return "false"
+}
+
+
 templ RoomPhotoFormPhoto(photo response.EntityPhotoResponse, roomPhotoFormParams request.RoomPhotoFormParams) {
 
-    <div class={getClassForPhoto(photo, roomPhotoFormParams)} >
-        <img src={photo.Photo.URL} alt="img" class="rounded-lg w-40 h-40 object-cover"/>
+    <div>
+        <input type="hidden" value={getValueForPhoto(photo, roomPhotoFormParams)} name={getPhotoIDNameSelector(photo)} />
+        <div class={getClassForPhoto(photo, roomPhotoFormParams)}  id={getPhotoIDNameSelector(photo)}>
+            <img src={photo.Photo.URL} alt="img" class="rounded-lg w-40 h-40 object-cover"/>
+        </div>
+
     </div>
 }
 
