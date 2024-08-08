@@ -131,7 +131,7 @@ func (r *RentalRepositoryImplementation) Update(rental request.UpdateRentalReque
 
 func (r *RentalRepositoryImplementation) UpdateRental(rental request.CreateRentalStep1Params) (response.RentalResponse, error) {
 	var rentalToUpdate models.Rental
-	result := r.Db.Where("id = ?", rental.RentalID).Preload("BookingRule").First(&rentalToUpdate)
+	result := r.Db.Where("id = ?", rental.RentalID).Preload("BookingRule").Preload("Amenities").First(&rentalToUpdate)
 	if result.Error != nil {
 		return response.RentalResponse{}, result.Error
 	}
@@ -151,15 +151,34 @@ func (r *RentalRepositoryImplementation) UpdateRental(rental request.CreateRenta
 			return response.RentalResponse{}, updateResult.Error
 		}
 	}
-
-	rentalToUpdate.Amenities = []models.Amenity{}
-	for _, amenity := range rental.Amenities {
-		rentalToUpdate.Amenities = append(rentalToUpdate.Amenities, models.Amenity{
+	amenities := []models.Amenity{}
+	for _, a := range rental.Amenities {
+		amenities = append(amenities, models.Amenity{
 			Model: gorm.Model{
-				ID: amenity.ID,
+				ID: a.ID,
 			},
 		})
 
+	}
+
+	for _, amenity := range rentalToUpdate.Amenities {
+		if !containsAmenity(amenities, amenity.ID) {
+			result := r.Db.Model(&rentalToUpdate).Association("Amenities").Delete(&amenity)
+			if result.Error != nil {
+				return response.RentalResponse{}, nil
+			}
+		}
+	}
+
+	// Add new amenities
+	for _, amenity := range rental.Amenities {
+		if !containsAmenity(rentalToUpdate.Amenities, amenity.ID) {
+			rentalToUpdate.Amenities = append(rentalToUpdate.Amenities, models.Amenity{
+				Model: gorm.Model{
+					ID: amenity.ID,
+				},
+			})
+		}
 	}
 
 	result = r.Db.Save(&rentalToUpdate)
@@ -170,6 +189,15 @@ func (r *RentalRepositoryImplementation) UpdateRental(rental request.CreateRenta
 	return rentalToUpdate.MapRentalsToResponse(), nil
 }
 
+// Helper function to check if an amenity is already in the list
+func containsAmenity(amenities []models.Amenity, id uint) bool {
+	for _, a := range amenities {
+		if a.ID == id {
+			return true
+		}
+	}
+	return false
+}
 func (r *RentalRepositoryImplementation) FindAllIDs() []uint {
 	var rentalIDs []uint
 	result := r.Db.Model(&models.Rental{}).Pluck("id", &rentalIDs)
