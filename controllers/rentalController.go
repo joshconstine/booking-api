@@ -292,8 +292,8 @@ func (controller *RentalController) Update(w http.ResponseWriter, r *http.Reques
 		Address:             address,
 		Guests:              uint(guestsInt),
 		Bathrooms:           bathroomsFloat,
-		AllowPets:           allowPets == "checked",
-		AllowInstantBooking: allowInstantBooking == "checked",
+		AllowPets:           allowPets == "on",
+		AllowInstantBooking: allowInstantBooking == "on",
 	}
 
 	errors := request.CreateRentalStep1Errors{}

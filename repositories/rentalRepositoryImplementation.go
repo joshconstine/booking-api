@@ -131,7 +131,7 @@ func (r *RentalRepositoryImplementation) Update(rental request.UpdateRentalReque
 
 func (r *RentalRepositoryImplementation) UpdateRental(rental request.CreateRentalStep1Params) (response.RentalResponse, error) {
 	var rentalToUpdate models.Rental
-	result := r.Db.Where("id = ?", rental.RentalID).First(&rentalToUpdate)
+	result := r.Db.Where("id = ?", rental.RentalID).Preload("BookingRule").First(&rentalToUpdate)
 	if result.Error != nil {
 		return response.RentalResponse{}, result.Error
 	}
@@ -142,6 +142,15 @@ func (r *RentalRepositoryImplementation) UpdateRental(rental request.CreateRenta
 	rentalToUpdate.Description = rental.Description
 	rentalToUpdate.Address = rental.Address
 	rentalToUpdate.Guests = rental.Guests
+
+	if rentalToUpdate.BookingRule.AllowInstantBooking != rental.AllowInstantBooking || rentalToUpdate.BookingRule.AllowPets != rental.AllowPets {
+		rentalToUpdate.BookingRule.AllowInstantBooking = rental.AllowInstantBooking
+		rentalToUpdate.BookingRule.AllowPets = rental.AllowPets
+		updateResult := r.Db.Save(&rentalToUpdate.BookingRule)
+		if updateResult.Error != nil {
+			return response.RentalResponse{}, updateResult.Error
+		}
+	}
 
 	rentalToUpdate.Amenities = []models.Amenity{}
 	for _, amenity := range rental.Amenities {
