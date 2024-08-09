@@ -32,18 +32,24 @@ func GetIdsFromAmens(amenities []response.AmenityResponse) []int {
     }
     return ids
 }
+templ RentalAdminUpperNav() {
+
+<div class=" px-8 w-full flex justify-between items-center">
+    <a class="btn btn-outline rounded-full btn-sm">Questions?</a>
+    <div class="flex items-center gap-2">
+        <a class="btn btn-md bg-branded-400">Admin view</a>
+        <a class="btn  btn-md">Public view</a>
+        <a class="btn btn-outline rounded-full btn-sm">Save and exit</a>
+    </div>
+</div>
+}
+
 // RentalInformationResponse renders a page with detailed information about a specific rental
 templ RentalAdmin(rental response.RentalInformationResponse, amenities []response.SortedAmenityResponse) {
     @layout.App(true) {
       <div class="flex flex-col gap-4 md:mt-4 mt-1 items-center w-full pb-[300px] overflow">
-            <div class=" px-8 w-full flex justify-between items-center">
-                <a class="btn btn-outline rounded-full btn-sm">Questions?</a>
-                <div class="flex items-center gap-2">
-                    <a class="btn btn-md bg-branded-400">Admin view</a>
-                    <a class="btn  btn-md">Public view</a>
-                    <a class="btn btn-outline rounded-full btn-sm">Save and exit</a>
-                </div>
-            </div> <div class="w-full flex flex-wrap mx-auto gap-4">
+          @RentalAdminUpperNav()
+          <div class="w-full flex flex-wrap mx-auto gap-4">
                  <aside class="flex-1">
 
                  </aside>
@@ -136,14 +142,8 @@ templ RentalAdminAvailability(rental response.RentalInformationResponse, params 
 templ RentalAdminRooms(rental response.RentalInformationResponse, params request.CreateRentalStep2Params, roomForm   request.UpdateRentalRoomRequest, errors request.CreateRentalStep2Errors, roomTypes []response.RoomTypeResponse , bedTypes []response.BedTypeResponse) {
 @layout.App(true) {
 <div class="flex flex-col gap-4 md:mt-4 mt-1 items-center w-full pb-[300px] overflow">
-    <div class=" px-8 w-full flex justify-between items-center">
-        <a class="btn btn-outline rounded-full btn-sm">Questions?</a>
-        <div class="flex items-center gap-2">
-            <a class="btn btn-md bg-branded-400">Admin view</a>
-            <a class="btn  btn-md">Public view</a>
-            <a class="btn btn-outline rounded-full btn-sm">Save and exit</a>
-        </div>
-    </div> <div class="w-full flex flex-wrap mx-auto gap-4">
+    @RentalAdminUpperNav()
+    <div class="w-full flex flex-wrap mx-auto gap-4">
         <aside class="flex-1">
 
         </aside>
