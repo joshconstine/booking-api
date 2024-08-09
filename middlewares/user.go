@@ -2,12 +2,14 @@ package middlewares
 
 import (
 	"booking-api/config"
+	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
 	sb "booking-api/pkg/sb"
 	"booking-api/repositories"
 	"booking-api/services"
 	"context"
+	"github.com/brianvoe/gofakeit/v7"
 	"net/http"
 	"strconv"
 
@@ -90,16 +92,34 @@ func NewWithUserMiddleWare(userService services.UserService) func(http.Handler) 
 				next.ServeHTTP(w, r)
 				return
 			}
-			userData := userService.FindByUserID(uuid.MustParse(resp.ID).String())
+			userData, err := userService.FindByUserID(uuid.MustParse(resp.ID).String())
 			// if userData.UserID == uuid.Nil {
 			// 	// http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
 			// 	return
 			// }
 
+			if err != nil {
+				if err.Error() == "record not found" {
+					var createUserRequest request.CreateUserRequest
+
+					createUserRequest.UserID = uuid.MustParse(resp.ID).String()
+					createUserRequest.Email = resp.Email
+					createUserRequest.FirstName = resp.UserMetadata["full_name"].(string)
+					createUserRequest.ProfilePicture = resp.UserMetadata["picture"].(string)
+					createUserRequest.Username = gofakeit.Username()
+					err = userService.CreateUser(&createUserRequest)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
+
+				}
+			}
+
 			user := models.AuthenticatedUser{
 
 				User: response.UserResponse{
-					UserID:    userData.UserID,
+					UserID:    resp.ID,
 					Email:     resp.Email,
 					FirstName: userData.FirstName,
 					LastName:  userData.LastName,
@@ -107,6 +127,7 @@ func NewWithUserMiddleWare(userService services.UserService) func(http.Handler) 
 					Chats:     userData.Chats,
 
 					ProfilePicture: userData.ProfilePicture,
+
 					//TODO ADD user service to get username here
 				},
 				LoggedIn:    true,
@@ -145,7 +166,7 @@ func NewWithIsAdminMiddleWare(userService services.UserService) func(http.Handle
 				next.ServeHTTP(w, r)
 				return
 			}
-			userData := userService.FindByUserID(uuid.MustParse(resp.ID).String())
+			userData, err := userService.FindByUserID(uuid.MustParse(resp.ID).String())
 
 			isAdmin := userService.IsAdmin(userData.UserID)
 			if !isAdmin {
@@ -184,7 +205,7 @@ func NewWithIsOwnerOfEntityMiddleWare(userService services.UserService, membersh
 				next.ServeHTTP(w, r)
 				return
 			}
-			userData := userService.FindByUserID(uuid.MustParse(resp.ID).String())
+			userData, err := userService.FindByUserID(uuid.MustParse(resp.ID).String())
 
 			//{entityType}/{entityID}/admin
 			// Use entityType and entityID from context if they are not provided

@@ -96,7 +96,7 @@ func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) e
 		PhoneNumber:    user.PhoneNumber,
 		Gender:         "male",
 		DOB:            user.DOB,
-		ProfilePicture: "",
+		ProfilePicture: user.ProfilePicture,
 	}
 
 	result := t.Db.Model(&models.User{}).Create(&userToInsert)
