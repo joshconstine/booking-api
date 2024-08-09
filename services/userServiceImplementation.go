@@ -108,6 +108,12 @@ func (t *userServiceImplementation) CreateUser(user *requests.CreateUserRequest)
 	return result
 }
 
+func (t *userServiceImplementation) CreateForUser(user *requests.CreateUserRequestForUser) error {
+
+	result := t.userRepository.CreateForUser(user)
+
+	return result
+}
 func (t *userServiceImplementation) UpdateUser(user *requests.UpdateUserRequest) error {
 	// validate request
 	err := t.Validate.Struct(user)

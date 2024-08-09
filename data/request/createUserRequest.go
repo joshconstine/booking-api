@@ -12,3 +12,8 @@ type CreateUserRequest struct {
 	DOB            *time.Time
 	ProfilePicture string
 }
+type CreateUserRequestForUser struct {
+	Email     string
+	FirstName string
+	LastName  string
+}

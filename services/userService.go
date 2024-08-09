@@ -14,5 +14,6 @@ type UserService interface {
 	IsAdmin(userID string) bool
 	IsOwnerOfEntity(userID string, entityType string, entityID uint) (bool, error)
 	CreateUser(request *requests.CreateUserRequest) error
+	CreateForUser(request *requests.CreateUserRequestForUser) error
 	UpdateUser(user *requests.UpdateUserRequest) error
 }

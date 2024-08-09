@@ -110,6 +110,25 @@ func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) e
 	return nil
 }
 
+func (t *userRepositoryImplementation) CreateForUser(user *request.CreateUserRequestForUser) error {
+	userToInsert := models.User{
+		Email:     user.Email,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Gender:    "male",
+	}
+
+	result := t.Db.Model(&models.User{}).Create(&userToInsert)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	//log the result
+	log.Println(result)
+
+	return nil
+}
+
 func (t *userRepositoryImplementation) Update(user *request.UpdateUserRequest) error {
 	var userToUpdate models.User
 	result := t.Db.Model(&models.User{}).Where("public_user_id = ?", user.UserID).First(&userToUpdate)

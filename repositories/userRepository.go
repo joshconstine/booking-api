@@ -14,5 +14,6 @@ type UserRepository interface {
 	IsAdmin(userID string) bool
 	FindByEmail(email string) (models.User, error)
 	Create(user *request.CreateUserRequest) error
+	CreateForUser(user *request.CreateUserRequestForUser) error
 	Update(user *request.UpdateUserRequest) error
 }
