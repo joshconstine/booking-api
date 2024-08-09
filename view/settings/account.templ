@@ -303,6 +303,7 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 	<form
 		hx-put="/settings/account/profile"
 		hx-swap="outerHTML"
+		hx-indicator="#loading"
 	>
 		<div class="flex flex-col gap-4">
 			<span class="text-lg font-semibold border-b border-gray-700 pb-2">Personal Information</span>
@@ -372,6 +373,7 @@ templ ProfileForm(params ProfileParams, errors ProfileErrors) {
 			</div>
 			</div>
 				<dd class="flex w-full gap-2 items-center justify-end">
+					<span id="loading" class="loading loading-dots loading-md htmx-indicator"></span>
 					<button type="reset" class="btn" >Reset</button>
 					<button class="btn bg-branded-400">Save</button>
 				</dd>
