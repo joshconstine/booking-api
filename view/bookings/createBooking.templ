@@ -5,6 +5,7 @@ import (
     "booking-api/view/layout"
     "booking-api/data/request"
     "booking-api/data/response"
+    "fmt"
 )
 
 // RentalInformationResponse renders a page with detailed information about a specific rental
@@ -107,4 +108,24 @@ templ GuestConfirmationDialog(params  request.CreateBookingWithUserInformationRe
                 <button class="btn" id="cancel-guest">Cancel</button>
             </div>
     </div>
+}
+
+templ BookingNewUserInformationForm(params  request.CreateBookingWithUserInformationRequest, errors BookingUserInformationErrors) {
+<div>
+   <h2>{fmt.Sprintf("Created a new user account for %s", params.FirstName)}</h2>
+    <span> An account setup email will be sent to them and they can confirm the booking. </span>
+    <div class="flex w-full items-center gap-4">
+             <form
+               action="/api/booking"
+                method="POST"
+                >
+                <input type="hidden" name="firstName" value={params.FirstName} />
+                <input type="hidden" name="lastName" value={params.LastName} />
+                <input type="hidden" name="email" value={params.Email} />
+
+                <button class="btn bg-branded-400" id="confirm-guest">Yes</button>
+                </form>
+                <button class="btn" id="cancel-guest">Cancel</button>
+            </div>
+</div>
 }

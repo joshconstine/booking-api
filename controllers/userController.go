@@ -88,10 +88,10 @@ func (controller *UserController) FindOrCreateUser(w http.ResponseWriter, r *htt
 			}
 		}
 	}
-	user, err = controller.userService.FindByEmailPublic(params.Email)
 
 	if user.Email == "" {
-		return render(r, w, bookings.BookingUserInformationForm(params, errors))
+		//
+		return render(r, w, bookings.BookingNewUserInformationForm(params, errors))
 	}
 
 	return render(r, w, bookings.GuestConfirmationDialog(params, user))

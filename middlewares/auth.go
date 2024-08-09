@@ -20,7 +20,7 @@ func NewWithAccountSetupMiddleWare(userService services.UserService) func(http.H
 				return
 			}
 
-			user, err := userService.FindByPublicUserID(authenticatedUser.User.UserID)
+			user, err := userService.FindByUserID(authenticatedUser.User.UserID)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
