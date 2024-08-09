@@ -112,7 +112,7 @@ func (t *userRepositoryImplementation) Create(user *request.CreateUserRequest) e
 
 func (t *userRepositoryImplementation) Update(user *request.UpdateUserRequest) error {
 	var userToUpdate models.User
-	result := t.Db.Model(&models.User{}).Where("id = ?", user.UserID).First(&userToUpdate)
+	result := t.Db.Model(&models.User{}).Where("public_user_id = ?", user.UserID).First(&userToUpdate)
 
 	if result.Error != nil {
 		return result.Error

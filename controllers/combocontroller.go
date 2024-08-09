@@ -83,6 +83,19 @@ func (controller *ComboController) HandleHomeIndex(w http.ResponseWriter, r *htt
 
 	return rentals.Index(boatData, rentalData).Render(r.Context(), w)
 }
+
+func (controller *ComboController) HandleHomeIndexBoats(w http.ResponseWriter, r *http.Request) error {
+	// user := view.getAuthenticatedUser(r)
+	// account, err := db.GetAccountByUserID(user.ID)
+	// if err != nil {
+	// 	return err
+	// }
+	// fmt.Printf("%+v\n", user.Account)
+
+	boatData := controller.boatService.FindAll()
+
+	return rentals.IndexBoats(boatData).Render(r.Context(), w)
+}
 func (controller *ComboController) HandleAllCards(w http.ResponseWriter, r *http.Request) error {
 
 	boatData := controller.boatService.FindAll()
