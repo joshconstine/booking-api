@@ -65,6 +65,7 @@ func (controller *UserController) FindOrCreateUser(w http.ResponseWriter, r *htt
 	ok := validate.New(&params, validate.Fields{
 		"Email": validate.Rules(validate.Required),
 	}).Validate(&errors)
+
 	if !ok {
 		return render(r, w, bookings.BookingUserInformationForm(params, errors))
 	}
@@ -75,9 +76,20 @@ func (controller *UserController) FindOrCreateUser(w http.ResponseWriter, r *htt
 	user, err := controller.userService.FindByEmailPublic(params.Email)
 
 	if err != nil {
-		return err
-
+		if err.Error() == "record not found" {
+			params := &request.CreateUserRequestForUser{
+				FirstName: params.FirstName,
+				LastName:  params.LastName,
+				Email:     params.Email,
+			}
+			err = controller.userService.CreateForUser(params)
+			if err != nil {
+				return err
+			}
+		}
 	}
+	user, err = controller.userService.FindByEmailPublic(params.Email)
+
 	if user.Email == "" {
 		return render(r, w, bookings.BookingUserInformationForm(params, errors))
 	}

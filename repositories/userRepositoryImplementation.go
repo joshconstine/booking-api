@@ -5,6 +5,7 @@ import (
 	"booking-api/data/request"
 	"booking-api/data/response"
 	"booking-api/models"
+	"github.com/brianvoe/gofakeit/v7"
 	"gorm.io/gorm"
 	"log"
 )
@@ -116,6 +117,7 @@ func (t *userRepositoryImplementation) CreateForUser(user *request.CreateUserReq
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		Gender:    "male",
+		Username:  gofakeit.Username(),
 	}
 
 	result := t.Db.Model(&models.User{}).Create(&userToInsert)

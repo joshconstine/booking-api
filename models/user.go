@@ -8,8 +8,8 @@ import (
 )
 
 type User struct {
-	ID             string `gorm:" primaryKey"`
-	PublicUserId   string `gorm:"unique; key"`
+	ID             string `gorm:" key"`
+	PublicUserId   string `gorm:" primaryKey"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      gorm.DeletedAt `gorm:"index"`
