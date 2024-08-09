@@ -71,6 +71,57 @@ templ Index(boatResponse []response.BoatResponse, rentals []response.RentalRespo
 	}
 }
 
+templ IndexBoats(boatResponse []response.BoatResponse) {
+@layout.App(true) {
+<div class="w-full max-w-screen-2xl mx-auto text-center py-8 px-auto flex items-center justify-center flex-col gap-4">
+    <div class="flex w-full justify-between mx-1 md:mx-8 items-center px-4">
+        <h2 class="text-2xl font-bold  ">Your Rentals</h2>
+        <div class="flex items-center gap-4">
+            <span id="loading" class="loading loading-dots loading-md htmx-indicator"></span>
+            <div class="btn "
+                 hx-get="/rentals/boat/cards"
+                 hx-target="#rentalCards"
+                 hx-swap="outerHTML"
+                 hx-trigger="click"
+                 hx-indicator="#loading"
+
+            >
+
+
+                Boat rentals</div>
+            <div class="btn "
+                 hx-get="/rentals/property/cards"
+                 hx-target="#rentalCards"
+                 hx-swap="outerHTML"
+                 hx-trigger="click"
+                 hx-indicator="#loading"
+
+            >
+
+
+                Property rentals</div>
+            <div class="btn hover:bg-branded-400 bg-branded-400  "
+                 hx-get="/rentals/cards"
+                 hx-target="#rentalCards"
+                 hx-swap="outerHTML"
+                 hx-trigger="click"
+                 hx-indicator="#loading"
+
+            >
+                All rentals</div>
+        </div>
+    </div>
+
+    <ul class=" flex flex-wrap px-4 justify-center gap-4 flex-col md:flex-row items-center" id="rentalCards">
+        for _, boat := range boatResponse {
+        @boats.BoatCard(boat)
+        }
+        @CreateRentalCard()
+    </ul>
+</div>
+}
+}
+
 templ IndexRentals( rentals []response.RentalResponse) {
 @layout.App(true) {
 <div class="w-full max-w-screen-2xl mx-auto text-center py-8 px-auto flex items-center justify-center flex-col gap-4">
