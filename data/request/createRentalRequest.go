@@ -24,13 +24,15 @@ func (rental *CreateRentalRequest) MapCreateRentalRequestToRental(taxid uint) mo
 	elevenAm := time.Date(2025, 0, 0, 11, 0, 0, 0, time.UTC)
 
 	rentalModel := models.Rental{
-		Name:         rental.Name,
-		LocationID:   rental.LocationID,
-		Bedrooms:     rental.Bedrooms,
-		Bathrooms:    rental.Bathrooms,
-		AccountID:    rental.AccountID,
-		Description:  rental.Description,
-		RentalStatus: models.RentalStatus{},
+		Name:        rental.Name,
+		LocationID:  rental.LocationID,
+		Bedrooms:    rental.Bedrooms,
+		Bathrooms:   rental.Bathrooms,
+		AccountID:   rental.AccountID,
+		Description: rental.Description,
+		RentalStatus: models.RentalStatus{
+			IsClean: true,
+		},
 		BookingCostItems: []models.EntityBookingCost{
 			{
 				Amount:            rental.NightlyRate,

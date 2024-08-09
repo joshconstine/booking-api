@@ -20,7 +20,7 @@ type MemberInput struct {
 	LastName    string
 	PhoneNumber string
 	Email       string
-	Role        string
+	RoleID      uint
 }
 
 func (m *MemberInput) MapMemberInputToMember() models.Membership {
@@ -31,7 +31,9 @@ func (m *MemberInput) MapMemberInputToMember() models.Membership {
 			Email: m.Email,
 		},
 		Role: models.UserRole{
-			Name: m.Role,
+			Model: gorm.Model{
+				ID: m.RoleID,
+			},
 		},
 	}
 }
@@ -96,7 +98,12 @@ var accountsToCreate = []CreateAccountRequest{
 				LastName:    "Constine",
 				PhoneNumber: "7155259214",
 				Email:       "Everettmarinabar@outlook.com",
-				Role:        constants.USER_ROLE_ACCOUNT_OWNER_NAME,
+				RoleID:      constants.USER_ROLE_ACCOUNT_OWNER_ID,
+			},
+			{
+				PhoneNumber: "7155259214",
+				Email:       "joshua.constine97@gmail.com",
+				RoleID:      constants.USER_ROLE_ACCOUNT_OWNER_ID,
 			},
 		},
 
@@ -177,7 +184,12 @@ var accountsToCreate = []CreateAccountRequest{
 				LastName:    "Constine",
 				PhoneNumber: "7155259214",
 				Email:       "Everettmarinabar@outlook.com",
-				Role:        constants.USER_ROLE_ACCOUNT_OWNER_NAME,
+				RoleID:      constants.USER_ROLE_ACCOUNT_OWNER_ID,
+			},
+			{
+				PhoneNumber: "7155259214",
+				Email:       "joshua.constine97@gmail.com",
+				RoleID:      constants.USER_ROLE_ACCOUNT_OWNER_ID,
 			},
 		},
 		Rentals: []request.CreateRentalRequest{},
