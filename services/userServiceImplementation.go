@@ -38,11 +38,10 @@ func (t *userServiceImplementation) FindAll() []responses.UserResponse {
 	return users
 }
 
-func (t *userServiceImplementation) FindByUserID(userID string) responses.UserResponse {
+func (t *userServiceImplementation) FindByUserID(userID string) (responses.UserResponse, error) {
 
-	result := t.userRepository.FindByUserID(userID)
+	return t.userRepository.FindByUserID(userID)
 
-	return result
 }
 
 func (t *userServiceImplementation) FindByPublicUserID(publicUserID string) (responses.UserResponse, error) {
@@ -72,15 +71,9 @@ func (t *userServiceImplementation) IsOwnerOfEntity(userID string, entityType st
 	return result, nil
 }
 
-func (t *userServiceImplementation) FindById(id uint) responses.UserResponse {
-	result := t.userRepository.FindById(id)
+func (t *userServiceImplementation) FindById(id uint) (responses.UserResponse, error) {
+	return t.userRepository.FindById(id)
 
-	user := responses.UserResponse{
-		UserID: result.ID,
-		Email:  result.Email,
-	}
-
-	return user
 }
 
 func (t *userServiceImplementation) FindByEmail(email string) (responses.UserResponse, error) {

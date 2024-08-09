@@ -19,7 +19,14 @@ func NewUserSettingsController(userService services.UserService, accountService 
 
 func (usc *UserSettingsController) HandleSettingsIndex(w http.ResponseWriter, r *http.Request) error {
 	user := GetAuthenticatedUser(r)
+	//isUserSetUp, err := usc.userService.IsUserSetUp(user.User.UserID)
 	// user.User = usc.userService.FindByUserID(user.User.UserID)
+	//if there is no user redirect to account setup
+	if user.User.UserID == "" {
+		http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
+		return nil
+	}
+
 	memberships, err := usc.accountService.GetUserAccountRoles(user.User.UserID)
 	if err != nil {
 		return err

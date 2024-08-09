@@ -27,14 +27,14 @@ func (t *userRepositoryImplementation) FindAll() []models.User {
 	return users
 }
 
-func (t *userRepositoryImplementation) FindById(id uint) models.User {
+func (t *userRepositoryImplementation) FindById(id uint) (response.UserResponse, error) {
 	var user models.User
 	result := t.Db.Where("id = ?", id).First(&user)
 	if result.Error != nil {
-		return models.User{}
+		return response.UserResponse{}, result.Error
 	}
 
-	return user
+	return user.MapUserToResponse(), nil
 }
 
 func (t *userRepositoryImplementation) FindByPublicUserID(userID string) (response.UserResponse, error) {
@@ -76,13 +76,13 @@ func (t *userRepositoryImplementation) FindByEmail(email string) (models.User, e
 	return user, nil
 }
 
-func (t *userRepositoryImplementation) FindByUserID(userID string) response.UserResponse {
+func (t *userRepositoryImplementation) FindByUserID(userID string) (response.UserResponse, error) {
 	var user models.User
 	result := t.Db.Model(models.User{}).Where("id = ?", userID).Preload("Chats.Messages").First(&user)
 	if result.Error != nil {
-		return response.UserResponse{}
+		return response.UserResponse{}, result.Error
 	}
-	return user.MapUserToResponse()
+	return user.MapUserToResponse(), nil
 
 }
 

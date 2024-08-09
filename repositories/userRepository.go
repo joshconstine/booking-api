@@ -8,9 +8,9 @@ import (
 
 type UserRepository interface {
 	FindAll() []models.User
-	FindById(id uint) models.User
+	FindById(id uint) (response.UserResponse, error)
 	FindByPublicUserID(publicUserID string) (response.UserResponse, error)
-	FindByUserID(userID string) response.UserResponse
+	FindByUserID(userID string) (response.UserResponse, error)
 	IsAdmin(userID string) bool
 	FindByEmail(email string) (models.User, error)
 	Create(user *request.CreateUserRequest) error

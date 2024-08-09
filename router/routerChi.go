@@ -60,6 +60,7 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 
 	})
 
+	router.Get("/settings", controllers.Make(userSettingsController.HandleSettingsIndex))
 	/************************ ADMIN ROUTES ************************/
 	router.Get("/rentals", func(w http.ResponseWriter, r *http.Request) {
 		comboController.HandleHomeIndex(w, r)
@@ -127,7 +128,6 @@ func NewChiRouter(authController *controllers.AuthController, rentalsController 
 
 	router.Group(func(auth chi.Router) {
 		auth.Use(middlewares.WithAuth, withAccountSetupMiddleware)
-		auth.Get("/settings", controllers.Make(userSettingsController.HandleSettingsIndex))
 		// router.Get("/settings", func(w http.ResponseWriter, r *http.Request) {
 		// 	userSettingsController.HandleSettingsIndex(w, r)
 		// })
